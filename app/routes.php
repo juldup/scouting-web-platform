@@ -11,7 +11,8 @@
 |
 */
 
-Route::get('/', function()
-{
-	return View::make('hello');
-});
+Route::get('/', "AccueilController@showPage");
+Route::get('gestion/accueil', "AccueilController@showGestion");
+
+Route::get('calendrier', "CalendrierController@showPage");
+Route::get('gestion/calendrier', "CalendrierController@showGestion");

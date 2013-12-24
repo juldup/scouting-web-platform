@@ -14,5 +14,13 @@ class BaseController extends Controller {
 			$this->layout = View::make($this->layout);
 		}
 	}
+  
+  protected function preExecute() {
+    
+  }
+  
+  protected function checkAccessToGestion() {
+    return true; // TODO Check if user is an animator
+  }
 
 }
