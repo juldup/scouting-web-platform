@@ -6,7 +6,7 @@
     </li>
       <!--
       {{-- Connection form --}}
-      <form name="login" method="post" action="{{ URL::route('login') }}" onSubmit="return checkLogin()();">
+      <form name="login" method="post" action="{{ URL::route('login') }}" onSubmit="return checkLogin();">
         <ul class="inner">            
           <li class="data">
             Pseudo/e-mail : 
@@ -45,7 +45,7 @@
       <ul class='dropdown-menu'>
         <li><a href="{{ URL::route('logout') }}">Déconnexion</a></li>
         <li><a href="{{ URL::route('edit_user') }}">Modifier</a></li>
-        @if ($user->isAnimator())
+        @if ($user->isLeader())
           <li><a href="{{ URL::route('home') }}">Coin animateurs</a></li>
         @endif
       </ul>

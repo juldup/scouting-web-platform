@@ -24,6 +24,7 @@ class CreateDatabase extends Migration {
       $table->string('de_la_section');
       $table->string('la_section');
       $table->text('last_email_content');
+      $table->timestamps();
     });
     DB::table('sections')->insert(array(
         'id' => 1,
@@ -45,12 +46,15 @@ class CreateDatabase extends Migration {
       $table->string('type');
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
-      $table->text('content');
+      $table->text('content_markdown');
+      $table->text('content_html');
+      $table->timestamps();
     });
     DB::table('pages')->insert(array(
-        'type' => 'accueil',
+        'type' => 'home',
         'section_id' => 1,
-        'content' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
+        'content_html' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
+        'content_markdown' => "# Page d'accueil de l'unité\n\nBienvenue."
     ));
     
     // Users
@@ -66,6 +70,7 @@ class CreateDatabase extends Migration {
       $table->string('verification_code');
       $table->string('denial_code');
       $table->boolean('verified');
+      $table->timestamps();
     });
     
     

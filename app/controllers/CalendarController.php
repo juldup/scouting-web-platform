@@ -3,8 +3,7 @@
 class CalendarController extends BaseController {
   
   public function showPage($section_slug = '') {
-    $this->preExecute($section_slug);
-    return View::make('calendar');
+    return View::make('pages.calendar');
   }
   
   public function showGestion() {

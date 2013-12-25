@@ -2,6 +2,10 @@
 
 class BaseController extends Controller {
   
+  // The current user
+  protected $user;
+
+
   /**
    * Setup the layout used by the controller.
    *
@@ -13,46 +17,47 @@ class BaseController extends Controller {
     }
   }
   
-  protected function preExecute($section_slug = "") {
-    $user = User::disconnectedUser();
-    $this->selectSection($user, $section_slug);
-    View::share('user', $user);
+  public function __construct() {
+    // Retrieve user
+    $this->user = User::disconnectedUser(); // TODO use actual user
+    View::share('user', $this->user);
+    // Retrieve section slug in route parameters
+    $routeParameters = Route::current()->parameters();
+    $sectionSlug = "";
+    if (array_key_exists("section_slug", $routeParameters)) $sectionSlug = $routeParameters['section_slug'];
+    // Select current tab
+    $this->selectSection($sectionSlug);
   }
   
-  protected function selectSection($user, $section_slug) {
+  protected function selectSection($section_slug) {
     // Determine currently selected section
     $section = null;
     // A specific section is selected
     if ($section_slug) {
-      echo "Using slug";
       $sections = Section::where('slug', '=', $section_slug)->get();
       if (count($sections)) {
         $section = $sections[0];
       }
-      var_dump($section);
     }
     // Use section from current session
     if ($section == null && Session::has('currentSection')) {
-      echo "Using session";
       $section = Section::find(Session::get('currentSection', '1'));
     }
     // Use default section for the user
-    if ($section == null && isset($user->default_section)) {
-      echo "Using user";
-      $section = Section::find($user->default_section);
+    if ($section == null && isset($this->user->default_section)) {
+      $section = Section::find($this->user->default_section);
     }
     // Use main section
     if ($section == null) {
-      echo "Using default";
       $section = Section::find(1);
     }
-    $user->currentSection = $section;
+    $this->user->currentSection = $section;
     // Save selected section to session
     Session::put('currentSection', $section->id);
   }
   
   protected function checkAccessToGestion() {
-    return true; // TODO Check if user is an animator
+    return true; // TODO Check if user is a leader
   }
   
 }

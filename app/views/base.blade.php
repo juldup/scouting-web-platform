@@ -8,8 +8,12 @@
   {{ Less::to('styles') }}
 </head>
 <body>
-  @include('menu.header')
-	@yield('content')
+  <div id="wrap">
+    @include('menu.header')
+    <div class="container">
+      @yield('content')
+    </div>
+  </div>
   @include('menu.footer')
   
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

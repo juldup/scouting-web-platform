@@ -26,7 +26,8 @@ Route::get('recuperer-mot-de-passe', array("as" => "retrieve_password", "uses" =
 Route::get('nouvel-utilisateur', array("as" => "create_user", "uses" => "UserController@create"));
 
 Route::get('/', array("as" => "home", "uses" => "HomeController@showPage"));
-Route::get('gestion/accueil', "HomeController@showGestion");
+Route::get('gestion/accueil', array("as" => "manage_home", "uses" => "HomeController@showGestion"));
+Route::post('gestion/accueil', array("as" => "manage_home", "uses" => "HomeController@savePage"));
 
 Route::get('calendrier/{section_slug?}', array("as" => "calendar", "uses" => "CalendarController@showPage"));
 Route::get('gestion/calendrier', array("as" => "calendar_gestion", "uses" => "CalendarController@showGestion"));
