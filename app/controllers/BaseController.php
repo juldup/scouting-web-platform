@@ -4,6 +4,9 @@ class BaseController extends Controller {
   
   // The current user
   protected $user;
+  
+  // The current section
+  protected $section;
 
 
   /**
@@ -52,6 +55,7 @@ class BaseController extends Controller {
       $section = Section::find(1);
     }
     $this->user->currentSection = $section;
+    $this->section = $section;
     // Save selected section to session
     Session::put('currentSection', $section->id);
   }

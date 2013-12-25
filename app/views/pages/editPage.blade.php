@@ -20,12 +20,12 @@
     <div class="col-lg-5">
       <h2>Exemple</h2>
       <textarea class="expand" disabled="disabled">
-# Voici comment afficher le titre de la page
-
-## Et voici un sous-titre
 Tu peux écrire du texte normalement, mais aussi *en italique*, ou **en gras**.
 
 Laisse une ligne vide pour changer de paragraphe.
+
+## Voici comment afficher un sous-titre dans la page
+Et voici du texte après le titre.
 
 ## Lien vers une autre page
 [Texte affiché](http://www.google.com)
@@ -38,11 +38,10 @@ Laisse une ligne vide pour changer de paragraphe.
 ## Pour les images
 ![Texte alternatif](mon_image)
 
-## Et pour les utilisateurs avancés...
+## Et pour les connaisseurs...
 <span style='background: pink; padding: 5px;'>
   ...le html fonctionne aussi.
-</span>
-      </textarea>
+</span></textarea>
 
     </div>
   </div>
@@ -50,6 +49,7 @@ Laisse une ligne vide pour changer de paragraphe.
   <hr>
   
   <div class="row">
+    <h1>{{ $page_title }}</h1>
     <div id="previewPane" class="pane">Preview</div>
   </div>
   

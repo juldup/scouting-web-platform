@@ -7,7 +7,7 @@ class MenuComposer {
     $menuItems = array();
     
     $homeCategory = array();
-    $homeCategory["Unité et sections"] = URL::route('sections');
+    $homeCategory["Unité et sections"] = URL::route('section');
     $homeCategory["Adresses utiles"] = URL::route('addresses');
     $homeCategory["Contacts"] = URL::route('contacts');
     if (count($homeCategory)) {
@@ -18,8 +18,8 @@ class MenuComposer {
     $generalCategory["Fête d'unité"] = URL::route('home');
     $generalCategory["Inscriptions"] = URL::route('home');
     $generalCategory["Fiches santé"] = URL::route('home');
-    $generalCategory["Charte d'unité"] = URL::route('home');
-    $generalCategory["Les uniformes"] = URL::route('home');
+    $generalCategory["Charte d'unité"] = URL::route('unit_policy');
+    $generalCategory["Les uniformes"] = URL::route('uniform');
     $generalCategory["Liens utiles"] = URL::route('home');
     if (count($generalCategory)) {
       $menuItems['Général'] = $generalCategory;
