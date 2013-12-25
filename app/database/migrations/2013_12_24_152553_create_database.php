@@ -57,6 +57,15 @@ class CreateDatabase extends Migration {
         'content_markdown' => "# Page d'accueil de l'unité\n\nBienvenue."
     ));
     
+    // Page images
+    Schema::create('page_images', function($table) {
+      $table->increments('id');
+      $table->string('original_name');
+      $table->integer('page_id')->unsigned();
+      $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
+      $table->timestamps();
+    });     
+    
     // Users
     Schema::create('users', function($table) {
       $table->increments('id');
@@ -99,6 +108,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('page_images');
     Schema::drop('users');
 		Schema::drop('pages');
     Schema::drop('sections');

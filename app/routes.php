@@ -25,6 +25,11 @@ Route::get('modifier-utilisateur/{section_slug?}', array("as" => "edit_user", "u
 Route::get('recuperer-mot-de-passe/{section_slug?}', array("as" => "retrieve_password", "uses" => "UserController@retrievePassword"));
 Route::get('nouvel-utilisateur/{section_slug?}', array("as" => "create_user", "uses" => "UserController@create"));
 
+// Images
+Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
+Route::post('images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
+Route::get('images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
+
 // Sections
 Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionController@showPage"));
 Route::get('gestion/section/{section_slug}', array("as" => "manage_section", "uses" => "SectionController@showEdit"));

@@ -140,12 +140,14 @@ function startGui() {
 //	Conversion
 //
 
-function convertText() {
+function convertText(force) {
+  console.log("convertText");
 	// get input text
 	var text = inputPane.value;
 	
 	// if there's no change to input, cancel conversion
-	if (text && text == lastText) {
+	if (text && text == lastText && !force) {
+    console.log("text hasn't changed");
 		return;
 	} else {
 		lastText = text;

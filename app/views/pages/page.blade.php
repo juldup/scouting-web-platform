@@ -11,7 +11,7 @@
     </p>
   @endif
   
-  <div class="row">
+  <div class="row page_content">
     <h1>{{ $page_title }}</h1>
     {{ $page_content }}
   </div>

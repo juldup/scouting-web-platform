@@ -8,7 +8,7 @@ abstract class GenericPageController extends BaseController {
   protected abstract function isSectionPage();
   protected abstract function getPageType();
   protected abstract function getPageTitle();
-
+  
   public function showPage() {
     $page = $this->getPage();
     return View::make('pages.page')
@@ -23,9 +23,12 @@ abstract class GenericPageController extends BaseController {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
     }
     $page = $this->getPage();
+    $images = PageImage::where('page_id', '=', $page->id)->get()->all();
     return View::make('pages.editPage')
             ->with('page_content', $page->content_markdown)
             ->with('page_title', $this->getPageTitle())
+            ->with('page_id', $page->id)
+            ->with('images', $images)
             ->with('original_page_url', URL::route($this->getShowRouteName()));
   }
   

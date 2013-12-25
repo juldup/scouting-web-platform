@@ -8,4 +8,4 @@ Thumbs.db
 /phpunit.xml
 /nbproject
 /public/css/styles.css
-
+/public/images/pages/*.image
