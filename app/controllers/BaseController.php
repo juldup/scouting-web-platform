@@ -16,7 +16,7 @@ class BaseController extends Controller {
 	}
   
   protected function preExecute() {
-    
+    View::share('user', Member::disconnectedMember());
   }
   
   protected function checkAccessToGestion() {

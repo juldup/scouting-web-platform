@@ -8,7 +8,7 @@
 </head>
 <body>
   @yield('header')
-  @yield('menu')
+  @include('menu')
 	@yield('content')
   @yield('footer')
 </body>
