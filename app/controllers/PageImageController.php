@@ -16,6 +16,14 @@ class PageImageController extends BaseController {
   public function uploadImage($page_id) {
     
     $file = Input::file('Filedata');
+    
+    if (!$file->getSize()) {
+      return json_encode(array(
+          "result" => "KO",
+          "message" => "Le fichier est trop gros et n'a pas pu être ajouté.'"
+      ));
+    }
+    
     $image = PageImage::create(array(
         'page_id' => $page_id,
         'original_name' => $file->getClientOriginalName(),
@@ -34,7 +42,9 @@ class PageImageController extends BaseController {
     if (!$image) {
       throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Image does not exist");
     }
-    unlink($image->getPath());
+    if (file_exists($image->getPath())) {
+      unlink($image->getPath());
+    }
     $image->delete();
     return json_encode(array(
         "result" => "OK",

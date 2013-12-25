@@ -3,7 +3,6 @@
 
 // Make sure there is a login and password
 function checkLogin() {
-  console.log("check login");
   if (document.login.login_username.value === '') {
     document.login.login_username.focus();
     document.login.login_username.select();
@@ -18,12 +17,10 @@ function checkLogin() {
 }
 // Connecte l'utilisateur s'il a entré un pseudo et un mot de passe
 function submitLogin() {
-  console.log("submit login");
   if (checkLogin()) document.login.submit();
 }
 // Valide la connexion si 'enter' est pressé
 function checkEnter(e) {
-  console.log("check enter");
   if (e.which === 13 || e.keyCode === 13) submitLogin();
 }
 
@@ -64,14 +61,14 @@ $().ready(function() {
     element:element, 
     action: image_upload_url, 
     onstart: 
-      function(filename) {
-        console.log('Starting upload: '+filename);
-      },
+      function(filename) {},
     oncomplete:
       function(json) {
         data = JSON.parse(json);
         if (data.result == "OK") {
           addImageToList(data);
+        } else {
+          alert(data.message);
         }
       }
     }
@@ -96,7 +93,6 @@ $().ready(function() {
 
 function removeImage(image_id) {
   var url = image_remove_url.replace("image_id", image_id);
-  console.log(url);
   $.ajax(url).done(function(json) {
     data = JSON.parse(json);
     if (data.result == "OK") {
@@ -104,7 +100,6 @@ function removeImage(image_id) {
     }
     convertText(true);
   }).fail(function(jqXHR, textStatus) {
-    console.log(jqXHR);
     console.log(textStatus);
   });
 }
