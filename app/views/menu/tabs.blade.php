@@ -1,13 +1,13 @@
-<ul>
+<ul class="nav navbar-nav navbar-right">
   @foreach ($tabs as $tab)
     @if ($tab['is_selected'])
-      <li class="selected_tab">
+      <li class="active">
         <a href="{{ $tab['link'] }}">
           {{ $tab['text'] }}
-        </a> XXX
+        </a>
       </li>
     @else
-      <li class="unselected_tab">
+      <li>
         <a href="{{ $tab['link'] }}">
           {{ $tab['text'] }}
         </a>

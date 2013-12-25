@@ -21,7 +21,7 @@ View::composer('menu.tabs', "TabsComposer");
 
 Route::get('login', array("as" => "login", "uses" => "UserController@login"));
 Route::get('logout', array("as" => "logout", "uses" => "UserController@logout"));
-Route::get('modifier-visiteur', array("as" => "edit_user", "uses" => "UserController@editUser"));
+Route::get('modifier-utilisateur', array("as" => "edit_user", "uses" => "UserController@editUser"));
 Route::get('recuperer-mot-de-passe', array("as" => "retrieve_password", "uses" => "UserController@retrievePassword"));
 Route::get('nouvel-utilisateur', array("as" => "create_user", "uses" => "UserController@create"));
 

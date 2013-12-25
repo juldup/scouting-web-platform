@@ -1,35 +1,10 @@
-<ul class='outer'>
+<ul class="nav navbar-nav navbar-right">
   @if (!$user->isConnected())
     {{-- The visitor is not connected --}}
-    <script type='text/javascript'>
-      // Make sure there is a login and password
-      function checkLogin() {
-        console.log("check login");
-        if (document.login.login_username.value === '') {
-          document.login.login_username.focus();
-          document.login.login_username.select();
-          return false;
-        }
-        if (document.login.login_password.value === '') {
-          document.login.login_password.focus();
-          document.login.login_password.select();
-          return false;
-        }
-        return true;
-      }
-      // Connecte l'utilisateur s'il a entré un pseudo et un mot de passe
-      function submitLogin() {
-        console.log("submit login");
-        if (checkLogin()) document.login.submit();
-      }
-      // Valide la connexion si 'enter' est pressé
-      function checkEnter(e) {
-        console.log("check enter");
-        if (e.which === 13 || e.keyCode === 13) submitLogin();
-      }
-    </script>
     <li>
-      <span class='menuTitle'><span>Connexion</span></span>
+      <a href="{{ URL::route('login') }}">Me connecter</a>
+    </li>
+      <!--
       {{-- Connection form --}}
       <form name="login" method="post" action="{{ URL::route('login') }}" onSubmit="return checkLogin()();">
         <ul class="inner">            
@@ -52,7 +27,7 @@
             <a href="{{ URL::route('retrieve_password') }}">Oublié ?</a>
           </li>
         </ul>
-      </form>
+      </form>--}}
     </li>
       {{-- Link to create an account --}}
     <li>
@@ -62,16 +37,16 @@
           <a href="{{ URL::route('create_user') }}">S'inscrire</a>
         </li>
       </ul>
-    </li>
+    </li>-->
   @else
     {{-- The visitor is connected --}}
-    <li>
-      <span class='menuTitle'><span class='pseudo'>{{ $user->name }}</span></span>
-      <ul class='inner'>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ $user->name }} <b class="caret"></b></a>
+      <ul class='dropdown-menu'>
         <li><a href="{{ URL::route('logout') }}">Déconnexion</a></li>
         <li><a href="{{ URL::route('edit_user') }}">Modifier</a></li>
         @if ($user->isAnimator())
-          <li><a href="{{ URL::route('') }}">Coin animateurs</a></li>
+          <li><a href="{{ URL::route('home') }}">Coin animateurs</a></li>
         @endif
       </ul>
     </li>
