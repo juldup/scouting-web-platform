@@ -7,9 +7,10 @@
   </title>
 </head>
 <body>
-  @yield('header')
-  @include('menu')
+  @include('menu.header')
+  @include('menu.menu')
+  @include('menu.tabs')
 	@yield('content')
-  @yield('footer')
+  @include('menu.footer')
 </body>
 </html>

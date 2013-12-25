@@ -10,4 +10,4 @@
   @endforeach
 </ul>
 
-@include('member_box')
+@include('menu.user_box')

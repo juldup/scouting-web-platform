@@ -13,21 +13,22 @@
 
 // Views
 
-View::composer('menu', "MenuComposer");
-View::composer('member_box', "MemberBoxComposer");
+View::composer('menu.menu', "MenuComposer");
+View::composer('menu.user_box', "UserBoxComposer");
+View::composer('menu.tabs', "TabsComposer");
 
 // Routes
 
-Route::get('login', array("as" => "login", "uses" => "MemberController@login"));
-Route::get('logout', array("as" => "logout", "uses" => "MemberController@logout"));
-Route::get('modifier-visiteur', array("as" => "edit_member", "uses" => "MemberController@editMember"));
-Route::get('recuperer-mot-de-passe', array("as" => "retrieve_password", "uses" => "MemberController@retrievePassword"));
-Route::get('nouvel-utilisateur', array("as" => "create_member", "uses" => "MemberController@create"));
+Route::get('login', array("as" => "login", "uses" => "UserController@login"));
+Route::get('logout', array("as" => "logout", "uses" => "UserController@logout"));
+Route::get('modifier-visiteur', array("as" => "edit_user", "uses" => "UserController@editUser"));
+Route::get('recuperer-mot-de-passe', array("as" => "retrieve_password", "uses" => "UserController@retrievePassword"));
+Route::get('nouvel-utilisateur', array("as" => "create_user", "uses" => "UserController@create"));
 
 Route::get('/', array("as" => "home", "uses" => "HomeController@showPage"));
 Route::get('gestion/accueil', "HomeController@showGestion");
 
-Route::get('calendrier', array("as" => "calendar", "uses" => "CalendarController@showPage"));
+Route::get('calendrier/{section_slug?}', array("as" => "calendar", "uses" => "CalendarController@showPage"));
 Route::get('gestion/calendrier', array("as" => "calendar_gestion", "uses" => "CalendarController@showGestion"));
 
 Route::get('sections', array("as" => "sections", "uses" => "SectionController@showPage"));

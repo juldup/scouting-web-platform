@@ -15,6 +15,8 @@ class CreateDatabase extends Migration {
     Schema::create('sections', function($table) {
       $table->increments('id');
       $table->string('name');
+      $table->string('slug')->unique();
+      $table->string('position');
       $table->string('section_type');
       $table->string('section_type_number');
       $table->string('color');
@@ -26,6 +28,8 @@ class CreateDatabase extends Migration {
     DB::table('sections')->insert(array(
         'id' => 1,
         'name' => 'Unité',
+        'slug' => 'unite',
+        'position' => 1,
         'section_type' => 'U',
         'section_type_number' => 0,
         'color' => "#000000",
@@ -49,8 +53,8 @@ class CreateDatabase extends Migration {
         'content' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
     ));
     
-    // Members
-    Schema::create('members', function($table) {
+    // Users
+    Schema::create('users', function($table) {
       $table->increments('id');
       $table->string('password');
       $table->string('username');
@@ -63,6 +67,25 @@ class CreateDatabase extends Migration {
       $table->string('denial_code');
       $table->boolean('verified');
     });
+    
+    
+    
+    
+    // Test data
+    DB::table('sections')->insert(array(
+        'id' => 2,
+        'name' => 'Louveteaux',
+        'slug' => 'louveteaux',
+        'position' => 2,
+        'section_type' => 'L',
+        'section_type_number' => 1,
+        'color' => "#FF0000",
+        'email' => '',
+        'de_la_section' => "de la meute",
+        'la_section' => "la meute",
+        'last_email_content' => "",
+    ));
+    
 	}
   
 	/**
@@ -71,6 +94,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('users');
 		Schema::drop('pages');
     Schema::drop('sections');
 	}

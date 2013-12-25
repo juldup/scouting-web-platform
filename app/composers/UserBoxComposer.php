@@ -1,6 +1,6 @@
 <?php
 
-class MemberBoxComposer {
+class UserBoxComposer {
   
   public function compose($view) {}
   

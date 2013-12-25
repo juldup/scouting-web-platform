@@ -59,7 +59,7 @@
       <span class='menuTitle'><span>Pas encore inscrit ?</span></span>
       <ul class="inner">
         <li>
-          <a href="{{ URL::route('create_member') }}">S'inscrire</a>
+          <a href="{{ URL::route('create_user') }}">S'inscrire</a>
         </li>
       </ul>
     </li>
@@ -69,7 +69,7 @@
       <span class='menuTitle'><span class='pseudo'>{{ $user->name }}</span></span>
       <ul class='inner'>
         <li><a href="{{ URL::route('logout') }}">Déconnexion</a></li>
-        <li><a href="{{ URL::route('edit_member') }}">Modifier</a></li>
+        <li><a href="{{ URL::route('edit_user') }}">Modifier</a></li>
         @if ($user->isAnimator())
           <li><a href="{{ URL::route('') }}">Coin animateurs</a></li>
         @endif

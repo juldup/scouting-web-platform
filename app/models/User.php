@@ -1,13 +1,14 @@
 <?php
 
-class Member extends Eloquent {
+class User extends Eloquent {
   
   var $isConnected = true;
+  var $currentSection;
   
-  public static function disconnectedMember() {
-    $member = new Member();
-    $member->isConnected = false;
-    return $member;
+  public static function disconnectedUser() {
+    $user = new User();
+    $user->isConnected = false;
+    return $user;
   }
   
   public function isConnected() {
