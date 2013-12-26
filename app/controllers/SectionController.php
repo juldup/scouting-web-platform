@@ -2,9 +2,6 @@
 
 class SectionController extends GenericPageController {
   
-  protected function canEdit() {
-    return $this->user->can("Modifier les pages #delasection", View::shared('user')->currentSection);
-  }
   protected function getEditRouteName() {
     return "manage_section";
   }

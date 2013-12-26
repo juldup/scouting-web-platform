@@ -19,6 +19,7 @@ View::composer('menu.tabs', "TabsComposer");
 
 // Routes
 
+// Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
 Route::get('logout/{section_slug?}', array("as" => "logout", "uses" => "UserController@logout"));
 Route::get('modifier-utilisateur/{section_slug?}', array("as" => "edit_user", "uses" => "UserController@editUser"));
@@ -87,4 +88,4 @@ Route::get('gestion/calendrier', array("as" => "calendar_gestion", "uses" => "Ca
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomeController@showPage"));
 Route::get('gestion/accueil/{section_slug?}', array("as" => "manage_home", "uses" => "HomeController@showEdit"));
-Route::post('gestion/accueil/{section_slug}', array("as" => "manage_home", "uses" => "HomeController@savePage"));
+Route::post('gestion/accueil/{section_slug?}', array("as" => "manage_home", "uses" => "HomeController@savePage"));

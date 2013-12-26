@@ -2,9 +2,6 @@
 
 class AddressesController extends GenericPageController {
   
-  protected function canEdit() {
-    return $this->user->can("Modifier les pages #delasection", 1);
-  }
   protected function getEditRouteName() {
     return "manage_addresses";
   }

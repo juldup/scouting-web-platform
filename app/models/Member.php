@@ -1,7 +1,7 @@
 <?php
 
-class Page extends Eloquent {
+class Member extends Eloquent {
   
-  protected $fillable = array('type', 'section_id', 'content_html', 'content_markdown');
+  protected $guarded = array('id', 'created_at', 'updated_at');
   
 }
