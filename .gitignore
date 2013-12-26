@@ -9,3 +9,4 @@ Thumbs.db
 /nbproject
 /public/css/styles.css
 /public/images/pages/*.image
+/app/storage/site_data/*

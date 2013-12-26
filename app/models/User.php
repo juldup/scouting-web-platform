@@ -20,7 +20,7 @@ class User extends Eloquent {
   // Returns a dummy user that is not logged in
   public static function disconnectedUser() {
     
-    return User::first();
+    return User::first(); // TODO remove
     
     $user = new User();
     $user->isConnected = false;
@@ -77,13 +77,15 @@ class User extends Eloquent {
   public function can($action, $section = "") {
     // An unlogged user cannot do anything
     if (!$this->isConnected) {
-      echo "Not connected";
       return false;
     }
     // An unverified user cannot do anything
     if (!$this->verified) {
-      echo "Not verified";
       return false;
+    }
+    // The webmaster is almighty
+    if ($this->is_webmaster) {
+      return true;
     }
     
     // Find section id

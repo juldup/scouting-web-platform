@@ -183,6 +183,14 @@ class CreateDatabase extends Migration {
         'la_section' => "la meute",
         'last_email_content' => "",
     ));
+    DB::table('users')->insert(array(
+        'id' => 1,
+        'password' => '',
+        'username' => 'Julien',
+        'email' => 'julien.dupuis@gmail.com',
+        'is_webmaster' => true,
+        'verified' => true,
+    ));
     
 	}
   

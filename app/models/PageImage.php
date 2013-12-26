@@ -2,7 +2,7 @@
 
 class PageImage extends Eloquent {
   
-  protected static $FOLDER_PATH = "images/pages/";
+  protected static $FOLDER_PATH = "../app/storage/site_data/images/pages/";
 
   protected $fillable = array('page_id', 'original_name');
   
