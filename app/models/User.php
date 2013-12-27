@@ -19,9 +19,6 @@ class User extends Eloquent {
   
   // Returns a dummy user that is not logged in
   public static function disconnectedUser() {
-    
-    return User::first(); // TODO remove
-    
     $user = new User();
     $user->isConnected = false;
     return $user;

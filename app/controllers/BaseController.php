@@ -22,7 +22,15 @@ class BaseController extends Controller {
   
   public function __construct() {
     // Retrieve user
-    $this->user = User::disconnectedUser(); // TODO use actual user
+    $userId = Session::get('user_id', null);
+    if ($userId) {
+      // Find user
+      $this->user = User::find($userId);
+    }
+    if ($this->user === null) {
+      // Load dummy user
+      $this->user = User::disconnectedUser();
+    }
     View::share('user', $this->user);
     // Retrieve section slug in route parameters
     $routeParameters = Route::current()->parameters();

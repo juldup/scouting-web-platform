@@ -66,7 +66,7 @@ abstract class GenericPageController extends BaseController {
       $page = Page::create(array(
           "type" => $this->getPageType(),
           "section_id" => $sectionId,
-          "content_html" => "<h1>Cette page n'existe pas encore.</h1>",
+          "content_html" => "<p>Cette page n'existe pas encore.</p>",
           "content_markdown" => "# Tape ici le titre le la page\n\nTape ici le contenu de la page.\n\nRegarde l'exemple de droite si tu veux faire une mise en page avancée.",
       ));
     }
