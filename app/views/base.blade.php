@@ -1,11 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+  <meta charset="UTF-8">
 	<title>
-    @yield('title')
+    Unité scoute - @yield('title')
   </title>
   {{ Less::to('styles') }}
+  @yield('head')
 </head>
 <body>
   <div id="wrap">

@@ -1,21 +1,12 @@
 <?php
 
-class AddressesController extends GenericPageController {
+class ContactController extends BaseController {
   
-  protected function getEditRouteName() {
-    return "manage_addresses";
-  }
-  protected function getShowRouteName() {
-    return "addresses";
-  }
-  protected function getPageType() {
-    return "addresses";
-  }
-  protected function isSectionPage() {
-    return false;
-  }
-  protected function getPageTitle() {
-    return "Adresses utiles";
+  public function showPage() {
+    return View::make('pages.contacts', array(
+        "unitLeaders" => array(Member::first(),Member::first(),Member::first(),Member::first(),Member::first(),),
+        "sectionLeaders" => array(Member::first(),Member::first(),Member::first(),Member::first(),Member::first(),),
+    ));
   }
   
 }

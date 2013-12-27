@@ -43,7 +43,6 @@ Route::post('gestion/adresses/{section_slug?}', array("as" => "manage_addresses"
 
 // Contacts
 Route::get('contacts/{section_slug?}', array("as" => "contacts", "uses" => "ContactController@showPage"));
-Route::get('gestion/contacts/{section_slug?}', "ContactController@showEdit");
 
 // Annual feast
 

@@ -140,6 +140,7 @@ class CreateDatabase extends Migration {
       $table->string('last_reregistration')->nullable();
       // Leader stuff
       $table->boolean('is_leader')->default(false);
+      $table->boolean('leader_in_charge')->default(false);
       $table->string('leader_name')->nullable();
       $table->text('leader_description')->nullable();
       $table->string('leader_role')->nullable();
@@ -190,6 +191,22 @@ class CreateDatabase extends Migration {
         'email' => 'julien.dupuis@gmail.com',
         'is_webmaster' => true,
         'verified' => true,
+    ));
+    DB::table('members')->insert(array(
+        'first_name' => "Jos",
+        'last_name' => "Vandervelde",
+        'birth_date' => "1980-10-10",
+        'gender' => "M",
+        'nationality' => "BE",
+        'section_id' => 1,
+        'phone1' => "123456798",
+        'email_member' => "jos@vandervelde.com",
+        'is_leader' => true,
+        'leader_in_charge' => true,
+        'leader_name' => "Koala",
+        'leader_description' => "Je suis l'animateur d'unité",
+        'leader_role' => "Responsable",
+        'has_photo' => false,
     ));
     
 	}
