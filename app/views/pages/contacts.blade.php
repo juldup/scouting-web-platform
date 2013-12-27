@@ -16,7 +16,7 @@
   
   @foreach ($unitLeaders as $leader)
     <div class='row'>
-      <div class="col-lg-1">
+      <div class="col-lg-2">
         <span class='important'>{{ $leader->leader_name }}</span>
       </div>
       <div class="col-lg-2">
@@ -29,11 +29,11 @@
       <div class="col-lg-2">
         {{ $leader->first_name }} {{ $leader->last_name }}
       </div>
-      <div class="col-lg-1">
-        @if ($leader->phone1) {{ $leader->phone1 }} @endif
-      </div>
       <div class="col-lg-2">
-        <a class='button' href='envoiEmail.php?dest={{ $leader->id }}'>contacter par e-mail</a>
+        @if ($leader->phone1 && !$leader->phone1_private) {{ $leader->phone1 }} @endif
+      </div>
+      <div class="col-lg-4">
+        <a class='button' href='envoiEmail.php?dest={{ $leader->id }}'>Contacter {{ $leader->leader_name }} par e-mail</a>
       </div>
     </div>
   @endforeach
@@ -44,7 +44,7 @@
   
   @foreach ($sectionLeaders as $leader)
     <div class='row'>
-      <div class="col-lg-1">
+      <div class="col-lg-2">
         {{ $leader->getSection()->name }}
       </div>
       <div class="col-lg-2">
@@ -53,21 +53,30 @@
       <div class="col-lg-2">
         {{ $leader->first_name }} {{ $leader->last_name }}
       </div>
-      <div class="col-lg-1">
-        @if ($leader->phone1) {{ $leader->phone1 }} @endif
-      </div>
       <div class="col-lg-2">
-        <a class='button' href='mailto:{{ $leader->getSection()->email }}'>contacter par e-mail</a>
+        @if ($leader->phone1 && !$leader->phone1_private) {{ $leader->phone1 }} @endif
+      </div>
+      <div class="col-lg-4">
+        <a class='button' href='mailto:{{ $leader->getSection()->email }}'>Contacter {{ $leader->leader_name }} par e-mail</a>
       </div>
     </div>
   @endforeach
   
   <div class='row'>
     <h2 id='contactAdmin'>Contacter le webmaster (Julien Dupuis)</h2>
-    <p>
-      <span class='important'>Webmaster</span>
-      : Julien Dupuis, 0496/628.600
-      <a class='button' href='envoiEmail.php?dest=webmaster'>contacter par e-mail</a>
-    </p>
+  </div>
+  <div class='row'>
+    <div class="col-lg-2">
+      Webmaster
+    </div>
+    <div class="col-lg-2">
+      <span class='important'>{{ $webmaster['name'] }}</span>
+    </div>
+    <div class="col-lg-2">
+      {{ $webmaster['phone'] }}
+    </div>
+    <div class="col-lg-4">
+      <a class='button' href='envoiEmail.php?dest=webmaster'>Contacter {{ $webmaster['name'] }} par e-mail</a>
+    </div>
   </div>
 @stop
