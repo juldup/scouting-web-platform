@@ -2,6 +2,8 @@
 
 class User extends Eloquent {
   
+  protected $fillable = array('username', 'password', 'email', 'default_section');
+  
   // Whether the user is connected (by default, they are)
   var $isConnected = true;
   
@@ -27,11 +29,64 @@ class User extends Eloquent {
   // Returns the user with the given login and password
   public static function getWithUsernameAndPassword($username, $password) {
     
-    return User::where(function($query) use ($username) {
+    $users = User::where(function($query) use ($username) {
       $query->where('username', '=', $username);
       $query->orWhere('email', '=', $username);
-    })->where('password', '=', $password)
-            ->first();
+    })->get();
+    
+    foreach ($users as $user) {
+      if (self::testPassword($password, $user->password)) {
+        return $user;
+      }
+    }
+    
+    return null;
+  }
+  
+  public static function createWith($username, $email, $password) {
+    $hashedPassword = User::encodePassword($password);
+    $user = self::create(array(
+        "username" => $username,
+        "password" => $hashedPassword,
+        "email" => $email
+    ));
+    $user->last_visit = date("Y-m-d H:i:s");
+    $user->current_visit = date("Y-m-d H:i:s");
+    $user->verification_code = hash('sha256', rand()) . time();
+    $user->save();
+    return $user;
+  }
+  
+  public static function encodePassword($password) {
+    // Generate random salt
+    $salt = substr(sha1(uniqid(rand(), true)), 0, 11);
+    // Hashed password is password hashed twice
+    $hashedPassword = hash('sha256', $salt . hash('sha256', $salt . $password));
+    // Prepend salt to hashed password
+    return $salt . $hashedPassword;
+  }
+  
+  public static function getCookiePassword($password, $hashedPassword) {
+    // Retrieve salt from hash
+    $salt = substr($hashedPassword, 0, 11);
+    // Cookie password is password hashed once
+    return hash('sha256', $salt . $password);
+  }
+  
+  public static function testPassword($rawPassword, $hashedPassword) {
+    // 11 first characters in hash is salt
+    $salt = substr($hashedPassword, 0, 11);
+    // Remove first 11 characters from hash
+    $hashedPassword = substr($hashedPassword, 11);
+    // Check if passwords match
+    return // Raw password is passed twice in hash function
+           hash('sha256', $salt . hash('sha256', $salt . $rawPassword)) == $hashedPassword || 
+           // Cookie password is passed once in hash function
+           hash('sha256', $salt . $rawPassword) == $hashedPassword ||
+           // For backward compatibility
+           md5($salt . md5($salt . $rawPassword)) == $hashedPassword ||
+           md5($salt . $rawPassword) == $hashedPassword ||
+           md5($salt . hash('sha256', $salt . $rawPassword)) == $hashedPassword;
   }
   
   // Returns whether the user is logged in

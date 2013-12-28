@@ -84,14 +84,12 @@ class CreateDatabase extends Migration {
       $table->datetime('last_visit')->default('0000-00-00 00:00:00');
       $table->datetime('current_visit')->default('0000-00-00 00:00:00');
       $table->string('verification_code')->nullable();
-      $table->string('denial_code')->nullable();
       $table->boolean('verified')->default(false);
       $table->timestamps();
       
       $table->index('username');
       $table->index('email');
       $table->index('verification_code');
-      $table->index('denial_code');
     });
     
     // Members

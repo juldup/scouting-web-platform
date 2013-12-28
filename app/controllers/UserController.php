@@ -2,15 +2,18 @@
 
 class UserController extends BaseController {
   
-  public function login($loginError = false, $createData = null) {
-    if (!$loginError && !$createData) {
+  public function login() {
+    
+    $action = Session::get('action', null);
+    
+    // Save referrer to session if need be
+    if (!$action && URL::previous() != URL::current()) {
       Session::put('login_referrer', URL::previous());
     }
     
     return View::make('user.login', array(
-        "error_login" => $loginError,
-        "error_create" => $createData != null,
-        "create_data" => $createData,
+        "error_login" => $action == 'login',
+        "error_create" => $action == "create"
     ));
   }
   
@@ -22,19 +25,22 @@ class UserController extends BaseController {
     $user = User::getWithUsernameAndPassword($username, $password);
 
     if ($user) {
+      // Log user in
       Session::put('user_id', $user->id);
-      $referrer = Session::get('login_referrer', URL::route('home'));
-
+      // Save cookies
       if ($remember) {
+        $cookiePassword = User::getCookiePassword($password, $user->password);
         Cookie::queue('username', $username, 365 * 24 * 60);
-        Cookie::queue('password', $password, 365 * 24 * 60);
+        Cookie::queue('password', $cookiePassword, 365 * 24 * 60);
       }
-
-      return Illuminate\Http\RedirectResponse::create($referrer);
+      // Redirect to previous page
+      $referrer = Session::get('login_referrer', URL::route('home'));
+      Session::forget('login_referrer');
+      return Redirect::to($referrer);
     }
     
     // No matching user
-    return $this->login(true);
+    return Redirect::route('login')->withInput()->with('action', 'login');
   }
 
   public function logout() {
@@ -47,26 +53,93 @@ class UserController extends BaseController {
     return \Symfony\Component\HttpFoundation\RedirectResponse::create(URL::previous());
   }
   
+  public function create() {
+    $username = Input::get('create_username');
+    $email = Input::get('create_email');
+    $password = Input::get('create_password');
+    $remember = Input::get('create_remember');
+    
+    $validator = Validator::make(
+            array(
+                "create_username" => $username,
+                "create_email" => $email,
+                "create_password" => $password,
+            ),
+            array(
+                "create_username" => "required|unique:users,username",
+                "create_email" => "required|email",
+                "create_password" => "required|min:6",
+            ),
+            array(
+                "create_username.required" => "Veuillez entrer un nom d'utilisateur.",
+                "create_username.unique" => "Ce nom d'utilisateur est déjà utilisé. Choisissez-en un autre.",
+                "create_email.required" => "Veuillez entrer votre adresse e-mail.",
+                "create_email.email" => "Votre adresse e-mail n'est pas valide.",
+                "create_password.required" => "Veuillez entrer un mot de passe.",
+                "create_password.min" => "Votre mot de passe doit faire au moins 6 caractères de long.",
+            )
+    );
+    
+    if ($validator->fails()) {
+      return Redirect::route('login')->withInput()->withErrors($validator)->with('action', 'create');
+    }
+    
+    // Create user
+    $user = User::createWith($username, $email, $password);
+    
+    // Log user in
+    Session::put('user_id', $user->id);
+    
+    // Save cookies
+    if ($remember) {
+      $cookiePassword = User::getCookiePassword($password, $user->password);
+      Cookie::queue('username', $username, 365 * 24 * 60);
+      Cookie::queue('password', $cookiePassword, 365 * 24 * 60);
+    }
+    
+    // Redirect to previous page
+    $referrer = Session::get('login_referrer', URL::route('home'));
+    Session::forget('login_referrer');
+    return Redirect::to($referrer);
+    
+  }
+  
+  public function verify($code) {
+    
+    $user = User::where('verification_code', '=', $code)->first();
+    if ($user) {
+      $user->verified = true;
+      $user->save();
+      $status = "verified";
+    } else {
+      $status = "unknown";
+    }
+    
+    return View::make('user.verify', array('status' => $status));
+    
+  }
+  
+  public function cancelVerification($code) {
+    $user = User::where('verification_code', '=', $code)->first();
+    if ($user) {
+      if ($user->verified) {
+        $status = "already verified";
+      } else {
+        $user->delete();
+        $status = "canceled";
+      }
+    } else {
+      $status = "unknown";
+    }
+    
+    return View::make('user.verify', array('status' => $status));
+  }
+  
   public function editUser() {
     
   }
   
   public function retrievePassword() {
-    
-  }
-  
-  public function create() {
-//    $username = Input::get('create_username');
-//    $email = Input::get('create_email');
-//    $password = Input::get('create_password');
-//    $remember = Input::get('create_remember');
-//    
-//    $userWithSameUsername = User::where('username', '=', $username)->first();
-//    if ($userWithSameUsername) {
-//      $error = "Ce nom d'utilisateur est déjà utilisé.";
-//    } else if ($password === "") {
-//      $error = "Veuillez introduire un mot de passe."
-//    } else if ($email)
     
   }
   
