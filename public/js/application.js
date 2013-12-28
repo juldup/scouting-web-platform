@@ -55,24 +55,26 @@ function editPageInsertImage(imageURL) {
 
 // Uploads an image and adds to the list
 $().ready(function() {
-  var element = document.getElementById('uploader');
-  upclick(
-    {
-    element:element, 
-    action: image_upload_url, 
-    onstart: 
-      function(filename) {},
-    oncomplete:
-      function(json) {
-        data = JSON.parse(json);
-        if (data.result == "OK") {
-          addImageToList(data);
-        } else {
-          alert(data.message);
+  if (typeof image_upload_url != 'undefined') {
+    var element = document.getElementById('uploader');
+    upclick(
+      {
+      element:element, 
+      action: image_upload_url, 
+      onstart: 
+        function(filename) {},
+      oncomplete:
+        function(json) {
+          data = JSON.parse(json);
+          if (data.result == "OK") {
+            addImageToList(data);
+          } else {
+            alert(data.message);
+          }
         }
       }
-    }
-  );
+    );
+  }
 });
 
 function addImageToList(data) {

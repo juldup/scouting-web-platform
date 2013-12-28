@@ -24,6 +24,16 @@ class User extends Eloquent {
     return $user;
   }
   
+  // Returns the user with the given login and password
+  public static function getWithUsernameAndPassword($username, $password) {
+    
+    return User::where(function($query) use ($username) {
+      $query->where('username', '=', $username);
+      $query->orWhere('email', '=', $username);
+    })->where('password', '=', $password)
+            ->first();
+  }
+  
   // Returns whether the user is logged in
   public function isConnected() {
     return $this->isConnected;

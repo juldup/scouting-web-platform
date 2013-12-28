@@ -23,6 +23,16 @@ class BaseController extends Controller {
   public function __construct() {
     // Retrieve user
     $userId = Session::get('user_id', null);
+    if ($userId === null) {
+      $username = Cookie::get('username');
+      $password = Cookie::get('password');
+      if ($username && $password) {
+        $user = User::getWithUsernameAndPassword($username, $password);
+        if ($user) {
+          $userId = $user->id;
+        }
+      }
+    }
     if ($userId) {
       // Find user
       $this->user = User::find($userId);

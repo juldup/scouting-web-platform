@@ -21,10 +21,11 @@ View::composer('menu.tabs', "TabsComposer");
 
 // Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
+Route::post('login/{section_slug?}', array("as" => "login", "uses" => "UserController@submitLogin"));
 Route::get('logout/{section_slug?}', array("as" => "logout", "uses" => "UserController@logout"));
 Route::get('modifier-utilisateur/{section_slug?}', array("as" => "edit_user", "uses" => "UserController@editUser"));
 Route::get('recuperer-mot-de-passe/{section_slug?}', array("as" => "retrieve_password", "uses" => "UserController@retrievePassword"));
-Route::get('nouvel-utilisateur/{section_slug?}', array("as" => "create_user", "uses" => "UserController@create"));
+Route::post('nouvel-utilisateur/{section_slug?}', array("as" => "create_user", "uses" => "UserController@create"));
 
 // Images
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
