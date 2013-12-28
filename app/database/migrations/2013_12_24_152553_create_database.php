@@ -81,8 +81,8 @@ class CreateDatabase extends Migration {
       $table->string('email');
       $table->integer('default_section')->unsigned()->nullable();
       $table->boolean('is_webmaster')->default(false);
-      $table->datetime('last_visit')->default('0000-00-00 00:00:00');
-      $table->datetime('current_visit')->default('0000-00-00 00:00:00');
+      $table->integer('last_visit')->default('0');
+      $table->integer('current_visit')->default('0');
       $table->string('verification_code')->nullable();
       $table->boolean('verified')->default(false);
       $table->timestamps();
@@ -90,6 +90,18 @@ class CreateDatabase extends Migration {
       $table->index('username');
       $table->index('email');
       $table->index('verification_code');
+    });
+    
+    // Password recoveries
+    Schema::create('password_recoveries', function($table) {
+      $table->increments('id');
+      $table->integer('user_id')->unsigned();
+      $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+      $table->string('code');
+      $table->integer('timestamp');
+      $table->timestamps();
+      
+      $table->index('code');
     });
     
     // Members
@@ -217,6 +229,7 @@ class CreateDatabase extends Migration {
 	public function down() {
     Schema::drop('privileges');
     Schema::drop('members');
+    Schema::drop('password_recoveries');
     Schema::drop('users');
     Schema::drop('page_images');
 		Schema::drop('pages');

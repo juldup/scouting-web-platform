@@ -50,8 +50,8 @@ class User extends Eloquent {
         "password" => $hashedPassword,
         "email" => $email
     ));
-    $user->last_visit = date("Y-m-d H:i:s");
-    $user->current_visit = date("Y-m-d H:i:s");
+    $user->last_visit = time();
+    $user->current_visit = time();
     $user->verification_code = self::generateVerificationCode();
     $user->save();
     return $user;

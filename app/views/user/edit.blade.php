@@ -31,6 +31,11 @@
       <p>
         <a href="{{ URL::route('edit_user_email') }}">Changer mon adresse e-mail</a>
       </p>
+      @if (!$user->verified)
+        <p>
+          <a href="{{ URL::route('user_resend_validation_link') }}">Me renvoyer le lien de validation</a>
+        </p>
+      @endif
     </div>
   </div>
   

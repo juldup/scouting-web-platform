@@ -143,7 +143,7 @@ class UserController extends BaseController {
   public function editUser($action = null) {
     
     if (!$this->user->isConnected()) {
-      Redirect::route('login');
+      return Redirect::route('login');
     }
     
     if (Request::isMethod('post')) {
@@ -187,7 +187,7 @@ class UserController extends BaseController {
             return Redirect::route('edit_user_password')->withInput()->withErrors($validator);
           } else {
             $this->user->changePassword($password);
-            return Redirect::route('edit_user')->with('success_message', 'Votre mot de passe a été modifiée avec succès.');
+            return Redirect::route('edit_user')->with('success_message', 'Votre mot de passe a été modifié avec succès.');
           }
         } elseif ($action == 'section') {
           // Validation for default section update
@@ -236,8 +236,68 @@ class UserController extends BaseController {
     return $this->editUser('section');
   }
   
+  public function resendValidationLink() {
+    // TODO send validation link by e-mail
+    return Redirect::to(URL::previous())->with('success_message', 'Un e-mail avec le lien de validation vous a été envoyé.');
+  }
+  
   public function retrievePassword() {
     
+    if (Request::isMethod('post')) {
+      $email = Input::get('email');
+      $users = User::where('email', '=', $email)->get();
+      if (count($users)) {
+        $passwordRecoveries = array();
+        foreach ($users as $user) {
+          $passwordRecoveries[$user->username] = PasswordRecovery::createForUser($user);
+
+        }
+        var_dump($passwordRecoveries);
+        // TODO Send e-mail
+        return Redirect::to(URL::current())->with('success_message', "Un e-mail a été envoyé à $email.");
+      } else {
+        return Redirect::to(URL::current())->with('error_message', "Aucun utilisateur n'est enregistré avec l'adresse $email.");
+      }
+    }
+    
+    // TODO send e-mail to retrieve password
+    return View::make('user.retrieve_password');
+  }
+  
+  public function changePassword($code) {
+    if ($code != 'done') {
+      $passwordRecovery = PasswordRecovery::where('code', '=', $code)->first();
+      if (!$passwordRecovery) {
+        $status = 'unknown';
+      } else {
+        if (Request::isMethod('post')) {
+          $password = Input::get('password');
+          $validator = Validator::make(
+                  array("password" => $password),
+                  array("password" => "required|min:6"),
+                  array(
+                      "password.required" => "Veuillez entrer un nouveau mot de passe.",
+                      "password.min" => "Votre mot de passe doit compter au moins 6 caractères.",
+                  )
+          );
+          if ($validator->fails()) {
+            return Redirect::route('change_password', array('code' => $code))->withErrors($validator);
+          } else {
+            $user = $passwordRecovery->getUser();
+            $user->changePassword($password);
+            $passwordRecovery->delete();
+            return Redirect::route('change_password', array('code' => 'done'));
+          }
+        } else {
+          $status = 'normal';
+        }
+      }
+    } else {
+      $status = 'done';
+    }
+    return View::make('user.change_password', array(
+        "status" => $status,
+    ));
   }
   
 }
