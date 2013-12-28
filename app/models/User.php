@@ -52,11 +52,33 @@ class User extends Eloquent {
     ));
     $user->last_visit = date("Y-m-d H:i:s");
     $user->current_visit = date("Y-m-d H:i:s");
-    $user->verification_code = hash('sha256', rand()) . time();
+    $user->verification_code = self::generateVerificationCode();
     $user->save();
     return $user;
   }
   
+  public function changeEmail($email) {
+    $this->email = $email;
+    $this->verified = false;
+    $this->verification_code = self::generateVerificationCode();
+    $this->save();
+  }
+  
+  public function changePassword($password) {
+    $this->password = self::encodePassword($password);
+    $this->save();
+  }
+  
+  public function changeDefaultSection($defaultSection) {
+    $this->default_section = $defaultSection;
+    $this->save();
+  }
+  
+  private static function generateVerificationCode() {
+    return hash('sha256', rand()) . time();
+  }
+
+
   public static function encodePassword($password) {
     // Generate random salt
     $salt = substr(sha1(uniqid(rand(), true)), 0, 11);
@@ -109,6 +131,14 @@ class User extends Eloquent {
       $this->isLeader = count($this->getAssociatedLeaderMembers()) != 0;
     }
     return $this->isLeader;
+  }
+  
+  public function getDefaultSection() {
+    if ($this->default_section) {
+      return Section::find($this->default_section);
+    } else {
+      return Section::find(1);
+    }
   }
   
   // Fetches if need be and returns the list of associated members (i.e. sharing this user's e-mail address)
