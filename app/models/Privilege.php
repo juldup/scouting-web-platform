@@ -32,9 +32,19 @@ class Privilege extends Eloquent {
       'section' => true,
   );
   
-  
-  
-     /*     
+  public static $EDIT_CALENDAR = array(
+      'id' => "Edit calendar",
+      'text' => 'Modifier les entrées du calendrier #delasection',
+      'unit' => true,
+      'section' => true,
+  );
+
+
+
+
+
+
+  /*     
   $operationsBase = Array(
     "Privilèges de base des animateurs" =>
       Array(

@@ -1,13 +1,13 @@
 <?php
 
-class BaseController extends Controller {
+abstract class BaseController extends Controller {
   
   // The current user
   protected $user;
   
   // The current section
   protected $section;
-
+  
 
   /**
    * Setup the layout used by the controller.
@@ -45,7 +45,9 @@ class BaseController extends Controller {
     // Retrieve section slug in route parameters
     $routeParameters = Route::current()->parameters();
     $sectionSlug = "";
-    if (array_key_exists("section_slug", $routeParameters)) $sectionSlug = $routeParameters['section_slug'];
+    if (array_key_exists("section_slug", $routeParameters)) {
+      $sectionSlug = $routeParameters['section_slug'];
+    }
     // Select current tab
     $this->selectSection($sectionSlug);
   }

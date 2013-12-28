@@ -73,8 +73,9 @@ Route::post('gestion/uniforme/{section_slug}', array("as" => "manage_uniform", "
 // News
 
 // Calendar
+Route::get('calendrier/{year}/{month}/{section_slug?}', array("as" => "calendar", "uses" => "CalendarController@showPage"));
 Route::get('calendrier/{section_slug?}', array("as" => "calendar", "uses" => "CalendarController@showPage"));
-Route::get('gestion/calendrier', array("as" => "calendar_gestion", "uses" => "CalendarController@showEdit"));
+Route::get('gestion/calendrier', array("as" => "manage_calendar", "uses" => "CalendarController@showEdit"));
 
 // Download
 

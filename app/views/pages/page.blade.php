@@ -4,11 +4,13 @@
   
   {{-- Link to management --}}
   @if ($can_edit)
-    <p class='management'>
-      <a class='button' href='{{ $edit_url }}'>
-        Modifier cette page
-      </a>
-    </p>
+    <div class="row">
+      <p class='pull-right management'>
+        <a class='button' href='{{ $edit_url }}'>
+          Modifier cette page
+        </a>
+      </p>
+    </div>
   @endif
   
   <div class="row page_content">

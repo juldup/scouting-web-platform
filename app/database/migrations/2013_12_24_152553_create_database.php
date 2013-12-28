@@ -11,6 +11,16 @@ class CreateDatabase extends Migration {
 	 */
 	public function up() {
     
+    // Parameters
+    Schema::create('parameters', function($table) {
+      $table->increments('id');
+      $table->string('name');
+      $table->string('value');
+      $table->timestamps();
+      
+      $table->index('name');
+    });
+    
     // Sections
     Schema::create('sections', function($table) {
       $table->increments('id');
@@ -180,6 +190,23 @@ class CreateDatabase extends Migration {
       $table->unique(array('operation', 'scope', 'member_id'));
     });
     
+    // Calendar
+    Schema::create('calendar_items', function($table) {
+      $table->increments('id');
+      $table->date('start_date');
+      $table->date('end_date');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->string('event');
+      $table->text('description');
+      $table->string('type');
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('start_date');
+      $table->index('end_date');
+    });
+    
     // Test data
     DB::table('sections')->insert(array(
         'id' => 2,
@@ -227,6 +254,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('calendar_items');
     Schema::drop('privileges');
     Schema::drop('members');
     Schema::drop('password_recoveries');
@@ -234,6 +262,7 @@ class CreateDatabase extends Migration {
     Schema::drop('page_images');
 		Schema::drop('pages');
     Schema::drop('sections');
+    Schema::drop('parameters');
 	}
   
 }
