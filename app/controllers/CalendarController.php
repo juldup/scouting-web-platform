@@ -3,6 +3,10 @@
 class CalendarController extends BaseController {
   
   public function showPage($year = null, $month = null) {
+    return $this->showCalendar($year, $month, false);
+  }
+  
+  private function showCalendar($year = null, $month = null, $editing = false) {
     
     // TODO Display birthdays
     
@@ -20,7 +24,7 @@ class CalendarController extends BaseController {
     // Name of the months
     $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
     // Short names of the months
-    $months_short = array("Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"); // mois
+    $months_short = array("Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc");
     // Number of days in the month
     $days_in_month = date("t", strtotime("$year-$month-1"));
     // Day (0=Sun, 6=Sat) of the first of the month
@@ -50,15 +54,36 @@ class CalendarController extends BaseController {
       $itemEndDate = explode('-', $item->end_date);
       $endDay = ($itemEndDate[0] == $year && $itemEndDate[1] == $month) ? $itemEndDate[2] : $days_in_month;
       
-      for ($day = $startDay; $day <= $endDay; $day++) {
+      for ($day = $startDay + 0; $day <= $endDay; $day++) {
         $events[$day][] = $item;
       }
       
     }
     
+    // Get section list for section selection
+    $sections = array();
+    if ($editing) {
+      $sections = Section::getSectionsForSelect();
+    }
+    
+    // Event type list for select
+    $eventTypes = array(
+        'normal' => "Réunion normale",
+        'special' => "Activité spéciale",
+        'break' => "Congé",
+        'leaders' => "Animateurs",
+        'weekend' => "Week-end",
+        'camp' => "Grand camp",
+        'bar' => "Bar Pi's",
+        'cleaning' => "Nettoyage",
+    );
+    
     return View::make('pages.calendar.calendar', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_CALENDAR),
-        'edit_url' => URL::route('manage_calendar'),
+        'edit_url' => URL::route('manage_calendar_month', array('year' => $year, 'month' => $month, 'section_slug' => $this->section->slug)),
+        'page_url' => URL::route('calendar_month', array('year' => $year, 'month' => $month, 'section_slug' => $this->section->slug)),
+        'route_month' => $editing ? 'manage_calendar_month' : 'calendar_month',
+        'editing' => $editing,
         'blank_days_before' => $blank_days_before,
         'blank_days_after' => $blank_days_after,
         'days_in_month' => $days_in_month,
@@ -68,13 +93,16 @@ class CalendarController extends BaseController {
         'month' => $month,
         'year' => $year,
         'events' => $events,
+        'today_day' => date('d'),
+        'today_month' => date('m'),
+        'today_year' => date('Y'),
+        'sections' => $sections,
+        'event_types' => $eventTypes,
     ));
   }
   
-  public function showEdit() {
-    return View::make('pages.calendar.editCalendar', array(
-        
-    ));
+  public function showEdit($year = null, $month = null) {
+    return $this->showCalendar($year, $month, true);
   }
   
 }

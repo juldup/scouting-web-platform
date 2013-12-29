@@ -209,17 +209,14 @@ class UserController extends BaseController {
     }
     
     // Get section list for default section selection
-    $sectionArray = array();
+    $sections = array();
     if ($action == 'section') {
-      $sections = Section::orderBy('position')->get();
-      foreach ($sections as $section) {
-        $sectionArray[$section->id] = $section->name;
-      }
+      $sections = Section::getSectionsForSelect();
     }
     
     return View::make('user.edit', array(
         'action' => $action,
-        'sections' => $sectionArray,
+        'sections' => $sections,
     ));
     
   }
