@@ -27,7 +27,6 @@ abstract class GenericPageController extends BaseController {
     if (!$this->canEdit()) {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
     }
-    echo ($this->isSectionPage() ? "section page" : "generic page");
     $page = $this->getPage();
     $images = PageImage::where('page_id', '=', $page->id)->get()->all();
     return View::make('pages.editPage')

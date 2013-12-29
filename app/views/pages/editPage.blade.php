@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('content')
-
+  
   {{-- Back to page --}}
   <p class='management'>
     <a class='button' href='{{ $original_page_url }}'>
@@ -9,52 +9,25 @@
     </a>
   </p>
   
-  <div class="row">
-    <div class="col-lg-7">
-      <h2>Modifier la page</h2>
-      <form name="edit_page" method="post" action="" id="edit_page_form">
-        <textarea id="inputPane" name="page_content" class="expand">{{ $page_content }}</textarea>
-        <p>
-          Images: <input type="button" id="uploader" value="Ajouter" />
-          <span id="image_list"></span>
-        </p>
-        <p><button class="button" type="submit">Enregistrer</button></p>
-      </form>
-    </div>
-    <div class="col-lg-5">
-      <h2>Exemple</h2>
-      <textarea class="expand" disabled="disabled">
-Tu peux écrire du texte normalement, mais aussi *en italique*, ou **en gras**.
-
-Laisse une ligne vide pour changer de paragraphe.
-
-## Voici comment afficher un sous-titre dans la page
-Et voici du texte après le titre.
-
-## Lien vers une autre page
-[Texte affiché](http://www.google.com)
-
-## Une liste, très simple à faire
-- A
-- B
-- C
-
-## Pour les images
-![Texte alternatif](mon_image)
-
-## Et pour les connaisseurs...
-<span style='background: pink; padding: 5px;'>
-  ...le html fonctionne aussi.
-</span></textarea>
-
-    </div>
-  </div>
-  
-  <hr>
-  
   <div class="row page_content">
-    <h1>{{ $page_title }}</h1>
-    <div id="previewPane" class="pane">Preview</div>
+    <form name="edit_page" method="post" action="" id="edit_page_form">
+      <h1>{{ $page_title }}</h1>
+      <script src="{{ URL::route('home') }}/ckeditor/ckeditor.js"></script>
+      <textarea cols="80" id="page_content" name="page_content" rows="10">{{ $page_content }}</textarea>
+      <p>
+        Images: <input type="button" id="uploader" value="Ajouter" />
+        <span id="image_list"></span>
+      </p>
+      <p><button class="button" type="submit">Enregistrer</button></p>
+    </form>
+    <script>
+      CKEDITOR.replace('page_content', {
+        language: 'fr',
+        extraAllowedContent: 'img[!src,width,height]',
+        extraPlugins: 'divarea',
+        height: '400px'
+      });
+    </script>
   </div>
   
   <script>
@@ -66,7 +39,5 @@ Et voici du texte après le titre.
       @endforeach
     ];
   </script>
-  <script src="{{ URL::to('/') }}/js/showdown.js"></script>
-  <script src="{{ URL::to('/') }}/js/showdown-gui.js"></script>
   <script src="{{ URL::to('/') }}/js/upclick.js"></script>
 @stop

@@ -28,32 +28,11 @@ function checkEnter(e) {
 
 // Insert image at current location
 function editPageInsertImage(imageURL) {
-  var textarea = $("#inputPane");
-  var textToInsert = "![](" + imageURL + ")";
-  var position = textarea.getCursorPosition();
-  $("#inputPane").val(textarea.val().substring(0, position) + textToInsert + textarea.val().substring(position));
-  convertText();
+  var element = CKEDITOR.dom.element.createFromHtml("<img style='max-width: 80%' src='" + imageURL + "'/>");
+  CKEDITOR.instances['page_content'].insertElement(element);
 }
 
-// Returns the cursor position inside a field
-(function ($, undefined) {
-    $.fn.getCursorPosition = function() {
-        var el = $(this).get(0);
-        var pos = 0;
-        if ('selectionStart' in el) {
-            pos = el.selectionStart;
-        } else if('selection' in document) {
-            el.focus();
-            var Sel = document.selection.createRange();
-            var SelLength = document.selection.createRange().text.length;
-            Sel.moveStart('character', -el.value.length);
-            pos = Sel.text.length - SelLength;
-        }
-        return pos;
-    }
-})(jQuery);
-
-// Uploads an image and adds to the list
+// Uploads an image and adds it to the list
 $().ready(function() {
   if (typeof image_upload_url != 'undefined') {
     var element = document.getElementById('uploader');
