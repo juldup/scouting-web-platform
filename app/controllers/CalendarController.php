@@ -20,7 +20,7 @@ class CalendarController extends BaseController {
     // Name of the months
     $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
     // Short names of the months
-    $months_short = array("jan", "fév", "mar", "avr", "mai", "juin", "juil", "août", "sep", "oct", "nov", "déc"); // mois
+    $months_short = array("Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"); // mois
     // Number of days in the month
     $days_in_month = date("t", strtotime("$year-$month-1"));
     // Day (0=Sun, 6=Sat) of the first of the month
@@ -64,6 +64,7 @@ class CalendarController extends BaseController {
         'days_in_month' => $days_in_month,
         'days' => $days,
         'months' => $months,
+        'months_short' => $months_short,
         'month' => $month,
         'year' => $year,
         'events' => $events,

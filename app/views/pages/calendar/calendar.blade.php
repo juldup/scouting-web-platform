@@ -16,81 +16,77 @@
   
   <table id="calendar">
     <tr>
+      {{-- Month header --}}
       <th class='month' colspan="7">
+        
+        {{-- Links to the 4 previous months --}}
         @for ($i = 4; $i >= 1; $i--)
           <span class='otherMonth'>
-            <a href="javascript:getCalendar">Month</a>
+            <a href="{{ URL::route('calendar_month', array('month' => (($month - $i + 11) % 12 + 1), 'year' => ($month - $i <= 0 ? $year - 1 : $year))) }}">
+              {{ $months_short[($month - $i + 11) % 12] }} &lt;
+            </a>
           </span>
         @endfor
+        
         {{ $months[$month-1] }} {{ $year }}
+        
+        {{-- Links to the 4 next months --}}
         @for ($i = 1; $i <= 4; $i++)
           <span class='otherMonth'>
-            <a href="javascript:getCalendar">Month</a>
+            <a href="{{ URL::route('calendar_month', array('month' => (($month + $i + 11) % 12 + 1), 'year' => ($month + $i >= 13 ? $year + 1 : $year))) }}">
+              &gt; {{ $months_short[($month + $i - 1) % 12] }}
+            </a>
           </span>
         @endfor
       </th>
     </tr>
     <tr>
+      {{-- Names of the days --}}
       @for ($x = 0; $x <= 6; $x++)
         <th>{{ $days[$x] }}</th>
       @endfor
     </tr>
     <tr>
     
-    @for ($x = 0; $x < $blank_days_before; $x++)
-      <td></td>
-    @endfor
-    
-    @for ($day = 1; $day <= $days_in_month; $day++)
+      {{-- Blank days at the beginning of the month --}}
+      @for ($x = 0; $x < $blank_days_before; $x++)
+        <td></td>
+      @endfor
       
-      @if (($day + $blank_days_before - 1) % 7 == 0)
-        </tr>
-        <tr>
-      @endif
+      {{-- Days of the month --}}
+      @for ($day = 1; $day <= $days_in_month; $day++)
+        
+        {{-- Next row at the end of the week --}}
+        @if (($day + $blank_days_before - 1) % 7 == 0)
+          </tr>
+          <tr>
+        @endif
+        
+        {{-- Day --}}
+        <td class='day'>
+          
+          {{-- Number of the day --}}
+          <p>{{ $day }}</p>
+          
+          {{-- Events of the day --}}
+          @foreach ($events[$day] as $event)
+            <p title="{{{ $event->description }}}">{{ $event->event }}</p>
+          @endforeach
+        </td>
+        
+      @endfor
       
-      <td class='day'>
-        <p>{{ $day }}</p>
-        @foreach ($events[$day] as $event)
-          <p>{{ $event->event }}</p>
-        @endforeach
-      </td>
+      @for ($x = 0; $x < $blank_days_after; $x++)
+        <td></td>
+      @endfor
       
-    @endfor
-    
-    @for ($x = 0; $x < $blank_days_after; $x++)
-      <td></td>
-    @endfor
-    
     </tr>
   </table>
-<!--      // Date en format SQL (YYYY-MM-DD)
-      $xDateStr = $curYear . "-" . ($curMonth < 10 ? "0" : "") . $curMonth . "-" . ($curDay < 10 ? "0" : "") . $curDay;
-      // Recherche de tous les événements de ce jour (commençant avant ou égal et finissant après ou égal)
-      $mysql_result = mysql_query("SELECT * FROM calendrier, sections
-        WHERE startDate <= '" . $curYear . "-" . $curMonth . "-" . $curDay . "'
-        AND endDate >= '" . $curYear . "-" . $curMonth . "-" . $curDay . "' " .
-        ($sectionId == 0 ? "" : "AND (section = '" . formatSQL($section) . "' OR section='Unité') ") .
-        "AND (section = nom OR (section='Unité' AND id='1')) " . 
-        (canDo("Accéder au coin des animateurs", "Unité") ? "" : "AND type != 'animateurs' AND type != 'toilettes'") . "
-        ORDER BY startDate, id", $con);
-      // Affichage des événements
-      while ($row = mysql_fetch_array($mysql_result)) {
-        if ($row['section'] == 'Unité') $row['couleur'] = substr(getParam("Couleur_Texte_Unite"), 1);
-        $type = $row['type'];
-        echo "<br /><span style='color: #" . $row['couleur'] . "; " .
-            "font-weight: bold;"
-            . "' title=\"" . formatQuotToApos($row['description']) . 
-            "\"><img src='images/event_$type.gif' height='20'> " . ($row['startDate'] == $xDateStr ? $row['event'] : "" . $row['event'] . "") . "</span>";
-      }
-      echo "</td>";
-    }
-    
-    echo "</tr>";
-  echo "</table>";-->
-
   
   @if (Parameter::get(Parameter::$CALENDAR_DOWNLOADABLE) == "true")
-    <p>Vous pouvez télécharger les éphémérides de l'unité&nbsp;: voir <a href='documents.php?section=0'>documents</a>.</p>
+    <p>Vous pouvez télécharger les éphémérides de l'unité&nbsp;: voir
+      <a href='{{ URL::route('documents', array('section_slug' => 'unite')) }}'>documents</a>.
+    </p>
   @endif
   
 @stop
