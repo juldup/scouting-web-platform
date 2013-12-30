@@ -9,14 +9,15 @@
     var events = new Array();
     @foreach ($calendar_items as $item)
       events[{{ $item->id }}] = {
-        'start_day': {{$item->getStartDay()}},
-        'start_month': {{$item->getStartMonth()}},
-        'start_year': {{$item->getStartYear()}},
-        'duration': {{$item->getDuration()}},
+        'start_day': {{ $item->getStartDay() }},
+        'start_month': {{ $item->getStartMonth() }},
+        'start_year': {{ $item->getStartYear() }},
+        'duration': {{ $item->getDuration() }},
         'event_name': "{{ Helper::sanitizeForJavascript($item->event) }}",
         'description': "{{ Helper::sanitizeForJavascript($item->description) }}",
-        'type': "{{$item->type}}",
-        'section': {{$item->section_id}}
+        'type': "{{ $item->type }}",
+        'section': {{ $item->section_id }},
+        'delete_url': "{{ URL::route('manage_calendar_delete', array('event_id' => $item->id, 'year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)) }}"
       };
     @endforeach
   </script>

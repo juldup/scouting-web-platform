@@ -11,13 +11,15 @@
 |
 */
 
-// Views
+// VIEWS
 
 View::composer('menu.menu', "MenuComposer");
 View::composer('menu.user_box', "UserBoxComposer");
 View::composer('menu.tabs', "TabsComposer");
 
-// Routes
+
+
+// ROUTES
 
 // Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
@@ -76,6 +78,9 @@ Route::get('liens/{section_slug?}', array("as" => "links", "uses" => "LinkContro
 
 // News
 Route::get('nouvelles/{section_slug?}', array("as" => "news", "uses" => "NewsController@showPage"));
+Route::get('gestion/nouvelles/{section_slug?}', array("as" => "manage_news", "uses" => "NewsController@showEdit"));
+Route::post('gestion/nouvelles/submit/{section_slug}', array("as" => "manage_news_submit", "uses" => "NewsController@submitNews"));
+Route::get('gestion/nouvelles/delete/{news_id}', array("as" => "manage_news_delete", "uses" => "NewsController@deleteNews"));
 
 // Calendar
 Route::get('calendrier/{year}/{month}/{section_slug?}', array("as" => "calendar_month", "uses" => "CalendarController@showPage"));
@@ -83,6 +88,7 @@ Route::get('calendrier/{section_slug?}', array("as" => "calendar", "uses" => "Ca
 Route::get('gestion/calendrier/{year}/{month}/{section_slug?}', array("as" => "manage_calendar_month", "uses" => "CalendarController@showEdit"));
 Route::get('gestion/calendrier/{section_slug?}', array("as" => "manage_calendar", "uses" => "CalendarController@showEdit"));
 Route::post('gestion/calendrier/submit/{year}/{month}/{section_slug}', array("as" => "manage_calendar_submit", "uses" => "CalendarController@submitItem"));
+Route::get('gestion/calendrier/delete/{year}/{month}/{section_slug}/{event_id}', array("as" => "manage_calendar_delete", "uses" => "CalendarController@deleteItem"));
 
 // Documents
 Route::get('telecharger/{section_slug?}', array("as" => "documents", "uses" => "DocumentController@showPage"));

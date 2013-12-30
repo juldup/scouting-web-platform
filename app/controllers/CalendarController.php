@@ -103,8 +103,6 @@ class CalendarController extends BaseController {
   
   public function submitItem($year, $month, $section_slug) {
     
-    // TODO control access (+section)
-    
     $eventId = Input::get('event_id');
     $startDateTimestamp = strtotime(Input::get('start_date_year') . "-" . Input::get('start_date_month') . "-" . Input::get('start_date_day'));
     $startDate = date('Y-m-d', $startDateTimestamp);
@@ -167,6 +165,35 @@ class CalendarController extends BaseController {
           $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
         }
       }
+    }
+    
+    return Redirect::route('manage_calendar_month', array(
+        "year" => $year,
+        "month" => $month,
+        "section_slug" => $section_slug,
+    ))->with($success ? "success_message" : "error_message", $message);
+    
+  }
+  
+  public function deleteItem($year, $month, $section_slug, $event_id) {
+    
+    $calendarItem = CalendarItem::find($event_id);
+    
+    if (!$calendarItem) {
+      throw new NotFoundException("Cet événement n'existe pas");
+    }
+    
+    if (!$this->user->can(Privilege::$EDIT_CALENDAR, $calendarItem->section_id)) {
+      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+    }
+    
+    try {
+      $calendarItem->delete();
+      $success = true;
+      $message = "L'événement a été supprimé.";
+    } catch (Illuminate\Database\QueryException $e) {
+      $success = false;
+      $message = "Une erreur s'est produite. L'événement n'a pas été supprimé.";
     }
     
     return Redirect::route('manage_calendar_month', array(

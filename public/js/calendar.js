@@ -29,6 +29,7 @@ function editEvent(eventId) {
   $("#calendar_event_form [name='description']").val(events[eventId].description);
   $("#calendar_event_form [name='event_type']").val(events[eventId].type);
   $("#calendar_event_form [name='section']").val(events[eventId].section);
-  $("#calendar_event_form #delete_link").hide();
+  $("#calendar_event_form #delete_link").attr('href', events[eventId].delete_url);
+  $("#calendar_event_form #delete_link").show();
   $("#calendar_event_form").slideDown();
 }

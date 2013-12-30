@@ -228,6 +228,20 @@ class CreateDatabase extends Migration {
       $table->index('end_date');
     });
     
+    // News
+    Schema::create('news', function($table) {
+      $table->increments('id');
+      $table->date('news_date');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->string('title');
+      $table->text('content');
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('news_date');
+    });
+    
     // Test data
     DB::table('sections')->insert(array(
         'id' => 2,
@@ -244,7 +258,7 @@ class CreateDatabase extends Migration {
     ));
     DB::table('users')->insert(array(
         'id' => 1,
-        'password' => '',
+        'password' => '963f0ec339ffa5b7dbe86993f3b2f7b3296ab046663724b30cf77964b4338102895297f5b4b',
         'username' => 'Julien',
         'email' => 'julien.dupuis@gmail.com',
         'is_webmaster' => true,
@@ -275,6 +289,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('news');
     Schema::drop('calendar_items');
     Schema::drop('privileges');
     Schema::drop('members');

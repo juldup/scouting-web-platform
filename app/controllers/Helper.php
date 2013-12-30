@@ -40,4 +40,8 @@ class Helper {
     return $string;
   }
   
+  public static function rawToHTML($string) {
+    return str_replace("\n", "<br />", htmlspecialchars($string));
+  }
+  
 }
