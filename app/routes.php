@@ -53,10 +53,13 @@ Route::post('gestion/adresses/{section_slug?}', array("as" => "manage_addresses"
 Route::get('contacts/{section_slug?}', array("as" => "contacts", "uses" => "ContactController@showPage"));
 
 // Annual feast
+Route::get('fete-unite/{section_slug?}', array("as" => "annual_feast", "uses" => "AnnualFeastController@showPage"));
 
 // Registration
+Route::get('inscription/{section_slug?}', array("as" => "registration", "uses" => "RegistrationController@showPage"));
 
 // Health card
+Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));
 
 // Unit policy
 Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyController@showPage"));
@@ -69,8 +72,10 @@ Route::get('gestion/uniforme/{section_slug}', array("as" => "manage_uniform", "u
 Route::post('gestion/uniforme/{section_slug}', array("as" => "manage_uniform", "uses" => "UniformController@savePage"));
 
 // Links
+Route::get('liens/{section_slug?}', array("as" => "links", "uses" => "LinkController@showPage"));
 
 // News
+Route::get('nouvelles/{section_slug?}', array("as" => "news", "uses" => "NewsController@showPage"));
 
 // Calendar
 Route::get('calendrier/{year}/{month}/{section_slug?}', array("as" => "calendar_month", "uses" => "CalendarController@showPage"));
@@ -83,18 +88,25 @@ Route::post('gestion/calendrier/submit/{year}/{month}/{section_slug}', array("as
 Route::get('telecharger/{section_slug?}', array("as" => "documents", "uses" => "DocumentController@showPage"));
 
 // E-mails
+Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailController@showPage"));
 
 // Photos
+Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
 
 // Leaders
+Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
 
 // Listing
+Route::get('listing/{section_slug?}', array("as" => "listing", "uses" => "ListingController@showPage"));
 
 // Suggestions
+Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));
 
 // Guest book
+Route::get('livre-or/{section_slug?}', array("as" => "guest_book", "uses" => "GuestBookController@showPage"));
 
 // Help
+Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpController@showPage"));
 
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomeController@showPage"));

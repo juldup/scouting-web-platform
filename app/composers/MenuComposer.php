@@ -7,46 +7,63 @@ class MenuComposer {
     $menuItems = array();
     
     $homeCategory = array();
-    $homeCategory["Unité et sections"] = URL::route('section');
-    $homeCategory["Adresses utiles"] = URL::route('addresses');
-    $homeCategory["Contacts"] = URL::route('contacts');
-    if (count($homeCategory)) {
+    if (Parameter::get(Parameter::$SHOW_SECTIONS))
+      $homeCategory["Unité et sections"] = URL::route('section');
+    if (Parameter::get(Parameter::$SHOW_ADDRESSES))
+      $homeCategory["Adresses utiles"] = URL::route('addresses');
+    if (Parameter::get(Parameter::$SHOW_CONTACTS))
+      $homeCategory["Contacts"] = URL::route('contacts');
+    if (count($homeCategory))
       $menuItems['Accueil'] = $homeCategory;
-    }
     
     $generalCategory = array();
-    $generalCategory["Fête d'unité"] = URL::route('home');
-    $generalCategory["Inscriptions"] = URL::route('home');
-    $generalCategory["Fiches santé"] = URL::route('home');
-    $generalCategory["Charte d'unité"] = URL::route('unit_policy');
-    $generalCategory["Les uniformes"] = URL::route('uniform');
-    $generalCategory["Liens utiles"] = URL::route('home');
+    if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
+      $generalCategory["Fête d'unité"] = URL::route('annual_feast');
+    if (Parameter::get(Parameter::$SHOW_CONTACTS))
+      $generalCategory["Inscriptions"] = URL::route('registration');
+    if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
+      $generalCategory["Fiches santé"] = URL::route('health_card');
+    if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
+      $generalCategory["Charte d'unité"] = URL::route('unit_policy');
+    if (Parameter::get(Parameter::$SHOW_UNIFORMS))
+      $generalCategory["Les uniformes"] = URL::route('uniform');
+    if (Parameter::get(Parameter::$SHOW_LINKS))
+      $generalCategory["Liens utiles"] = URL::route('links');
     if (count($generalCategory)) {
       $menuItems['Général'] = $generalCategory;
     }
     
     $animationCategory = array();
-    $animationCategory["Nouvelles"] = URL::route('home');
-    $animationCategory["Calendrier"] = URL::route('calendar');
-    $animationCategory["Télécharger"] = URL::route('home');
-    $animationCategory["E-mails"] = URL::route('home');
-    $animationCategory["Photos"] = URL::route('home');
-    $animationCategory["Les animateurs"] = URL::route('home');
-    $animationCategory["Listing des scouts"] = URL::route('home');
-    $animationCategory["Covoiturage"] = URL::route('home');
+    if (Parameter::get(Parameter::$SHOW_NEWS))
+      $animationCategory["Nouvelles"] = URL::route('news');
+    if (Parameter::get(Parameter::$SHOW_CALENDAR))
+      $animationCategory["Calendrier"] = URL::route('calendar');
+    if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
+      $animationCategory["Télécharger"] = URL::route('documents');
+    if (Parameter::get(Parameter::$SHOW_EMAILS))
+      $animationCategory["E-mails"] = URL::route('emails');
+    if (Parameter::get(Parameter::$SHOW_PHOTOS))
+      $animationCategory["Photos"] = URL::route('photos');
+    if (Parameter::get(Parameter::$SHOW_LEADERS))
+      $animationCategory["Les animateurs"] = URL::route('leaders');
+    if (Parameter::get(Parameter::$SHOW_LISTING))
+      $animationCategory["Listing des scouts"] = URL::route('listing');
     if (count($animationCategory)) {
       $menuItems['Animation'] = $animationCategory;
     }
     
     $opinionCategory = array();
-    $opinionCategory["Suggestions"] = URL::route('home');
-    $opinionCategory["Livre d'or"] = URL::route('home');
+    if (Parameter::get(Parameter::$SHOW_SUGGESTIONS))
+      $opinionCategory["Suggestions"] = URL::route('suggestions');
+    if (Parameter::get(Parameter::$SHOW_GUEST_BOOK))
+      $opinionCategory["Livre d'or"] = URL::route('guest_book');
     if (count($opinionCategory)) {
       $menuItems['Votre avis'] = $opinionCategory;
     }
     
     $helpCategory = array();
-    $helpCategory["Aide"] = URL::route('home');
+    if (Parameter::get(Parameter::$SHOW_HELP))
+      $helpCategory["Aide"] = URL::route('help');
     if (count($helpCategory)) {
       $menuItems['Aide'] = $helpCategory;
     }
