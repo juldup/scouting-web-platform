@@ -13,13 +13,8 @@ class NewsController extends BaseController {
               ->where('section_id', '=', $this->section->id)->get();
     }
     
-    echo News::where('news_date', '>', $oneYearAgo)
-              ->where('section_id', '=', $this->section->id)->getQuery()->toSQL();
-    echo $oneYearAgo;
-    echo $this->section->id;
-    
     return View::make('pages.news.news', array(
-        'can_edit' => $this->user->can(Privilege::$EDIT_NEWS),
+        'can_edit' => $this->user->can(Privilege::$EDIT_NEWS, $this->section),
         'edit_url' => URL::route('manage_news', array('section_slug' => $this->section->slug)),
         'page_url' => URL::route('news', array('section_slug' => $this->section->slug)),
         'news' => $news,

@@ -16,6 +16,9 @@ class User extends Eloquent {
   // Members owned by this user that are leaders
   private $associatedLeaderMembers = null;
   
+  // Whether this user is a member (null = unknown)
+  private $isMember = null;
+  
   // Whether this user is a leader (null = unknown)
   private $isLeader = null;
   
@@ -122,6 +125,25 @@ class User extends Eloquent {
   // Returns whether the user is logged in
   public function isConnected() {
     return $this->isConnected;
+  }
+  
+  // Returns whether the user is logged in and is a member
+  public function isMember() {
+    if ($this->isLeader === null) {
+      // If the user is not connected, they cannot be a member
+      if (!$this->isConnected) {
+        return false;
+      }
+      // If the user has not verified their account, they cannot be a member
+      if (!$this->verified) {
+        return false;
+      }
+      // Check if there is an associated member
+      $this->isMember = count($this->getAssociatedMembers()) != 0;
+      // If the user is webmaster, they are a member
+      if ($this->is_webmaster) $this->isMember = true;
+    }
+    return $this->isMember;
   }
   
   // Returns whether the user is a leader

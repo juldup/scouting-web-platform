@@ -92,6 +92,11 @@ Route::get('gestion/calendrier/delete/{year}/{month}/{section_slug}/{event_id}',
 
 // Documents
 Route::get('telecharger/{section_slug?}', array("as" => "documents", "uses" => "DocumentController@showPage"));
+Route::get('gestion/telecharger/{section_slug?}', array("as" => "manage_documents", "uses" => "DocumentController@showEdit"));
+Route::post('gestion/telecharger/submit/{section_slug}', array("as" => "manage_documents_submit", "uses" => "DocumentController@submitDocument"));
+Route::get('gestion/telecharger/delete/{document_id}', array("as" => "manage_documents_delete", "uses" => "DocumentController@deleteDocument"));
+Route::get('telechager-document/{document_id}', array("as" => "download_document", "uses" => "DocumentController@downloadDocument"));
+
 
 // E-mails
 Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailController@showPage"));

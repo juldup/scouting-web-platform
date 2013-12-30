@@ -242,6 +242,22 @@ class CreateDatabase extends Migration {
       $table->index('news_date');
     });
     
+    // Documents
+    Schema::create('documents', function($table) {
+      $table->increments('id');
+      $table->date('doc_date');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->string('title');
+      $table->text('description')->default("");
+      $table->boolean('public')->default(false);
+      $table->string('archive')->default('');
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('doc_date');
+    });
+    
     // Test data
     DB::table('sections')->insert(array(
         'id' => 2,
@@ -289,6 +305,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('documents');
     Schema::drop('news');
     Schema::drop('calendar_items');
     Schema::drop('privileges');
