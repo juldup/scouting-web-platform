@@ -77,7 +77,7 @@ Route::get('calendrier/{year}/{month}/{section_slug?}', array("as" => "calendar_
 Route::get('calendrier/{section_slug?}', array("as" => "calendar", "uses" => "CalendarController@showPage"));
 Route::get('gestion/calendrier/{year}/{month}/{section_slug?}', array("as" => "manage_calendar_month", "uses" => "CalendarController@showEdit"));
 Route::get('gestion/calendrier/{section_slug?}', array("as" => "manage_calendar", "uses" => "CalendarController@showEdit"));
-Route::get('gestion/calendrier/manage_calendar_edit', array("as" => "manage_calendar_edit", "uses" => "CalendarController@editItem"));
+Route::post('gestion/calendrier/submit/{year}/{month}/{section_slug}', array("as" => "manage_calendar_submit", "uses" => "CalendarController@submitItem"));
 
 // Documents
 Route::get('telecharger/{section_slug?}', array("as" => "documents", "uses" => "DocumentController@showPage"));

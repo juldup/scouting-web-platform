@@ -67,16 +67,7 @@ class CalendarController extends BaseController {
     }
     
     // Event type list for select
-    $eventTypes = array(
-        'normal' => "Réunion normale",
-        'special' => "Activité spéciale",
-        'break' => "Congé",
-        'leaders' => "Animateurs",
-        'weekend' => "Week-end",
-        'camp' => "Grand camp",
-        'bar' => "Bar Pi's",
-        'cleaning' => "Nettoyage",
-    );
+    $eventTypes = CalendarItem::$eventTypes;
     
     return View::make('pages.calendar.calendar', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_CALENDAR),
@@ -98,11 +89,92 @@ class CalendarController extends BaseController {
         'today_year' => date('Y'),
         'sections' => $sections,
         'event_types' => $eventTypes,
+        'calendar_items' => $calendarItems,
     ));
   }
   
   public function showEdit($year = null, $month = null) {
+    if (!$this->user->can(Privilege::$EDIT_CALENDAR, $this->user->currentSection)) {
+      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+    }
+    
     return $this->showCalendar($year, $month, true);
+  }
+  
+  public function submitItem($year, $month, $section_slug) {
+    
+    // TODO control access (+section)
+    
+    $eventId = Input::get('event_id');
+    $startDateTimestamp = strtotime(Input::get('start_date_year') . "-" . Input::get('start_date_month') . "-" . Input::get('start_date_day'));
+    $startDate = date('Y-m-d', $startDateTimestamp);
+    $endDate = date('Y-m-d', $startDateTimestamp + 3600 * 24 * (Input::get('duration_in_days')-1) + 2 * 3600);
+    $eventName = Input::get('event_name');
+    $description = Input::get('description');
+    $eventType = Input::get('event_type');
+    $sectionId = Input::get('section');
+    
+    if (!$this->user->can(Privilege::$EDIT_CALENDAR, $sectionId)) {
+      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+    }
+    
+    if (!$eventName) {
+      $eventName = CalendarItem::$eventTypes[$eventType];
+    }
+    
+    $success = false;
+    if (date('Y', $startDateTimestamp) != Input::get('start_date_year') ||
+            date('m', $startDateTimestamp) != Input::get('start_date_month') ||
+            date('d', $startDateTimestamp) != Input::get('start_date_day')) {
+      $success = false;
+      $message = "L'événement n'a pas été enregistré : la date de début n'est pas une date correcte.";
+    } else {
+      if ($eventId) {
+        $calendarItem = CalendarItem::find($eventId);
+        if ($calendarItem) {
+          $calendarItem->start_date = $startDate;
+          $calendarItem->end_date = $endDate;
+          $calendarItem->event = $eventName;
+          $calendarItem->description = $description;
+          $calendarItem->type = $eventType;
+          $calendarItem->section_id = $sectionId;
+          try {
+            $calendarItem->save();
+            $success = true;
+            $message = "L'événement a été mis à jour.";
+          } catch (Illuminate\Database\QueryException $e) {
+            $success = false;
+            $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
+          }
+        } else {
+          $success = false;
+          $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
+        }
+      } else {
+        try {
+          CalendarItem::create(array(
+              'start_date' => $startDate,
+              'end_date' => $endDate,
+              'event' => $eventName,
+              'description' => $description,
+              'type' => $eventType,
+              'section_id' => $sectionId,
+          ));
+          $success = true;
+          $message = "L'événement a été créé.";
+        } catch (Illuminate\Database\QueryException $e) {
+          $success = false;
+          $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
+        }
+      }
+    }
+    
+    return Redirect::route('manage_calendar_month', array(
+        "year" => $year,
+        "month" => $month,
+        "section_slug" => $section_slug,
+    ))->with($success ? "success_message" : "error_message", $message);
+    
   }
   
 }

@@ -32,4 +32,12 @@ class Helper {
     return $newString;
   }
   
+  public static function sanitizeForJavascript($string) {
+    $string = addslashes($string);
+    $string = str_replace("\r\n", "\\n", $string);
+    $string = str_replace("\n", "\\n", $string);
+    $string = str_replace("\r", "\\n", $string);
+    return $string;
+  }
+  
 }
