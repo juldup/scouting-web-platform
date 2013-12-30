@@ -57,6 +57,14 @@ class User extends Eloquent {
     return $user;
   }
   
+  public static function getCookieUsernameName() {
+    return strtolower(Parameter::get(Parameter::$UNIT_SHORT_NAME)) . '_username';
+  }
+  
+  public static function getCookiePasswordName() {
+    return strtolower(Parameter::get(Parameter::$UNIT_SHORT_NAME)) . '_password';
+  }
+  
   public function changeEmail($email) {
     $this->email = $email;
     $this->verified = false;

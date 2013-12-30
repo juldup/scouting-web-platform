@@ -30,8 +30,8 @@ class UserController extends BaseController {
       // Save cookies
       if ($remember) {
         $cookiePassword = User::getCookiePassword($password, $user->password);
-        Cookie::queue('username', $username, 365 * 24 * 60);
-        Cookie::queue('password', $cookiePassword, 365 * 24 * 60);
+        Cookie::queue(User::getCookieUsernameName(), $username, 365 * 24 * 60);
+        Cookie::queue(User::getCookiePasswordName(), $cookiePassword, 365 * 24 * 60);
       }
       // Redirect to previous page
       $referrer = Session::get('login_referrer', URL::route('home'));
@@ -47,8 +47,8 @@ class UserController extends BaseController {
     // Unlog user
     Session::flush();
     // Remove cookies
-    Cookie::queue('username', null, -1);
-    Cookie::queue('password', null, -1);
+    Cookie::queue(User::getCookieUsernameName(), null, -1);
+    Cookie::queue(User::getCookiePasswordName(), null, -1);
     // Redirect to previous page
     return \Symfony\Component\HttpFoundation\RedirectResponse::create(URL::previous());
   }
@@ -95,8 +95,8 @@ class UserController extends BaseController {
     // Save cookies
     if ($remember) {
       $cookiePassword = User::getCookiePassword($password, $user->password);
-      Cookie::queue('username', $username, 365 * 24 * 60);
-      Cookie::queue('password', $cookiePassword, 365 * 24 * 60);
+      Cookie::queue(User::getCookieUsernameName(), $username, 365 * 24 * 60);
+      Cookie::queue(User::getCookiePasswordName(), $cookiePassword, 365 * 24 * 60);
     }
     
     // Redirect to previous page

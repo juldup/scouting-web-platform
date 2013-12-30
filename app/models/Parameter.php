@@ -23,6 +23,8 @@ class Parameter extends Eloquent {
   public static $SHOW_SUGGESTIONS = "Show suggestions";
   public static $SHOW_GUEST_BOOK = "Show guest book";
   public static $SHOW_HELP = "Show help";
+  public static $UNIT_SHORT_NAME = "Unit short name";
+  public static $UNIT_LONG_NAME = "Unit long name";
   
   private static $parameters = null;
   

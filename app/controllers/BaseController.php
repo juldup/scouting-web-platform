@@ -21,11 +21,12 @@ abstract class BaseController extends Controller {
   }
   
   public function __construct() {
-    // Retrieve user
+    // Retrieve user id from session
     $userId = Session::get('user_id', null);
+    // Retrieve user id from cookies
     if ($userId === null) {
-      $username = Cookie::get('username');
-      $password = Cookie::get('password');
+      $username = Cookie::get(User::getCookieUsernameName());
+      $password = Cookie::get(User::getCookiePasswordName());
       if ($username && $password) {
         $user = User::getWithUsernameAndPassword($username, $password);
         if ($user) {
@@ -63,11 +64,11 @@ abstract class BaseController extends Controller {
       }
     }
     // Use section from current session
-    if ($section == null && Session::has('currentSection')) {
+    if ($section === null && Session::has('currentSection')) {
       $section = Section::find(Session::get('currentSection', '1'));
     }
     // Use default section for the user
-    if ($section == null && isset($this->user->default_section)) {
+    if ($section === null && isset($this->user->default_section)) {
       $section = Section::find($this->user->default_section);
     }
     // Use main section
