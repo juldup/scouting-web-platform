@@ -4,7 +4,7 @@ class NewsController extends BaseController {
   
   public function showPage($year = null, $month = null) {
     
-    $oneYearAgo = date('Y-m-d', time() - 365*24*3600);
+    $oneYearAgo = Helper::oneYearAgo();
     
     if ($this->section->id == 1) {
       $news = News::where('news_date', '>=', $oneYearAgo)->get();
@@ -27,7 +27,7 @@ class NewsController extends BaseController {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
     }
     
-    $oneYearAgo = date('Y-m-d', time() - 365*24*3600);
+    $oneYearAgo = Helper::oneYearAgo();
     $news = News::where('news_date', '>=', $oneYearAgo)
               ->where('section_id', '=', $this->section->id)->get();
     

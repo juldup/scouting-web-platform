@@ -4,19 +4,23 @@ class DocumentController extends BaseController {
   
   public function showPage($year = null, $month = null) {
     
-    $year = date('Y');
-    if (date('m') < 8) $thisYear = ($year - 1) . "-" . $year;
-    else $thisYear = $year . "-" . ($year + 1);
+    $thisYear = Helper::thisYear();
     
     $documents = Document::where(function($query) use ($thisYear) {
       $query->where('archive', '=', $thisYear);
       $query->orWhere('archive', '=', '');
     })->where('section_id', '=', $this->section->id)->get();
     
+    $documentSelectList = array();
+    foreach ($documents as $document) {
+      $documentSelectList[$document->id] = $document->title;
+    }
+    
     return View::make('pages.documents.documents', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section),
         'edit_url' => URL::route('manage_documents', array('section_slug' => $this->section->slug)),
         'documents' => $documents,
+        'documentSelectList' => $documentSelectList,
     ));
   }
   
@@ -26,16 +30,30 @@ class DocumentController extends BaseController {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
     }
     
+    $thisYear = Helper::thisYear();
+    
     $documents = Document::where(function($query) use ($thisYear) {
       $query->where('archive', '=', $thisYear);
       $query->orWhere('archive', '=', '');
     })->where('section_id', '=', $this->section->id)->get();
     
     return View::make('pages.documents.editDocuments', array(
-        'can_edit' => $this->user->can(Privilege::$EDIT_NEWS),
         'page_url' => URL::route('documents', array('section_slug' => $this->section->slug)),
         'documents' => $documents,
     ));
+  }
+  
+  public function sendByEmail() {
+    $email = Input::get('email');
+    $document_id = Input::get('document_id');
+    if ($email == "") {
+      return Redirect::to(URL::previous())->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")->withInput();
+    } if (Member::existWithEmail($email)) {
+      // Send document by e-mail
+      return Redirect::to(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$email</strong>.");
+    } else {
+      return Redirect::to(URL::previous())->with('error_message', "Désolés, l'adresse <strong>$email</strong> ne fait pas partie de notre listing.")->withInput();
+    }
   }
   
   public function submitDocument($section_slug) {

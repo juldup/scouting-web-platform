@@ -47,6 +47,8 @@
       </div>
       <div class='col-lg-7'>
         Mémoriser votre pseudo et mot de passe sur cet ordinateur. Vous serez connecté automatiquement à votre prochaine visite.
+        
+        ATTENTION: cette option utilise des cookies.
       </div>
     </div>
     <div class="row">
@@ -124,6 +126,7 @@
       </div>
       <div class='col-lg-7'>
         Mémoriser votre pseudo et mot de passe sur cet ordinateur. Vous serez connecté automatiquement à votre prochaine visite.
+        ATTENTION: cette option utilise des cookies.
       </div>
     </div>
     <div class="row">

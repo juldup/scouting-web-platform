@@ -44,4 +44,14 @@ class Helper {
     return str_replace("\n", "<br />", htmlspecialchars($string));
   }
   
+  public static function oneYearAgo() {
+    return date('Y-m-d', time() - 365*24*3600);
+  }
+  
+  public static function thisYear() {
+    $year = date('Y');
+    if (date('m') < 8) $thisYear = ($year - 1) . "-" . $year;
+    else $thisYear = $year . "-" . ($year + 1);
+  }
+  
 }

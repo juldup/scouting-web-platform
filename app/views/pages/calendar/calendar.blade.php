@@ -62,7 +62,9 @@
     <div class='col-lg-12'>
       
       @if ($editing)
-        <div id="calendar_event_form" style="display: none;">
+        <div id="calendar_event_form"
+             @if (!Session::has('error_message')) style="display: none;" @endif
+             >
           {{ Form::open(array('url' => URL::route('manage_calendar_submit', array('year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)))) }}
             {{ Form::hidden('event_id', 0) }}
             <p>
@@ -74,6 +76,7 @@
             <p>
               Durée (jours) :
               {{ Form::text('duration_in_days', '', array('size' => '2')) }}
+            <span>(compte le premier et le dernier jour de l'activité)</span>
             </p>
             <p>
               Activité :

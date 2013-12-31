@@ -106,7 +106,8 @@ class CalendarController extends BaseController {
     $eventId = Input::get('event_id');
     $startDateTimestamp = strtotime(Input::get('start_date_year') . "-" . Input::get('start_date_month') . "-" . Input::get('start_date_day'));
     $startDate = date('Y-m-d', $startDateTimestamp);
-    $endDate = date('Y-m-d', $startDateTimestamp + 3600 * 24 * (Input::get('duration_in_days')-1) + 2 * 3600);
+    $duration = Input::get('duration_in_days');
+    $endDate = date('Y-m-d', $startDateTimestamp + 3600 * 24 * ($duration-1) + 2 * 3600);
     $eventName = Input::get('event_name');
     $description = Input::get('description');
     $eventType = Input::get('event_type');
@@ -126,6 +127,9 @@ class CalendarController extends BaseController {
             date('d', $startDateTimestamp) != Input::get('start_date_day')) {
       $success = false;
       $message = "L'événement n'a pas été enregistré : la date de début n'est pas une date correcte.";
+    } elseif (!is_numeric ($duration) || $duration <= 0) {
+      $success = false;
+      $message = "La durée n'est pas valide. Elle doit être au minimum <strong>1</strong>.";
     } else {
       if ($eventId) {
         $calendarItem = CalendarItem::find($eventId);
@@ -167,11 +171,14 @@ class CalendarController extends BaseController {
       }
     }
     
-    return Redirect::route('manage_calendar_month', array(
+    $redirect = Redirect::route('manage_calendar_month', array(
         "year" => $year,
         "month" => $month,
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
+    
+    if ($success) return $redirect;
+    else return $redirect->withInput();
     
   }
   

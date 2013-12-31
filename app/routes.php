@@ -96,7 +96,7 @@ Route::get('gestion/telecharger/{section_slug?}', array("as" => "manage_document
 Route::post('gestion/telecharger/submit/{section_slug}', array("as" => "manage_documents_submit", "uses" => "DocumentController@submitDocument"));
 Route::get('gestion/telecharger/delete/{document_id}', array("as" => "manage_documents_delete", "uses" => "DocumentController@deleteDocument"));
 Route::get('telechager-document/{document_id}', array("as" => "download_document", "uses" => "DocumentController@downloadDocument"));
-
+Route::post('telecharger/par-email', array("as" => "send_document_by_email", "uses" => "DocumentController@sendByEmail"));
 
 // E-mails
 Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailController@showPage"));

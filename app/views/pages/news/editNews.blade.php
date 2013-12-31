@@ -30,12 +30,7 @@
     <div class="col-lg-12">
   
       <h1>Nouvelles {{ $user->currentSection->de_la_section }}</h1>
-      @if (Session::has('success_message'))
-        <p class='alert alert-success'>{{ Session::get('success_message'); }}</p>
-      @endif
-      @if (Session::has('error_message'))
-        <p class='alert alert-danger'>{{ Session::get('error_message'); }}</p>
-      @endif
+      @include('subviews.flashMessages')
     </div>
   </div>
   
@@ -48,10 +43,10 @@
         {{ Form::open(array('url' => URL::route('manage_news_submit', array('section_slug' => $user->currentSection->slug)))) }}
           {{ Form::hidden('news_id', 0) }}
           <p>
-            Title :
+            Titre :
             {{ Form::text('news_title', '', array('size' => '35', 'placeholder' => "Titre de la nouvelle")) }}
           <p>
-            Content :
+            Contenu :
             {{ Form::textarea('news_content', '', array('cols' => '35', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
           </p>
           <p>
@@ -61,7 +56,7 @@
           <p>
             {{ Form::submit('Enregistrer') }}
             <a id='delete_link' href="">Supprimer</a>
-            <a href="javascript:dismissNews()">Fermer</a>
+            <a href="javascript:dismissNewsForm()">Fermer</a>
           </p>
 
         {{ Form::close() }}

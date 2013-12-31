@@ -1,4 +1,4 @@
-function addNews(day) {
+function addNews() {
   $("#news_form [name='news_id']").val("");
   $("#news_form [name='news_title']").val("");
   $("#news_form [name='news_content']").val("");
@@ -7,7 +7,7 @@ function addNews(day) {
   $("#news_form").slideDown();
 }
 
-function dismissNews() {
+function dismissNewsForm() {
   $("#news_form").slideUp();
 }
 
