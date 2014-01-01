@@ -68,4 +68,15 @@ class LeaderController extends BaseController {
     ));
   }
   
+  public function getLeaderPicture($leader_id) {
+    $leader = Member::find($leader_id);
+    if ($leader && $leader->is_leader && $leader->has_picture) {
+      $path = $leader->getPicturePath();
+      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+          "Content-Type" => "image",
+          "Content-Length" => filesize($path),
+      ));
+    }
+  }
+  
 }

@@ -106,7 +106,9 @@ Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoCon
 
 // Leaders
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
+Route::get('animateur/photo/{leader_id}', array("as" => "get_leader_picture", "uses" => "LeaderController@getLeaderPicture"));
 Route::get('gestion/animateurs/{section_slug?}', array("as" => "edit_leaders", "uses" => "LeaderController@showEdit"));
+Route::get('gestion/animateurs/submit/{member_id}', array("as" => "edit_leaders_submit", "uses" => "LeaderController@submitLeader"));
 Route::get('gestion/privileges/{section_slug?}', array("as" => "edit_privileges", "uses" => "LeaderController@showEditPrivileges"));
 
 // Listing

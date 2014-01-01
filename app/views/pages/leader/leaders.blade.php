@@ -12,16 +12,18 @@
   
   @if ($is_leader)
     <div class="row">
-      <p class='pull-right management'>
-        <a class='button' href='{{ URL::route('edit_leaders', array('section_slug' => $user->currentSection->slug)) }}'>
-          Modifier les animateurs
-        </a>
-      </p>
-      <p class='pull-right management'>
-        <a class='button' href='{{ URL::route('edit_privileges', array('section_slug' => $user->currentSection->slug)) }}'>
-          Modifier les privilèges des animateurs
-        </a>
-      </p>
+      <div class="pull-right">
+        <p class='management'>
+          <a class='button' href='{{ URL::route('edit_leaders', array('section_slug' => $user->currentSection->slug)) }}'>
+            Modifier les animateurs
+          </a>
+        </p>
+        <p class='management'>
+          <a class='button' href='{{ URL::route('edit_privileges', array('section_slug' => $user->currentSection->slug)) }}'>
+            Modifier les privilèges des animateurs
+          </a>
+        </p>
+      </div>
     </div>
   @endif
   
@@ -76,8 +78,8 @@
     @endif
     <div class="row">
       <div class="col-lg-4">
-        @if ($leader->has_photo)
-          <img src="{{ $leader->getPhotoURL }}" />
+        @if ($leader->has_picture)
+          <img src="{{ $leader->getPictureURL() }}" />
         @endif
       </div>
       <div class="col-lg-8">
@@ -86,9 +88,9 @@
         @if ($leader->leader_role)
           <p>Rôle : {{ Helper::rawToHTML($leader->leader_role) }}</p>
         @endif
-        <p>Nom : {{ $leader->firstname }} {{ $leader->lastname }}</p>
-        @if (!$leader->phone1_private)
-          <p>Tél. : {{ $leader->phone1 }}</p>
+        <p>Nom : {{ $leader->first_name }} {{ $leader->last_name }}</p>
+        @if (!$leader->phone_member_private && $leader->phone_member)
+          <p>Tél. : {{ $leader->phone_member }}</p>
         @endif
         <p>E-mail : <a href="">Envoyer un e-mail</a></p>
       </div>

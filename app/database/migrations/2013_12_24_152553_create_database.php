@@ -163,15 +163,14 @@ class CreateDatabase extends Migration {
       $table->string('phone1')->nullable();
       $table->string('phone2')->nullable();
       $table->string('phone3')->nullable();
-      $table->string('phone4')->nullable();
+      $table->string('phone_member')->nullable();
       $table->string('phone1_owner')->nullable();
       $table->string('phone2_owner')->nullable();
       $table->string('phone3_owner')->nullable();
-      $table->string('phone4_owner')->nullable();
       $table->boolean('phone1_private')->nullable();
       $table->boolean('phone2_private')->nullable();
       $table->boolean('phone3_private')->nullable();
-      $table->boolean('phone4_private')->nullable();
+      $table->boolean('phone_member_private')->nullable();
       $table->string('email1')->nullable();
       $table->string('email2')->nullable();
       $table->string('email3')->nullable();
@@ -185,7 +184,7 @@ class CreateDatabase extends Migration {
       $table->string('leader_name')->nullable();
       $table->text('leader_description')->nullable();
       $table->string('leader_role')->nullable();
-      $table->boolean('has_photo')->nullable();
+      $table->boolean('has_picture')->nullable();
       $table->timestamps();
       
       $table->index('section_id');
@@ -295,7 +294,7 @@ class CreateDatabase extends Migration {
         'leader_name' => "Koala",
         'leader_description' => "Je suis l'animateur d'unité",
         'leader_role' => "Responsable",
-        'has_photo' => false,
+        'has_picture' => false,
     ));
     
 	}
