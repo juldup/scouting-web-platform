@@ -93,7 +93,6 @@ class NewsController extends BaseController {
           $message = "La nouvelle a été créée.";
         } catch (Illuminate\Database\QueryException $e) {
           $success = false;
-          throw $e;
           $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
         }
       }
@@ -111,7 +110,7 @@ class NewsController extends BaseController {
     $news = News::find($news_id);
     
     if (!$news) {
-      throw new NotFoundHttpException("Cette nouvelle n'existe pas");
+      throw new NotFoundHttpException("Cette nouvelle n'existe pas.");
     }
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
@@ -124,7 +123,7 @@ class NewsController extends BaseController {
       $message = "La nouvelle a été supprimée.";
     } catch (Illuminate\Database\QueryException $e) {
       $success = false;
-      $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+      $message = "Une erreur s'est produite. La nouvelle n'a pas été supprimée.";
     }
     
     return Redirect::route('manage_news', array(

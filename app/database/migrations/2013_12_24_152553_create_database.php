@@ -250,6 +250,7 @@ class CreateDatabase extends Migration {
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->string('title');
       $table->text('description')->default("");
+      $table->string('filename');
       $table->boolean('public')->default(false);
       $table->string('archive')->default('');
       $table->timestamps();

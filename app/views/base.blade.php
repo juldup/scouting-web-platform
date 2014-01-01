@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 	<title>
-    Unité scoute - @yield('title')
+    {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} - @yield('title')
   </title>
   {{ Less::to('styles') }}
   @yield('head')

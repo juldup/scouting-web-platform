@@ -43,9 +43,32 @@ class DocumentController extends BaseController {
     ));
   }
   
+  public function downloadDocument($document_id) {
+    $document = Document::find($document_id);
+    if (!$document) throw new NotFoundException();
+    
+    if (!$document->public && !$this->user->isMember()) {
+      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+    }
+    
+    $path = $document->getPath();
+    $filename = str_replace("\"", "", $document->filename);
+    if (file_exists($path)) {
+      return Response::make(file_get_contents($path), 200, array(
+          'Content-Type' => 'application/octet-stream',
+          'Content-length' => filesize($path),
+          'Content-Transfer-Encoding' => 'Binary',
+          'Content-disposition' => "attachment; filename=\"$filename\"",
+      ));
+    } else {
+      return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus");
+    }
+    
+  }
+  
   public function sendByEmail() {
     $email = Input::get('email');
-    $document_id = Input::get('document_id');
+    $documentId = Input::get('document_id');
     if ($email == "") {
       return Redirect::to(URL::previous())->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")->withInput();
     } if (Member::existWithEmail($email)) {
@@ -58,12 +81,15 @@ class DocumentController extends BaseController {
   
   public function submitDocument($section_slug) {
     
-    $docId = Input::get('document_id');
-    $title = Input::get('title');
+    $docId = Input::get('doc_id');
+    $title = Input::get('doc_title');
     $description = Input::get('description');
-    $file = Input::file('document_file');
+    $public = Input::get('public');
+    $file = Input::file('document');
+    $filename = Input::get('filename');
+    $actualFileName = ($file ? $file->getClientOriginalName() : null);
     
-    if (!$this->user->can(Privilege::$EDIT_NEWS, $this->section)) {
+    if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section)) {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
     }
     
@@ -75,76 +101,99 @@ class DocumentController extends BaseController {
       if ($docId) {
         $document = Document::find($docId);
         if ($document) {
+          if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->getSection())) {
+            return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+          }
           $document->title = $title;
           $document->description = $description;
-          // TODO $document->file = $file;
+          $document->public = $public;
+          $document->setFileName($filename, $actualFileName);
           try {
-            $news->save();
+            $document->save();
             $success = true;
-            $message = "La nouvelle a été mise à jour.";
-            $section_slug = $news->getSection()->slug;
-          } catch (Illuminate\Database\QueryException $e) {
+            
+            // Move file
+            $file->move($document->getPathFolder(), $document->getPathFilename());
+            
+            $message = "Le document a été mis a jour.";
+            $section_slug = $document->getSection()->slug;
+          } catch (Exception $e) {
             $success = false;
-            $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+            $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
           }
         } else {
           $success = false;
-          $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+          $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
         }
       } else {
-        if (!$file) {
+        if ($file == NULL) {
           $success = false;
           $message = "Tu n'as pas joint de document.";
         } else {
+          $document = null;
           try {
-            $news = News::create(array(
-                'news_date' => date('Y-m-d'),
+            // Create document
+            $document = Document::create(array(
+                'doc_date' => date('Y-m-d'),
                 'title' => $title,
-                'content' => $content,
-                'section_id' => $sectionId,
+                'description' => $description,
+                'public' => $public,
+                'filename' => 'document',
+                'section_id' => $this->section->id,
             ));
-            $section_slug = $news->getSection()->slug;
+            // Move file
+            $file->move($document->getPathFolder(), $document->getPathFilename());
+            // Save filename
+            $document->setFilename($filename, $actualFileName);
+            $document->save();
             $success = true;
-            $message = "La nouvelle a été créée.";
-          } catch (Illuminate\Database\QueryException $e) {
+            $message = "Le document a été créé.";
+          } catch (Exception $e) {
             $success = false;
-            throw $e;
-            $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+            $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
+            // Try deleting created document if it exists
+            if ($document) {
+              try {
+                $document->delete();
+              } catch (Exception $e) {
+              }
+            }
           }
         }
       }
     }
     
-    $response = Redirect::route('manage_news', array(
+    $response = Redirect::route('manage_documents', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) return $response;
     else return $response->withInput();
   }
   
-  public function deleteNews($news_id) {
+  public function deleteDocument($document_id) {
     
-    $news = News::find($news_id);
+    $document = Document::find($document_id);
     
-    if (!$news) {
-      throw new NotFoundHttpException("Cette nouvelle n'existe pas");
+    if (!$document) {
+      throw new NotFoundHttpException("Ce document n'existe pas.");
     }
     
-    if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
+    if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
     }
     
     try {
-      $news->delete();
+      unlink($document->getPath());
+      $document->delete();
       $success = true;
-      $message = "La nouvelle a été supprimée.";
-    } catch (Illuminate\Database\QueryException $e) {
+      $message = "Le document a été supprimé.";
+    } catch (Exception $e) {
       $success = false;
-      $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+      $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
     }
     
-    return Redirect::route('manage_news', array(
-        "section_slug" => $news->getSection()->slug,
+    return Redirect::route('manage_documents', array(
+        "section_slug" => $document->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
   }
   

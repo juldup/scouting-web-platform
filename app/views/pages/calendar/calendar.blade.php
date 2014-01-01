@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Calendrier
+@stop
+
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/js/calendar.js"></script>
   <script>

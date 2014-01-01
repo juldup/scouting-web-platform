@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('head')
+  <meta name="robots" content="noindex">
+@stop
+
 @section('content')
   <div class="row">
     <div class='col-lg-12'>

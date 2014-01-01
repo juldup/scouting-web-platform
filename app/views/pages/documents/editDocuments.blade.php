@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Gestion des documents
+@stop
+
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/js/edit_documents.js"></script>
   <script>
@@ -10,6 +14,7 @@
         'title': "{{ Helper::sanitizeForJavascript($doc->title) }}",
         'description': "{{ Helper::sanitizeForJavascript($doc->description) }}",
         'public': {{ $doc->public ? "true" : "false" }},
+        'filename': "{{ Helper::sanitizeForJavascript($doc->filename) }}",
         'delete_url': "{{ URL::route('manage_documents_delete', array('document_id' => $doc->id)) }}"
       };
     @endforeach
@@ -43,15 +48,19 @@
           {{ Form::hidden('doc_id', 0) }}
           <p>
             Titre :
-            {{ Form::text('doc_title', '', array('size' => '35', 'placeholder' => "Titre de la nouvelle")) }}
+            {{ Form::text('doc_title', '', array('size' => '35', 'placeholder' => "Nom du document")) }}
           <p>
             Description :
-            {{ Form::textarea('description', '', array('cols' => '35', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
+            {{ Form::textarea('description', '', array('cols' => '35', 'rows' => 3, 'placeholder' => "Description du document")) }}
+          </p>
+          <p>
+            Nom du fichier :
+            {{ Form::text('filename', '', array('size' => '50', 'placeholder' => 'Laisse ce champ vide pour garder le nom original')) }}
           </p>
           <p>
             Public :
             {{ Form::checkbox('public') }}
-            CONSEIL : Ne coche pas cette case, sauf si tu es sûr que ce document peut être visible publiquement.
+            CONSEIL : Ne coche pas cette case, sauf si tu es sûr que ce document peut être visible <strong>publiquement</strong>.
           </p>
           <p>
             Document :

@@ -1,5 +1,13 @@
 @extends('base')
 
+@section('title')
+  Télécharger
+@stop
+
+@section('head')
+  <meta name="robots" content="noindex">
+@stop
+
 @section('content')
   
   @if ($can_edit)
