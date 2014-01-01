@@ -113,7 +113,9 @@ class DocumentController extends BaseController {
             $success = true;
             
             // Move file
-            $file->move($document->getPathFolder(), $document->getPathFilename());
+            if ($file != null) {
+              $file->move($document->getPathFolder(), $document->getPathFilename());
+            }
             
             $message = "Le document a été mis a jour.";
             $section_slug = $document->getSection()->slug;
@@ -126,7 +128,7 @@ class DocumentController extends BaseController {
           $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
         }
       } else {
-        if ($file == NULL) {
+        if ($file == null) {
           $success = false;
           $message = "Tu n'as pas joint de document.";
         } else {
