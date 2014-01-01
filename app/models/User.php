@@ -129,7 +129,7 @@ class User extends Eloquent {
   
   // Returns whether the user is logged in and is a member
   public function isMember() {
-    if ($this->isLeader === null) {
+    if ($this->isMember === null) {
       // If the user is not connected, they cannot be a member
       if (!$this->isConnected) {
         return false;
@@ -159,6 +159,8 @@ class User extends Eloquent {
       }
       // Check if there is an associated leader
       $this->isLeader = count($this->getAssociatedLeaderMembers()) != 0;
+      // If the user is webmaster, they are considered a leader
+      if ($this->is_webmaster) $this->isLeader = true;
     }
     return $this->isLeader;
   }
