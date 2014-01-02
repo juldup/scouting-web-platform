@@ -68,7 +68,7 @@
           </p>
           <p>
             {{ Form::submit('Enregistrer') }}
-            <a id='delete_link' href="">Supprimer</a>
+            <a id='delete_link' style="display: none;" href="">Supprimer</a>
             <a href="javascript:dismissDocumentForm()">Fermer</a>
           </p>
 
