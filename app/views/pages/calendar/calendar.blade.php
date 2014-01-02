@@ -53,12 +53,7 @@
     <div class="col-lg-12">
   
       <h1>Calendrier {{ $user->currentSection->de_la_section }}</h1>
-      <?php if (Session::has('success_message')): ?>
-        <p class='alert alert-success'><?php echo Session::get('success_message'); ?></p>
-      <?php endif; ?>
-      <?php if (Session::has('error_message')): ?>
-        <p class='alert alert-danger'><?php echo Session::get('error_message'); ?></p>
-      <?php endif; ?>
+      @include('subviews.flashMessages')
     </div>
   </div>
   
@@ -67,7 +62,7 @@
       
       @if ($editing)
         <div id="calendar_event_form"
-             @if (!Session::has('error_message')) style="display: none;" @endif
+             @if (!Session::has('_old_input')) style="display: none;" @endif
              >
           {{ Form::open(array('url' => URL::route('manage_calendar_submit', array('year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)))) }}
             {{ Form::hidden('event_id', 0) }}

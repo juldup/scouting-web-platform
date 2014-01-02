@@ -23,7 +23,7 @@ View::composer('menu.tabs', "TabsComposer");
 
 // Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
-Route::post('login/{section_slug?}', array("as" => "login", "uses" => "UserController@submitLogin"));
+Route::post('login/{section_slug?}', array("as" => "login_submit", "uses" => "UserController@submitLogin"));
 Route::get('logout/{section_slug?}', array("as" => "logout", "uses" => "UserController@logout"));
 Route::any('modifier-utilisateur/email/{section_slug?}', array("as" => "edit_user_email", "uses" => "UserController@editEmail"));
 Route::any('modifier-utilisateur/mot-de-passe/{section_slug?}', array("as" => "edit_user_password", "uses" => "UserController@editPassword"));
@@ -42,14 +42,14 @@ Route::post('images/upload/{page_id}', array("as" => "ajax_upload_image", "uses"
 Route::get('images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
 
 // Sections
-Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionController@showPage"));
-Route::get('gestion/section/{section_slug}', array("as" => "manage_section", "uses" => "SectionController@showEdit"));
-Route::post('gestion/section/{section_slug}', array("as" => "manage_section", "uses" => "SectionController@savePage"));
+Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionPageController@showPage"));
+Route::get('gestion/section/{section_slug}', array("as" => "edit_section_page", "uses" => "SectionPageController@showEdit"));
+Route::post('gestion/section/{section_slug}', array("as" => "edit_section_page_submit", "uses" => "SectionPageController@savePage"));
 
 // Addresses
-Route::get('adresses/{section_slug?}', array("as" => "addresses", "uses" => "AddressesController@showPage"));
-Route::get('gestion/adresses/{section_slug?}', array("as" => "manage_addresses", "uses" => "AddressesController@showEdit"));
-Route::post('gestion/adresses/{section_slug?}', array("as" => "manage_addresses", "uses" => "AddressesController@savePage"));
+Route::get('adresses/{section_slug?}', array("as" => "addresses", "uses" => "AddressPageController@showPage"));
+Route::get('gestion/adresses/{section_slug?}', array("as" => "edit_address_page", "uses" => "AddressPageController@showEdit"));
+Route::post('gestion/adresses/{section_slug?}', array("as" => "edit_address_page_submit", "uses" => "AddressPageController@savePage"));
 
 // Contacts
 Route::get('contacts/{section_slug?}', array("as" => "contacts", "uses" => "ContactController@showPage"));
@@ -64,17 +64,20 @@ Route::get('inscription/{section_slug?}', array("as" => "registration", "uses" =
 Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));
 
 // Unit policy
-Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyController@showPage"));
-Route::get('gestion/charte/{section_slug?}', array("as" => "manage_unit_policy", "uses" => "UnitPolicyController@showEdit"));
-Route::post('gestion/charte/{section_slug?}', array("as" => "manage_unit_policy", "uses" => "UnitPolicyController@savePage"));
+Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyPageController@showPage"));
+Route::get('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page", "uses" => "UnitPolicyPageController@showEdit"));
+Route::post('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page_submit", "uses" => "UnitPolicyPageController@savePage"));
 
 // Uniforms
-Route::get('uniforme/{section_slug?}', array("as" => "uniform", "uses" => "UniformController@showPage"));
-Route::get('gestion/uniforme/{section_slug}', array("as" => "manage_uniform", "uses" => "UniformController@showEdit"));
-Route::post('gestion/uniforme/{section_slug}', array("as" => "manage_uniform", "uses" => "UniformController@savePage"));
+Route::get('uniforme/{section_slug?}', array("as" => "uniform", "uses" => "UniformPageController@showPage"));
+Route::get('gestion/uniforme/{section_slug}', array("as" => "edit_uniform_page", "uses" => "UniformPageController@showEdit"));
+Route::post('gestion/uniforme/{section_slug}', array("as" => "edit_uniform_page_submit", "uses" => "UniformPageController@savePage"));
 
 // Links
 Route::get('liens/{section_slug?}', array("as" => "links", "uses" => "LinkController@showPage"));
+Route::get('gestion/liens/{section_slug?}', array("as" => "edit_links", "uses" => "LinkController@showEdit"));
+Route::post('gestion/liens/{section_slug?}', array("as" => "edit_links_submit", "uses" => "LinkController@submitLink"));
+Route::get('gestion/liens/delete/{link_id}/{section_slug?}', array("as" => "edit_links_delete", "uses" => "LinkController@deleteLink"));
 
 // News
 Route::get('nouvelles/{section_slug?}', array("as" => "news", "uses" => "NewsController@showPage"));
@@ -126,6 +129,6 @@ Route::get('livre-or/{section_slug?}', array("as" => "guest_book", "uses" => "Gu
 Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpController@showPage"));
 
 // Home
-Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomeController@showPage"));
-Route::get('gestion/accueil/{section_slug?}', array("as" => "manage_home", "uses" => "HomeController@showEdit"));
-Route::post('gestion/accueil/{section_slug?}', array("as" => "manage_home", "uses" => "HomeController@savePage"));
+Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
+Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));
+Route::post('gestion/accueil/{section_slug?}', array("as" => "edit_home_page_submit", "uses" => "HomePageController@savePage"));

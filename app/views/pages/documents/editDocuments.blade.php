@@ -42,7 +42,7 @@
     <div class='col-lg-12'>
       
       <div id="document_form"
-           @if (!Session::has('error_message')) style="display: none;" @endif
+           @if (!Session::has('_old_input')) style="display: none;" @endif
            >
         {{ Form::open(array('files' => true, 'url' => URL::route('manage_documents_submit', array('section_slug' => $user->currentSection->slug)))) }}
           {{ Form::hidden('doc_id', 0) }}

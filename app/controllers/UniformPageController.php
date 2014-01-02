@@ -1,21 +1,21 @@
 <?php
 
-class UnitPolicyController extends GenericPageController {
+class UniformPageController extends GenericPageController {
   
   protected function getEditRouteName() {
-    return "manage_unit_policy";
+    return "edit_uniform_page_submit";
   }
   protected function getShowRouteName() {
-    return "unit_policy";
+    return "uniform";
   }
   protected function getPageType() {
-    return "unit_policy";
+    return "section_uniform";
   }
   protected function isSectionPage() {
-    return false;
+    return true;
   }
   protected function getPageTitle() {
-    return "Charte d'unité";
+    return "Uniforme " . $this->section->de_la_section;
   }
   
 }

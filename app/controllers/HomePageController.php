@@ -1,9 +1,9 @@
 <?php
 
-class HomeController extends GenericPageController {
+class HomePageController extends GenericPageController {
   
   protected function getEditRouteName() {
-    return "manage_home";
+    return "edit_home_page";
   }
   protected function getShowRouteName() {
     return "home";

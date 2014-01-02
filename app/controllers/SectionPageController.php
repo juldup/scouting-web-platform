@@ -1,21 +1,21 @@
 <?php
 
-class AddressesController extends GenericPageController {
+class SectionPageController extends GenericPageController {
   
   protected function getEditRouteName() {
-    return "manage_addresses";
+    return "edit_section_page";
   }
   protected function getShowRouteName() {
-    return "addresses";
+    return "section";
   }
   protected function getPageType() {
-    return "addresses";
+    return "section_home";
   }
   protected function isSectionPage() {
-    return false;
+    return true;
   }
   protected function getPageTitle() {
-    return "Adresses utiles";
+    return $this->section->name;
   }
   
 }

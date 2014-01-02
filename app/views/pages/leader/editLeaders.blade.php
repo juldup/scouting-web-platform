@@ -40,7 +40,7 @@
         'picture_url': "{{ $leader->has_picture ? $leader->getPictureURL() : "" }}"
       };
     @endforeach
-    @if ($scout_to_leader && !Session::has('error_message'))
+    @if ($scout_to_leader && !Session::has('_old_input'))
       editLeader({{ $scout_to_leader }});
     @endif
   </script>
@@ -72,7 +72,7 @@
   </div>
   
   <div id="leader_form"
-       @if (!Session::has('error_message')) style="display: none;" @endif
+       @if (!Session::has('_old_input')) style="display: none;" @endif
        >
     {{ Form::open(array('files' => true, 'url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)))) }}
       {{ Form::hidden('member_id', 0) }}

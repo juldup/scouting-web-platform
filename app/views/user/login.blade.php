@@ -19,7 +19,7 @@
     </div>
   @endif
 
-  <form name="login" method="post" action="{{ URL::route('login') }}" onSubmit="return checkLogin();">
+  <form name="login" method="post" action="{{ URL::route('login_submit') }}" onSubmit="return checkLogin();">
     <div class='row'>
       <div class='col-lg-2'>
         Pseudo ou e-mail : 

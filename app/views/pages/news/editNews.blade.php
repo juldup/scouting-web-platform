@@ -38,7 +38,7 @@
     <div class='col-lg-12'>
       
       <div id="news_form"
-           @if (!Session::has('error_message')) style="display: none;" @endif
+           @if (!Session::has('_old_input')) style="display: none;" @endif
            >
         {{ Form::open(array('url' => URL::route('manage_news_submit', array('section_slug' => $user->currentSection->slug)))) }}
           {{ Form::hidden('news_id', 0) }}
@@ -55,7 +55,7 @@
           </p>
           <p>
             {{ Form::submit('Enregistrer') }}
-            <a id='delete_link' href="">Supprimer</a>
+            <a id='delete_link' style="display: none;" href="">Supprimer</a>
             <a href="javascript:dismissNewsForm()">Fermer</a>
           </p>
 
@@ -68,7 +68,7 @@
   <div class="row">
     <div class="col-lg-12">
       <h2>Ajouter</h2>
-      <a href="javascript:addNews()">ajouter une nouvelle</a></p>
+      <a href="javascript:addNews()">Ajouter une nouvelle</a></p>
     </div>
   </div>
   
