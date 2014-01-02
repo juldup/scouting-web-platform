@@ -13,7 +13,9 @@
       leaders[{{ $leader->id }}] = {
         'first_name': "{{ Helper::sanitizeForJavascript($leader->first_name) }}",
         'last_name': "{{ Helper::sanitizeForJavascript($leader->last_name) }}",
-        'birth_date': "{{ $leader->birth_date }}",
+        'birth_date_day': "{{ Helper::getDateDay($leader->birth_date) }}",
+        'birth_date_month': "{{ Helper::getDateMonth($leader->birth_date) }}",
+        'birth_date_year': "{{ Helper::getDateYear($leader->birth_date) }}",
         'gender': "{{ $leader->gender }}",
         'nationality': "{{ $leader->nationality }}",
         'address': "{{ Helper::sanitizeForJavascript($leader->address) }}",
@@ -32,6 +34,8 @@
         'email': "{{ $leader->email_member }}",
         'totem': "{{ Helper::sanitizeForJavascript($leader->totem) }}",
         'quali': "{{ Helper::sanitizeForJavascript($leader->quali) }}",
+        'family_in_other_units': {{ $leader->family_in_other_units }},
+        'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($leader->family_in_other_units_details) }}",
         'has_picture': {{ $leader->has_picture ? "true" : "false" }},
         'picture_url': "{{ $leader->has_picture ? $leader->getPictureURL() : "" }}"
       };
@@ -67,7 +71,7 @@
   <div id="leader_form"
        @if (!Session::has('error_message')) style="display: none;" @endif
        >
-    {{ Form::open(array('url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)))) }}
+    {{ Form::open(array('files' => true, 'url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)))) }}
       {{ Form::hidden('member_id', 0) }}
       <div class="row">
         <div class="col-lg-6">
@@ -115,7 +119,7 @@
               <th>{{ Form::label('picture', "Photo") }} :</th>
               <td>
                 <img class="leader_picture_mini" id="current_leader_picture" src="" />
-                {{ Form::text('picture') }}
+                {{ Form::file('picture') }}
               </td>
             </tr>
           </table>
@@ -132,7 +136,11 @@
             </tr>
             <tr>
               <th>{{ Form::label('birth_date', "Date de naissance") }} :</th>
-              <td>{{ Form::text('birth_date', '', array('size' => 25)) }}</td>
+              <td>
+                {{ Form::text('birth_date_day', '', array('class' => 'small', 'placeholder' => 'Jour')) }} /
+                {{ Form::text('birth_date_month', '', array('class' => 'small', 'placeholder' => 'Mois')) }} /
+                {{ Form::text('birth_date_year', '', array('class' => 'small', 'placeholder' => 'Année')) }}
+              </td>
             </tr>
             <tr>
               <th>{{ Form::label('gender', "Sexe") }} :</th>
@@ -210,6 +218,8 @@
               <td>
                 @if ($leader->has_picture)
                   <img class="leader_picture_mini" alt="Photo de {{ $leader->leader_name }}" src="{{ $leader->getPictureURL() }}" />
+                @else
+                  Pas de photo
                 @endif
               </td>
               <td>{{ $leader->phone1 }}</td>

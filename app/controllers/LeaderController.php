@@ -79,4 +79,191 @@ class LeaderController extends BaseController {
     }
   }
   
+  public function submitLeader() {
+    $firstName = Input::get('first_name');
+    $lastName = Input::get('last_name');
+    $birthDateDay = Input::get('birth_date_day');
+    $birthDateMonth = Input::get('birth_date_month');
+    $birthDateYear = Input::get('birth_date_year');
+    $gender = Input::get('gender');
+    $nationality = mb_strtoupper(Input::get('nationality'));
+    $address = Input::get('address');
+    $postcode = Input::get('postcode');
+    $city = Input::get('city');
+    $hasHandicap = Input::get('has_handicap') ? true : false;
+    $handicapDetails = Input::get('handicap_details');
+    $comments = Input::get('comments');
+    $leaderName = Input::get('leader_name');
+    $leaderInCharge = Input::get('leader_in_charge') ? true : false;
+    $leaderDescription = Input::get('leader_description');
+    $leaderRole = Input::get('leader_role');
+    $sectionId = Input::get('section');
+    $phoneMemberUnformatted = Input::get('phone_member');
+    $phoneMemberPrivate = Input::get('phone_member_private');
+    $emailMember = Input::get('email_member');
+    $totem = Input::get('totem');
+    $quali = Input::get('quali');
+    $memberId = Input::get('member_id');
+    $familyMembers = Input::get('family_in_other_units');
+    $familyDetails = Input::get('family_in_other_units_details');
+    $pictureFile = Input::file('picture');
+    
+    $errorMessage = "";
+    
+    if (!$leaderName)
+      $errorMessage .= "Tu dois entrer un nom d'animateur. ";
+    elseif (!Helper::hasCorrectCapitals ($leaderName, true))
+      $errorMessage .= "L'usage des majuscule dans le nom d'animateur n'est pas correct. ";
+    
+    $phoneMember = Helper::formatPhoneNumber($phoneMemberUnformatted);
+    if ($phoneMemberUnformatted && !$phoneMember)
+      $errorMessage .= "Le numéro de GSM n'est pas correct. ";
+    
+    if ($totem && !Helper::hasCorrectCapitals($totem))
+      $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
+    
+    if ($totem && !Helper::hasCorrectCapitals($quali))
+      $errorMessage .= "L'usage des majuscules dans le quali n'est pas correct (il doit commencer par une majuscule). ";
+    
+    if ($emailMember && !filter_var($emailMember, FILTER_VALIDATE_EMAIL))
+      $errorMessage .= "L'adresse e-mail n'est pas valide. ";
+    
+    if (!$firstName)
+      $errorMessage .= "Tu dois entrer le prénom. ";
+    elseif (!Helper::hasCorrectCapitals($firstName, true))
+      $errorMessage .= "L'usage des majuscules dans le prénom n'est pas correct. ";
+    
+    if (!$lastName)
+      $errorMessage .= "Tu dois entrer le nom de famille. ";
+    elseif (!Helper::hasCorrectCapitals($lastName, false))
+      $errorMessage .= "L'usage des majuscules dans le nom de famille n'est pas correct. ";
+    
+    $birthDate = Helper::checkAndReturnDate($birthDateYear, $birthDateMonth, $birthDateDay);
+    if (!$birthDate)
+      $errorMessage .= "La date de naissance n'est pas valide. ";
+    
+    if ($gender != 'M' && $gender != 'F')
+      $errorMessage .= "Le sexe n'est pas une entrée valide. ";
+    
+    if (strlen($nationality) < 2 || strlen($nationality) > 3)
+      $errorMessage .= "Utilise la notation en deux lettres pour la nationality (BE, FR, ...). ";
+    
+    if (!$address || !$postcode || !$city)
+      $errorMessage .= "L'adresse n'est pas complète. ";
+    elseif (!is_numeric ($postcode))
+      $errorMessage .= "Le code postal doit être un nombre. ";
+    
+    if ($hasHandicap && !$handicapDetails) $errorMessage .= "Merci de préciser la nature du handicap. ";
+    
+    if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
+      $familyMembers = 0;
+    
+    if ($errorMessage) {
+      $success = false;
+      $message = $errorMessage;
+    } else {
+      if ($memberId) {
+        $leader = Member::find($memberId);
+        if ($leader) {
+          $leader->first_name = $firstName;
+          $leader->last_name = $lastName;
+          $leader->birth_date = $birthDate;
+          $leader->gender = $gender;
+          $leader->nationality = $nationality;
+          $leader->address = $address;
+          $leader->postcode = $postcode;
+          $leader->city = $city;
+          $leader->has_handicap = $hasHandicap;
+          $leader->handicap_details = $handicapDetails;
+          $leader->comments = $comments;
+          $leader->leader_name = $leaderName;
+          $leader->leader_in_charge = $leaderInCharge;
+          $leader->leader_description = $leaderDescription;
+          $leader->leader_role = $leaderRole;
+          $leader->section_id = $sectionId;
+          $leader->phone_member = $phoneMember;
+          $leader->phone_member_private = $phoneMemberPrivate;
+          $leader->email_member = $emailMember;
+          $leader->totem = $totem;
+          $leader->quali = $quali;
+          $leader->family_in_other_units = $familyMembers;
+          $leader->family_in_other_units_details = $familyDetails;
+          
+          try {
+            $leader->save();
+            $success = true;
+            $message = "Les données de l'animateur ont été modifiées.";
+          } catch (Exception $e) {
+            $success = false;
+            $message = "Une erreur est survenue. Les données n'ont pas été enregistrées.";
+            throw $e;
+          }
+        } else {
+          // Member not found
+          $success = false;
+          $message = "Une erreur est survenue. Les données n'ont pas été enregistrées.";
+        }
+      } else {
+        // New leader
+        try {
+          $leader = Member::create(array(
+              'first_name' => $firstName,
+              'last_name' => $lastName,
+              'birth_date' => $birthDate,
+              'gender' => $gender,
+              'nationality' => $nationality,
+              'address' => $address,
+              'postcode' => $postcode,
+              'city' => $city,
+              'has_handicap' => $hasHandicap,
+              'handicap_details' => $handicapDetails,
+              'comments' => $comments,
+              'leader_name' => $leaderName,
+              'leader_in_charge' => $leaderInCharge,
+              'leader_description' => $leaderDescription,
+              'leader_role' => $leaderRole,
+              'section_id' => $sectionId,
+              'phone_member' => $phoneMember,
+              'phone_member_private' => $phoneMemberPrivate,
+              'email_member' => $emailMember,
+              'totem' => $totem,
+              'quali' => $quali,
+              'family_in_other_units' => $familyMembers,
+              'family_in_other_units_details' => $familyDetails,
+              'is_leader' => true,
+          ));
+          $success = true;
+          $message = "L'animateur a été ajouté au listing.";
+        } catch (Exception $e) {
+          $success = false;
+          $message = "Une erreur est survenue. L'animateur n'a pas été ajouté. $e";
+        }
+      }
+    }
+    
+    // Upload picture
+    if ($success && $leader && $pictureFile) {
+      if (!$pictureFile->getSize()) {
+        $success = false;
+        $message = "Les données ont été modifiées, mais la photo n'a pas pu être enregistrée.";
+      } else {
+        try {
+          $image = new Resizer($pictureFile->getRealPath());
+          $image->resizeImage(256, 256, "crop");
+          $image->saveImage($leader->getPicturePath());
+          $leader->has_picture = true;
+          $leader->save();
+        } catch (Exception $e) {
+          $success = false;
+          $message = "Les données ont été enregistrées, mais la photo n'a pas pu être mise à jour.";
+          throw $e;
+        }
+      }
+    }
+    
+    $redirect = Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message);
+    if ($success) return $redirect;
+    else return $redirect->withInput();
+  }
+  
 }

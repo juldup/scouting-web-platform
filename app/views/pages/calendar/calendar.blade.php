@@ -73,9 +73,9 @@
             {{ Form::hidden('event_id', 0) }}
             <p>
               Date de début :
-              {{ Form::text('start_date_day', '', array('size' => '2')) }} /
-              {{ Form::text('start_date_month', '', array('size' => '2')) }} /
-              {{ Form::text('start_date_year', '', array('size' => '2')) }}
+              {{ Form::text('start_date_day', '', array('size' => '2', 'placeholder' => 'Jour')) }} /
+              {{ Form::text('start_date_month', '', array('size' => '2', 'placeholder' => 'Mois')) }} /
+              {{ Form::text('start_date_year', '', array('size' => '2', 'placeholder' => 'Année')) }}
             </p>
             <p>
               Durée (jours) :

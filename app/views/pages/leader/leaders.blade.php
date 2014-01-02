@@ -79,7 +79,7 @@
     <div class="row">
       <div class="col-lg-4">
         @if ($leader->has_picture)
-          <img src="{{ $leader->getPictureURL() }}" />
+          <img class="leader_picture" src="{{ $leader->getPictureURL() }}" />
         @endif
       </div>
       <div class="col-lg-8">

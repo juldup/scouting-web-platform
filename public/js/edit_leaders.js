@@ -21,6 +21,8 @@ function addLeader(sectionId) {
   $("#leader_form [name='email_member']").val("");
   $("#leader_form [name='totem']").val("");
   $("#leader_form [name='quali']").val("");
+  $("#leader_form [name='family_in_other_units']").val(0);
+  $("#leader_form [name='family_in_other_units_details']").val("");
   $("#leader_form #current_leader_picture").attr("src", "");
   $("#leader_form #current_leader_picture").hide();
   $("#leader_form").slideDown();
@@ -34,7 +36,9 @@ function editLeader(leaderId) {
   $("#leader_form [name='member_id']").val(leaderId);
   $("#leader_form [name='first_name']").val(leaders[leaderId].first_name);
   $("#leader_form [name='last_name']").val(leaders[leaderId].last_name);
-  $("#leader_form [name='birth_date']").val(leaders[leaderId].birth_date);
+  $("#leader_form [name='birth_date_day']").val(leaders[leaderId].birth_date_day);
+  $("#leader_form [name='birth_date_month']").val(leaders[leaderId].birth_date_month);
+  $("#leader_form [name='birth_date_year']").val(leaders[leaderId].birth_date_year);
   $("#leader_form [name='gender']").val(leaders[leaderId].gender);
   $("#leader_form [name='nationality']").val(leaders[leaderId].nationality);
   $("#leader_form [name='address']").val(leaders[leaderId].address);
@@ -53,6 +57,8 @@ function editLeader(leaderId) {
   $("#leader_form [name='email_member']").val(leaders[leaderId].email);
   $("#leader_form [name='totem']").val(leaders[leaderId].totem);
   $("#leader_form [name='quali']").val(leaders[leaderId].quali);
+  $("#leader_form [name='family_in_other_units']").val(leaders[leaderId].family_in_other_units);
+  $("#leader_form [name='family_in_other_units_details']").val(leaders[leaderId].family_in_other_units_details);
   
   $("#leader_form #current_leader_picture").attr("src", leaders[leaderId].picture_url);
   if (leaders[leaderId].has_picture) {
