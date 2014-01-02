@@ -34,7 +34,7 @@ class LeaderController extends BaseController {
     ));
   }
   
-  public function showEdit() {
+  public function showEdit($section_slug, $memberId = false) {
     
     if (!$this->user->isLeader()) {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
@@ -46,11 +46,43 @@ class LeaderController extends BaseController {
             ->orderBy('leader_name', 'ASC')
             ->get();
     
+    $scouts = Member::where('is_leader', '=', false)
+            ->orderBy('last_name', 'ASC')
+            ->orderBy('first_name', 'ASC')
+            ->get();
+    $scoutsForSelect = array('' => 'Sélectionne un scout');
+    foreach ($scouts as $scout) {
+      $scoutsForSelect[$scout->id] = $scout->last_name . " " . $scout->first_name;
+    }
+    
+    if ($memberId) {
+      $memberToTurnLeader = Member::where('is_leader', '=', false)
+              ->where('id', '=', $memberId)
+              ->first();
+      if ($memberToTurnLeader) $leaders[] = $memberToTurnLeader;
+    }
+    
     return View::make('pages.leader.editLeaders', array(
         'leaders' => $leaders,
+        'scouts' => $scoutsForSelect,
+        'scout_to_leader' => $memberId,
     ));
   }
   
+  public function showMemberToLeader($member_id) {
+    return $this->showEdit($this->section->slug, $member_id);
+  }
+  
+  public function postMemberToLeader($section_slug) {
+    $memberId = Input::get('member_id');
+    if ($memberId) {
+      return Redirect::route('edit_leaders_member_to_leader',
+              array('member_id' => $memberId, 'section_slug' => $section_slug));
+    } else {
+      return Redirect::route('edit_leaders', array('section_slug' => $section_slug));
+    }
+  }
+
   public function showEditPrivileges() {
     
     if (!$this->user->isLeader()) {
@@ -188,6 +220,7 @@ class LeaderController extends BaseController {
           $leader->quali = $quali;
           $leader->family_in_other_units = $familyMembers;
           $leader->family_in_other_units_details = $familyDetails;
+          $leader->is_leader = true;
           
           try {
             $leader->save();
@@ -261,9 +294,11 @@ class LeaderController extends BaseController {
       }
     }
     
-    $redirect = Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message);
-    if ($success) return $redirect;
-    else return $redirect->withInput();
+    if ($success)
+      return Redirect::to(URL::route('edit_leaders', array('section_slug' => $leader->getSection()->slug)))
+              ->with($success ? 'success_message' : 'error_message', $message);
+    else
+      return Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message)->withInput();
   }
   
 }

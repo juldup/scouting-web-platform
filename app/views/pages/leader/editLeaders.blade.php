@@ -40,6 +40,9 @@
         'picture_url': "{{ $leader->has_picture ? $leader->getPictureURL() : "" }}"
       };
     @endforeach
+    @if ($scout_to_leader && !Session::has('error_message'))
+      editLeader({{ $scout_to_leader }});
+    @endif
   </script>
 @stop
 
@@ -210,20 +213,23 @@
         </thead>
         <tbody>
           @foreach ($leaders as $leader)
-            <tr>
-              <td><a href="javascript:editLeader({{ $leader->id }})">Modifier</a></td>
-              <td>{{ $leader->leader_name }}</td>
-              <td>{{ $leader->first_name }}</td>
-              <td>{{ $leader->last_name }}</td>
-              <td>
-                @if ($leader->has_picture)
-                  <img class="leader_picture_mini" alt="Photo de {{ $leader->leader_name }}" src="{{ $leader->getPictureURL() }}" />
-                @else
-                  Pas de photo
-                @endif
-              </td>
-              <td>{{ $leader->phone1 }}</td>
-              <td>{{ $leader->email_member }}</td>
+            @if ($leader->id != $scout_to_leader)
+              <tr>
+                <td><a href="javascript:editLeader({{ $leader->id }})">Modifier</a></td>
+                <td>{{ $leader->leader_name }} @if ($leader->leader_in_charge) (responsable) @endif</td>
+                <td>{{ $leader->first_name }}</td>
+                <td>{{ $leader->last_name }}</td>
+                <td>
+                  @if ($leader->has_picture)
+                    <img class="leader_picture_mini" alt="Photo de {{ $leader->leader_name }}" src="{{ $leader->getPictureURL() }}" />
+                  @else
+                    Pas de photo
+                  @endif
+                </td>
+                <td>{{ $leader->phone1 }}</td>
+                <td>{{ $leader->email_member }}</td>
+              </tr>
+            @endif
           @endforeach
         </tbody>
       </table>
@@ -233,15 +239,14 @@
   <div class="row">
     <div class="col-lg-12">
       <h2>Scout devenant animateur</h2>
-      <form>
-        <p>
-          Transformer <select><option>Séléctionne un scout</option></select>
-          en animateur {{ $user->currentSection->de_la_section }}.
-        </p>
-        <p>
-          {{ Form::submit('Transformer maintenant') }}
-        </p>
-      </form>
+      <div id='scout_to_leader'>
+        {{ Form::open(array('url' => URL::route('edit_leaders_member_to_leader_post',
+          array('section_slug' => $user->currentSection->slug)))) }}
+        Transformer
+        {{ Form::select('member_id', $scouts) }}
+        en animateur.
+        {{ Form::close() }}
+      </div>
     </div>
   </div>
   
@@ -250,7 +255,7 @@
       <h2>Nouvel animateur</h2>
       <p>
         Il est recommandé de laisser un nouvel animateur s'inscrire lui-même via le
-        <a href="{{ URL::route('registration') }}">formulaire d'inscription</a>. En cas d'urgence,
+        <a href="{{ URL::route('registration') }}">formulaire d'inscription</a> pour s'assurer que ses coordonnées soient correctes et complètes. En cas d'urgence,
         il est possible d'<a href="javascript:addLeader({{ $user->currentSection->id }})">encoder un nouvel animateur ici</a>.
       </p>
     </div>

@@ -1,3 +1,9 @@
+$().ready(function() {
+  $("#scout_to_leader select").bind('change', function() {
+    $("#scout_to_leader form").trigger('submit');
+  });
+});
+
 function addLeader(sectionId) {
   $("#leader_form [name='member_id']").val("");
   $("#leader_form [name='first_name']").val("");
@@ -26,6 +32,10 @@ function addLeader(sectionId) {
   $("#leader_form #current_leader_picture").attr("src", "");
   $("#leader_form #current_leader_picture").hide();
   $("#leader_form").slideDown();
+}
+
+function changeToLeader($memberId) {
+  
 }
 
 function dismissLeaderForm() {
