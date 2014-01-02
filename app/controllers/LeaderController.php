@@ -140,6 +140,13 @@ class LeaderController extends BaseController {
     $familyDetails = Input::get('family_in_other_units_details');
     $pictureFile = Input::file('picture');
     
+    $editionLevel = $this->editionLevelAllowed($memberId, $sectionId);
+    if (!$editionLevel) {
+      return Redirect::to(URL::previous())
+              ->withInput()
+              ->with('error_message', "Tu n'as pas le droit de faire cette modification.");
+    }
+    
     $errorMessage = "";
     
     if (!$leaderName)
@@ -197,30 +204,32 @@ class LeaderController extends BaseController {
       if ($memberId) {
         $leader = Member::find($memberId);
         if ($leader) {
-          $leader->first_name = $firstName;
-          $leader->last_name = $lastName;
-          $leader->birth_date = $birthDate;
-          $leader->gender = $gender;
-          $leader->nationality = $nationality;
-          $leader->address = $address;
-          $leader->postcode = $postcode;
-          $leader->city = $city;
-          $leader->has_handicap = $hasHandicap;
-          $leader->handicap_details = $handicapDetails;
           $leader->comments = $comments;
           $leader->leader_name = $leaderName;
           $leader->leader_in_charge = $leaderInCharge;
           $leader->leader_description = $leaderDescription;
           $leader->leader_role = $leaderRole;
-          $leader->section_id = $sectionId;
           $leader->phone_member = $phoneMember;
           $leader->phone_member_private = $phoneMemberPrivate;
           $leader->email_member = $emailMember;
           $leader->totem = $totem;
           $leader->quali = $quali;
-          $leader->family_in_other_units = $familyMembers;
-          $leader->family_in_other_units_details = $familyDetails;
-          $leader->is_leader = true;
+          if ($editionLevel == "full") {
+            $leader->address = $address;
+            $leader->postcode = $postcode;
+            $leader->city = $city;
+            $leader->first_name = $firstName;
+            $leader->last_name = $lastName;
+            $leader->birth_date = $birthDate;
+            $leader->gender = $gender;
+            $leader->nationality = $nationality;
+            $leader->has_handicap = $hasHandicap;
+            $leader->handicap_details = $handicapDetails;
+            $leader->section_id = $sectionId;
+            $leader->family_in_other_units = $familyMembers;
+            $leader->family_in_other_units_details = $familyDetails;
+            $leader->is_leader = true;
+          }
           
           try {
             $leader->save();
@@ -299,6 +308,47 @@ class LeaderController extends BaseController {
               ->with($success ? 'success_message' : 'error_message', $message);
     else
       return Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message)->withInput();
+  }
+  
+  private function editionLevelAllowed($memberId, $sectionId) {
+    if (!$memberId) {
+      // Creating new leader
+      if ($this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
+        // Full edition is required to create a member
+        return "full";
+      } else {
+        return false;
+      }
+    } else{
+      // Edit a member
+      $existingMember = Member::find($memberId);
+      if (!$existingMember) return "full"; // Let the process continue, it will fail later anyway
+      $memberSectionId = $existingMember->section_id;
+      
+      // Check if the user has full edit privileges
+      if ($this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId) &&
+              $this->user->can(Privilege::$EDIT_LISTING_ALL, $memberSectionId)) {
+        return "full";
+      }
+      
+      // Check if the user is modifying their own member entry
+      if ($this->user->can(Privilege::$UPDATE_OWN_LISTING_ENTRY, $sectionId) &&
+              $sectionId == $memberSectionId &&
+              $user->isOwnerOfMember($memberId)) {
+        return "full";
+      }
+      
+      // Check if the user has limited edit privileges
+      if ($this->user->can(Privilege::$EDIT_LISTING_LIMITED, $sectionId) &&
+              $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $memberSectionId)) {
+        return "limited";
+      }
+      
+      // None of the above apply
+      return false;
+    }
+    
+    
   }
   
 }

@@ -94,14 +94,14 @@ class Privilege extends Eloquent {
   );
   
   public static $VIEW_HEALTH_CARDS = array(
-      'id' => "Edit listing all",
+      'id' => "View health cards",
       'text' => 'Consulter les fiches santé #delasection',
       'unit' => true,
       'section' => true,
   );
   
   public static $DELETE_HEALTH_CARDS = array(
-      'id' => "Edit listing all",
+      'id' => "Delete health cards",
       'text' => 'Supprimer des fiches santé #delasection',
       'unit' => true,
       'section' => true,

@@ -127,6 +127,14 @@ class User extends Eloquent {
     return $this->isConnected;
   }
   
+  // Returns whether the user owns the given member
+  public function isOwnerOfMember($memberId) {
+    foreach ($this->getAssociatedMembers() as $member) {
+      if ($member->id == $memberId) return true;
+    }
+    return false;
+  }
+  
   // Returns whether the user is logged in and is a member
   public function isMember() {
     if ($this->isMember === null) {

@@ -34,10 +34,6 @@ function addLeader(sectionId) {
   $("#leader_form").slideDown();
 }
 
-function changeToLeader($memberId) {
-  
-}
-
 function dismissLeaderForm() {
   $("#leader_form").slideUp();
 }
