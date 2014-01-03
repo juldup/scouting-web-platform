@@ -184,11 +184,15 @@ class User extends Eloquent {
   // Fetches if need be and returns the list of associated members (i.e. sharing this user's e-mail address)
   public function getAssociatedMembers() {
     if ($this->associatedMembers === null) {
-      // Find all members sharing an e-mail address with this user
-      $this->associatedMembers = Member::where("email1", "=", $this->email)
-              ->orWhere('email2', '=', $this->email)
-              ->orWhere('email3', '=', $this->email)
-              ->orWhere('email_member', '=', $this->email)->get();
+      // Find all members sharing an e-mail address with this use
+      $email = $this->email;
+      $this->associatedMembers = Member::where(function($query) use ($email) {
+        $query->where('email1', '=', $email);
+        $query->orWhere('email2', '=', $email);
+        $query->orWhere('email3', '=', $email);
+        $query->orWhere('email_member', '=', $email);
+      })->where('validated', '=', true)
+              ->get();
     }
     return $this->associatedMembers;
   }

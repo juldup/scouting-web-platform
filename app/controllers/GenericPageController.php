@@ -10,7 +10,7 @@ abstract class GenericPageController extends BaseController {
   
   public function showPage() {
     $page = $this->getPage();
-        $sectionSlugArray = array();
+    $sectionSlugArray = array();
     if ($this->isSectionPage()) {
       // Disable section slug on unit pages to avoid redirect
       $sectionSlugArray = array("section_slug" => $this->user->currentSection->slug);
@@ -30,7 +30,7 @@ abstract class GenericPageController extends BaseController {
     $page = $this->getPage();
     $images = PageImage::where('page_id', '=', $page->id)->get()->all();
     return View::make('pages.editPage')
-            ->with('page_content', $page->content_markdown)
+            ->with('page_content', $page->content_html)
             ->with('page_title', $this->getPageTitle())
             ->with('page_id', $page->id)
             ->with('images', $images)
@@ -43,8 +43,7 @@ abstract class GenericPageController extends BaseController {
     }
     $newContent = Input::get('page_content');
     $page = $this->getPage();
-    $page->content_markdown = $newContent;
-    $page->content_html = \Michelf\Markdown::defaultTransform($newContent);
+    $page->content_html = $newContent;
     $page->save();
     
     $sectionSlugArray = array();
@@ -66,7 +65,6 @@ abstract class GenericPageController extends BaseController {
           "type" => $this->getPageType(),
           "section_id" => $sectionId,
           "content_html" => "<p>Cette page n'existe pas encore.</p>",
-          "content_markdown" => "# Tape ici le titre le la page\n\nTape ici le contenu de la page.\n\nRegarde l'exemple de droite si tu veux faire une mise en page avancée.",
       ));
     }
     return $page;

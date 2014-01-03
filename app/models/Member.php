@@ -12,10 +12,13 @@ class Member extends Eloquent {
   
   public static function existWithEmail($email) {
     if (!$email) return false;
-    $aMember = Member::where('email1', '=', $email)
-            ->orWhere('email2', '=', $email)
-            ->orWhere('email3', '=', $email)
-            ->orWhere('email_member', '=', $email)->first();
+    $aMember = Member::where(function($query) use ($email) {
+      $query->where('email1', '=', $email);
+      $query->orWhere('email2', '=', $email);
+      $query->orWhere('email3', '=', $email);
+      $query->orWhere('email_member', '=', $email);
+    })->where('validated', '=', true)
+            ->first();
     if ($aMember) return true;
     else return false;
   }

@@ -6,6 +6,7 @@ class LeaderController extends BaseController {
     
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
+            ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
             ->get();
@@ -42,11 +43,13 @@ class LeaderController extends BaseController {
     
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
+            ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
             ->get();
     
     $scouts = Member::where('is_leader', '=', false)
+            ->where('validated', '=', true)
             ->orderBy('last_name', 'ASC')
             ->orderBy('first_name', 'ASC')
             ->get();
@@ -57,6 +60,7 @@ class LeaderController extends BaseController {
     
     if ($memberId) {
       $memberToTurnLeader = Member::where('is_leader', '=', false)
+              ->where('validated', '=', true)
               ->where('id', '=', $memberId)
               ->first();
       if ($memberToTurnLeader) $leaders[] = $memberToTurnLeader;
@@ -91,6 +95,7 @@ class LeaderController extends BaseController {
     
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
+            ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
             ->get();
@@ -161,7 +166,7 @@ class LeaderController extends BaseController {
     if ($totem && !Helper::hasCorrectCapitals($totem))
       $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
     
-    if ($totem && !Helper::hasCorrectCapitals($quali))
+    if ($quali && !Helper::hasCorrectCapitals($quali))
       $errorMessage .= "L'usage des majuscules dans le quali n'est pas correct (il doit commencer par une majuscule). ";
     
     if ($emailMember && !filter_var($emailMember, FILTER_VALIDATE_EMAIL))
@@ -192,7 +197,8 @@ class LeaderController extends BaseController {
     elseif (!is_numeric ($postcode))
       $errorMessage .= "Le code postal doit être un nombre. ";
     
-    if ($hasHandicap && !$handicapDetails) $errorMessage .= "Merci de préciser la nature du handicap. ";
+    if ($hasHandicap && !$handicapDetails)
+      $errorMessage .= "Merci de préciser la nature du handicap. ";
     
     if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
       $familyMembers = 0;
@@ -273,12 +279,13 @@ class LeaderController extends BaseController {
               'family_in_other_units' => $familyMembers,
               'family_in_other_units_details' => $familyDetails,
               'is_leader' => true,
+              'validated' => true,
           ));
           $success = true;
           $message = "L'animateur a été ajouté au listing.";
         } catch (Exception $e) {
           $success = false;
-          $message = "Une erreur est survenue. L'animateur n'a pas été ajouté. $e";
+          $message = "Une erreur est survenue. L'animateur n'a pas été ajouté.";
         }
       }
     }

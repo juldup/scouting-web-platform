@@ -58,7 +58,12 @@ Route::get('contacts/{section_slug?}', array("as" => "contacts", "uses" => "Cont
 Route::get('fete-unite/{section_slug?}', array("as" => "annual_feast", "uses" => "AnnualFeastController@showPage"));
 
 // Registration
-Route::get('inscription/{section_slug?}', array("as" => "registration", "uses" => "RegistrationController@showPage"));
+Route::get('inscription/formulaire/{section_slug?}', array("as" => "registration_form", "uses" => "RegistrationController@showForm"));
+Route::post('inscription/formulaire/submit/{section_slug?}', array("as" => "registration_form_submit", "uses" => "RegistrationController@submit"));
+Route::get('inscription/{section_slug?}', array("as" => "registration", "uses" => "RegistrationController@showMain"));
+Route::get('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page", "uses" => "RegistrationController@showEdit"));
+Route::post('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page_submit", "uses" => "RegistrationController@savePage"));
+Route::get('gestion/inscription/valider-supprimer/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manage"));
 
 // Health card
 Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));

@@ -79,7 +79,6 @@ class CreateDatabase extends Migration {
       $table->string('type');
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
-      $table->text('content_markdown')->default("");
       $table->text('content_html')->default("");
       $table->timestamps();
       
@@ -90,7 +89,11 @@ class CreateDatabase extends Migration {
         'type' => 'home',
         'section_id' => 1,
         'content_html' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
-        'content_markdown' => "# Page d'accueil de l'unité\n\nBienvenue."
+    ));
+    DB::table('pages')->insert(array(
+        'type' => 'registration',
+        'section_id' => 1,
+        'content_html' => '<p><span style="font-size:20px"><strong>Comment s&#39;inscrire ?</strong></span></p><p>Pour <strong>inscrire</strong> un enfant ou un ado ne faisant pas encore partie de l&#39;unit&eacute; :</p><ul><li>Premi&egrave;rement, nous vous invitons &agrave; prendre connaissance de notre <a href="/charte">charte d&#39;unit&eacute;</a>.</li><li>Deuxi&egrave;mement, vous devez prendre <a href="/contacts">contact</a> avec l&#39;animateur d&#39;unit&eacute;.</li><li>Troisi&egrave;mement, vous devez remplir le <a href="/inscription/formulaire">formulaire d&#39;inscription</a>.</li><li>Finalement, vous devez verser le montant de la cotisation sur le compte de l&#39;unit&eacute; (BEXX-XXXX-XXXX-XXXX).</li></ul><p>Pour <strong>r&eacute;inscrire</strong> un scout, connectez-vous au site avec un compte valide et rendez-vous sur cette même page.<br />&nbsp;</p><p><span style="font-size:20px"><strong>Cotisation et prix</strong></span></p><p>Le scoutisme est un groupement o&ugrave; les animateurs sont b&eacute;n&eacute;voles. Malgr&eacute; cela, il vous est demand&eacute; de payer une cotisation qui couvre :</p><ul><li>L&#39;inscription dans l&#39;unit&eacute; (achat de mat&eacute;riel, financement des locaux, organisation d&#39;activit&eacute;s, etc.)</li><li>L&#39;inscription au sein de la f&eacute;d&eacute;ration scoute (revues, outils, formation des animateurs, promotion du scoutisme dans les pays d&eacute;favoris&eacute;s, etc.)</li><li>Une <a href="http://www.lesscouts.be/organiser/assurances/deux-assurances-de-base/">assurance</a> en responsabilit&eacute; civile et couvrant les accidents corporels pouvant survenir pendant nos activit&eacute;s</li></ul><p><strong>Combien dois-je payer ?</strong></p><ul><li>Le montant s&#39;&eacute;l&egrave;ve &agrave; <strong>XX euros</strong> pour un enfant (XX euros s&#39;il est animateur).</li><li>Si vous avez deux enfants dans l&#39;unit&eacute;, vous payerez <strong>XX euros</strong> par enfant (XX euros par animateur).</li><li>Si vous avez trois enfants ou plus dans l&#39;unit&eacute;, le prix est de <strong>XX euros</strong> par enfant (XX euros par animateur).</li><li>&Agrave; ces frais s&#39;ajouteront les frais des activit&eacute;s sp&eacute;ciales, week-ends et grand camp, qui vous seront demand&eacute;s au cours de l&#39;ann&eacute;e.</li><li>Le prix ne doit jamais &ecirc;tre un frein &agrave; la participation. Si vous avez des difficult&eacute;s financi&egrave;res, n&#39;h&eacute;sitez pas &agrave; nous en parler, nous trouverons une solution ensemble.</li></ul><p><strong>Comment dois-je payer ?</strong></p><ul><li>Par virement bancaire sur le compte de l&#39;unit&eacute; : <strong>BEXX-XXXX-XXXX-XXXX</strong></li><li>Avec la mention &quot;Cotisation : NOM PR&Eacute;NOM(S)&quot;</li></ul>',
     ));
     
     // Page images
@@ -185,6 +188,7 @@ class CreateDatabase extends Migration {
       $table->text('leader_description')->nullable();
       $table->string('leader_role')->nullable();
       $table->boolean('has_picture')->nullable();
+      $table->boolean('validated')->default(false);
       $table->timestamps();
       
       $table->index('section_id');
@@ -195,6 +199,7 @@ class CreateDatabase extends Migration {
       $table->index('email3');
       $table->index('email_member');
       $table->index('is_leader');
+      $table->index('validated');
     });
     
     // Privileges

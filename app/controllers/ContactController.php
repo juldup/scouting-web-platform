@@ -7,6 +7,7 @@ class ContactController extends BaseController {
     // Find unit staff
     $unitLeaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', '1')
+            ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'desc')
             ->orderBy('leader_name')
             ->get();
@@ -16,6 +17,7 @@ class ContactController extends BaseController {
             ->where('is_leader', '=', true)
             ->where('leader_in_charge', '=', true)
             ->where('section_id', '!=', 1)
+            ->where('validated', '=', true)
             ->orderBy('sections.position')
             ->get();
     
