@@ -57,6 +57,7 @@ class RegistrationController extends GenericPageController {
     $familyMembers = Input::get('family_in_other_units');
     $familyDetails = Input::get('family_in_other_units_details');
     $isLeader = Input::get('is_leader') ? true : false;
+    $policyAgreement = Input::get('policy_agreement') ? true : false;
     
     $errorMessage = "";
     
@@ -134,6 +135,9 @@ class RegistrationController extends GenericPageController {
     
     if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
       $familyMembers = 0;
+    
+    if (Parameter::get(Parameter::$SHOW_UNIT_POLICY) && !$policyAgreement)
+      $errorMessage .= "Vous devez adhérer à la charte d'unité pour inscrire un enfant.";
     
     if ($errorMessage) {
       $success = false;
