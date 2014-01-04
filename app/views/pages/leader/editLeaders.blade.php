@@ -71,7 +71,7 @@
     </div>
   </div>
   
-  <div id="leader_form"
+<div id="leader_form" class="table-based-form"
        @if (!Session::has('_old_input')) style="display: none;" @endif
        >
     {{ Form::open(array('files' => true, 'url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)))) }}
@@ -80,46 +80,46 @@
         <div class="col-lg-6">
           <table>
             <tr>
-              <th>{{ Form::label('leader_name', "Nom d'animateur") }} :</th>
+              <th>{{ Form::label('leader_name', "Nom d'animateur") }}</th>
               <td>{{ Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section")) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('leader_in_charge', "Animateur responsable") }} :</th>
+              <th>{{ Form::label('leader_in_charge', "Animateur responsable") }}</th>
               <td>{{ Form::checkbox('leader_in_charge') }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('leader_description', "Description de l'animateur") }} :</th>
+              <th>{{ Form::label('leader_description', "Description de l'animateur") }}</th>
               <td>{{ Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs")) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('leader_role', "Rôle de l'animateur") }} :</th>
+              <th>{{ Form::label('leader_role', "Rôle de l'animateur") }}</th>
               <td>{{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff")) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('section', "Section") }} :</th>
+              <th>{{ Form::label('section', "Section") }}</th>
               <td>{{ Form::select('section', Section::getSectionsForSelect()) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('phone_member', "GSM") }} :</th>
+              <th>{{ Form::label('phone_member', "GSM") }}</th>
               <td>
                 {{ Form::text('phone_member') }}
                 Caché : {{ Form::checkbox('phone_member_private') }}
               </td>
             </tr>
             <tr>
-              <th>{{ Form::label('email_member', "Adresse e-mail") }} :</th>
+              <th>{{ Form::label('email_member', "Adresse e-mail") }}</th>
               <td>{{ Form::text('email_member', '', array('placeholder' => "L'adr. e-mail n'est pas publiée")) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('totem', "Totem") }} :</th>
+              <th>{{ Form::label('totem', "Totem") }}</th>
               <td>{{ Form::text('totem') }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('quali', "Quali") }} :</th>
+              <th>{{ Form::label('quali', "Quali") }}</th>
               <td>{{ Form::text('quali') }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('picture', "Photo") }} :</th>
+              <th>{{ Form::label('picture', "Photo") }}</th>
               <td>
                 <img class="leader_picture_mini" id="current_leader_picture" src="" />
                 {{ Form::file('picture') }}
@@ -130,15 +130,15 @@
         <div class="col-lg-6">
           <table>
             <tr>
-              <th>{{ Form::label('first_name', "Prénom") }} :</th>
+              <th>{{ Form::label('first_name', "Prénom") }}</th>
               <td>{{ Form::text('first_name', '', array('size' => 25)) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('last_name', "Nom") }} :</th>
+              <th>{{ Form::label('last_name', "Nom") }}</th>
               <td>{{ Form::text('last_name', '', array('size' => 25)) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('birth_date', "Date de naissance") }} :</th>
+              <th>{{ Form::label('birth_date', "Date de naissance") }}</th>
               <td>
                 {{ Form::text('birth_date_day', '', array('class' => 'small', 'placeholder' => 'Jour')) }} /
                 {{ Form::text('birth_date_month', '', array('class' => 'small', 'placeholder' => 'Mois')) }} /
@@ -146,27 +146,27 @@
               </td>
             </tr>
             <tr>
-              <th>{{ Form::label('gender', "Sexe") }} :</th>
+              <th>{{ Form::label('gender', "Sexe") }}</th>
               <td>{{ Form::select('gender', array('M' => 'Garçon', 'F' => 'Fille')) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('nationality', "Nationalité") }} :</th>
+              <th>{{ Form::label('nationality', "Nationalité") }}</th>
               <td>{{ Form::text('nationality', 'BE', array('class' => 'small')) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('address', "Rue et numéro") }} :</th>
+              <th>{{ Form::label('address', "Rue et numéro") }}</th>
               <td>{{ Form::text('address') }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('postcode', "Code postal") }} :</th>
+              <th>{{ Form::label('postcode', "Code postal") }}</th>
               <td>{{ Form::text('postcode') }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('city', "Localité") }} :</th>
+              <th>{{ Form::label('city', "Localité") }}</th>
               <td>{{ Form::text('city') }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('has_handicap', "Handicap") }} :</th>
+              <th>{{ Form::label('has_handicap', "Handicap") }}</th>
               <td>
                 {{ Form::checkbox('has_handicap') }}
                 <br />
@@ -174,13 +174,14 @@
               </td>
             </tr>
             <tr>
-              <th>{{ Form::label('comments', "Commentaires (privés)") }} :</th>
+              <th>{{ Form::label('comments', "Commentaires (privés)") }}</th>
               <td>{{ Form::textarea('comments', '', array('placeholder' => 'Toute information utile à partager aux animateurs')) }}</td>
             </tr>
             <tr>
-              <th>{{ Form::label('family_in_other_units', "Famille autres unités") }} :</th>
+              <th>{{ Form::label('family_in_other_units', "Famille autres unités") }}</th>
               <td>
                 {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect()) }}
+                <br />
                 {{ Form::textarea('family_in_other_units_details', '',
                           array('placeholder' => "S'il y a des membres de la même famille dans une autre unité, " .
                                                   "cela peut entrainer une réduction de la cotisation. Indiquer " .
@@ -188,9 +189,13 @@
             </tr>
           </table>
         </div>
-        <div class="text-center">
-          {{ Form::submit('Enregistrer') }}
-          <a href="javascript:dismissLeaderForm()">Fermer</a>
+      </div>
+      <div class="row">
+        <div class='col-lg-12'>
+          <div class="text-center">
+            {{ Form::submit('Enregistrer') }}
+            <a href="javascript:dismissLeaderForm()">Fermer</a>
+          </div>
         </div>
       </div>
     {{ Form::close() }}

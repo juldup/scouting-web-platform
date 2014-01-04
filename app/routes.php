@@ -124,6 +124,8 @@ Route::get('gestion/privileges/{section_slug?}', array("as" => "edit_privileges"
 
 // Listing
 Route::get('listing/{section_slug?}', array("as" => "listing", "uses" => "ListingController@showPage"));
+Route::get('gestion/listing/{section_slug?}', array("as" => "manage_listing", "uses" => "ListingController@showEdit"));
+Route::post('gestion/listing/submit/{section_slug?}', array("as" => "manage_listing_submit", "uses" => "ListingController@submit"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));

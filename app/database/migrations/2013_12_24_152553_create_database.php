@@ -54,6 +54,7 @@ class CreateDatabase extends Migration {
       $table->string('email')->nullable();
       $table->string('de_la_section');
       $table->string('la_section');
+      $table->string('subgroup_name')->default('Équipe');
       $table->text('last_email_content')->default("");
       $table->timestamps();
       
@@ -285,6 +286,21 @@ class CreateDatabase extends Migration {
         'de_la_section' => "de la meute",
         'la_section' => "la meute",
         'last_email_content' => "",
+        'subgroup_name' => "Sizaine",
+    ));
+    DB::table('sections')->insert(array(
+        'id' => 3,
+        'name' => 'Éclaireurs',
+        'slug' => 'eclaireurs',
+        'position' => 2,
+        'section_type' => 'E',
+        'section_type_number' => 1,
+        'color' => "#0000FF",
+        'email' => 'troupe@monunite.com',
+        'de_la_section' => "de la troupe",
+        'la_section' => "la troupe",
+        'last_email_content' => "",
+        'subgroup_name' => "Patrouille",
     ));
     DB::table('users')->insert(array(
         'id' => 1,
@@ -309,7 +325,33 @@ class CreateDatabase extends Migration {
         'leader_description' => "Je suis l'animateur d'unité",
         'leader_role' => "Responsable",
         'has_picture' => false,
-        'validated' = true,
+        'validated' => true,
+    ));
+    DB::table('members')->insert(array(
+        'first_name' => "Josette",
+        'last_name' => "Vandervelde",
+        'birth_date' => "2005-10-10",
+        'gender' => "F",
+        'nationality' => "BE",
+        'section_id' => 2,
+        'phone1' => "123456798",
+        'email1' => "jos@vandervelde.com",
+        'subgroup' => 'Champions',
+        'validated' => true,
+    ));
+    DB::table('members')->insert(array(
+        'first_name' => "Jocelyne",
+        'last_name' => "van den Putt",
+        'birth_date' => "2005-8-8",
+        'gender' => "F",
+        'nationality' => "BE",
+        'section_id' => 3,
+        'phone1' => "010/45.46.47",
+        'email1' => "michael@vendenputt.com",
+        'subgroup' => 'Tortues',
+        'totem' => 'Hérisson',
+        'quali' => 'Aux longues épines',
+        'validated' => true,
     ));
     
 	}
