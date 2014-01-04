@@ -1,4 +1,4 @@
-<ul class="nav navbar-nav navbar-right">
+<ul class="nav nav-pills navbar-right">
   @foreach ($tabs as $tab)
     @if ($tab['is_selected'])
       <li class="active">

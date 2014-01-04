@@ -1,4 +1,5 @@
 @import "bootstrap";
+@import "bootswaptch";
 
 html,
 body {
@@ -62,6 +63,11 @@ html {
     border: 1px black solid;
 }
 
+// Center section tabs vertically
+.nav-pills li {
+    padding-top: 5px;
+}
+
 .table-based-form input[type=text] {
     width: 250px;
 }
@@ -114,4 +120,8 @@ img.leader_picture {
 
 .div-based-form .form-label {
     text-align: right;
+}
+
+.form-horizontal .form-side-note {
+    padding-top: (@padding-base-vertical + 1); // Default padding plus a border
 }

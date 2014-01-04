@@ -82,7 +82,7 @@ class UserController extends BaseController {
             )
     );
     if ($validator->fails()) {
-      return Redirect::route('login')->withInput()->withErrors($validator)->with('action', 'create');
+      return Redirect::to(URL::route('login') . '#nouvel-utilisateur')->withInput()->withErrors($validator)->with('action', 'create');
     }
     
     // Validation passed, create user

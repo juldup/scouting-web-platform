@@ -6,69 +6,90 @@ class MenuComposer {
     
     $menuItems = array();
     
+    $currentRouteAction = Route::current()->getAction();
+    $currentRouteName = $currentRouteAction['as'];
+    
     $homeCategory = array();
     if (Parameter::get(Parameter::$SHOW_SECTIONS))
-      $homeCategory["Unité et sections"] = URL::route('section');
+      $homeCategory["Unité et sections"] = 'section';
     if (Parameter::get(Parameter::$SHOW_ADDRESSES))
-      $homeCategory["Adresses utiles"] = URL::route('addresses');
+      $homeCategory["Adresses utiles"] = 'addresses';
     if (Parameter::get(Parameter::$SHOW_CONTACTS))
-      $homeCategory["Contacts"] = URL::route('contacts');
+      $homeCategory["Contacts"] = 'contacts';
     if (count($homeCategory))
       $menuItems['Accueil'] = $homeCategory;
     
     $generalCategory = array();
     if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
-      $generalCategory["Fête d'unité"] = URL::route('annual_feast');
+      $generalCategory["Fête d'unité"] = 'annual_feast';
     if (Parameter::get(Parameter::$SHOW_CONTACTS))
-      $generalCategory["Inscriptions"] = URL::route('registration');
+      $generalCategory["Inscriptions"] = 'registration';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
-      $generalCategory["Fiches santé"] = URL::route('health_card');
+      $generalCategory["Fiches santé"] = 'health_card';
     if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
-      $generalCategory["Charte d'unité"] = URL::route('unit_policy');
+      $generalCategory["Charte d'unité"] = 'unit_policy';
     if (Parameter::get(Parameter::$SHOW_UNIFORMS))
-      $generalCategory["Les uniformes"] = URL::route('uniform');
+      $generalCategory["Les uniformes"] = 'uniform';
     if (Parameter::get(Parameter::$SHOW_LINKS))
-      $generalCategory["Liens utiles"] = URL::route('links');
+      $generalCategory["Liens utiles"] = 'links';
     if (count($generalCategory)) {
       $menuItems['Général'] = $generalCategory;
     }
     
     $animationCategory = array();
     if (Parameter::get(Parameter::$SHOW_NEWS))
-      $animationCategory["Nouvelles"] = URL::route('news');
+      $animationCategory["Nouvelles"] = 'news';
     if (Parameter::get(Parameter::$SHOW_CALENDAR))
-      $animationCategory["Calendrier"] = URL::route('calendar');
+      $animationCategory["Calendrier"] = 'calendar';
     if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
-      $animationCategory["Télécharger"] = URL::route('documents');
+      $animationCategory["Télécharger"] = 'documents';
     if (Parameter::get(Parameter::$SHOW_EMAILS))
-      $animationCategory["E-mails"] = URL::route('emails');
+      $animationCategory["E-mails"] = 'emails';
     if (Parameter::get(Parameter::$SHOW_PHOTOS))
-      $animationCategory["Photos"] = URL::route('photos');
+      $animationCategory["Photos"] = 'photos';
     if (Parameter::get(Parameter::$SHOW_LEADERS))
-      $animationCategory["Les animateurs"] = URL::route('leaders');
+      $animationCategory["Les animateurs"] = 'leaders';
     if (Parameter::get(Parameter::$SHOW_LISTING))
-      $animationCategory["Listing des scouts"] = URL::route('listing');
+      $animationCategory["Listing des scouts"] = 'listing';
     if (count($animationCategory)) {
       $menuItems['Animation'] = $animationCategory;
     }
     
     $opinionCategory = array();
     if (Parameter::get(Parameter::$SHOW_SUGGESTIONS))
-      $opinionCategory["Suggestions"] = URL::route('suggestions');
+      $opinionCategory["Suggestions"] = 'suggestions';
     if (Parameter::get(Parameter::$SHOW_GUEST_BOOK))
-      $opinionCategory["Livre d'or"] = URL::route('guest_book');
+      $opinionCategory["Livre d'or"] = 'guest_book';
     if (count($opinionCategory)) {
       $menuItems['Votre avis'] = $opinionCategory;
     }
     
     $helpCategory = array();
     if (Parameter::get(Parameter::$SHOW_HELP))
-      $helpCategory["Aide"] = URL::route('help');
+      $helpCategory["Aide"] = 'help';
     if (count($helpCategory)) {
       $menuItems['Aide'] = $helpCategory;
     }
     
-    $view->withMenuItems($menuItems);
+    $menuArray = array();
+    foreach ($menuItems as $submenuName => $submenu) {
+      $items = array();
+      $submenuActive = false;
+      foreach ($submenu as $itemName => $route) {
+        $active = $route == $currentRouteName;
+        if ($active) $submenuActive = true;
+        $items[$itemName] = array(
+            'url' => URL::route($route),
+            'active' => $active,
+        );
+      }
+      $menuArray[$submenuName] = array(
+          'items' => $items,
+          'active' => $submenuActive,
+      );
+    }
+    
+    $view->withMenuItems($menuArray);
     
   }
   
