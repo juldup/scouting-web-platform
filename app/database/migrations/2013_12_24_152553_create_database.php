@@ -301,7 +301,7 @@ class CreateDatabase extends Migration {
         'gender' => "M",
         'nationality' => "BE",
         'section_id' => 1,
-        'phone1' => "123456798",
+        'phone_member' => "123456798",
         'email_member' => "jos@vandervelde.com",
         'is_leader' => true,
         'leader_in_charge' => true,
@@ -309,6 +309,7 @@ class CreateDatabase extends Migration {
         'leader_description' => "Je suis l'animateur d'unité",
         'leader_role' => "Responsable",
         'has_picture' => false,
+        'validated' = true,
     ));
     
 	}

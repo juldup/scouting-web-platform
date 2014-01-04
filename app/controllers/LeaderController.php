@@ -305,7 +305,6 @@ class LeaderController extends BaseController {
         } catch (Exception $e) {
           $success = false;
           $message = "Les données ont été enregistrées, mais la photo n'a pas pu être mise à jour.";
-          throw $e;
         }
       }
     }

@@ -25,6 +25,11 @@
   
   <div class="row">
     <div class="col-lg-12">
+      <p>
+        <a class='button' href='{{ URL::route('registration') }}'>
+          Retour à la page d'inscription
+        </a>
+      </p>
       <h1>Formulaire d'inscription</h1>
       @if (Session::has('success_message'))
         <p class='alert alert-success'>{{ Session::get('success_message'); }}</p>
@@ -42,6 +47,7 @@
       @if (Session::has('error_message'))
         <p class='alert alert-danger'>{{ Session::get('error_message'); }}</p>
       @endif
+      <p>Dans ce formulaire, <em>le scout</em> signifie <em>le jeune que vous êtes en train d'inscrire</em>.</p>
     </div>
   </div>
       
@@ -51,7 +57,7 @@
     {{ Form::open(array('url' => URL::route('registration_form_submit'))) }}
       <div class="row">
         <div class="col-lg-12">
-          <h3>Identité de l'enfant/ado</h3>
+          <h3>Identité du scout</h3>
         </div>
       </div>
       
@@ -162,10 +168,10 @@
       
       <div class='row'>
         <div class="col-lg-3">
-          {{ Form::label('phone_member', "GSM de l'enfant/ado") }} :
+          {{ Form::label('phone_member', "GSM du scout") }} :
         </div>
         <div class="col-lg-9">
-          {{ Form::text('phone_member', '', array('placeholder' => "GSM de l'enfant/ado")) }}
+          {{ Form::text('phone_member', '', array('placeholder' => "GSM du scout")) }}
           Confidentiel* : {{ Form::checkbox('phone_member_private') }}
           <br />
         </div>
@@ -188,7 +194,7 @@
       
       <div class='row'>
         <div class="col-lg-3">
-          {{ Form::label('email_member', "Adresse e-mail de l'enfant/ado") }} :
+          {{ Form::label('email_member', "Adresse e-mail du scout") }} :
         </div>
         <div class="col-lg-9">
           {{ Form::text('email_member', '', array('placeholder' => "")) }}
@@ -224,7 +230,7 @@
         </div>
         <div class="col-lg-9">
           {{ Form::text('totem') }}
-          Si l'ado a déjà été totémisé précédemment.
+          Si le scout a déjà été totémisé précédemment.
         </div>
       </div>
       
@@ -234,7 +240,7 @@
         </div>
         <div class="col-lg-9">
           {{ Form::text('quali') }}
-          Si l'ado a déjà été qualifié précédemment.
+          Si le scout a déjà été qualifié précédemment.
         </div>
       </div>
       
@@ -321,7 +327,7 @@
           {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect()) }}
           <br />
           {{ Form::textarea('family_in_other_units_details', '',
-                    array('placeholder' => "Si l'enfant/ado a des frères et sœurs dans une autre unité, " .
+                    array('placeholder' => "Si le scout a des frères et sœurs dans une autre unité, " .
                                            "cela peut entrainer une réduction de la cotisation. Indiquer " .
                                            "ici qui et dans quelle(s) unité(s).")) }}
         </div>
