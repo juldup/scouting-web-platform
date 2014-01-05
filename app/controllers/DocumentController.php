@@ -67,7 +67,7 @@ class DocumentController extends BaseController {
   }
   
   public function sendByEmail() {
-    $email = Input::get('email');
+    $email = strtolower(Input::get('email'));
     $documentId = Input::get('document_id');
     if ($email == "") {
       return Redirect::to(URL::previous())->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")->withInput();

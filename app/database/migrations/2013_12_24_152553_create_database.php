@@ -317,7 +317,7 @@ class CreateDatabase extends Migration {
         'gender' => "M",
         'nationality' => "BE",
         'section_id' => 1,
-        'phone_member' => "123456798",
+        'phone_member' => "0482/52.36.91",
         'email_member' => "jos@vandervelde.com",
         'is_leader' => true,
         'leader_in_charge' => true,

@@ -48,10 +48,10 @@ class RegistrationController extends GenericPageController {
     $phone3Private = Input::get('phone3_private') ? true : false;
     $phoneMemberUnformatted = Input::get('phone_member');
     $phoneMemberPrivate = Input::get('phone_member_private');
-    $email1 = Input::get('email1');
-    $email2 = Input::get('email2');
-    $email3 = Input::get('email3');
-    $emailMember = Input::get('email_member');
+    $email1 = strtolower(Input::get('email1'));
+    $email2 = strtolower(Input::get('email2'));
+    $email3 = strtolower(Input::get('email3'));
+    $emailMember = strtolower(Input::get('email_member'));
     $totem = Input::get('totem');
     $quali = Input::get('quali');
     $familyMembers = Input::get('family_in_other_units');
@@ -255,7 +255,7 @@ class RegistrationController extends GenericPageController {
     $sectionId = Input::get('section');
     $phoneMemberUnformatted = Input::get('phone_member');
     $phoneMemberPrivate = Input::get('phone_member_private');
-    $emailMember = Input::get('email_member');
+    $emailMember = strtolower(Input::get('email_member'));
     $totem = Input::get('totem');
     $quali = Input::get('quali');
     $memberId = Input::get('member_id');
@@ -264,9 +264,9 @@ class RegistrationController extends GenericPageController {
     $pictureFile = Input::file('picture');
     
     $isLeader = Input::get('is_leader') ? true : false;
-    $email1 = Input::get('email1');
-    $email2 = Input::get('email2');
-    $email3 = Input::get('email3');
+    $email1 = strtolower(Input::get('email1'));
+    $email2 = strtolower(Input::get('email2'));
+    $email3 = strtolower(Input::get('email3'));
     $phone1Unformatted = Input::get('phone1');
     $phone1Owner = Input::get('phone1_owner');
     $phone1Private = Input::get('phone1_private') ? true : false;

@@ -137,7 +137,7 @@ class LeaderController extends BaseController {
     $sectionId = Input::get('section');
     $phoneMemberUnformatted = Input::get('phone_member');
     $phoneMemberPrivate = Input::get('phone_member_private');
-    $emailMember = Input::get('email_member');
+    $emailMember = strtolower(Input::get('email_member'));
     $totem = Input::get('totem');
     $quali = Input::get('quali');
     $memberId = Input::get('member_id');

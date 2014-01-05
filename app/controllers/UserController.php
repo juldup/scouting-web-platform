@@ -56,7 +56,7 @@ class UserController extends BaseController {
   public function create() {
     // Retrieve data from form
     $username = Input::get('create_username');
-    $email = Input::get('create_email');
+    $email = strtolower(Input::get('create_email'));
     $password = Input::get('create_password');
     $remember = Input::get('create_remember');
     
@@ -148,7 +148,7 @@ class UserController extends BaseController {
     
     if (Request::isMethod('post')) {
       $oldPassword = Input::get('old_password');
-      $email = Input::get('email');
+      $email = strtolower(Input::get('email'));
       $password = Input::get('password');
       $defaultSection = Input::get('default_section');
       
@@ -251,7 +251,7 @@ class UserController extends BaseController {
   public function retrievePassword() {
     
     if (Request::isMethod('post')) {
-      $email = Input::get('email');
+      $email = strtolower(Input::get('email'));
       $users = User::where('email', '=', $email)->get();
       if (count($users)) {
         $passwordRecoveries = array();

@@ -34,7 +34,7 @@ class User extends Eloquent {
     
     $users = User::where(function($query) use ($username) {
       $query->where('username', '=', $username);
-      $query->orWhere('email', '=', $username);
+      $query->orWhere('email', '=', strtolower($username));
     })->get();
     
     foreach ($users as $user) {
