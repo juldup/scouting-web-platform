@@ -9,12 +9,12 @@
   @yield('head')
 </head>
 <body>
-  <!--<div id="wrap">-->
+  <div id="wrap">
     @include('menu.header')
     <div class="container">
       @yield('content')
     </div>
-  <!--</div>-->
+  </div>
   @include('menu.footer')
   
   <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

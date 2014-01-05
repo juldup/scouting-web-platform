@@ -6,141 +6,141 @@
 
 @section('content')
   
-  <div class="row">
-    <div class='col-lg-12'>
-      <h1>Vos données personnelles</h1>
-      @if (Session::has('success_message'))
-        <p class='alert alert-success'>{{ Session::get('success_message') }}</p>
-      @endif
-    </div>
-  </div>
+  @if (Session::has('success_message'))
+    <p class='alert alert-success'>{{ Session::get('success_message') }}</p>
+  @endif
+
+  <div class="well">
+    <legend>Vos données personnelles</legend>
   
-  <div class="row">
-    <div class='col-lg-2'>
-      <p>Nom d'utilisateur</p>
-    </div>
-    <div class='col-lg-4'>
-      <p>{{ $user->username }}</p>
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class='col-lg-2'>
-      <p>Adresse e-mail</p>
-    </div>
-    <div class='col-lg-4'>
-      <p>{{ $user->email }}</p>
-    </div>
-    <div class="col-lg-6">
-      <p>
-        <a href="{{ URL::route('edit_user_email') }}">Changer mon adresse e-mail</a>
-      </p>
-      @if (!$user->verified)
-        <p>
-          <a href="{{ URL::route('user_resend_validation_link') }}">Me renvoyer le lien de validation</a>
-        </p>
-      @endif
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class='col-lg-2'>
-      <p>Mot de passe</p>
-    </div>
-    <div class='col-lg-4'>
-      <p>******</p>
-    </div>
-    <div class="col-lg-6">
-      <p>
-        <a href="{{ URL::route('edit_user_password') }}">Changer mon mot de passe</a>
-      </p>
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class='col-lg-2'>
-      <p>Section par défaut</p>
-    </div>
-    <div class='col-lg-4'>
-      <p>{{ $user->getDefaultSection()->name }}</p>
-    </div>
-    <div class="col-lg-6">
-      <p>
-        <a href="{{ URL::route('edit_user_section') }}">Changer mon section par défaut</a>
-      </p>
-    </div>
-  </div>
-  
-  @if ($action)
-    
     <div class="row">
-      <div class='col-lg-12'>
-        <h1>Modification</h1>
+      <label class='col-md-2 text-right'>Nom d'utilisateur</label>
+      <div class='col-md-3'>
+        <p>{{ $user->username }}</p>
       </div>
     </div>
+
+    <div class="row">
+      <label class='col-md-2 text-right'>Adresse e-mail</label>
+      <div class='col-md-3'>
+        <p>{{ $user->email }}</p>
+      </div>
+      <div class="col-md-7">
+        <p>
+          <a class="btn-sm btn-primary" href="{{ URL::route('edit_user_email') }}#modification">Changer mon adresse e-mail</a>
+        </p>
+        @if (!$user->verified)
+          <p>
+            <a class="btn-sm btn-primary" href="{{ URL::route('user_resend_validation_link') }}">Me renvoyer le lien de validation</a>
+          </p>
+        @endif
+      </div>
+    </div>
+
+    <div class="row">
+      <label class='col-md-2 text-right'>Mot de passe</label>
+      <div class='col-md-3'>
+        <p>******</p>
+      </div>
+      <div class="col-md-7">
+        <p>
+          <a class='btn-sm btn-primary' href="{{ URL::route('edit_user_password') }}#modification">Changer mon mot de passe</a>
+        </p>
+      </div>
+    </div>
+
+    <div class="row">
+      <label class='col-md-2 text-right'>Section par défaut</label>
+      <div class='col-md-3'>
+        <p>{{ $user->getDefaultSection()->name }}</p>
+      </div>
+      <div class="col-md-7">
+        <p>
+          <a class="btn-sm btn-primary" href="{{ URL::route('edit_user_section') }}#modification">Changer ma section par défaut</a>
+        </p>
+      </div>
+    </div>
+
+  </div>
     
-    {{ Form::open() }}
-      @if ($action != 'section')
-        <div class="row">
-          <div class='col-lg-2'>
-            {{ Form::label('old_password', "Mot de passe actuel") }}
-          </div>
-          <div class='col-lg-3'>
-            {{ Form::password('old_password') }}
-          </div>
-          <div class='col-lg-7'>
-            @if ($errors->first('old_password'))
-              <p class="alert alert-danger">{{ $errors->first('old_password') }}</p>
+  @if ($action)
+  
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well">
+          <a name='modification'></a>
+          <legend>
+            @if ($action == 'email')
+              Modification de l'adresse e-mail
+            @elseif ($action == 'password')
+              Modification du mot de passe
+            @elseif ($action == 'section')
+              Modification de la section par défaut
             @endif
-          </div>
-        </div>
-      @endif
-      @if ($action == 'email')
-        <div class="row">
-          <div class='col-lg-2'>
-            {{ Form::label('email', "Nouvelle adresse e-mail") }}
-          </div>
-          <div class='col-lg-4'>
-            {{ Form::text('email') }}
-          </div>
-          <div class='col-lg-6'>
-            @if ($errors->first('email'))
-              <p class="alert alert-danger">{{ $errors->first('email') }}</p>
+          </legend>
+
+          {{ Form::open(array('class' => 'form-horizontal')) }}
+            @if ($action != 'section')
+              <div class="form-group">
+                {{ Form::label('old_password', "Mot de passe actuel", array('class' => "col-md-2 control-label")) }}
+                <div class='col-md-3'>
+                  {{ Form::password('old_password', array('class' => 'form-control')) }}
+                </div>
+              </div>
+              @if ($errors->first('old_password'))
+                <div class="form-group">
+                  <div class='col-md-8 col-md-offset-2'>
+                    <p class="alert alert-danger">{{ $errors->first('old_password') }}</p>
+                  </div>
+                </div>
+              @endif
             @endif
-          </div>
-        </div>
-      @elseif ($action == 'password')
-        <div class="row">
-          <div class='col-lg-2'>
-            {{ Form::label('password', "Nouveau mot de passe") }}
-          </div>
-          <div class='col-lg-3'>
-            {{ Form::password('password') }}
-          </div>
-          <div class='col-lg-6'>
-            @if ($errors->first('password'))
-              <p class="alert alert-danger">{{ $errors->first('password') }}</p>
+            @if ($action == 'email')
+              <div class="form-group">
+                {{ Form::label('email', "Nouvelle adresse", array('class' => "col-md-2 control-label")) }}
+                <div class='col-md-3'>
+                  {{ Form::text('email', '', array('class' => 'form-control')) }}
+                </div>
+              </div>
+              @if ($errors->first('email'))
+                <div class="form-group">
+                  <div class='col-md-8 col-md-offset-2'>
+                    <p class="alert alert-danger">{{ $errors->first('email') }}</p>
+                  </div>
+                </div>
+              @endif
+            @elseif ($action == 'password')
+              <div class="form-group">
+                {{ Form::label('password', "Mot de passe désiré", array('class' => "col-md-2 control-label")) }}
+                <div class='col-md-3'>
+                  {{ Form::password('password', array('class' => 'form-control')) }}
+                </div>
+              </div>
+              @if ($errors->first('password'))
+                <div class="form-group">  
+                  <div class='col-md-8 col-md-offset-2'>
+                    <p class="alert alert-danger">{{ $errors->first('password') }}</p>
+                  </div>
+                </div>
+              @endif
+            @elseif ($action == 'section')
+              <div class="form-group">
+                {{ Form::label('default_section', "Section par défaut", array('class' => "col-md-2 control-label")) }}
+               <div class='col-md-3'>
+                  {{ Form::select('default_section', $sections, $user->default_section, array('class' => 'form-control')) }}
+                </div>
+              </div>
             @endif
-          </div>
-        </div>
-      @elseif ($action == 'section')
-        <div class="row">
-          <div class='col-lg-2'>
-            {{ Form::label('default_section', "Section par défaut") }}
-          </div>
-          <div class='col-lg-3'>
-            {{ Form::select('default_section', $sections, $user->default_section) }}
-          </div>
-        </div>
-      @endif
-      <div class="row">
-        <div class='col-lg-2'>
-        </div>
-        <div class='col-lg-3'>
-          {{ Form::submit('Valider') }}
+            <div class="form-group">
+              <div class='col-md-offset-2 col-md-10'>
+                {{ Form::submit('Valider', array('class' => "btn btn-primary")) }}
+              </div>
+            </div>
+          {{ Form::close() }}
+
         </div>
       </div>
-    {{ Form::close() }}
+    </div>
   @endif
   
 @stop

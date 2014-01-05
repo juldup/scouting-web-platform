@@ -167,11 +167,13 @@ class UserController extends BaseController {
                   )
           );
           if ($validator->fails()) {
-            return Redirect::route('edit_user_email')->withInput()->withErrors($validator);
+            return Redirect::to(URL::route('edit_user_email') . "#modification")
+                    ->withInput()
+                    ->withErrors($validator);
           } else {
             $this->user->changeEmail($email);
             // TODO send verification e-mail
-            return Redirect::route('edit_user')->with('success_message', 'Votre adresse e-mail a été modifiée avec succès.');
+            return Redirect::route('edit_user')->with('success_message', 'Votre adresse e-mail a été modifiée avec succès. Un lien de validation vous a été envoyé par e-mail.');
           }
         } elseif ($action == 'password') {
           // Validation for password update
@@ -184,10 +186,13 @@ class UserController extends BaseController {
                   )
           );
           if ($validator->fails()) {
-            return Redirect::route('edit_user_password')->withInput()->withErrors($validator);
+            return Redirect::to(URL::route('edit_user_password') . "#modification")
+                    ->withInput()
+                    ->withErrors($validator);
           } else {
             $this->user->changePassword($password);
-            return Redirect::route('edit_user')->with('success_message', 'Votre mot de passe a été modifié avec succès.');
+            return Redirect::route('edit_user')
+                    ->with('success_message', 'Votre mot de passe a été modifié avec succès.');
           }
         } elseif ($action == 'section') {
           // Validation for default section update
@@ -196,15 +201,20 @@ class UserController extends BaseController {
                   array("default_section" => "required|integer")
           );
           if ($validator->fails()) {
-            return Redirect::route('edit_user_section')->withInput()->withErrors($validator);
+            return Redirect::to(URL::route('edit_user_section') . "#modification")
+                    ->withInput()
+                    ->withErrors($validator);
           } else {
             $this->user->changeDefaultSection($defaultSection);
-            return Redirect::route('edit_user')->with('success_message', 'Votre section par défaut a été modifiée avec succès.');
+            return Redirect::route('edit_user')
+                    ->with('success_message', 'Votre section par défaut a été modifiée avec succès.');
           }
           
         }
       } else {
-        return Redirect::to(URL::current()) ->withInput()->withErrors(array('old_password' => 'Le mot de passe actuel est erronné'));
+        return Redirect::to(URL::current() . "#modification")
+                ->withInput()
+                ->withErrors(array('old_password' => 'Le mot de passe actuel est erronné'));
       }
     }
     
