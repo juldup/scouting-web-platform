@@ -26,6 +26,14 @@ class Parameter extends Eloquent {
   public static $UNIT_SHORT_NAME = "Unit short name";
   public static $UNIT_LONG_NAME = "Unit long name";
   
+  public static $PRICE_1_CHILD = "Price for one child";
+  public static $PRICE_2_CHILDS = "Price for two childs";
+  public static $PRICE_3_CHILDS = "Price for three childs";
+  public static $PRICE_1_LEADER = "Price for one leader";
+  public static $PRICE_2_LEADERS = "Price for two leaders";
+  public static $PRICE_3_LEADERS = "Price for three leaders";
+  public static $UNIT_BANK_ACCOUNT = "Unit bank account";
+  
   private static $parameters = null;
   
   private static function fetchParameters() {
