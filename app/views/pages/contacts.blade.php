@@ -66,13 +66,13 @@
     <legend>Contacter le webmaster (Julien Dupuis)</legend>
     <div class='row'>
       <div class="col-md-3">
-        Webmaster
+        <p><strong>Webmaster</strong></p>
       </div>
       <div class="col-md-3">
-        <span class='important'>{{ $webmaster['name'] }}</span>
+        <p>{{ $webmaster['name'] }}</p>
       </div>
       <div class="col-md-2">
-        {{ $webmaster['phone'] }}
+        <p>{{ $webmaster['phone'] }}</p>
       </div>
       <div class="col-md-4">
         <a class='btn-sm btn-primary' href='envoiEmail.php?dest=webmaster'>Contacter {{ $webmaster['name'] }} par e-mail</a>
