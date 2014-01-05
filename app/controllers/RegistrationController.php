@@ -133,6 +133,9 @@ class RegistrationController extends GenericPageController {
     if ($hasHandicap && !$handicapDetails)
       $errorMessage .= "Merci de préciser la nature du handicap. ";
     
+    if (!$hasHandicap && trim($handicapDetails))
+      $errorMessage .= "Vous devez cocher la case handicap, ou supprimer les détails de l'handicap. ";
+    
     if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
       $familyMembers = 0;
     

@@ -24,7 +24,7 @@
   @endif
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <p>
         <a class='button' href='{{ URL::route('registration') }}'>
           Retour à la page d'inscription
@@ -53,323 +53,287 @@
       
       
       
-  <div id="registration_form" class='div-based-form'>
-    {{ Form::open(array('url' => URL::route('registration_form_submit'))) }}
-      <div class="row">
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-8">
-          <h3>Identité du scout</h3>
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('first_name', "Prénom") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('first_name') }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('last_name', "Nom") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('last_name') }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('birth_date', "Date de naissance") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('birth_date_day', '', array('class' => 'small', 'placeholder' => 'Jour')) }} /
-          {{ Form::text('birth_date_month', '', array('class' => 'small', 'placeholder' => 'Mois')) }} /
-          {{ Form::text('birth_date_year', '', array('class' => 'small', 'placeholder' => 'Année')) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('gender', "Sexe") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::select('gender', array('M' => 'Garçon', 'F' => 'Fille')) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('nationality', "Nationalité") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('nationality', 'BE', array('class' => 'small')) }}
-        </div>
-      </div>
-      
-      <div class="row">
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-8">
-          <h3>Adresse</h3>
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('address', "Rue et numéro") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('address') }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('postcode', "Code postal") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('postcode') }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('city', "Localité") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('city') }}
-        </div>
-      </div>
-      
-      <div class="row">
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-8">
-          <h3>Contact</h3>
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('phone1', "Téléphone/GSM des parents") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('phone1', '', array('placeholder' => "Numéro principal", 'class' => "medium")) }}
-          Confidentiel (*) : {{ Form::checkbox('phone1_private') }}
-          Téléphone de : {{ Form::text('phone1_owner', '', array('placeholder' => "Ex: maison", 'class' => "medium")) }}
-          <br />
-          {{ Form::text('phone2', '', array('placeholder' => "Autre numéro", 'class' => "medium")) }}
-          Confidentiel (*) : {{ Form::checkbox('phone2_private') }}
-          Téléphone de : {{ Form::text('phone2_owner', '', array('placeholder' => "Ex: gsm maman", 'class' => "medium")) }}
-          <br />
-          {{ Form::text('phone3', '', array('placeholder' => "Autre numéro", 'class' => "medium")) }}
-          Confidentiel (*) : {{ Form::checkbox('phone3_private') }}
-          Téléphone de : {{ Form::text('phone3_owner', '', array('placeholder' => "Ex: gsm papa", 'class' => "medium")) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('phone_member', "GSM du scout") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('phone_member', '', array('placeholder' => "GSM du scout", 'class' => "medium")) }}
-          Confidentiel (*) : {{ Form::checkbox('phone_member_private') }}
-          <br />
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('email_member', "Adresses e-mail des parents") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('email1', '', array()) }}
-          Il est recommandé de donner une adresse e-mail.
-          <br />
-          {{ Form::text('email2', '', array()) }}
-          Les adresses e-mail resteront toujours confidentielles (*).
-          <br />
-          {{ Form::text('email3', '', array()) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('email_member', "Adresse e-mail du scout") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('email_member', '', array('placeholder' => "")) }}
-        </div>
-      </div>
-  
   <div class="row">
-    <div class="col-lg-4">
-    </div>
-    <div class="col-lg-8">
-      <p>
-        (*) Confidentiel signifie que seuls les animateurs auront accès à l'information.
-      </p>
-    </div>
-  </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-        </div>
-        <div class="col-lg-8">
-          <h3>Choix de la section</h3>
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('section', "Section") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::select('section', Section::getSectionsForSelect(), $user->currentSection->id) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('totem', "Totem") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('totem') }}
-          Si le scout a déjà été totémisé précédemment.
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('quali', "Quali") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::text('quali') }}
-          Si le scout a déjà été qualifié précédemment.
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('is_leader', "Inscription d'un animateur") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::checkbox('is_leader') }}
-        </div>
-      </div>
-    
-      <div class="leader_specific" style="display:none;">
-        
-        <div class='row'>
-          <div class="col-lg-4 form-label">
-            {{ Form::label('leader_name', "Nom d'animateur") }}
+    <div class="col-md-12">
+      <div class="well">
+        <div id="registration_form">
+          {{ Form::open(array('url' => URL::route('registration_form_submit'), 'class' => 'form-horizontal')) }}
+          
+          <legend>Identité du scout</legend>
+          
+          <div class='form-group'>
+            {{ Form::label('first_name', "Prénom", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('first_name', '', array('class' => 'form-control')) }}
+            </div>
           </div>
-          <div class="col-lg-8">
-            {{ Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section")) }}
+          
+          <div class="form-group">
+            {{ Form::label('last_name', "Nom", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('last_name', '', array('class' => 'form-control')) }}
+            </div>
           </div>
-        </div>
-        
-        <div class='row'>
-          <div class="col-lg-4 form-label">
-            {{ Form::label('leader_in_charge', "Animateur responsable") }}
+          
+          <div class="form-group">
+            {{ Form::label('birth_date', "Date de naissance", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('birth_date_day', '', array('class' => 'small form-control', 'placeholder' => 'Jour')) }} /
+              {{ Form::text('birth_date_month', '', array('class' => 'small form-control', 'placeholder' => 'Mois')) }} /
+              {{ Form::text('birth_date_year', '', array('class' => 'small form-control', 'placeholder' => 'Année')) }}
+            </div>
           </div>
-          <div class="col-lg-8">
-            {{ Form::checkbox('leader_in_charge') }}
+          
+          <div class='form-group'>
+            {{ Form::label('gender', "Sexe", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::select('gender', array('M' => 'Garçon', 'F' => 'Fille'), 'M', array('class' => 'form-control')) }}
+            </div>
           </div>
-        </div>
-        
-        <div class='row'>
-          <div class="col-lg-4 form-label">
-            {{ Form::label('leader_description', "Description de l'animateur") }}
+          
+          <div class='form-group'>
+            {{ Form::label('nationality', "Nationalité", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-8">
+              {{ Form::text('nationality', 'BE', array('class' => 'small form-control')) }}
+            </div>
           </div>
-          <div class="col-lg-8">
-            {{ Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs")) }}
+          
+          <legend>Adresse</legend>
+          
+          <div class='form-group'>
+            {{ Form::label('address', "Rue et numéro", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('address', '', array('class' => 'form-control')) }}
+            </div>
           </div>
-        </div>
-        
-        <div class='row'>
-          <div class="col-lg-4 form-label">
-            {{ Form::label('leader_role', "Rôle de l'animateur") }}
+          
+          <div class='form-group'>
+            {{ Form::label('postcode', "Code postal", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('postcode', '', array('class' => 'small form-control')) }}
+            </div>
           </div>
-          <div class="col-lg-8">
-            {{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff")) }}
+          
+          <div class='form-group'>
+            {{ Form::label('city', "Localité", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('city', '', array('class' => 'form-control')) }}
+            </div>
           </div>
-        </div>
-        
-      </div>
+          
+          <legend>Contact</legend>
+          
+          <div class="row">
+            {{ Form::label('phone1', "Téléphone/GSM des parents", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-9">
+              {{ Form::text('phone1', '', array('placeholder' => "Numéro principal", 'class' => "form-control medium")) }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone1_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
+              {{ Form::checkbox('phone1_private') }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone1_owner', 'Téléphone de', array('class' => 'control-label')) }}
+              {{ Form::text('phone1_owner', '', array('placeholder' => "Ex: maison", 'class' => "medium form-control")) }}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-9 col-md-offset-3">
+              {{ Form::text('phone2', '', array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone2_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
+              {{ Form::checkbox('phone2_private') }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone2_owner', 'Téléphone de', array('class' => 'control-label')) }}
+              {{ Form::text('phone2_owner', '', array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-9 col-md-offset-3">
+              {{ Form::text('phone3', '', array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone3_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
+              {{ Form::checkbox('phone3_private') }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone3_owner', 'Téléphone de', array('class' => 'control-label')) }}
+              {{ Form::text('phone3_owner', '', array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) }}
+            </div>
+          </div>
+          
+          <div class='form-group'>
+            {{ Form::label('phone_member', "GSM du scout", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-9">
+              {{ Form::text('phone_member', '', array('placeholder' => "GSM du scout", 'class' => "medium form-control")) }}
+              <span class='horiz-divider'></span>
+              {{ Form::label('phone_member_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
+              {{ Form::checkbox('phone_member_private') }}
+            </div>
+          </div>
+          
+          <div class='row'>
+            {{ Form::label('email_member', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('email1', '', array('class' => 'form-control')) }}
+            </div>
+            <div class="col-md-5">
+              <p class="form-side-note">Il est recommandé de donner une adresse e-mail.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 col-md-offset-3">
+              {{ Form::text('email2', '', array('class' => 'form-control')) }}
+            </div>
+            <div class="col-md-5">
+              <p class="form-side-note">Les adresses e-mail resteront toujours confidentielles (*).</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-4 col-md-offset-3">
+              {{ Form::text('email3', '', array('class' => 'form-control')) }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            {{ Form::label('email_member', "Adresse e-mail du scout", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('email_member', '', array('placeholder' => "", 'class' => 'form-control')) }}
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <div class="col-md-9 col-md-offset-3">
+              <p>
+                (*) Confidentiel signifie que seuls les animateurs auront accès à l'information.
+              </p>
+            </div>
+          </div>
       
-      <div class='row'>
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-8">
-          <h3>Remarques particulières</h3>
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('has_handicap', "Handicap") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::checkbox('has_handicap') }}
-          <br />
-          {{ Form::textarea('handicap_details', '', array('placeholder' => "Détails du handicap")) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('comments', "Commentaires") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::textarea('comments', '', array('placeholder' => "Toute information utile à partager aux animateurs (sauf les informations médicales que vous serez amené à indiquer dans une fiche santé).")) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4 form-label">
-          {{ Form::label('family_in_other_units', "Membres de la famille dans d'autres unités") }}
-        </div>
-        <div class="col-lg-8">
-          {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect()) }}
-          <br />
-          {{ Form::textarea('family_in_other_units_details', '',
-                    array('placeholder' => "Si le scout a des frères et sœurs dans une autre unité, " .
-                                           "cela peut entrainer une réduction de la cotisation. Indiquer " .
-                                           "ici qui et dans quelle(s) unité(s).")) }}
-        </div>
-      </div>
-      
-      <div class='row'>
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-8">
-          <h3>Terminer l'inscription</h3>
-        </div>
-      </div>
+          <legend>Choix de la section</legend>
+          
+          <div class='form-group'>
+            {{ Form::label('section', "Section", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::select('section', Section::getSectionsForSelect(), $user->currentSection->id, array('class' => 'form-control')) }}
+            </div>
+          </div>
+          
+          <div class='form-group'>
+            {{ Form::label('totem', "Totem", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('totem', '', array('class' => 'form-control')) }}
+            </div>
+            <div class="col-md-5">
+              <p class="form-side-note">Si le scout a déjà été totémisé précédemment.</p>
+            </div>
+          </div>
+          
+          <div class='form-group'>
+            {{ Form::label('quali', "Quali", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              {{ Form::text('quali', '', array('class' => 'form-control')) }}
+            </div>
+            <div class="col-md-5">
+              <p class="form-side-note">Si le scout a déjà été qualifié précédemment.</p>
+            </div>
+          </div>
+          
+          <div class='form-group'>
+            {{ Form::label('is_leader', "Inscription d'un animateur", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-4">
+              <div class="checkbox">
+                {{ Form::checkbox('is_leader') }}
+              </div>
+            </div>
+          </div>
+          
+          <div class="leader_specific" style="display:none;">
+            
+            <div class='form-group'>
+              {{ Form::label('leader_name', "Nom d'animateur", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-4">
+                {{ Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section", 'class' => 'form-control')) }}
+              </div>
+            </div>
+            
+            <div class='form-group'>
+              {{ Form::label('leader_in_charge', "Animateur responsable", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-8">
+                <div class="checkbox">
+                  {{ Form::checkbox('leader_in_charge') }}
+                </div>
+              </div>
+            </div>
+            
+            <div class='form-group'>
+              {{ Form::label('leader_description', "Description de l'animateur", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-6">
+                {{ Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs", 'rows' => 3, 'class' => 'form-control')) }}
+              </div>
+            </div>
+            
+            <div class='form-group'>
+              {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-6">
+                {{ Form::textarea('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'rows' => 3, 'class' => 'form-control')) }}
+              </div>
+            </div>
+            
+          </div>
+          
+          <legend>Remarques particulières</legend>
+          
+          <div class='row'>
+            {{ Form::label('has_handicap', "Handicap", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-8">
+              <div class="checkbox">
+                {{ Form::checkbox('has_handicap') }}
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-6 col-md-offset-3">
+              {{ Form::textarea('handicap_details', '', array('placeholder' => "Détails du handicap", 'rows' => 3, 'class' => 'form-control')) }}
+            </div>
+          </div>
+          
+          <div class='form-group'>
+            {{ Form::label('comments', "Commentaires", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-6">
+              {{ Form::textarea('comments', '', array('placeholder' => "Toute information utile à partager aux animateurs (sauf les informations médicales que vous serez invité à indiquer dans une fiche santé).", 'rows' => 3, 'class' => 'form-control')) }}
+            </div>
+          </div>
+          
+          <div class='row'>
+            {{ Form::label('family_in_other_units', "Famille dans d'autres unités", array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-2">
+              {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), '', array('class' => 'form-control')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-6 col-md-offset-3">
+              {{ Form::textarea('family_in_other_units_details', '',
+                        array('placeholder' => "Si le scout a des frères et sœurs dans une autre unité, " .
+                                               "cela peut entrainer une réduction de la cotisation. Indiquer " .
+                                               "ici qui et dans quelle(s) unité(s).", 'rows' => 3, 'class' => 'form-control')) }}
+            </div>
+          </div>
+          
+      <legend>Terminer l'inscription</legend>
       
       @if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
-        <div class='row'>
-          <div class="col-lg-4 form-label">
-            {{ Form::label('policy_agreement', "Engagement") }}
-          </div>
-          <div class="col-lg-8">
-            J'ai pris connaissance de la <a target="_blank" href="{{ URL::route('unit_policy') }}">charte d'unité</a> et y adhère entièrement : 
-            {{ Form::checkbox('policy_agreement') }}
+        <div class='form-group'>
+          {{ Form::label('policy_agreement', "Engagement", array('class' => 'col-md-3 control-label')) }}
+          <div class="col-md-8">
+            <p class="form-side-note">
+              J'ai pris connaissance de la <a target="_blank" href="{{ URL::route('unit_policy') }}">charte d'unité</a>
+              et y adhère entièrement : 
+              {{ Form::checkbox('policy_agreement') }}
+            </p>
           </div>
         </div>
       @endif
      
-      <div class="row">
-        <div class="col-lg-4">
-        </div>
-        <div class="col-lg-8">
-          {{ Form::submit('Inscrire maintenant') }}
+      <div class="form-group">
+        <div class="col-md-9 col-md-offset-3">
+          {{ Form::submit('Inscrire maintenant', array('class' => 'btn btn-primary')) }}
         </div>
       </div>
     {{ Form::close() }}
