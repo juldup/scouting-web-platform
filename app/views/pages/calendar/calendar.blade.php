@@ -184,7 +184,7 @@
             @endif
 
             {{-- Day --}}
-            <div class='day big-target'>
+            <div class='day @if ($editing) big-target @endif'>
 
               {{-- Number of the day --}}
               @if ($editing)
