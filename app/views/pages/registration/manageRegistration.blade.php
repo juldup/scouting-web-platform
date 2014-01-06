@@ -242,26 +242,49 @@
   <div class="row">
     <div class="col-lg-12">
       <h2>Inscriptions en attentes pour {{ $user->currentSection->la_section }}</h2>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Animateur</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach ($registrations as $member)
+      @if (count($registrations))
+      <table class="table table-striped table-hover">
+          <thead>
             <tr>
-              <td><a href="javascript:editRegistration({{ $member->id }})">Inscrire</a></td>
-              <td>{{ $member->first_name }}</td>
-              <td>{{ $member->last_name }}</td>
-              <td>{{ $member->is_leader ? "Oui" : "Non" }}</td>
+              <th></th>
+              <th>Nom</th>
+              <th>Prénom</th>
+              <th>Animateur</th>
             </tr>
+          </thead>
+          <tbody>
+            @foreach ($registrations as $member)
+              <tr>
+                <td><a class="btn-sm btn-primary" href="javascript:editRegistration({{ $member->id }})">Inscrire</a></td>
+                <td>{{ $member->first_name }}</td>
+                <td>{{ $member->last_name }}</td>
+                <td>{{ $member->is_leader ? "Oui" : "Non" }}</td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      @else
+        @if (count($other_sections))
+          <p>Il n'y a pas de demande d'inscription pour {{ $user->currentSection->la_section }}.</p>
+        @else
+          <p>Il n'y a aucune demande d'inscription en attente.</p>
+        @endif  
+      @endif
+      
+      @if (count($other_sections))
+        <p>Il y a des demandes d'inscription en attente dans d'autres sections :
+          <?php $first = true; ?>
+          @foreach ($other_sections as $other_section)
+            @if ($first) <?php $first = false; ?>
+            @else –
+            @endif
+            <a href='{{ URL::route('manage_registration', array('section_slug' => $other_section->slug)) }}'>
+              {{ $other_section->name}}
+            </a>
           @endforeach
-        </tbody>
-      </table>
+        </p>
+      @endif
+      
     </div>
   </div>
   

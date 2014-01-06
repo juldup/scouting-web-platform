@@ -244,8 +244,17 @@ class RegistrationController extends GenericPageController {
             ->where('section_id', '=', $this->section->id)
             ->get();
     
+    $otherSection = Section::where('id', '!=', $this->section->id)
+            ->whereExists(function($query) {
+      $query->select(DB::raw(1))
+              ->from('members')
+              ->where('validated', '=', false)
+              ->whereRaw('members.section_id = sections.id');
+    })->get();
+    
     return View::make('pages.registration.manageRegistration', array(
         'registrations' => $pendingRegistrations,
+        'other_sections' => $otherSection,
     ));
     
   }
