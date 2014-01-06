@@ -41,7 +41,7 @@
       };
     @endforeach
     @if ($scout_to_leader && !Session::has('_old_input'))
-      editLeader({{ $scout_to_leader }});
+      editLeader({{ $scout_to_leader }}, true);
     @endif
   </script>
 @stop
@@ -64,7 +64,7 @@
   </div>
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
   
       <h1>Animateurs {{ $user->currentSection->de_la_section }}</h1>
       @include('subviews.flashMessages')
@@ -74,9 +74,9 @@
   @include('subviews.editMemberForm', array('form_legend' => "Modifier un animateur", 'submit_url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => true, 'edit_identity' => true, 'edit_section' => false, 'edit_totem' => true,'edit_leader' => true, 'edit_section' => true))
     
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <h2>Liste des animateurs actuels {{ $user->currentSection->de_la_section }}</h2>
-      <table>
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th></th>
@@ -92,7 +92,7 @@
           @foreach ($leaders as $leader)
             @if ($leader->id != $scout_to_leader)
               <tr>
-                <td><a href="javascript:editLeader({{ $leader->id }})">Modifier</a></td>
+                <td><a class="btn-sm btn-primary" href="javascript:editLeader({{ $leader->id }})">Modifier</a></td>
                 <td>{{ $leader->leader_name }} @if ($leader->leader_in_charge) (responsable) @endif</td>
                 <td>{{ $leader->first_name }}</td>
                 <td>{{ $leader->last_name }}</td>
@@ -103,7 +103,7 @@
                     Pas de photo
                   @endif
                 </td>
-                <td>{{ $leader->phone1 }}</td>
+                <td>{{ $leader->phone_member }}</td>
                 <td>{{ $leader->email_member }}</td>
               </tr>
             @endif
@@ -114,25 +114,31 @@
   </div>
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <h2>Scout devenant animateur</h2>
-      <div id='scout_to_leader'>
+      <div id='scout_to_leader' class="form-horizontal">
         {{ Form::open(array('url' => URL::route('edit_leaders_member_to_leader_post',
           array('section_slug' => $user->currentSection->slug)))) }}
-        Transformer
-        {{ Form::select('member_id', $scouts) }}
-        en animateur.
+          <p class="form-side-note float-left">
+            Transformer&nbsp;
+          </p>
+          <p class="float-left">
+            {{ Form::select('member_id', $scouts, '', array('class' => 'form-control large')) }}
+          </p>
+          <p class="form-side-note">
+            &nbsp;en animateur.
+          <p>
         {{ Form::close() }}
       </div>
     </div>
   </div>
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <h2>Nouvel animateur</h2>
       <p>
         Il est recommandé de laisser un nouvel animateur s'inscrire lui-même via le
-        <a href="{{ URL::route('registration') }}">formulaire d'inscription</a> pour s'assurer que ses coordonnées soient correctes et complètes. En cas d'urgence,
+        <a href="{{ URL::route('registration_form') }}">formulaire d'inscription</a> pour s'assurer que ses coordonnées soient correctes et complètes. En cas d'urgence,
         il est possible d'<a href="javascript:addLeader({{ $user->currentSection->id }})">encoder un nouvel animateur ici</a>.
       </p>
     </div>

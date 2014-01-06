@@ -90,5 +90,4 @@ $().ready(function() {
   $('input[type="checkbox"]').bootstrapSwitch();
   $('input[type="checkbox"]').bootstrapSwitch('setOnLabel', 'Oui');
   $('input[type="checkbox"]').bootstrapSwitch('setOffLabel', 'Non');
-  //$('input[type="checkbox"]').bootstrapSwitch('setSizeClass', 'switch-small');
 });

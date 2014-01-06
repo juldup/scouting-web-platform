@@ -5,6 +5,7 @@ $().ready(function() {
 });
 
 function addLeader(sectionId) {
+  $("#member_form legend:first").html("Ajouter un animateur");
   $("#member_form [name='member_id']").val("");
   $("#member_form [name='first_name']").val("");
   $("#member_form [name='last_name']").val("");
@@ -38,7 +39,11 @@ function dismissMemberForm() {
   $("#member_form").slideUp();
 }
 
-function editLeader(leaderId) {
+function editLeader(leaderId, scoutToLeader) {
+  if (scoutToLeader)
+    $("#member_form legend:first").html("Transformer un scout en animateur");
+  else
+    $("#member_form legend:first").html("Modifier un animateur");
   $("#member_form [name='member_id']").val(leaderId);
   $("#member_form [name='first_name']").val(leaders[leaderId].first_name);
   $("#member_form [name='last_name']").val(leaders[leaderId].last_name);
