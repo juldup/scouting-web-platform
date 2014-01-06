@@ -272,7 +272,7 @@
             <div class='form-group'>
               {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'col-md-3 control-label')) }}
               <div class="col-md-6">
-                {{ Form::textarea('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'rows' => 3, 'class' => 'form-control')) }}
+                {{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control')) }}
               </div>
             </div>
             

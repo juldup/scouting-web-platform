@@ -91,3 +91,11 @@ $().ready(function() {
   $('input[type="checkbox"]').bootstrapSwitch('setOnLabel', 'Oui');
   $('input[type="checkbox"]').bootstrapSwitch('setOffLabel', 'Non');
 });
+
+$().ready(function() {
+  $(".big-target").click(function(event) {
+    // TODO
+//    window.location = $(this).find('a').attr('href');
+//    return false;
+  });
+});

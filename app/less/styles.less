@@ -161,3 +161,45 @@ select {
 .float-left {
     float: left;
 }
+
+.calendar > div {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.calendar > div > div, .calendar > div > a {
+    display: table-cell;
+    border: 1px solid lightgray;
+    border-bottom: none;
+    padding: 4px 6px;
+}
+
+.calendar .month {
+    text-align: center;
+}
+
+.calendar .month .month-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.calendar .day-name {
+    font-weight: bold;
+}
+
+.day-number {
+    background-color: #eee;
+    color: @text-color;
+    display: inline-block;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: bold;
+    text-align: center;
+    border-radius: .25em;
+    margin-bottom: 5px;
+}
+
+.big-target {
+    cursor: pointer;
+}
