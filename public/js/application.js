@@ -84,3 +84,11 @@ function removeImage(image_id) {
     console.log(textStatus);
   });
 }
+
+// Convert all checkboxes to switches
+$().ready(function() {
+  $('input[type="checkbox"]').bootstrapSwitch();
+  $('input[type="checkbox"]').bootstrapSwitch('setOnLabel', 'Oui');
+  $('input[type="checkbox"]').bootstrapSwitch('setOffLabel', 'Non');
+  //$('input[type="checkbox"]').bootstrapSwitch('setSizeClass', 'switch-small');
+});
