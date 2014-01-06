@@ -28,7 +28,7 @@
   @endif
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <h1>Animateurs {{ $user->currentSection->de_la_section }}</h1>
       @include('subviews.flashMessages')
     </div>
@@ -38,9 +38,8 @@
   @foreach ($leaders as $leader)
     @if ($currentLeaderInCharge != $leader->leader_in_charge)
       <div class="row">
-        <div class="col-lg-4"></div>
-        <div class="col-lg-8">
-          <h3>
+        <div class="col-md-12">
+          <legend>
             @if ($leader->leader_in_charge)
               <?php $currentLeaderInCharge = true; ?>
               @if ($user->currentSection->id == 1)
@@ -76,23 +75,31 @@
         </div>
       </div>
     @endif
-    <div class="row">
-      <div class="col-lg-4">
-        @if ($leader->has_picture)
-          <img class="leader_picture" src="{{ $leader->getPictureURL() }}" />
-        @endif
-      </div>
-      <div class="col-lg-8">
-        <p>{{ $leader->leader_name }}</p>
-        <p>{{ Helper::rawToHTML($leader->leader_description) }}</p>
-        @if ($leader->leader_role)
-          <p>Rôle : {{ Helper::rawToHTML($leader->leader_role) }}</p>
-        @endif
-        <p>Nom : {{ $leader->first_name }} {{ $leader->last_name }}</p>
-        @if (!$leader->phone_member_private && $leader->phone_member)
-          <p>Tél. : {{ $leader->phone_member }}</p>
-        @endif
-        <p>E-mail : <a href="">Envoyer un e-mail</a></p>
+    <div class="col-md-6 leader-card">
+      <div class="well">
+        <div class="row">
+          <div class="col-md-6">
+            @if ($leader->has_picture)
+              <img class="leader_picture" src="{{ $leader->getPictureURL() }}" />
+            @else
+              <img class="leader_picture" src="" />
+            @endif
+          </div>
+          <div class="col-md-6">
+            <p class="leader-name">{{ $leader->leader_name }}</p>
+            <p class="leader-real-name">{{ $leader->first_name }} {{ $leader->last_name }}</p>
+            <p><em>{{ Helper::rawToHTML($leader->leader_description) }}</em></p>
+            @if ($leader->leader_role)
+              <p><strong>Rôle :</strong> {{ Helper::rawToHTML($leader->leader_role) }}</p>
+            @endif
+            @if (!$leader->phone_member_private && $leader->phone_member)
+              <p><strong>GSM :</strong> {{ $leader->phone_member }}</p>
+            @endif
+            @if ($leader->email_member)
+              <p><strong>E-mail :</strong> <a class="btn-sm btn-primary" href="">Envoyer un e-mail</a></p>
+            @endif
+          </div>
+        </div>
       </div>
     </div>
   @endforeach
