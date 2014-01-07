@@ -127,6 +127,7 @@ Route::get('listing/{section_slug?}', array("as" => "listing", "uses" => "Listin
 Route::get('gestion/listing/{section_slug?}', array("as" => "manage_listing", "uses" => "ListingController@showEdit"));
 Route::post('gestion/listing/submit/{section_slug?}', array("as" => "manage_listing_submit", "uses" => "ListingController@manageSubmit"));
 Route::post('listing/submit/{section_slug?}', array("as" => "listing_submit", "uses" => "ListingController@submit"));
+Route::get('gestion/listing/delete/{member_id}/{section_slug?}', array("as" => "manage_listing_delete", "uses" => "ListingController@deleteMember"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));

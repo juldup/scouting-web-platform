@@ -40,13 +40,13 @@ class ListingController extends BaseController {
     return View::make('pages.listing.listing', array(
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
                         || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
-        'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
         'sections' => $sectionArray,
         'editable_members' => $editableMembers,
     ));
   }
   
-  public function manage() {
+  public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
       return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
@@ -54,12 +54,14 @@ class ListingController extends BaseController {
     
     $members = Member::where('validated', '=', true)
             ->where('section_id', '=', $this->section->id)
+            ->where('is_leader', '=', false)
             ->orderBy('last_name')
             ->orderBy('first_name')
             ->get();
     
-    return View::make('pages.listing.manageListing', array(
+    return View::make('pages.listing.editListing', array(
         'members' => $members,
+        'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
     ));
     
   }
@@ -107,7 +109,7 @@ class ListingController extends BaseController {
     }
     
     if ($success)
-      return Redirect::to(URL::route('listing', array('section_slug' => $this->section->slug)))
+      return Redirect::to(URL::to(URL::previous()))
               ->with($success ? 'success_message' : 'error_message', $message);
     else
       return Redirect::to(URL::previous())

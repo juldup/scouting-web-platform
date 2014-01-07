@@ -11,6 +11,12 @@ $().ready(function() {
   }
 });
 
+$().ready(function() {
+  $(".warning-delete").click(function() {
+    return confirm("Veux-tu vraiment supprimer ce membre du listing ?");
+  });
+});
+
 function dismissMemberForm() {
   $("#member_form").slideUp();
 }
