@@ -157,7 +157,7 @@
             </div>
           </div>
         @endif
-        <div class="form-group">
+        <div class="row">
           {{ Form::label('has_handicap', "Handicap", array('class' => 'control-label col-md-4')) }}
           <div class='col-md-8'>
             <div class="checkbox">

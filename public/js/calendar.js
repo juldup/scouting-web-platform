@@ -1,4 +1,5 @@
 function addEvent(day) {
+  $("#calendar_event_form legend:first").html("Ajouter un événement");
   $("#calendar_event_form [name='start_date_day']").val(day);
   $("#calendar_event_form [name='start_date_month']").val(currentMonth);
   $("#calendar_event_form [name='start_date_year']").val(currentYear);
@@ -12,14 +13,15 @@ function addEvent(day) {
     $("#calendar_event_form").slideDown();
   }
   $("#calendar_event_form [name='event_id']").val("");
+  document.getElementById("event_name").focus();
 }
 
 function dismissEvent() {
-  console.log($("#calendar_event_form"));
   $("#calendar_event_form").slideUp();
 }
 
 function editEvent(eventId) {
+  $("#calendar_event_form legend:first").html("Modifier un événement");
   $("#calendar_event_form [name='event_id']").val(eventId);
   $("#calendar_event_form [name='start_date_day']").val(events[eventId].start_day);
   $("#calendar_event_form [name='start_date_month']").val(events[eventId].start_month);
@@ -32,4 +34,5 @@ function editEvent(eventId) {
   $("#calendar_event_form #delete_link").attr('href', events[eventId].delete_url);
   $("#calendar_event_form #delete_link").show();
   $("#calendar_event_form").slideDown();
+  document.getElementById("event_name").focus();
 }

@@ -128,7 +128,7 @@ class Helper {
     if (!$phoneNumber) return null;
     
     // Check if the phone number is starting with a '+'
-    $hasPlusSymbol = substr($phoneNumber, 0, 1) == '+';
+    $hasPlusSymbol = strpos(preg_replace('/[^0-9\+]+/', '', $phoneNumber), "+") === 0;
     
     // Keep only numbers
     $phoneNumber = preg_replace('/[^0-9]+/', '', $phoneNumber);
@@ -136,10 +136,14 @@ class Helper {
     // Check for international prefix
     if ($hasPlusSymbol && self::startsWith($phoneNumber, "32")) {
       // Belgian number, drop the international prefix
-      $phoneNumber = "0" . substr($phoneNumber, 2);
+      $phoneNumber = substr($phoneNumber, 2);
+      // Add a leading zero if there is none
+      if (strpos($phoneNumber, "0") !== 0) $phoneNumber = "0" . $phoneNumber;
     } elseif (self::startsWith ($phoneNumber, "0032")) {
       // Belgian number, drop the international prefix
-      $phoneNumber = "0" . substr($phoneNumber, 4);
+      $phoneNumber = substr($phoneNumber, 4);
+      // Add a leading zero if there is none
+      if (strpos($phoneNumber, "0") !== 0) $phoneNumber = "0" . $phoneNumber;
     } elseif ($hasPlusSymbol || self::startsWith($phoneNumber, "00")) {
       // International number, don't format it
       return $originalPhoneNumber;
@@ -180,7 +184,7 @@ class Helper {
     $suffix2 = substr($suffix, strlen($suffix) - 4, 2);
     $suffix3 = substr($suffix, strlen($suffix) - 2, 2);
     
-    $phoneNumber = "$prefix/$suffix1.$suffix2.$suffix3";
+    $phoneNumber = "$prefix $suffix1 $suffix2 $suffix3";
     
     return $phoneNumber;
   }

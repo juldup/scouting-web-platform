@@ -93,9 +93,11 @@ $().ready(function() {
 });
 
 $().ready(function() {
-  $(".big-target").click(function(event) {
-    // TODO
-//    window.location = $(this).find('a').attr('href');
-//    return false;
+  $(".clickable").bind("click", function(event) {
+    // Check if the clicked element is not a child
+    if ($(event.target)[0] == $(this)[0]) {
+      window.location = $(this).find('a').attr('href');
+      return false;
+    }
   });
 });

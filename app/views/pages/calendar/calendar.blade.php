@@ -51,8 +51,11 @@
   
   <div class="row">
     <div class="col-md-12">
-  
-      <h1>Calendrier {{ $user->currentSection->de_la_section }}</h1>
+      @if ($editing)
+        <h1>Modification du calendrier {{ $user->currentSection->de_la_section }}</h1>
+      @else
+        <h1>Calendrier {{ $user->currentSection->de_la_section }}</h1>
+      @endif
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -184,7 +187,7 @@
             @endif
 
             {{-- Day --}}
-            <div class='day @if ($editing) big-target @endif'>
+            <div class='day @if ($editing) clickable @endif'>
 
               {{-- Number of the day --}}
               @if ($editing)
