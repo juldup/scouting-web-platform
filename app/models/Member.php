@@ -47,6 +47,14 @@ class Member extends Eloquent {
     return array('0' => "Aucun", '1' => "1", '2' => '2 ou plus');
   }
   
+  public function getPersonalPhone() {
+    if ($this->phone_member) return $this->phone_member;
+    if ($this->phone1) return $this->phone1;
+    if ($this->phone2) return $this->phone2;
+    if ($this->phone3) return $this->phone3;
+    return "";
+  }
+  
   public function getPublicPhone() {
     if ($this->phone1 && !$this->phone1_private) return $this->phone1;
     if ($this->phone2 && !$this->phone2_private) return $this->phone2;

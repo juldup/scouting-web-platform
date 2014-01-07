@@ -76,6 +76,11 @@ class Helper {
     return $date;
   }
   
+  public static function dateToHuman($sqlDate) {
+    return date('j/n/Y', strtotime($sqlDate));
+  }
+
+
   public static function charAt($string, $index) {
     return substr($string, $index, 1);
   }

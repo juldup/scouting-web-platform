@@ -68,6 +68,7 @@ Route::post('gestion/inscription/valider-supprimer/submit/{section_slug?}', arra
 
 // Health card
 Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));
+Route::post('fiche-sante/submit/{section_slug?}', array("as" => "health_card_submit", "uses" => "HealthCardController@submit"));
 
 // Unit policy
 Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyPageController@showPage"));

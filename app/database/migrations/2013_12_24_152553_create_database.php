@@ -280,6 +280,49 @@ class CreateDatabase extends Migration {
       $table->timestamps();
     });
     
+    // Health cards
+    Schema::create('health_cards', function($table) {
+      $table->increments('id');
+      $table->integer('member_id')->unsigned();
+      $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
+      $table->integer('signatory_id')->unsigned()->nullable();
+      $table->foreign('signatory_id')->references('id')->on('users');
+      $table->string('signatory_email')->nullable();
+      $table->boolean('reminder_sent')->default(false);
+      $table->date('signature_date');
+      // Health information
+      $table->string('contact1_name')->nullable();
+      $table->string('contact1_address')->nullable();
+      $table->string('contact1_phone')->nullable();
+      $table->string('contact1_relationship')->nullable();
+      $table->string('contact2_name')->nullable();
+      $table->string('contact2_address')->nullabel();
+      $table->string('contact2_phone')->nullable();
+      $table->string('contact2_relationship')->nullable();
+      $table->string('doctor_name')->nullable();
+      $table->string('doctor_address')->nullable();
+      $table->string('doctor_phone')->nullable();
+      $table->boolean('has_no_constrained_activities')->default(false);
+      $table->text('constrained_activities_details')->nullable();
+      $table->text('medical_data')->nullable();
+      $table->text('medical_history')->nullable();
+      $table->boolean('has_tetanus_vaccine')->default(false);
+      $table->text('tetanus_vaccine_details')->nullable();
+      $table->boolean('has_allergy')->default(false);
+      $table->text('allergy_details')->nullable();
+      $table->text('allergy_consequences')->nullable();
+      $table->boolean('has_special_diet')->default(false);
+      $table->text('special_diet_details')->nullable();
+      $table->text('other_important_information')->nullable();
+      $table->boolean('has_drugs')->default(false);
+      $table->text('drugs_details')->nullable();
+      $table->text('drugs_autonomy')->nullable();
+      $table->text('comments')->nullable();
+      $table->timestamps();
+      
+      $table->index('member_id');
+    });
+    
     // Test data
     DB::table('sections')->insert(array(
         'id' => 2,
@@ -369,6 +412,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('health_cards');
     Schema::drop('links');
     Schema::drop('documents');
     Schema::drop('news');
