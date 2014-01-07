@@ -1,4 +1,5 @@
 function addDocument() {
+  $("#document_form legend:first").html("Nouveau document");
   $("#document_form [name='doc_id']").val("");
   $("#document_form [name='doc_title']").val("");
   $("#document_form [name='description']").val("");
@@ -14,6 +15,7 @@ function dismissDocumentForm() {
 }
 
 function editDocument(docId) {
+  $("#document_form legend:first").html("Modifier un document");
   $("#document_form [name='doc_id']").val(docId);
   $("#document_form [name='doc_title']").val(documents[docId].title);
   $("#document_form [name='description']").val(documents[docId].description);

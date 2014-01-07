@@ -26,50 +26,71 @@
   <div class="row">
     <p class='pull-right management'>
       <a class='button' href='{{ $page_url }}'>
-        Retour à la page
+        Retour à la page de téléchargements
       </a>
     </p>
   </div>
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       <h1>Documents {{ $user->currentSection->de_la_section }}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
   
   <div class="row">
-    <div class='col-lg-12'>
+    <div class='col-md-12'>
       
-      <div id="document_form"
+      <div id="document_form" class="form-horizontal well"
            @if (!Session::has('_old_input')) style="display: none;" @endif
            >
         {{ Form::open(array('files' => true, 'url' => URL::route('manage_documents_submit', array('section_slug' => $user->currentSection->slug)))) }}
           {{ Form::hidden('doc_id', 0) }}
+          <legend>Nouveau document</legend>
+          <div class="form-group">
+            {{ Form::label('doc_title', 'Titre', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-5">
+              {{ Form::text('doc_title', '', array('class' => 'form-control', 'placeholder' => "Nom du document")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('description', 'Description', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-5">
+              {{ Form::textarea('description', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Description du document")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('document', 'Document', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-5">
+              {{ Form::file('document', array('class' => 'btn btn-default')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('filename', 'Nom du fichier', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-5">
+              {{ Form::text('filename', '', array('class' => 'form-control', 'placeholder' => 'Laisse ce champ vide pour garder le nom original')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('public', 'Public', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-1">
+              {{ Form::checkbox('public') }}
+            </div>
+            <div class="col-md-8">
+              <p class="form-side-note">
+                CONSEIL : "Non", sauf si tu es sûr que ce document peut être visible <strong>publiquement</strong>.
+              </p>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-5 col-md-offset-3">
+              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+              <a class='btn btn-danger' id='delete_link' style="display: none;" href="">Supprimer</a>
+              <a class='btn btn-default' href="javascript:dismissDocumentForm()">Fermer</a>
+            </div>
+          </div>
           <p>
-            Titre :
-            {{ Form::text('doc_title', '', array('size' => '35', 'placeholder' => "Nom du document")) }}
-          <p>
-            Description :
-            {{ Form::textarea('description', '', array('cols' => '35', 'rows' => 3, 'placeholder' => "Description du document")) }}
-          </p>
-          <p>
-            Nom du fichier :
-            {{ Form::text('filename', '', array('size' => '50', 'placeholder' => 'Laisse ce champ vide pour garder le nom original')) }}
-          </p>
-          <p>
-            Public :
-            {{ Form::checkbox('public') }}
-            CONSEIL : Ne coche pas cette case, sauf si tu es sûr que ce document peut être visible <strong>publiquement</strong>.
-          </p>
-          <p>
-            Document :
-            {{ Form::file('document') }}
-          </p>
-          <p>
-            {{ Form::submit('Enregistrer') }}
-            <a id='delete_link' style="display: none;" href="">Supprimer</a>
-            <a href="javascript:dismissDocumentForm()">Fermer</a>
+            
           </p>
 
         {{ Form::close() }}
@@ -79,20 +100,45 @@
   </div>
   
   <div class="row">
-    <div class="col-lg-12">
-      <h2>Ajouter</h2>
-      <a href="javascript:addDocument()">ajouter un nouveau document</a></p>
+    <div class="col-md-4 col-md-offset-0">
+      <p>
+        <a class='btn btn-primary' href="javascript:addDocument()">
+          Ajouter un nouveau document
+        </a>
+      </p>
     </div>
   </div>
   
   @foreach ($documents as $doc)
     <div class="row">
-      <div class="col-lg-12">
-        <h2>{{ $doc->title }}</h2>
-        <p><a href="javascript:editDocument({{ $doc->id }})">Modifier</a></p>
-        <div>
-          {{ Helper::rawToHTML($doc->description) }}
+      <div class="col-md-6">
+        <div class="well">
+          <legend>{{ $doc->title }}</legend>
+          <p>
+            {{ Helper::rawToHTML($doc->description) }}
+          </p>
         </div>
+      </div>
+      <div class="col-md-6">
+        <p>
+          <a class="btn btn-primary" href="javascript:editDocument({{ $doc->id }})">
+            Modifier
+          </a>
+          @if ($doc->public)
+            <p>
+              <span class="label label-warning">
+                Ce document est public ! Il peut être consulté par tous les internautes.
+              </span>
+            </p>
+          @else
+            <p>
+              Ce document est privé. Il est réservé aux membres de l'unité.
+            </p>
+          @endif
+          <p>
+            <strong>Fichier :</strong> {{ $doc->filename }}
+          </p>
+        </p>
       </div>
     </div>
   @endforeach

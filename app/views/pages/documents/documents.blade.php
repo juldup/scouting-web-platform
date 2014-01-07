@@ -28,17 +28,17 @@
   </div>
   
   @foreach ($documents as $doc)
-    <div class="row">
+    <div class="row well clickable-no-default clickable">
       <div class="col-lg-12">
         @if ($user->isMember() || $doc->public)
-          <h2>
+          <legend>
             <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
               {{ $doc->title }}
             </a>
-          </h2>
-          <div>
+          </legend>
+          <p>
             {{ Helper::rawToHTML($doc->description) }}
-          </div>
+          </p>
         @endif
       </div>
     </div>
