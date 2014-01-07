@@ -66,21 +66,21 @@
             <div class='col-md-8'>
               {{ Form::text('phone1', '', array('class' => 'medium form-control', ($edit_contact ? "enabled" : "disabled") )) }}
               de {{ Form::text('phone1_owner', '', array('class' => 'medium form-control', ($edit_contact ? "enabled" : "disabled") )) }}
-              Confidentiel : {{ Form::checkbox('phone1_private', '', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
+              Confidentiel : {{ Form::checkbox('phone1_private', '1', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
             </div>
           </div>
           <div class="form-group">
             <div class='col-md-8 col-md-offset-4'>
               {{ Form::text('phone2', '', array('class' => 'medium form-control', ($edit_contact ? "enabled" : "disabled") )) }}
               de {{ Form::text('phone2_owner', '', array('class' => 'medium form-control', ($edit_contact ? "enabled" : "disabled") )) }}
-              Confidentiel : {{ Form::checkbox('phone2_private', '', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
+              Confidentiel : {{ Form::checkbox('phone2_private', '1', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
             </div>
           </div>
           <div class="form-group">
             <div class='col-md-8 col-md-offset-4'>
               {{ Form::text('phone3', '', array('class' => 'medium form-control', ($edit_contact ? "enabled" : "disabled") )) }}
               de {{ Form::text('phone3_owner', '', array('class' => 'medium form-control', ($edit_contact ? "enabled" : "disabled") )) }}
-              Confidentiel : {{ Form::checkbox('phone3_private', '', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
+              Confidentiel : {{ Form::checkbox('phone3_private', '1', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
             </div>
           </div>
         @endif
@@ -88,7 +88,7 @@
           {{ Form::label('phone_member', ($leader_only ? "GSM" : "GSM du scout"), array('class' => 'control-label col-md-4')) }}
           <div class='col-md-8'>
             {{ Form::text('phone_member', '', array('class' => 'form-control medium', ($edit_contact ? "enabled" : "disabled") )) }}
-            Confidentiel : {{ Form::checkbox('phone_member_private', '', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
+            Confidentiel : {{ Form::checkbox('phone_member_private', '1', '', array( ($edit_contact ? "enabled" : "disabled") )) }}
           </div>
         </div>
         @if (!$leader_only)

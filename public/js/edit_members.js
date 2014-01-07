@@ -64,3 +64,14 @@ function editMember(memberId) {
   // Focus on first field
   document.getElementById("first_name").focus();
 }
+
+function showMemberDetails(memberId) {
+  var element = $("#details_" + memberId);
+  var visible = element.is(":visible");
+  if (visible) {
+    element.hide();
+  } else {
+    $(".details_member:visible").hide();
+    element.show();
+  }
+}

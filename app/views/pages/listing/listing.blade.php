@@ -72,23 +72,80 @@
             </thead>
             <tbody>
               @foreach ($sct['members'] as $member)
-              <tr>
-                <td>
-                  @if ($user->isOwnerOfMember($member))
-                    <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">Modifier</a>
-                  @endif
-                </td>
-                <td>{{ $member->last_name }}</td>
-                <td>{{ $member->first_name }}</td>
-                  @if ($sct['show_totem'])
-                    <td>{{ $member->totem }}</td>
-                  @endif
-                  @if ($sct['show_subgroup'])
-                    <td>{{ $member->subgroup }}</td>
-                  @endif
-                <td>{{ $member->getPublicPhone() }}</td>
-                <td><a class="btn-sm btn-primary" href="">Envoyer un e-mail</a></td>
-              </tr>
+                <tr>
+                  <td>
+                    <a class="btn-sm btn-primary" href="javascript:showMemberDetails({{ $member->id }})">Détails</a>
+                    @if ($user->isOwnerOfMember($member))
+                      <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">Modifier</a>
+                    @endif
+                  </td>
+                  <td>{{ $member->last_name }}</td>
+                  <td>{{ $member->first_name }}</td>
+                    @if ($sct['show_totem'])
+                      <td>{{ $member->totem }}</td>
+                    @endif
+                    @if ($sct['show_subgroup'])
+                      <td>{{ $member->subgroup }}</td>
+                    @endif
+                  <td>{{ $member->getPublicPhone() }}</td>
+                  <td><a class="btn-sm btn-primary" href="">Envoyer un e-mail</a></td>
+                </tr>
+                <tr id="details_{{ $member->id }}" class="details_member" style="display: none;">
+                  <td colspan="{{ 5 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">
+                    <div class="row">
+                      <div class="col-md-3 member-detail-label">
+                        Adresse :
+                      </div>
+                      <div class="col-md-9">
+                        {{ $member->address}} <br /> {{ $member->postcode }} {{ $member->city }}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3 member-detail-label">
+                        Téléphone :
+                      </div>
+                      <div class="col-md-9">
+                        {{ $member->getAllPublicPhones("<span class='horiz-divider'></span>", $user->isLeader()) }}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3 member-detail-label">
+                        Sexe :
+                      </div>
+                      <div class="col-md-9">
+                        {{ $member->gender == 'M' ? "Garçon" : "Fille" }}
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3 member-detail-label">
+                        Date de naissance :
+                      </div>
+                      <div class="col-md-9">
+                        {{ $member->getHumanBirthDate() }}
+                      </div>
+                    </div>
+                    @if ($member->quali)
+                      <div class="row">
+                        <div class="col-md-3 member-detail-label">
+                          Totem et quali :
+                        </div>
+                        <div class="col-md-9">
+                          {{ $member->totem }} {{ $member->quali }}
+                        </div>
+                      </div>
+                    @endif
+                    @if ($user->isLeader())
+                      <div class="row">
+                        <div class="col-md-3 member-detail-label">
+                          Adresse e-mail :
+                        </div>
+                        <div class="col-md-9">
+                          {{ $member->getAllEmailAddresses("<span class='horiz-divider'></span>") }}
+                        </div>
+                      </div>
+                    @endif
+                  </td>
+                </tr>
               @endforeach
             </tbody>
           </table>

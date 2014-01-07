@@ -10,6 +10,10 @@ class Member extends Eloquent {
     return Section::find($this->section_id);
   }
   
+  public function getHumanBirthDate() {
+    return date('d/m/Y', strtotime($this->birth_date));
+  }
+  
   public static function existWithEmail($email) {
     if (!$email) return false;
     $aMember = Member::where(function($query) use ($email) {
@@ -49,6 +53,32 @@ class Member extends Eloquent {
     if ($this->phone3 && !$this->phone3_private) return $this->phone3;
     if ($this->phone_member && !$this->phone_member_private) return $this->phone_member;
     return "";
+  }
+  
+  public function getAllPublicPhones($separator = " - ", $showAlsoPrivate = false) {
+    $phones = "";
+    if ($this->phone1 && ($showAlsoPrivate || !$this->phone1_private))
+      $phones .= $this->phone1 . ($this->phone1_owner ? " (" . $this->phone1_owner . ")" : "");
+    if ($this->phone2 && ($showAlsoPrivate || !$this->phone2_private))
+      $phones .= ($phones ? $separator : "") . $this->phone2 . ($this->phone2_owner ? " (" . $this->phone2_owner . ")" : "");
+    if ($this->phone3 && ($showAlsoPrivate || !$this->phone3_private))
+      $phones .= ($phones ? $separator : "") . $this->phone3 . ($this->phone3_owner ? " (" . $this->phone3_owner . ")" : "");
+    if ($this->phone_member && ($showAlsoPrivate || !$this->phone_member_private))
+      $phones .= ($phones ? $separator : "") . $this->phone_member . " (personnel)";
+    return $phones;
+  }
+  
+  public function getAllEmailAddresses($separator = " - ") {
+    $emails = "";
+    if ($this->email1)
+      $emails .= $this->email1;
+    if ($this->email2)
+      $emails .= ($emails ? $separator : "") . $this->email2;
+    if ($this->email3)
+      $emails .= ($emails ? $separator : "") . $this->email3;
+    if ($this->email_member)
+      $emails .= ($emails ? $separator : "") . $this->email_member . " (personnel)";
+    return $emails;
   }
   
   // If input data is correct, updates this and returns true.
@@ -243,9 +273,9 @@ class Member extends Eloquent {
     
     if ($totem && !Helper::hasCorrectCapitals($totem))
       $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
-    
-    if ($quali && !Helper::hasCorrectCapitals($quali))
-      $errorMessage .= "L'usage des majuscules dans le quali n'est pas correct (il doit commencer par une majuscule). ";
+//    
+//    if ($quali && !Helper::hasCorrectCapitals($quali))
+//      $errorMessage .= "L'usage des majuscules dans le quali n'est pas correct (il doit commencer par une majuscule). ";
     
     if ($isLeader) {
       if (!$leaderName)
