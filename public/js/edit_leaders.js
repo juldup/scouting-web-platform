@@ -65,7 +65,7 @@ function editLeader(leaderId, scoutToLeader) {
   $("#member_form [name='section']").val(leaders[leaderId].section_id);
   $("#member_form [name='phone_member']").val(leaders[leaderId].phone_member);
   $("#member_form [name='phone_member_private']").prop("checked", leaders[leaderId].phone_member_private).trigger("change");
-  $("#member_form [name='email_member']").val(leaders[leaderId].email);
+  $("#member_form [name='email_member']").val(leaders[leaderId].email_member);
   $("#member_form [name='totem']").val(leaders[leaderId].totem);
   $("#member_form [name='quali']").val(leaders[leaderId].quali);
   $("#member_form [name='family_in_other_units']").val(leaders[leaderId].family_in_other_units);

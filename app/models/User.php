@@ -129,8 +129,11 @@ class User extends Eloquent {
   
   // Returns whether the user owns the given member
   public function isOwnerOfMember($memberId) {
+    if ($memberId instanceof Member) $memberId = $memberId->id;
     foreach ($this->getAssociatedMembers() as $member) {
-      if ($member->id == $memberId) return true;
+      if ($member->id == $memberId) {
+        return true;
+      }
     }
     return false;
   }
@@ -190,7 +193,10 @@ class User extends Eloquent {
         $query->where('email1', '=', $email);
         $query->orWhere('email2', '=', $email);
         $query->orWhere('email3', '=', $email);
-        $query->orWhere('email_member', '=', $email);
+        $query->orWhere(function($query) use ($email) {
+          $query->where('email_member', '=', $email);
+          $query->where('is_leader', '=', true);
+        });
       })->where('validated', '=', true)
               ->get();
     }

@@ -10,35 +10,7 @@
     var currentSection = {{ $user->currentSection->id }};
     var leaders = new Array();
     @foreach ($leaders as $leader)
-      leaders[{{ $leader->id }}] = {
-        'first_name': "{{ Helper::sanitizeForJavascript($leader->first_name) }}",
-        'last_name': "{{ Helper::sanitizeForJavascript($leader->last_name) }}",
-        'birth_date_day': "{{ Helper::getDateDay($leader->birth_date) }}",
-        'birth_date_month': "{{ Helper::getDateMonth($leader->birth_date) }}",
-        'birth_date_year': "{{ Helper::getDateYear($leader->birth_date) }}",
-        'gender': "{{ $leader->gender }}",
-        'nationality': "{{ $leader->nationality }}",
-        'address': "{{ Helper::sanitizeForJavascript($leader->address) }}",
-        'postcode': "{{ Helper::sanitizeForJavascript($leader->postcode) }}",
-        'city': "{{ Helper::sanitizeForJavascript($leader->city) }}",
-        'has_handicap': {{ $leader->has_handicap ? "true" : "false" }},
-        'handicap_details': "{{ Helper::sanitizeForJavascript($leader->handicap_details) }}",
-        'comments': "{{ Helper::sanitizeForJavascript($leader->comments) }}",
-        'leader_name': "{{ Helper::sanitizeForJavascript($leader->leader_name) }}",
-        'leader_in_charge': {{ $leader->leader_in_charge ? "true" : "false" }},
-        'leader_description': "{{ Helper::sanitizeForJavascript($leader->leader_description) }}",
-        'leader_role': "{{ Helper::sanitizeForJavascript($leader->leader_role) }}",
-        'section_id': {{ $leader->section_id }},
-        'phone_member': "{{ Helper::sanitizeForJavascript($leader->phone_member) }}",
-        'phone_member_private': {{ $leader->phone_member_private ? "true" : "false" }},
-        'email': "{{ $leader->email_member }}",
-        'totem': "{{ Helper::sanitizeForJavascript($leader->totem) }}",
-        'quali': "{{ Helper::sanitizeForJavascript($leader->quali) }}",
-        'family_in_other_units': {{ $leader->family_in_other_units }},
-        'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($leader->family_in_other_units_details) }}",
-        'has_picture': {{ $leader->has_picture ? "true" : "false" }},
-        'picture_url': "{{ $leader->has_picture ? $leader->getPictureURL() : "" }}"
-      };
+      leaders[{{ $leader->id }}] = @include('subviews.memberToJavascript', array('member' => $leader));
     @endforeach
     @if ($scout_to_leader && !Session::has('_old_input'))
       editLeader({{ $scout_to_leader }}, true);
@@ -71,7 +43,7 @@
     </div>
   </div>
   
-  @include('subviews.editMemberForm', array('form_legend' => "Modifier un animateur", 'submit_url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => true, 'edit_identity' => true, 'edit_section' => false, 'edit_totem' => true,'edit_leader' => true, 'edit_section' => true))
+  @include('subviews.editMemberForm', array('form_legend' => "Modifier un animateur", 'submit_url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => true, 'edit_identity' => true, 'edit_totem' => true,'edit_leader' => true, 'edit_section' => true))
     
   <div class="row">
     <div class="col-md-12">

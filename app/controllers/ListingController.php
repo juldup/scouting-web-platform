@@ -13,6 +13,7 @@ class ListingController extends BaseController {
     }
     
     $sectionArray = array();
+    $editableMembers = array();
     foreach ($sections as $section) {
       $members = Member::where('validated', '=', true)
               ->where('section_id', '=', $section->id)
@@ -25,6 +26,8 @@ class ListingController extends BaseController {
       foreach ($members as $member) {
         if ($member->totem) $showTotem = true;
         if ($member->subgroup) $showSubgroup = true;
+        if ($this->user->isOwnerOfMember($member))
+          $editableMembers[] = $member;
       }
       $sectionArray[] = array(
           'section_data' => $section,
@@ -38,6 +41,7 @@ class ListingController extends BaseController {
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
                         || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
         'sections' => $sectionArray,
+        'editable_members' => $editableMembers,
     ));
   }
   
