@@ -17,9 +17,9 @@
     ?>
     <div class="row">
       <div class="col-md-12">
+        <h1>Fiche santé de {{ $member->first_name }} {{ $member->last_name }}</h1>
         <div class="well form-horizontal">
           {{ Form::open(array('url' => URL::route('health_card_submit'))) }}
-          <legend><h2>Fiche santé de {{ $member->first_name }} {{ $member->last_name }}</h2></legend>
           <legend>Identité du scout</legend>
           
           <div class='col-md-6'>

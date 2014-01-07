@@ -77,6 +77,7 @@ class Helper {
   }
   
   public static function dateToHuman($sqlDate) {
+    if ($sqlDate == "0000-00-00" || $sqlDate == "0" || !$sqlDate) return "";
     return date('j/n/Y', strtotime($sqlDate));
   }
 
