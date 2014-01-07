@@ -51,4 +51,286 @@ class Member extends Eloquent {
     return "";
   }
   
+  // If input data is correct, updates this and returns true.
+  // If input data is incorrect, returns false or an error message.
+  public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader) {
+    $data = self::checkInputData();
+    if (is_string($data)) {
+      // An error has occured
+      return $data;
+    }
+    
+    if ($canEditIdentity) {
+      $this->first_name = $data['first_name'];
+      $this->last_name = $data['last_name'];
+      $this->birth_date = $data['birth_date'];
+      $this->gender = $data['gender'];
+      $this->nationality = $data['nationality'];
+      $this->has_handicap = $data['has_handicap'];
+      $this->handicap_details = $data['handicap_details'];
+    }
+    
+    if ($canEditContact) {
+      $this->address = $data['address'];
+      $this->postcode = $data['postcode'];
+      $this->city = $data['city'];
+      $this->phone1 = $data['phone1'];
+      $this->phone1_owner = $data['phone1_owner'];
+      $this->phone1_private = $data['phone1_private'];
+      $this->phone2 = $data['phone2'];
+      $this->phone2_owner = $data['phone2_owner'];
+      $this->phone2_private = $data['phone2_private'];
+      $this->phone3 = $data['phone3'];
+      $this->phone3_owner = $data['phone3_owner'];
+      $this->phone3_private = $data['phone3_private'];
+      $this->phone_member = $data['phone_member'];
+      $this->phone_member_private = $data['phone_member_private'];
+      $this->email1 = $data['email1'];
+      $this->email2 = $data['email2'];
+      $this->email3 = $data['email3'];
+      $this->email_member = $data['email_member'];
+    }
+    
+    if ($canEditSection) {
+        $this->section_id = $data['section_id'];
+    }
+    
+    if ($canEditTotem) {
+      $this->totem = $data['totem'];
+      $this->quali = $data['quali'];
+    }
+    
+    if ($canEditLeader) {
+      $this->is_leader = $data['is_leader'];
+      $this->leader_name = $data['leader_name'];
+      $this->leader_in_charge = $data['leader_in_charge'];
+      $this->leader_description = $data['leader_description'];
+      $this->leader_role = $data['leader_role'];
+    }
+    
+    $this->comments = $data['comments'];
+    $this->family_in_other_units = $data['family_in_other_units'];
+    $this->family_in_other_units_details = $data['family_in_other_units_details'];
+    $this->validated = true;
+    
+    try {
+      $this->save();
+      if ($this->is_leader) return $this->uploadPictureFromInput();
+      else return true;
+    } catch (Exception $ex) {
+      return false;
+    }
+  }
+  
+  // If input data is correct, creates and returns a new user.
+  // If input data is incorrect, returns false or an error message.
+  public static function createFromInput($validate = false) {
+    
+    $data = self::checkInputData();
+    if (is_string($data)) {
+      // An error has occured
+      return $data;
+    }
+    
+    try {
+      if ($validate) $data['validated'] = true;
+      $member = Member::create($data);
+      if ($member->is_leader) return $member->uploadPictureFromInput();
+      else return true;
+    } catch (Exception $e) {
+      return false;
+    }
+  }
+  
+  public static function checkInputData() {
+    $firstName = Input::get('first_name');
+    $lastName = Input::get('last_name');
+    $birthDateDay = Input::get('birth_date_day');
+    $birthDateMonth = Input::get('birth_date_month');
+    $birthDateYear = Input::get('birth_date_year');
+    $gender = Input::get('gender');
+    $nationality = mb_strtoupper(Input::get('nationality'));
+    $address = Input::get('address');
+    $postcode = Input::get('postcode');
+    $city = Input::get('city');
+    $hasHandicap = Input::get('has_handicap') ? true : false;
+    $handicapDetails = Input::get('handicap_details');
+    $comments = Input::get('comments');
+    $leaderName = Input::get('leader_name');
+    $leaderInCharge = Input::get('leader_in_charge') ? true : false;
+    $leaderDescription = Input::get('leader_description');
+    $leaderRole = Input::get('leader_role');
+    $sectionId = Input::get('section');
+    $phone1Unformatted = Input::get('phone1');
+    $phone1Owner = Input::get('phone1_owner');
+    $phone1Private = Input::get('phone1_private') ? true : false;
+    $phone2Unformatted = Input::get('phone2');
+    $phone2Owner = Input::get('phone2_owner');
+    $phone2Private = Input::get('phone2_private') ? true : false;
+    $phone3Unformatted = Input::get('phone3');
+    $phone3Owner = Input::get('phone3_owner');
+    $phone3Private = Input::get('phone3_private') ? true : false;
+    $phoneMemberUnformatted = Input::get('phone_member');
+    $phoneMemberPrivate = Input::get('phone_member_private');
+    $email1 = strtolower(Input::get('email1'));
+    $email2 = strtolower(Input::get('email2'));
+    $email3 = strtolower(Input::get('email3'));
+    $emailMember = strtolower(Input::get('email_member'));
+    $totem = Input::get('totem');
+    $quali = Input::get('quali');
+    $familyMembers = Input::get('family_in_other_units');
+    $familyDetails = Input::get('family_in_other_units_details');
+    $isLeader = Input::get('is_leader') ? true : false;
+    $policyAgreement = Input::get('policy_agreement') ? true : false;
+    
+    $errorMessage = "";
+    
+    if (!$firstName)
+      $errorMessage .= "Il manque le prénom. ";
+    elseif (!Helper::hasCorrectCapitals($firstName, true))
+      $errorMessage .= "L'usage des majuscules dans le prénom n'est pas correct. ";
+    
+    if (!$lastName)
+      $errorMessage .= "Il manque le nom de famille. ";
+    elseif (!Helper::hasCorrectCapitals($lastName, false))
+      $errorMessage .= "L'usage des majuscules dans le nom de famille n'est pas correct. ";
+    
+    $birthDate = Helper::checkAndReturnDate($birthDateYear, $birthDateMonth, $birthDateDay);
+    if (!$birthDate)
+      $errorMessage .= "La date de naissance n'est pas valide. ";
+    
+    if ($gender != 'M' && $gender != 'F')
+      $errorMessage .= "Le sexe n'est pas une entrée valide. ";
+    
+    if (strlen($nationality) < 2 || strlen($nationality) > 3)
+      $errorMessage .= "Utiliser la notation en deux lettres pour la nationality (BE, FR, ...). ";
+    
+    if (!$address || !$postcode || !$city)
+      $errorMessage .= "L'adresse n'est pas complète. ";
+    elseif (!is_numeric ($postcode))
+      $errorMessage .= "Le code postal doit être un nombre. ";
+    
+    $phone1 = Helper::formatPhoneNumber($phone1Unformatted);
+    if ($phone1Unformatted && !$phone1)
+      $errorMessage .= "Le numéro de téléphone \"$phone1Unformatted\" n'est pas valide. ";    
+    
+    $phone2 = Helper::formatPhoneNumber($phone2Unformatted);
+    if ($phone2Unformatted && !$phone2)
+      $errorMessage .= "Le numéro de téléphone \"$phone2Unformatted\" n'est pas valide. ";
+    
+    $phone3 = Helper::formatPhoneNumber($phone3Unformatted);
+    if ($phone3Unformatted && !$phone3)
+      $errorMessage .= "Le numéro de téléphone \"$phone3Unformatted\" n'est pas valide. ";
+    
+    $phoneMember = Helper::formatPhoneNumber($phoneMemberUnformatted);
+    if ($phoneMemberUnformatted && !$phoneMember)
+      $errorMessage .= "Le numéro de GSM du scout \"$phoneMemberUnformatted\" n'est pas correct. ";
+    
+    if (!$phone1Unformatted && !$phone2Unformatted && !$phone3Unformatted && !$phoneMemberUnformatted)
+      $errorMessage .= "Il est nécessaire d'indiquer au moins un numéro de téléphone. ";
+    
+    if ($email1 && !filter_var($email1, FILTER_VALIDATE_EMAIL))
+      $errorMessage .= "L'adresse e-mail \"$email1\" n'est pas valide. ";
+    
+    if ($email2 && !filter_var($email2, FILTER_VALIDATE_EMAIL))
+      $errorMessage .= "L'adresse e-mail \"$email2\" n'est pas valide. ";
+    
+    if ($email3 && !filter_var($email3, FILTER_VALIDATE_EMAIL))
+      $errorMessage .= "L'adresse e-mail \"$email3\" n'est pas valide. ";
+    
+    if ($emailMember && !filter_var($emailMember, FILTER_VALIDATE_EMAIL))
+      $errorMessage .= "L'adresse e-mail du scout \"$emailMember\" n'est pas valide. ";
+    
+    if ($totem && !Helper::hasCorrectCapitals($totem))
+      $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
+    
+    if ($quali && !Helper::hasCorrectCapitals($quali))
+      $errorMessage .= "L'usage des majuscules dans le quali n'est pas correct (il doit commencer par une majuscule). ";
+    
+    if ($isLeader) {
+      if (!$leaderName)
+        $errorMessage .= "Il manque le nom d'animateur. ";
+      elseif (!Helper::hasCorrectCapitals ($leaderName, true))
+        $errorMessage .= "L'usage des majuscule dans le nom d'animateur n'est pas correct. ";
+    }
+    
+    if ($hasHandicap && !$handicapDetails)
+      $errorMessage .= "Merci de préciser la nature du handicap. ";
+    
+    if (!$hasHandicap && trim($handicapDetails))
+      $errorMessage .= "Vous devez cocher la case handicap, ou supprimer les détails du handicap. ";
+    
+    if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
+      $familyMembers = 0;
+    
+    if ($errorMessage) {
+      return $errorMessage;
+    } else {
+      return array(
+          'first_name' => $firstName,
+          'last_name' => $lastName,
+          'birth_date' => $birthDate,
+          'gender' => $gender,
+          'nationality' => $nationality,
+          'address' => $address,
+          'postcode' => $postcode,
+          'city' => $city,
+          'has_handicap' => $hasHandicap,
+          'handicap_details' => $handicapDetails,
+          'comments' => $comments,
+          'leader_name' => $leaderName,
+          'leader_in_charge' => $leaderInCharge,
+          'leader_description' => $leaderDescription,
+          'leader_role' => $leaderRole,
+          'section_id' => $sectionId,
+          'phone1' => $phone1,
+          'phone1_owner' => $phone1Owner,
+          'phone1_private' => $phone1Private,
+          'phone2' => $phone2,
+          'phone2_owner' => $phone2Owner,
+          'phone2_private' => $phone2Private,
+          'phone3' => $phone3,
+          'phone3_owner' => $phone3Owner,
+          'phone3_private' => $phone3Private,
+          'phone_member' => $phoneMember,
+          'phone_member_private' => $phoneMemberPrivate,
+          'email1' => $email1,
+          'email2' => $email2,
+          'email3' => $email3,
+          'email_member' => $emailMember,
+          'totem' => $totem,
+          'quali' => $quali,
+          'family_in_other_units' => $familyMembers,
+          'family_in_other_units_details' => $familyDetails,
+          'is_leader' => $isLeader,
+          'validated' => false,
+        );
+    }
+  }
+  
+  public function uploadPictureFromInput() {
+    
+    $pictureFile = Input::file('picture');
+    
+    if ($pictureFile) {
+      if (!$pictureFile->getSize()) {
+        return "La photo n'a pas pu être enregistrée.";
+      } else {
+        try {
+          $image = new Resizer($pictureFile->getRealPath());
+          $image->resizeImage(256, 256, "crop");
+          $image->saveImage($this->getPicturePath());
+          $this->has_picture = true;
+          $this->save();
+          return true;
+        } catch (Exception $e) {
+          return "La photo n'a pas pu être enregistrée.";
+        }
+      }
+    }
+    
+    return true;
+    
+  }
+    
 }

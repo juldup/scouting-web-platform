@@ -9,8 +9,16 @@
 <div id="member_form" class='well'
      @if (!Session::has('_old_input')) style="display: none;" @endif
      >
-     <legend>{{ $form_legend }}</legend>
+  <legend>{{ $form_legend }}</legend>
   {{ Form::open(array('files' => true, 'url' => $submit_url)) }}
+    <div class="form-group">
+      <div class="col-md-12">
+        <div class="text-center">
+          {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+          <a class='btn btn-default' href="javascript:dismissMemberForm()">Fermer</a>
+        </div>
+      </div>
+    </div>
     {{ Form::hidden('member_id') }}
     <div class="row">
       <div class="col-md-6 form-horizontal">
@@ -120,7 +128,9 @@
           <div class='col-md-8'>{{ Form::text('quali', '', array('class' => 'form-control', ($edit_totem ? "enabled" : "disabled") )) }}</div>
         </div>
         @if ($edit_leader)
-          @if (!$leader_only)
+          @if ($leader_only)
+            {{ Form::hidden('is_leader', true) }}
+          @else
             <div class="form-group">
               {{ Form::label('is_leader', "Animateur", array('class' => 'control-label col-md-4')) }}
               <div class='col-md-8'>
