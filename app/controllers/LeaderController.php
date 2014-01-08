@@ -38,7 +38,7 @@ class LeaderController extends BaseController {
   public function showEdit($section_slug, $memberId = false) {
     
     if (!$this->user->isLeader()) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $leaders = Member::where('is_leader', '=', true)
@@ -90,7 +90,7 @@ class LeaderController extends BaseController {
   public function showEditPrivileges() {
     
     if (!$this->user->isLeader()) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $leaders = Member::where('is_leader', '=', true)

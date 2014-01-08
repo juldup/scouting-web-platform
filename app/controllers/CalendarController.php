@@ -95,7 +95,7 @@ class CalendarController extends BaseController {
   
   public function showEdit($year = null, $month = null) {
     if (!$this->user->can(Privilege::$EDIT_CALENDAR, $this->user->currentSection)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     return $this->showCalendar($year, $month, true);
@@ -114,7 +114,7 @@ class CalendarController extends BaseController {
     $sectionId = Input::get('section');
     
     if (!$this->user->can(Privilege::$EDIT_CALENDAR, $sectionId)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     if (!$eventName) {
@@ -191,7 +191,7 @@ class CalendarController extends BaseController {
     }
     
     if (!$this->user->can(Privilege::$EDIT_CALENDAR, $calendarItem->section_id)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     try {

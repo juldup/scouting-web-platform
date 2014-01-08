@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-  Fiche santé
+  Formulaire fiche santé
 @stop
 
 @section('head')
@@ -19,7 +19,8 @@
       <div class="col-md-12">
         <h1>Fiche santé de {{ $member->first_name }} {{ $member->last_name }}</h1>
         <div class="well form-horizontal">
-          {{ Form::open(array('url' => URL::route('health_card_submit'))) }}
+          {{ Form::model($health_card, array('url' => URL::route('health_card_submit'))) }}
+          {{ Form::hidden('member_id') }}
           <legend>Identité du scout</legend>
           
           <div class='col-md-6'>
@@ -77,22 +78,22 @@
           <div class='form-group'>
             {{ Form::label('contact1_name', 'Nom', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('contact1_name', '', array('class' => 'form-control')) }}
+              {{ Form::text('contact1_name', null, array('class' => 'form-control')) }}
             </div>
             {{ Form::label('contact1_relationship', 'Lien de parenté', array('class' => 'col-md-2 control-label')) }}
             <div class="col-md-3">
-              {{ Form::text('contact1_relationship', '', array('class' => 'form-control')) }}
+              {{ Form::text('contact1_relationship', null, array('class' => 'form-control')) }}
             </div>
           </div>
           
           <div class='form-group'>
             {{ Form::label('contact1_address', 'Adresse', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
             <div class="col-md-4">
-              {{ Form::textarea('contact1_address', '', array('class' => 'form-control', 'rows' => 2)) }}
+              {{ Form::textarea('contact1_address', null, array('class' => 'form-control', 'rows' => 2)) }}
             </div>
             {{ Form::label('contact1_phone', 'Téléphone', array('class' => 'col-md-2 control-label')) }}
             <div class="col-md-3">
-              {{ Form::text('contact1_phone', '', array('class' => 'form-control')) }}
+              {{ Form::text('contact1_phone', null, array('class' => 'form-control')) }}
             </div>
           </div>
           
@@ -107,22 +108,22 @@
           <div class='form-group'>
             {{ Form::label('contact2_name', 'Nom', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('contact2_name', '', array('class' => 'form-control')) }}
+              {{ Form::text('contact2_name', null, array('class' => 'form-control')) }}
             </div>
             {{ Form::label('contact2_relationship', 'Lien de parenté', array('class' => 'col-md-2 control-label')) }}
             <div class="col-md-3">
-              {{ Form::text('contact2_relationship', '', array('class' => 'form-control')) }}
+              {{ Form::text('contact2_relationship', null, array('class' => 'form-control')) }}
             </div>
           </div>
           
           <div class='form-group'>
             {{ Form::label('contact2_address', 'Adresse', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
             <div class="col-md-4">
-              {{ Form::textarea('contact2_address', '', array('class' => 'form-control', 'rows' => 2)) }}
+              {{ Form::textarea('contact2_address', null, array('class' => 'form-control', 'rows' => 2)) }}
             </div>
             {{ Form::label('contact2_phone', 'Téléphone', array('class' => 'col-md-2 control-label')) }}
             <div class="col-md-3">
-              {{ Form::text('contact2_phone', '', array('class' => 'form-control')) }}
+              {{ Form::text('contact2_phone', null, array('class' => 'form-control')) }}
             </div>
           </div>
           
@@ -137,18 +138,18 @@
           <div class='form-group'>
             {{ Form::label('doctor_name', 'Nom', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('doctor_name', '', array('class' => 'form-control')) }}
+              {{ Form::text('doctor_name', null, array('class' => 'form-control')) }}
             </div>
           </div>
           
           <div class='form-group'>
             {{ Form::label('doctor_address', 'Adresse', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
             <div class="col-md-4">
-              {{ Form::textarea('doctor_address', '', array('class' => 'form-control', 'rows' => 2)) }}
+              {{ Form::textarea('doctor_address', null, array('class' => 'form-control', 'rows' => 2)) }}
             </div>
             {{ Form::label('doctor_phone', 'Téléphone', array('class' => 'col-md-2 control-label')) }}
             <div class="col-md-3">
-              {{ Form::text('doctor_phone', '', array('class' => 'form-control')) }}
+              {{ Form::text('doctor_phone', null, array('class' => 'form-control')) }}
             </div>
           </div>
           
@@ -167,7 +168,7 @@
               <p>
                 Si non, raisons et détails d'une éventuelle non-participation : 
               </p>
-              {{ Form::textarea('constrained_activities_details', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('constrained_activities_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -183,7 +184,7 @@
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('medical_data', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('medical_data', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -196,7 +197,7 @@
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('medical_history', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('medical_history', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -215,7 +216,7 @@
               <p>
                 Date du dernier rappel :
               </p>
-              {{ Form::text('tetanus_vaccine_details', '', array('class' => 'form-control', 'placeholder' => "Néant")) }}
+              {{ Form::text('tetanus_vaccine_details', null, array('class' => 'form-control', 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -234,13 +235,13 @@
               <p>
                 Si oui, lesquels ?
               </p>
-              {{ Form::textarea('allergy_details', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('allergy_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
             <div class="col-md-12">
               <p class="form-side-note">
                 Quelles en sont les conséquences ?
               </p>
-              {{ Form::textarea('allergy_consequences', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('allergy_consequences', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -259,7 +260,7 @@
               <p>
                 Si oui, lequel ?
               </p>
-              {{ Form::textarea('special_diet_details', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('special_diet_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -274,7 +275,7 @@
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('other_important_information', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('other_important_information', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           
@@ -293,7 +294,7 @@
               <p>
                 Si oui, lesquels, quand et en quelle quantité ?
               </p>
-              {{ Form::textarea('drugs_details', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('drugs_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
             <div class="col-md-12">
               <p class="form-side-note">
@@ -316,7 +317,7 @@
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('comments', '', array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {{ Form::textarea('comments', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
           </div>
           

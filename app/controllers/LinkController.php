@@ -15,7 +15,7 @@ class LinkController extends BaseController {
   public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $links = Link::all();
@@ -28,7 +28,7 @@ class LinkController extends BaseController {
   public function submitLink() {
     
     if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $linkId = Input::get('link_id');
@@ -91,7 +91,7 @@ class LinkController extends BaseController {
   public function deleteLink($link_id) {
     
     if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $link = Link::find($link_id);

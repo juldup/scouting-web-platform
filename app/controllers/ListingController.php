@@ -49,7 +49,7 @@ class ListingController extends BaseController {
   public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $members = Member::where('validated', '=', true)
@@ -90,7 +90,7 @@ class ListingController extends BaseController {
       }
       
       if (!$fullPrivileges && !$memberPrivileges && !$leaderPrivileges) {
-        return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+        return Helper::forbiddenResponse();
       }
 
       

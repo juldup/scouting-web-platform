@@ -27,7 +27,7 @@ class DocumentController extends BaseController {
   public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->user->currentSection)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $thisYear = Helper::thisYear();
@@ -48,7 +48,7 @@ class DocumentController extends BaseController {
     if (!$document) throw new NotFoundException();
     
     if (!$document->public && !$this->user->isMember()) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $path = $document->getPath();
@@ -90,7 +90,7 @@ class DocumentController extends BaseController {
     $actualFileName = ($file ? $file->getClientOriginalName() : null);
     
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $success = false;
@@ -102,7 +102,7 @@ class DocumentController extends BaseController {
         $document = Document::find($docId);
         if ($document) {
           if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->getSection())) {
-            return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+            return Helper::forbiddenResponse();
           }
           $document->title = $title;
           $document->description = $description;
@@ -181,7 +181,7 @@ class DocumentController extends BaseController {
     }
     
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     try {

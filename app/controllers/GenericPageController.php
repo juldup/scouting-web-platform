@@ -25,7 +25,7 @@ abstract class GenericPageController extends BaseController {
   
   public function showEdit() {
     if (!$this->canEdit()) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     $page = $this->getPage();
     $images = PageImage::where('page_id', '=', $page->id)->get()->all();
@@ -39,7 +39,7 @@ abstract class GenericPageController extends BaseController {
   
   public function savePage() {
     if (!$this->canEdit()) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     $newContent = Input::get('page_content');
     $page = $this->getPage();

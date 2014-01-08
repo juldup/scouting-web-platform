@@ -24,7 +24,7 @@ class NewsController extends BaseController {
   public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $this->user->currentSection)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $oneYearAgo = Helper::oneYearAgo();
@@ -50,7 +50,7 @@ class NewsController extends BaseController {
     $sectionId = Input::get('section');
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $sectionId)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $success = false;
@@ -114,7 +114,7 @@ class NewsController extends BaseController {
     }
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     try {

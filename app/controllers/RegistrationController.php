@@ -80,7 +80,7 @@ class RegistrationController extends GenericPageController {
   public function manage() {
     
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
-      return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+      return Helper::forbiddenResponse();
     }
     
     $pendingRegistrations = Member::where('validated', '=', false)
@@ -111,7 +111,7 @@ class RegistrationController extends GenericPageController {
     if ($member) {
       if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section_id) ||
               !$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
-        return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+        return Helper::forbiddenResponse();
       }
       
       $result = $member->updateFromInput(true, true, true, true, true);

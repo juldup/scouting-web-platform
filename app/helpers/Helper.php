@@ -195,4 +195,8 @@ class Helper {
     return $phoneNumber;
   }
   
+  public static function forbiddenResponse() {
+    return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+  }
+  
 }
