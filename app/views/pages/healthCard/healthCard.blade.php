@@ -13,6 +13,7 @@
   <div class="row">
     <div class="col-md-12">
       <h1>Fiche santé</h1>
+      @include('subviews.flashMessages')
       <p>
         La fiche santé permet aux parents de communiquer aux animateurs de leurs enfants les
         informations confidentielles concernant la santé de celui-ci. La fiche santé sert

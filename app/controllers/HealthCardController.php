@@ -20,8 +20,6 @@ class HealthCardController extends BaseController {
         'members' => $members,
     ));
     
-    
-    
   }
   
   public function showEdit($member_id) {
@@ -50,25 +48,101 @@ class HealthCardController extends BaseController {
       return Helper::forbiddenResponse();
     }
     
-    $healthCard = HealthCard::where('member_id', '=', $memberId)->first();
-    
-    if ($healthCard) {
-      // Updating the health card
-      $healthCard->update(Input::except("_token"));
-    } else {
-      // Create health card
-      $healthCard = HealthCard::create(Input::except("_token"));
+    // Get all input
+    $inputAll = Input::except('_token');
+    // Complete missing booleans from checkboxes
+    foreach (array('has_no_constrained_activities',
+        'has_tetanus_vaccine',
+        'has_allergy',
+        'has_special_diet',
+        'has_drugs',
+        'drugs_autonomy') as $booleanKey) {
+      if (!array_key_exists($booleanKey, $inputAll))
+              $inputAll[$booleanKey] = false;
     }
     
-    // Save signatory data
-    $healthCard->reminder_sent = false;
-    $healthCard->signatory_id = $this->user->id;
-    $healthCard->signatory_email = $this->user->email;
-    $healthCard->signature_date = date('Y-m-d');
+    $errorMessage = "";
+    $warningMessage = "";
     
-    $healthCard->save();
+    if ((!$inputAll['contact1_name'] || !$inputAll['contact1_phone']) &&
+            (!$inputAll['contact2_name'] || !$inputAll['contact2_phone'])) {
+      $errorMessage .= "Il faut spécifier au moins une personne de contact et son numéro de téléphone. ";
+    }
     
-    return Redirect::to(URL::previous());
+    if (!$inputAll['has_no_constrained_activities'] && !$inputAll['constrained_activities_details']) {
+      $errorMessage .= "Vous n'avez pas spécifié les détails à la question 1. ";
+    }
+    if ($inputAll['has_no_constrained_activities'] && $inputAll['constrained_activities_details']) {
+      $warningMessage .=
+              "Vous avez répondu 'oui' à la question 1, mais avez tout de même complété des raisons. ";
+    }
+    
+    if ($inputAll['has_tetanus_vaccine'] && !$inputAll['tetanus_vaccine_details']) {
+      $errorMessage .= "Vous n'avez pas spécifié la date de vaccination à la question 4. ";
+    }
+    if (!$inputAll['has_tetanus_vaccine'] && $inputAll['tetanus_vaccine_details']) {
+      $warningMessage .=
+              "Vous avez répondu 'non' à la question 4, mais avez tout de même indiqué une date de vaccination. ";
+    }
+    
+    if ($inputAll['has_allergy'] && !$inputAll['allergy_details']) {
+      $errorMessage .= "Vous n'avez pas spécifié les allergies à la question 5. ";
+    }
+    if (!$inputAll['has_allergy'] && ($inputAll['allergy_details'] || $inputAll['allergy_consequences'])) {
+      $warningMessage .=
+              "Vous avez répondu 'non' à la question 5, mais avez tout de même donné des informations. ";
+    }
+    
+    if ($inputAll['has_special_diet'] && !$inputAll['special_diet_details']) {
+      $errorMessage .= "Vous n'avez pas spécifié le régime à la question 6. ";
+    }
+    if (!$inputAll['has_special_diet'] && $inputAll['special_diet_details']) {
+      $warningMessage .=
+              "Vous avez répondu 'non' à la question 6, mais avez tout de même indiqué un régime. ";
+    }
+    
+    if ($inputAll['has_drugs'] && !$inputAll['drugs_details']) {
+      $errorMessage .= "Vous n'avez pas spécifié les médicaments à la question 8. ";
+    }
+    if (!$inputAll['has_drugs'] && ($inputAll['drugs_details'])) {
+      $warningMessage .=
+              "Vous avez répondu 'non' à la question 8, mais avez tout de même donné des informations. ";
+    }
+    
+    if (!$errorMessage) {
+    
+      $healthCard = HealthCard::where('member_id', '=', $memberId)->first();
+
+      if ($healthCard) {
+        // Updating the health card
+        $healthCard->update($inputAll);
+      } else {
+        // Create health card
+        $healthCard = HealthCard::create($inputAll);
+      }
+
+      // Save signatory data
+      $healthCard->reminder_sent = false;
+      $healthCard->signatory_id = $this->user->id;
+      $healthCard->signatory_email = $this->user->email;
+      $healthCard->signature_date = date('Y-m-d');
+
+      $healthCard->save();
+      
+    }
+    
+    if ($errorMessage || $warningMessage) {
+      $redirect = Redirect::to(URL::previous());
+      if ($warningMessage) $redirect = $redirect->with('warning_message', "ATTENTION ! " . $warningMessage);
+      if ($errorMessage) {
+        return $redirect->with('error_message', $errorMessage)->withInput();
+      } else {
+        return $redirect->with('success_message', 'La fiche santé a été enregistrée.');
+      }
+    } else {
+      // Success
+      return Redirect::to(URL::route('health_card'))->with('success_message', 'La fiche santé a été enregistrée.');
+    }
   }
   
 }

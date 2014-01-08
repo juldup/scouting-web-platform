@@ -18,6 +18,9 @@
     <div class="row">
       <div class="col-md-12">
         <h1>Fiche santé de {{ $member->first_name }} {{ $member->last_name }}</h1>
+        
+        @include('subviews.flashMessages')
+        
         <div class="well form-horizontal">
           {{ Form::model($health_card, array('url' => URL::route('health_card_submit'))) }}
           {{ Form::hidden('member_id') }}
@@ -159,7 +162,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  Peut-{{ $il }} prendre part à toutes les activités proposées ? (sport, excursions, jeux, natation, ...)
+                  1. Peut-{{ $il }} prendre part à toutes les activités proposées ? (sport, excursions, jeux, natation, ...)
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_no_constrained_activities') }}
               </p>
@@ -177,7 +180,7 @@
           <div class="form-group">
             <div class="col-md-12">
               <label>
-                Y a-t-il des données médicales spécifiques importantes à connaitre pour le bon déroulement des
+                2. Y a-t-il des données médicales spécifiques importantes à connaitre pour le bon déroulement des
                 activités ? (ex.&nbsp;: problèmes cardiaques, épilepsie, asthme, diabète, mal des transports,
                 rhumatisme, somnambulisme, affections cutanées, handicap moteur ou mental...)  <br />
                 Indiquez la fréquence, la gravité et les actions à mettre en &#339;uvre pour les éviter et/ou y réagir.
@@ -193,7 +196,7 @@
           <div class="form-group">
             <div class="col-md-12">
               <label>
-                Quelles sont les maladies ou les interventions médicales qu'{{ $il }} a dû subir (+ années respectives) ? (rougeole, appendicite...)
+                3. Quelles sont les maladies ou les interventions médicales qu'{{ $il }} a dû subir (+ années respectives) ? (rougeole, appendicite...)
               </label>
             </div>
             <div class="col-md-12">
@@ -207,7 +210,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  Est-{{ $il }} en ordre de vaccination contre le tétanos ?
+                  4. Est-{{ $il }} en ordre de vaccination contre le tétanos ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_tetanus_vaccine') }}
               </p>
@@ -226,7 +229,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  Est-{{ $il }} allergique à certaines substances, aliments ou médicaments ?
+                  5. Est-{{ $il }} allergique à certaines substances, aliments ou médicaments ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_allergy') }}
               </p>
@@ -251,7 +254,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  A-t-{{ $il }} un régime alimentaire particulier ?
+                  6. A-t-{{ $il }} un régime alimentaire particulier ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_special_diet') }}
               </p>
@@ -269,7 +272,7 @@
           <div class="form-group">
             <div class="col-md-12">
               <label>
-                Y a-t-il d'autres renseignements concernant le scout que vous jugez importants ?
+                7. Y a-t-il d'autres renseignements concernant le scout que vous jugez importants ?
                 (problèmes de sommeil, incontinence nocturne, problèmes psychiques ou physiques, 
                 port de lunettes ou appareil auditif...)
               </label>
@@ -285,7 +288,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  Doit-{{ $il }} prendre des médicaments pendant les week-ends et/ou le camp ?
+                  8. Doit-{{ $il }} prendre des médicaments pendant les week-ends et/ou le camp ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_drugs') }}
               </p>
@@ -298,10 +301,8 @@
             </div>
             <div class="col-md-12">
               <p class="form-side-note">
-                <label>
-                  Est-{{ $il }} autonome dans la prise de ces médicaments ? (Nous rappelons que les médicaments
-                  ne peuvent pas être partagés entre les participants)
-                </label>
+                Est-{{ $il }} autonome dans la prise de ces médicaments ? (Nous rappelons que les médicaments
+                ne peuvent pas être partagés entre les participants)
                 <span class='horiz-divider'></span>{{ Form::checkbox('drugs_autonomy') }}
               </p>
               
