@@ -127,7 +127,7 @@ Route::get('gestion/animateurs/{section_slug?}', array("as" => "edit_leaders", "
 Route::get('gestion/animateurs/scout-en-animateur/{member_id}/{section_slug}', array("as" => "edit_leaders_member_to_leader", "uses" => "LeaderController@showMemberToLeader"));
 Route::post('gestion/animateurs/scout-en-animateur/{section_slug}', array("as" => "edit_leaders_member_to_leader_post", "uses" => "LeaderController@postMemberToLeader"));
 Route::post('gestion/animateurs/submit/{section_slug?}', array("as" => "edit_leaders_submit", "uses" => "LeaderController@submitLeader"));
-Route::get('gestion/privileges/{section_slug?}', array("as" => "edit_privileges", "uses" => "LeaderController@showEditPrivileges"));
+Route::get('gestion/privileges/{section_slug?}', array("as" => "edit_privileges", "uses" => "PrivilegeController@showEdit"));
 
 // Listing
 Route::get('listing/{section_slug?}', array("as" => "listing", "uses" => "ListingController@showPage"));

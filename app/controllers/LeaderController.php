@@ -86,24 +86,6 @@ class LeaderController extends BaseController {
       return Redirect::route('edit_leaders', array('section_slug' => $section_slug));
     }
   }
-
-  public function showEditPrivileges() {
-    
-    if (!$this->user->isLeader()) {
-      return Helper::forbiddenResponse();
-    }
-    
-    $leaders = Member::where('is_leader', '=', true)
-            ->where('section_id', '=', $this->section->id)
-            ->where('validated', '=', true)
-            ->orderBy('leader_in_charge', 'DESC')
-            ->orderBy('leader_name', 'ASC')
-            ->get();
-    
-    return View::make('pages.leader.editLeaders', array(
-        'leaders' => $leaders,
-    ));
-  }
   
   public function getLeaderPicture($leader_id) {
     $leader = Member::find($leader_id);
