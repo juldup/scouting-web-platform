@@ -145,4 +145,37 @@ class HealthCardController extends BaseController {
     }
   }
   
+  public function download($member_id) {
+    
+    $member = Member::find($member_id);
+    
+    if (!$member) throw new NotFoundHttpException();
+    
+    if (!$this->user->isOwnerOfMember($member_id) &&
+            !$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $member->section)) {
+      return Helper::forbiddenResponse();
+    }
+    
+    $healthCard = HealthCard::where('member_id', '=', $member_id)->first();
+    
+    HealthCardPDF::healthCardToPDF($healthCard);
+    
+  }
+  
+  public function downloadAll() {
+    
+    $members = $this->user->getAssociatedMembers();
+    
+    $healthCards = array();
+    foreach ($members as $member) {
+      $healthCard = HealthCard::where('member_id', '=', $member->id)->first();
+      if ($healthCard) {
+        $healthCards[] = $healthCard;
+      }
+    }
+    
+    HealthCardPDF::healthCardsToPDF($healthCards);
+    
+  }
+  
 }

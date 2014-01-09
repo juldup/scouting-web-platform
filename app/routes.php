@@ -67,9 +67,11 @@ Route::get('gestion/inscription/valider-supprimer/{section_slug?}', array("as" =
 Route::post('gestion/inscription/valider-supprimer/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
 
 // Health card
-Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));
 Route::get('fiche-sante/completer/{member_id}/{section_slug?}', array("as" => "health_card_edit", "uses" => "HealthCardController@showEdit"));
 Route::post('fiche-sante/submit/{section_slug?}', array("as" => "health_card_submit", "uses" => "HealthCardController@submit"));
+Route::get('fiche-sante/telecharger/{member_id}/{section_slug?}', array("as" => "health_card_download", "uses" => "HealthCardController@download"));
+Route::get('fiche-sante/telecharger-tout/{section_slug?}', array("as" => "health_card_download_all", "uses" => "HealthCardController@downloadAll"));
+Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));
 
 // Unit policy
 Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyPageController@showPage"));

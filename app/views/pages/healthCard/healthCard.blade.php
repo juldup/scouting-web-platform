@@ -33,6 +33,7 @@
             <th>Nom</th>
             <th>Dernière signature</th>
             <th>Destruction automatique dans...</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -72,7 +73,22 @@
                 -
               @endif
             </td>
+            <td>
+              @if (array_key_exists('health_card', $member))
+                <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download", $member['member']->id) }}">
+                  Télécharger
+                </a>
+              @endif
+            </td>
           @endforeach
+          <tr>
+            <td colspan="4"></td>
+            <td>
+              <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download_all") }}">
+                Télécharger tout
+              </a>
+            </td>
+          </tr>
         </tobdy>
       </table>
     </div>
