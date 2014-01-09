@@ -72,6 +72,9 @@ Route::post('fiche-sante/submit/{section_slug?}', array("as" => "health_card_sub
 Route::get('fiche-sante/telecharger/{member_id}/{section_slug?}', array("as" => "health_card_download", "uses" => "HealthCardController@download"));
 Route::get('fiche-sante/telecharger-tout/{section_slug?}', array("as" => "health_card_download_all", "uses" => "HealthCardController@downloadAll"));
 Route::get('fiche-sante/{section_slug?}', array("as" => "health_card", "uses" => "HealthCardController@showPage"));
+Route::get('gestion/fiche-sante/{section_slug?}', array("as" => "manage_health_cards", "uses" => "HealthCardController@showManage"));
+Route::get('gestion/fiche-sante/telecharger-tout/{section_slug}', array("as" => "manage_health_cards_download_all", "uses" => "HealthCardController@downloadSectionCards"));
+Route::get('gestion/fiche-sante/telecharger-resume/{section_slug}', array("as" => "manage_health_cards_download_summary", "uses" => "HealthCardController@downloadSectionSummary"));
 
 // Unit policy
 Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyPageController@showPage"));

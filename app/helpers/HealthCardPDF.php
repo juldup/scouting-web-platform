@@ -18,6 +18,37 @@ class HealthCardPDF {
     $pdf->outputPDF($filename);
   }
   
+  public static function healthCardsToSummaryPDF($healthCards, Section $section) {
+    $pdf = new HealthCardPDF();
+    // Init page
+    $pdf->pdf->AddPage();
+    $pdf->pdf->SetAutoPageBreak(true, 10);
+    $pdf->pdf->SetFont('Helvetica','B',16);
+    $pdf->pdf->Cell(100, 8, "Résumé des fiches santé " . $section->de_la_section);
+    $pdf->pdf->Ln(12);
+    $nothingSpecial = "";
+    // Add card summary
+    foreach ($healthCards as $healthCard) {
+      $hasSpecialData = $pdf->addCardSummary($healthCard);
+      if (!$hasSpecialData) {
+        $nothingSpecial .= ($nothingSpecial ? ", " : "") . $healthCard->getMember()->first_name
+                . " " . $healthCard->getMember()->last_name;
+      }
+    }
+    // Print 'nothing special' section
+    if ($nothingSpecial) {
+      $pdf->pdf->Ln(self::$INTERLINE);
+      $pdf->pdf->SetFont("Helvetica","B",11);
+      $pdf->pdf->Cell(185, 5, "Rien à signaler pour :");
+      $pdf->pdf->Ln(self::$INTERLINE);
+      $pdf->pdf->SetFont("Helvetica","","11");
+      $pdf->multiline($nothingSpecial);
+    }
+    // Output pdf
+    $filename = "Résumé des fiches santes " . $section->de_la_section;
+    $pdf->outputPDF($filename);
+  }
+  
   protected static $LINE_HEIGHT = 4.2;
   protected static $INTERLINE = 6;
   protected static $SMALL_INTERLINE = 3;
@@ -38,7 +69,7 @@ class HealthCardPDF {
   // Adds a content cell with fixed width
   function content($length, $str) {
     // If $str starts with |, this symbol is not displayed but the text is bold and undelined
-    $this->pdf->SetFont("Times","I" . (substr($str,0,1) == "|" ? "BU" : ""),"10");
+    $this->pdf->SetFont("Helvetica","I" . (substr($str,0,1) == "|" ? "BU" : ""),"10");
     $this->pdf->Cell($length, self::$LINE_HEIGHT, (substr($str,0,1) == "|" ? substr($str,1) : $str));
   }
   
@@ -237,8 +268,59 @@ class HealthCardPDF {
     
   }
   
+  /*
+   * Adds data summary and returns whether data has been added or not
+   */
+  protected function addCardSummary($healthCard) {
+    
+    $member = $healthCard->getMember();
+    
+    // French grammar for masculine/feminine words
+    $e = ($member->gender == "F" ? "e" : "");
+    $il = ($member->gender == "F" ? "elle" : "il");
+    
+    // Get important data from health card
+    $importantData = array();
+    
+    if (!$healthCard->has_no_constrained_activities) 
+      $importantData[] = "Ne peut pas participer à toutes les activités : " . $healthCard->constrained_activities_details;
+    if ($healthCard->medical_data)
+      $importantData[] = $healthCard->medical_data;
+    if ($healthCard->has_allergy) {
+      $importantData[] = "Allergies : " . $healthCard->allergy_details;
+      if ($healthCard->allergy_consequences)
+        $importantData[] = "Conséquences des allergies: " . $healthCard->allergy_consequences;
+    }
+    if ($healthCard->has_special_diet)
+      $importantData[] = "Régime alimentaire : " . $healthCard->special_diet_details;
+    if ($healthCard->has_drugs) {
+      $preString = ($healthCard->drugs_autonomy ? "Médicaments (autonome) : " : "Médicaments : ");
+      $importantData[] = $preString . $healthCard->drugs_details;
+    }
+    if (!$healthCard->has_tetanus_vaccine)
+      $importantData[] = "N'est pas vacciné$e contre le tétanos";
+    if ($healthCard->other_important_information)
+      $importantData[] = $healthCard->other_important_information;
+    if ($healthCard->comments)
+      $importantData[] = "Commentaires : " . $healthCard->comments;
+    
+    if (count($importantData)) {
+      // Display name
+      $this->pdf->SetFont("Times","B",11);
+      $this->pdf->Cell(185, 5, $member->first_name . " " . $member->last_name);
+      $this->pdf->Ln(self::$INTERLINE);
+      // Display important data
+      foreach ($importantData as $data) {
+        $this->multiline($data);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
   public function outputPDF($filename) {
-    $this->pdf->Output($filename . ".pdf", "D");
+    $this->pdf->Output($filename . ".pdf", "I");
     
   }
   

@@ -21,6 +21,7 @@ class HealthCardController extends BaseController {
     return View::make('pages.healthCard.healthCard', array(
         'members' => $members,
         'download_all' => $healthCardCount >= 2,
+        'can_manage' => $this->user->can(Privilege::$VIEW_HEALTH_CARDS),
     ));
     
   }
@@ -178,6 +179,89 @@ class HealthCardController extends BaseController {
     }
     
     HealthCardPDF::healthCardsToPDF($healthCards);
+    
+  }
+  
+  public function showManage() {
+    
+    if (!$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    
+    $sectionMembers = Member::where('validated', '=', 1)
+            ->where('section_id', '=', $this->section->id)
+            ->orderBy('is_leader', 'ASC')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+    
+    $members = array();
+    $healthCardCount = 0;
+    
+    foreach ($sectionMembers as $member) {
+      $members[$member->id] = array('member' => $member);
+      $healthCard = HealthCard::where('member_id', '=', $member->id)->first();
+      if ($healthCard) {
+        $members[$member->id]['health_card'] = $healthCard;
+        $healthCardCount++;
+      }
+    }
+    
+    return View::make('pages.healthCard.manageHealthCards', array(
+        'members' => $members,
+        'download_all' => $healthCardCount >= 2,
+        'can_manage' => $this->user->can(Privilege::$VIEW_HEALTH_CARDS),
+    ));
+    
+  }
+  
+  public function downloadSectionCards() {
+    
+    if (!$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    
+    $members = Member::where('validated', '=', 1)
+            ->where('section_id', '=', $this->section->id)
+            ->orderBy('is_leader', 'ASC')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+    
+    $healthCards = array();
+    foreach ($members as $member) {
+      $healthCard = HealthCard::where('member_id', '=', $member->id)->first();
+      if ($healthCard) {
+        $healthCards[] = $healthCard;
+      }
+    }
+    
+    HealthCardPDF::healthCardsToPDF($healthCards);
+    
+  }
+  
+  public function downloadSectionSummary() {
+    
+    if (!$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    
+    $members = Member::where('validated', '=', 1)
+            ->where('section_id', '=', $this->section->id)
+            ->orderBy('is_leader', 'ASC')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+    
+    $healthCards = array();
+    foreach ($members as $member) {
+      $healthCard = HealthCard::where('member_id', '=', $member->id)->first();
+      if ($healthCard) {
+        $healthCards[] = $healthCard;
+      }
+    }
+    
+    HealthCardPDF::healthCardsToSummaryPDF($healthCards, $this->section);
     
   }
   
