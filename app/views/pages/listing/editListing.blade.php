@@ -18,17 +18,15 @@
   </script>
 @stop
 
+@section('back_links')
+  <p>
+    <a href='{{ URL::route('listing', array('section_slug' => $user->currentSection->slug)) }}'>
+      Retour au listing
+    </a>
+  </p>
+@stop
+
 @section('content')
-  
-  <div class="row">
-    <div class="pull-right">
-      <p class='management'>
-        <a class='button' href='{{ URL::route('listing', array('section_slug' => $user->currentSection->slug)) }}'>
-          Retour au listing
-        </a>
-      </p>
-    </div>
-  </div>
   
   <div class="row">
     <div class="col-lg-12">

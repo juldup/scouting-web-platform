@@ -8,24 +8,22 @@
   <meta name="robots" content="noindex">
 @stop
 
-@section('content')
-  
+@section('forward_links')
   @if ($is_leader)
-    <div class="row">
-      <div class="pull-right">
-        <p class='management'>
-          <a class='button' href='{{ URL::route('edit_leaders', array('section_slug' => $user->currentSection->slug)) }}'>
-            Modifier les animateurs
-          </a>
-        </p>
-        <p class='management'>
-          <a class='button' href='{{ URL::route('edit_privileges', array('section_slug' => $user->currentSection->slug)) }}'>
-            Modifier les privilèges des animateurs
-          </a>
-        </p>
-      </div>
-    </div>
+    <p>
+      <a href='{{ URL::route('edit_leaders', array('section_slug' => $user->currentSection->slug)) }}'>
+        Modifier les animateurs
+      </a>
+    </p>
+    <p>
+      <a href='{{ URL::route('edit_privileges', array('section_slug' => $user->currentSection->slug)) }}'>
+        Modifier les privilèges des animateurs
+      </a>
+    </p>
   @endif
+@stop
+
+@section('content')
   
   <div class="row">
     <div class="col-md-12">

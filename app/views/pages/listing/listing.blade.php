@@ -18,19 +18,17 @@
   </script>
 @stop
 
-@section('content')
-  
+@section('forward_links')
   @if ($can_manage)
-    <div class="row">
-      <div class="pull-right">
-        <p class='management'>
-          <a class='button' href='{{ URL::route('manage_listing', array('section_slug' => $user->currentSection->slug)) }}'>
-            Modifier le listing
-          </a>
-        </p>
-      </div>
-    </div>
+    <p>
+      <a href='{{ URL::route('manage_listing', array('section_slug' => $user->currentSection->slug)) }}'>
+        Modifier le listing
+      </a>
+    </p>
   @endif
+@stop
+
+@section('content')
   
   <div class="row">
     <div class="col-lg-12">

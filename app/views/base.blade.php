@@ -12,6 +12,7 @@
   <div id="wrap">
     @include('menu.header')
     <div class="container">
+      @include('subviews.navigationLinks')
       @yield('content')
     </div>
   </div>

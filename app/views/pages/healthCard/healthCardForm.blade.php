@@ -8,6 +8,18 @@
   <meta name="robots" content="noindex">
 @stop
 
+@section('additional_javascript')
+  <script src="{{ URL::to('/') }}/js/health_card.js"></script>
+@stop
+
+@section('back_links')
+  <p>
+    <a href='{{ URL::route('health_card') }}'>
+      Retour à la liste
+    </a>
+  </p>
+@stop
+
 @section('content')
   
   @if ($health_card)

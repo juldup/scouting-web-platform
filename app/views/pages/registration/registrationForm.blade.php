@@ -8,28 +8,29 @@
   <script src="{{ URL::to('/') }}/js/registration_form.js"></script>
 @stop
 
-@section('content')
-  
+@section('forward_links')
   {{-- Link to management --}}
   @if ($can_manage)
-    <div class="row">
-      <div class='pull-right management'>
-        <p>
-          <a class='button' href='{{ URL::route('manage_registration') }}'>
-            Gérer les inscriptions
-          </a>
-        </p>
-      </div>
-    </div>
+    <p>
+      <a class='button' href='{{ URL::route('manage_registration') }}'>
+        Gérer les inscriptions
+      </a>
+    </p>
   @endif
+@stop
+
+@section('back_links')
+  <p>
+    <a href='{{ URL::route('registration') }}'>
+      Retour à la page d'inscription
+    </a>
+  </p>
+@stop
+
+@section('content')
   
   <div class="row">
     <div class="col-md-12">
-      <p>
-        <a class='button' href='{{ URL::route('registration') }}'>
-          Retour à la page d'inscription
-        </a>
-      </p>
       <h1>Formulaire d'inscription</h1>
       @if (Session::has('success_message'))
         <p class='alert alert-success'>{{ Session::get('success_message'); }}</p>

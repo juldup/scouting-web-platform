@@ -63,7 +63,7 @@ class HealthCardPDF {
   
   // Adds a multiline cell
   function multiline($str, $length = 185) {
-    // Si $str commence par |, ce symbole n'est pas affiché mais la cellule est en gras et souligné
+    // If $str starts with |, this symbol is not displayed but the text is bold and undelined
     $this->pdf->SetFont("Times", "I" . (substr($str,0,1) == "|" ? "BU" : ""), "10");
     $this->pdf->MultiCell($length, self::$LINE_HEIGHT, (substr($str,0,1) == "|" ? substr($str,1) : $str) . "\n");
   }

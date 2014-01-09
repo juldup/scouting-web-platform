@@ -18,26 +18,26 @@
   </script>
 @stop
 
+@section('forward_links')
+  <p>
+    <a href='{{ URL::route('edit_privileges', array('section_slug' => $user->currentSection->slug)) }}'>
+      Modifier les privilèges des animateurs
+    </a>
+  </p>
+@stop
+
+@section('back_links')
+  <p>
+    <a href='{{ URL::route('leaders', array('section_slug' => $user->currentSection->slug)) }}'>
+      Retour à la page des animateurs
+    </a>
+  </p>
+@stop
+
 @section('content')
   
   <div class="row">
-    <div class="pull-right">
-      <p class='management'>
-        <a class='button' href='{{ URL::route('leaders', array('section_slug' => $user->currentSection->slug)) }}'>
-          Retour à la page
-        </a>
-      </p>
-      <p class='management'>
-        <a class='button' href='{{ URL::route('edit_privileges', array('section_slug' => $user->currentSection->slug)) }}'>
-          Modifier les privilèges des animateurs
-        </a>
-      </p>
-    </div>
-  </div>
-  
-  <div class="row">
     <div class="col-md-12">
-  
       <h1>Animateurs {{ $user->currentSection->de_la_section }}</h1>
       @include('subviews.flashMessages')
     </div>

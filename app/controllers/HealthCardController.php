@@ -7,17 +7,20 @@ class HealthCardController extends BaseController {
     $ownedMembers = $this->user->getAssociatedMembers();
     
     $members = array();
+    $healthCardCount = 0;
     
     foreach ($ownedMembers as $member) {
       $members[$member->id] = array('member' => $member);
       $healthCard = HealthCard::where('member_id', '=', $member->id)->first();
       if ($healthCard) {
         $members[$member->id]['health_card'] = $healthCard;
+        $healthCardCount++;
       }
     }
     
     return View::make('pages.healthCard.healthCard', array(
         'members' => $members,
+        'download_all' => $healthCardCount >= 2,
     ));
     
   }

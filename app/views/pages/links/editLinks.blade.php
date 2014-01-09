@@ -15,15 +15,15 @@
   </script>
 @stop
 
+@section('back_links')
+  <p>
+    <a href='{{ URL::route('links') }}'>
+      Retour à la page de liens utiles
+    </a>
+  </p>
+@stop
+
 @section('content')
-  
-  <div class="row">
-    <p class='pull-right management'>
-      <a class='button' href='{{ URL::route('links') }}'>
-        Retour à la page
-      </a>
-    </p>
-  </div>
   
   <div class="row">
     <div class="col-lg-12">

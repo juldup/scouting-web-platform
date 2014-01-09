@@ -1,18 +1,17 @@
 @extends('base')
 
-@section('content')
-  
+@section('forward_links')
   {{-- Link to management --}}
   @if ($can_edit)
-    <div class="row">
-      <p class='pull-right management'>
-        <a class='button' href='{{ $edit_url }}'>
-          Modifier cette page
-        </a>
-      </p>
-    </div>
+    <p>
+      <a href='{{ $edit_url }}'>
+        Modifier cette page
+      </a>
+    </p>
   @endif
-  
+@stop
+
+@section('content')
   <div class="row page_content">
     <h1>{{ $page_title }}</h1>
     {{ $page_content }}

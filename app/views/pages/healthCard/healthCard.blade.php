@@ -9,7 +9,7 @@
 @stop
 
 @section('content')
-  
+
   <div class="row">
     <div class="col-md-12">
       <h1>Fiche santé</h1>
@@ -81,14 +81,16 @@
               @endif
             </td>
           @endforeach
-          <tr>
-            <td colspan="4"></td>
-            <td>
-              <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download_all") }}">
-                Télécharger tout
-              </a>
-            </td>
-          </tr>
+          @if ($download_all)
+            <tr>
+              <td colspan="4"></td>
+              <td>
+                <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download_all") }}">
+                  Télécharger tout
+                </a>
+              </td>
+            </tr>
+          @endif
         </tobdy>
       </table>
     </div>

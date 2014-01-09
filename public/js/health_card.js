@@ -1,16 +1,4 @@
 $().ready(function() {
-  $("#registration_form input[name='is_leader']").change(function(obj) {
-    if ($("#registration_form input[name='is_leader']").prop("checked")) {
-      $("#registration_form .leader_specific").slideDown();
-    } else {
-      $("#registration_form .leader_specific").slideUp();
-    }
-  });
-  if ($("#registration_form input[name='is_leader']").prop("checked")) {
-    $("#registration_form .leader_specific").show();
-  }
-  
-
   // Prevent Enter key from validating the form
   document.onkeypress = function(evt) {
     var evt = (evt) ? evt : ((event) ? event : null);
@@ -22,5 +10,4 @@ $().ready(function() {
       return false;
     }
   }
-  
 });

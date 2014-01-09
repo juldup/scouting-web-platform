@@ -1,13 +1,14 @@
 @extends('base')
 
-@section('content')
-  
-  {{-- Back to page --}}
-  <p class='management'>
-    <a class='button' href='{{ $original_page_url }}'>
-      Retour à la page.
+@section('back_links')
+  <p>
+    <a href='{{ $original_page_url }}'>
+      Retour à la page
     </a>
   </p>
+@stop
+
+@section('content')
   
   <div class="row page_content">
     <form name="edit_page" method="post" action="" id="edit_page_form">

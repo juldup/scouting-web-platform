@@ -53,17 +53,15 @@
   </script>
 @stop
 
+@section('back_links')
+  <p>
+    <a href='{{ URL::route('registration', array('section_slug' => $user->currentSection->slug)) }}'>
+      Retour à la page d'inscription
+    </a>
+  </p>
+@stop
+
 @section('content')
-  
-  <div class="row">
-    <div class="pull-right">
-      <p class='management'>
-        <a class='button' href='{{ URL::route('registration', array('section_slug' => $user->currentSection->slug)) }}'>
-          Retour à la page
-        </a>
-      </p>
-    </div>
-  </div>
   
   <div class="row">
     <div class="col-md-12">

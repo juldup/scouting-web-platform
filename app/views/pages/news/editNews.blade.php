@@ -16,15 +16,15 @@
   </script>
 @stop
 
+@section('back_links')
+  <p>
+    <a href='{{ $page_url }}'>
+      Retour aux nouvelles
+    </a>
+  </p>
+@stop
+
 @section('content')
-  
-  <div class="row">
-    <p class='pull-right management'>
-      <a class='button' href='{{ $page_url }}'>
-        Retour à la page
-      </a>
-    </p>
-  </div>
   
   <div class="row">
     <div class="col-lg-12">

@@ -27,27 +27,27 @@
   </script>
 @stop
 
-@section('content')
-  
-  @if ($can_edit)
-    @if ($editing)
-      <div class="row">
-        <p class='pull-right management'>
-          <a class='button' href='{{ $page_url }}'>
-            Retour à la page
-          </a>
-        </p>
-      </div>
-    @else
-      <div class="row">
-        <p class='pull-right management'>
-          <a class='button' href='{{ $edit_url }}'>
-            Modifier cette page
-          </a>
-        </p>
-      </div>
-    @endif
+@section('back_links')
+  @if ($editing)
+    <p>
+      <a href='{{ $page_url }}'>
+        Retour au calendrier
+      </a>
+    </p>
   @endif
+@stop
+
+@section('forward_links')
+  @if ($can_edit && !$editing)
+    <p>
+      <a href='{{ $edit_url }}'>
+        Modifier le calendrier
+      </a>
+    </p>
+  @endif
+@stop
+
+@section('content')
   
   <div class="row">
     <div class="col-md-12">

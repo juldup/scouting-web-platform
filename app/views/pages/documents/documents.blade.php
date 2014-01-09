@@ -8,17 +8,17 @@
   <meta name="robots" content="noindex">
 @stop
 
-@section('content')
-  
+@section('forward_links')
   @if ($can_edit)
-    <div class="row">
-      <p class='pull-right management'>
-        <a class='button' href='{{ $edit_url }}'>
-          Gérer les documents à télécharger
-        </a>
-      </p>
-    </div>
+    <p>
+      <a href='{{ $edit_url }}'>
+        Gérer les documents à télécharger
+      </a>
+    </p>
   @endif
+@stop
+
+@section('content')
   
   <div class="row">
     <div class="col-lg-12">
