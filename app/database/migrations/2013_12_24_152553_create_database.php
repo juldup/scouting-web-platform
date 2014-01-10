@@ -323,6 +323,43 @@ class CreateDatabase extends Migration {
       $table->index('member_id');
     });
     
+    // Photo folders
+    Schema::create('photo_albums', function($table) {
+      $table->increments('id');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->string('name');
+      $table->integer('photo_count')->default(0);
+      $table->integer('cover_picture_id')->unsigned()->nullable();
+      $table->integer('position')->default(0);
+      $table->string('archive')->default('');
+      $table->date('last_update')->default('0000-00-00');
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('photo_count');
+      $table->index('archive');
+      $table->index('last_update');
+    });
+    
+    // Photos
+    Schema::create('photos', function($table) {
+      $table->increments('id');
+      $table->integer('album_id')->unsigned();
+      $table->foreign('album_id')->references('id')->on('photo_albums')->onDelete('cascade');
+      $table->string('filename');
+      $table->text('comment')->nullable();
+      $table->integer('position')->default(0);
+      $table->timestamps();
+      
+      $table->index('album_id');
+      $table->index('position');
+    });
+    
+    Schema::table('photo_albums', function($table) {
+      $table->foreign('cover_picture_id')->references('id')->on('photos')->onDelete('set null');
+    });
+    
     // Test data
     DB::table('sections')->insert(array(
         'id' => 2,
@@ -412,6 +449,11 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::table('photo_albums', function($table) {
+      $table->dropForeign("photo_albums_cover_picture_id_foreign");
+    });
+    Schema::drop('photos');
+    Schema::drop('photo_albums');
     Schema::drop('health_cards');
     Schema::drop('links');
     Schema::drop('documents');

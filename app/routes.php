@@ -119,6 +119,7 @@ Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailCo
 
 // Photos
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
+Route::get('photo/{format}/{photo_id}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
 
 // Leaders
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
