@@ -348,7 +348,7 @@ class CreateDatabase extends Migration {
       $table->integer('album_id')->unsigned();
       $table->foreign('album_id')->references('id')->on('photo_albums')->onDelete('cascade');
       $table->string('filename');
-      $table->text('comment')->nullable();
+      $table->text('caption')->nullable();
       $table->integer('position')->default(0);
       $table->timestamps();
       

@@ -32,7 +32,7 @@ class PhotoController extends BaseController {
       return Helper::forbiddenResponse();
     }
     $photo = Photo::find($photo_id);
-    if (!$photo) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+    if (!$photo) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("La photo n'existe plus.");
     $path = $photo->getPhotoPath($format);
     if (file_exists($path)) {
       return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
@@ -40,8 +40,12 @@ class PhotoController extends BaseController {
           "Content-Length" => filesize($path),
       ));
     } else {
-      throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+      throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("La photo n'existe plus.");
     }
+  }
+  
+  public function downloadAlbum($album_id) {
+    throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Il est pour le moment impossible de télécharger les albums de photos.");
   }
   
 }
