@@ -82,7 +82,7 @@
               <div class='col-md-1'>
                 {{ Form::text('duration_in_days', '', array('class' => 'form-control small')) }}
               </div>
-              <div class='col-md-6>
+              <div class='col-md-6'>
                 <p class="form-side-note">Compte le premier et le dernier jour de l'activité.</p>
               </div>
             </div>
@@ -187,7 +187,7 @@
             @endif
 
             {{-- Day --}}
-            <div class='day @if ($editing) clickable @endif'>
+            <div class='day {{ $editing ? "clickable" : "" }}'>
 
               {{-- Number of the day --}}
               @if ($editing)
@@ -200,7 +200,7 @@
               @foreach ($events[$day] as $event)
               @if ($editing) <a href="javascript:editEvent({{ $event->id }})"> @endif
               <p title="{{{ $event->description }}}" style="color: {{$event->getSection()->color}};">
-                <img src="{{ $event->getIcon() }}" />
+                <img src="{{ $event->getIcon() }}" class='calendar-event-icon' />
                 {{ $event->event }}
               </p>
               @if ($editing) </a> @endif
