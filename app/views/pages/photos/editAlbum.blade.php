@@ -9,6 +9,9 @@
   <script src="{{ URL::to('/') }}/js/editAlbum.js"></script>
   <script>
     var savePhotoOrderURL = "{{ URL::route('ajax_change_photo_order') }}";
+    var deletePhotoURL = "{{ URL::route('ajax_delete_photo') }}";
+    var uploadPhotoURL = "{{ URL::route('ajax_add_photo') }}";
+    var currentAlbumId = "{{ $album->id }}";
   </script>
 @stop
 
@@ -33,31 +36,56 @@
       <table class="table table-striped table-hover draggable-table" id="photo-table">
         <tbody>
           @foreach($photos as $photo)
-            <tr class="photo-row draggable-row" data-photo-id="{{ $photo->id }}" data-draggable-id="{{ $photo->id }}">
+            <tr class="photo-row draggable-row" id="photo-{{ $photo->id }}" data-draggable-id="{{ $photo->id }}">
               <td>
                 <div class="photo-thumbnail">
                   <img src='{{ $photo->getThumbnailURL() }}' />
                 </div>
               </td>
               <td>
-<!--                <p>
-                  Nom du fichier : {{ $photo->filename }} <span class="glyphicon glyphicon-edit"></span>
-                </p>-->
                 <p>
                   Description : {{ $photo->caption }} <span class="glyphicon glyphicon-edit"></span>
+                </p>
               </td>
               <td>
-                &nbsp;<a class="btn-sm btn-default" href="{{ URL::route('delete_photo_album', array('album_id' => $album->id)) }}">
+                <a class="btn-sm btn-default" onclick="deletePhoto(this)">
                   Supprimer
                 </a>
               </td>
             </tr>
           @endforeach
+          <tr style="display: none;" id="upload-row-prototype" class="photo-row">
+            <td>
+              <div class="photo-thumbnail">
+                <img src="{{ URL::to('/') }}/images/loading.gif" />
+              </div>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr style="display: none;" id="photo-row-prototype" class="photo-row">
+            <td>
+              <div class="photo-thumbnail">
+                <img src="" />
+              </div>
+            </td>
+            <td>
+              <p>
+                Description : <span class="glyphicon glyphicon-edit"></span>
+              </p>
+            </td>
+            <td>
+              <a class="btn-sm btn-default" onclick="deletePhoto(this)">
+                Supprimer
+              </a>
+            </td>
+          </tr>
           <tr>
             <td colspan="2">
               <div id='photo-drop-area'>
-                Glisse une ou plusieurs photos ici pour les ajouter.
+                <span class='important'>Glisse ici des photos depuis ton ordinateur pour les ajouter (jpeg/png)</span>
               </div>
+              <input type='file' style='display: none;' multiple id='file-input' onChange='picturesManuallySelected()' />
             </td>
           </tr>
         </tbody>

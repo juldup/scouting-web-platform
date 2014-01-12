@@ -2,14 +2,16 @@
 $().ready(function() {
   $(".draggable-table").each(function() {
     $(this).data('order', '');
-    $(this).find(".draggable-row").each(function() {
-      $(this).attr('onDragStart', "draggableDragStart(event)");
-      $(this).attr('onDragOver', "draggableDragOver(event)");
-      $(this).attr('onDragEnd', "draggableDragEnd(event)");
-      $(this).attr('draggable', "true");
-    });
+    $(this).find(".draggable-row").initDraggableRow();
   });
 });
+
+$.fn.initDraggableRow = function() {
+  $(this).attr('onDragStart', "draggableDragStart(event)");
+  $(this).attr('onDragOver', "draggableDragOver(event)");
+  $(this).attr('onDragEnd', "draggableDragEnd(event)");
+  $(this).attr('draggable', "true");
+}
 
 // Compute the current order of the rows in the table
 $.fn.computeCurrentOrder = function() {

@@ -9,6 +9,11 @@ class Photo extends Eloquent {
   public static $FORMAT_PREVIEW = "preview";
   public static $FORMAT_ORIGINAL = "original";
   
+  public static $THUMBNAIL_WIDTH = 150;
+  public static $THUMBNAIL_HEIGHT = 100;
+  public static $PREVIEW_WIDTH = 600;
+  public static $PREVIEW_HEIGHT = 400;
+  
   public function getPhotoURL($format) {
     return URL::route('get_photo', array('format' => $format, 'photo_id' => $this->id));
   }

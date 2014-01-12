@@ -127,6 +127,8 @@ Route::get('gestion/photos/album/{album_id}/{section_slug?}', array("as" => "edi
 Route::post('ajax/gestion/photos/changer-ordre-albums', array("as" => "ajax_change_album_order", "uses" => "PhotoController@changeAlbumOrder"));
 Route::post('ajax/gestion/photos/changer-ordre-photos', array("as" => "ajax_change_photo_order", "uses" => "PhotoController@changePhotoOrder"));
 Route::get('gestion/photos/nouvel-album/{section_slug}', array("as" => "create_photo_album", "uses" => "PhotoController@createPhotoAlbum"));
+Route::get('ajax/gestion/photos/supprimer-photo', array("as" => "ajax_delete_photo", "uses" => "PhotoController@deletePhoto"));
+Route::post('ajax/gestion/photos/ajouter-photo', array("as" => "ajax_add_photo", "uses" => "PhotoController@addPhoto"));
 
 // Leaders
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));

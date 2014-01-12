@@ -126,6 +126,11 @@ class PhotoController extends BaseController {
       return Helper::forbiddenResponse();
     }
     
+    // If the section does not correspond (i.e. a new tab has been selected), redirect to edit photos page
+    if ($album->section_id != $this->section->id) {
+      return Redirect::route('edit_photos');
+    }
+    
     $photos = Photo::where('album_id', '=', $album->id)
               ->orderBy('position')
               ->get();
@@ -186,8 +191,97 @@ class PhotoController extends BaseController {
         return $errorResponse;
       }
     }
-    
+    // Everything went well
     return json_encode(array('result' => "Success"));
+  }
+  
+  public function deletePhoto() {
+    $photoId = Input::get('photo_id');
+    $photo = Photo::find($photoId);
+    $album = $photo ? PhotoAlbum::find($photo->album_id) : null;
+    $sectionId = $album ? $album->section_id : null;
+    if ($sectionId && $this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      try {
+        $photo->delete();
+        // Update album photo count
+        try {
+          $album->updatePhotoCount();
+        } catch (Exception $ex) {
+          // Never mind
+        }
+        // Remove actual files
+        unlink($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL));
+        unlink($photo->getPhotoPath(Photo::$FORMAT_PREVIEW));
+        unlink($photo->getPhotoPath(Photo::$FORMAT_THUMBNAIL));
+        // Return success response
+        return json_encode(array('result' => "Success"));
+      } catch (Exception $ex) {
+        // Do nothing
+      }
+    }
+    // If reaching here, the photo has not been deleted
+    return json_encode(array('result' => "Failure"));
+  }
+  
+  public function addPhoto() {
+    // Get input data
+    $file = Input::file('file');
+    $uploadId = Input::get('id', 0);
+    $albumId = Input::get('album_id');
+    $album = PhotoAlbum::find($albumId);
+    $sectionId = $album ? $album->section_id : null;
+    // Prepare error response
+    $errorResponse = json_encode(array("result" => "Failure", "id" => $uploadId));
+    // Check if user is allowed to upload a photo
+    if (!$sectionId || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return $errorResponse;
+    }
+    // Check that the image exists
+    if ($file == null || !$file->getSize()) {
+      return $errorResponse;
+    }
+    try {
+      // Create photo
+      $photo = Photo::create(array(
+          'album_id' => $albumId,
+          'filename' => $file->getClientOriginalName(),
+      ));
+      // Set position to last
+      $photo->position = $photo->id;
+      $photo->save();
+      // Move file
+      $file->move($photo->getPhotoPathFolder(Photo::$FORMAT_ORIGINAL), $photo->getPhotoPathFilename());
+      // Create thumbnail picture
+      $thumbnail = new Resizer($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL));
+      $thumbnail->resizeImage(Photo::$THUMBNAIL_WIDTH, Photo::$THUMBNAIL_HEIGHT, "crop");
+      $thumbnail->saveImage($photo->getPhotoPath(Photo::$FORMAT_THUMBNAIL));
+      // Create preview picture
+      $preview = new Resizer($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL));
+      $preview->resizeImage(Photo::$PREVIEW_WIDTH, Photo::$PREVIEW_HEIGHT, "portrait");
+      $preview->saveImage($photo->getPhotoPath(Photo::$FORMAT_PREVIEW));
+    } catch (Exception $ex) {
+      die ($ex);
+      // Revert if possible
+      try {
+        if ($photo != null) $photo->delete();
+      } catch (Exception $e) {
+      }
+      return $errorResponse;
+    }
+    // Update album photo count
+    try {
+      $album->updatePhotoCount();
+    } catch (Exception $ex) {
+      // Never mind
+    }
+    // Return success response
+    return json_encode(array(
+        "result" => "Success",
+        "id" => $uploadId,
+        "photo_id" => $photo->id,
+        "photo_thumbnail_url" => $photo->getThumbnailURL(),
+    ));
+    
   }
   
 }
