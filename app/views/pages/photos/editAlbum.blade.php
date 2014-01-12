@@ -25,14 +25,22 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Gestion des photos {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Album photos {{ $user->currentSection->de_la_section }}</h1>
       @include ('subviews.flashMessages')
     </div>
   </div>
   
   <div class="row">
     <div class="col-md-12">
-      <h2>Album : {{ $album->name }}</h2>
+      <p>
+        <label>Nom de l'album :</label>
+        {{ $album->name }} <span class="glyphicon glyphicon-edit"></span>
+      </p>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-12">
       <table class="table table-striped table-hover draggable-table" id="photo-table">
         <tbody>
           @foreach($photos as $photo)
@@ -81,9 +89,14 @@
             </td>
           </tr>
           <tr>
-            <td colspan="2">
+            <td colspan="3">
               <div id='photo-drop-area'>
-                <span class='important'>Glisse ici des photos depuis ton ordinateur pour les ajouter (jpeg/png)</span>
+                <p>
+                  <strong>Glisse ici</strong> des photos depuis ton ordinateur pour les ajouter (jpeg/png)
+                </p>
+                <p>
+                  ou clique simplement ici pour les sélectionner
+                </p>
               </div>
               <input type='file' style='display: none;' multiple id='file-input' onChange='picturesManuallySelected()' />
             </td>

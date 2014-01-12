@@ -119,6 +119,27 @@ class PhotoController extends BaseController {
     return json_encode(array('result' => "Success"));
   }
   
+  public function deletePhotoAlbum($album_id) {
+    $album = PhotoAlbum::find($album_id);
+    if (!$album) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Cet album n'existe pas");
+    $sectionId = $album->section_id;
+    if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return Helper::forbiddenResponse();
+    }
+    if ($album->photo_count != 0) {
+      return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+              ->with('error_message', "Cet album n'est pas vide et ne peut pas être supprimé.");
+    }
+    try {
+      $album->delete();
+    } catch (Exception $ex) {
+      return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+              ->with('error_message', "Une erreur est survenue. L'album n'as pas été supprimé.");
+    }
+    return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+              ->with('success_message', "L'album a été supprimé.");
+  }
+  
   public function showEditAlbum($album_id) {
     $album = PhotoAlbum::find($album_id);
     if (!$album) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Cet album n'existe pas.");

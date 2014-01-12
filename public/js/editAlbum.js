@@ -42,6 +42,8 @@ $().ready(function() {
     $(this).attr('onDragLeave', 'draggingOverPhotoDropAreaDone(event)');
     $(this).attr('ondrop', 'addPictures(event)');
     $(this).attr('onClick', 'selectPicturesManually()');
+    // Disable pointer events on children to avoid interferences
+    $(this).children().css('pointer-events', 'none');
   });
 });
 
