@@ -121,6 +121,12 @@ Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailCo
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
 Route::get('photo/{format}/{photo_id}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
 Route::get('photos/telecharger-album/{album_id}', array("as" => "download_photo_album", "uses" => "PhotoController@downloadAlbum"));
+Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
+Route::get('gestion/photos/supprimer-album/{album_id}/{section_slug?}', array("as" => "delete_photo_album", "uses" => "PhotoController@deletePhotoAlbum"));
+Route::get('gestion/photos/album/{album_id}/{section_slug?}', array("as" => "edit_photo_album", "uses" => "PhotoController@showEditAlbum"));
+Route::post('ajax/gestion/photos/changer-ordre-albums', array("as" => "ajax_change_album_order", "uses" => "PhotoController@changeAlbumOrder"));
+Route::post('ajax/gestion/photos/changer-ordre-photos', array("as" => "ajax_change_photo_order", "uses" => "PhotoController@changePhotoOrder"));
+Route::get('gestion/photos/nouvel-album/{section_slug}', array("as" => "create_photo_album", "uses" => "PhotoController@createPhotoAlbum"));
 
 // Leaders
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));

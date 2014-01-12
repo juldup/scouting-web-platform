@@ -304,3 +304,11 @@ select {
     padding: 10px;
     //border-radius: 50%;
 }
+
+.table-striped {
+    tbody {
+        .album-drag:nth-child(odd) td, .album-drag:nth-child(even) td {
+            background: @gray-lighter;
+        }
+    }
+}
