@@ -6,6 +6,7 @@
 
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/js/editPhotos.js"></script>
+  <script src="{{ URL::to('/') }}/js/reorderList.js"></script>
   <script>
     var saveAlbumOrderURL = "{{ URL::route('ajax_change_album_order') }}";
   </script>
@@ -30,10 +31,10 @@
     <div class="col-md-12">
       @if (count($albums))
         <h2>Albums</h2>
-        <table class="table table-striped table-hover" id="album-table">
+        <table class="table table-striped table-hover draggable-table">
           <tbody>
             @foreach($albums as $album)
-              <tr class="album-row" data-album-id="{{ $album-> id }}">
+              <tr class="draggable-row" data-draggable-id="{{ $album->id }}">
                 <td>
                   {{ $album->name }}
                 </td>
