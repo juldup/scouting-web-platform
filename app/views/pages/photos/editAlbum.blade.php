@@ -5,7 +5,8 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/editPhotos.js"></script>
+  <script src="{{ URL::to('/') }}/js/reorderList.js"></script>
+  <script src="{{ URL::to('/') }}/js/editAlbum.js"></script>
   <script>
     var savePhotoOrderURL = "{{ URL::route('ajax_change_photo_order') }}";
   </script>
@@ -29,10 +30,10 @@
   <div class="row">
     <div class="col-md-12">
       <h2>Album : {{ $album->name }}</h2>
-      <table class="table table-striped table-hover" id="photo-table">
+      <table class="table table-striped table-hover draggable-table" id="photo-table">
         <tbody>
           @foreach($photos as $photo)
-            <tr class="photo-row" data-photo-id="{{ $photo->id }}">
+            <tr class="photo-row draggable-row" data-photo-id="{{ $photo->id }}" data-draggable-id="{{ $photo->id }}">
               <td>
                 <div class="photo-thumbnail">
                   <img src='{{ $photo->getThumbnailURL() }}' />
@@ -61,7 +62,7 @@
           </tr>
         </tbody>
       </table>
-      <p>Note : tu peux glisser-déplacer un album pour changer sa position.</p>
+      <p>Note : tu peux glisser-déplacer une photo pour changer sa position.</p>
     </div>
   </div>
     

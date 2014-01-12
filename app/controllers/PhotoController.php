@@ -136,4 +136,58 @@ class PhotoController extends BaseController {
     ));
   }
   
+  public function changePhotoOrder() {
+    $errorResponse = json_encode(array("result" => "Failure"));
+    $photoIdsInOrder = Input::get('photo_order');
+    $photoIdsInOrderArray = explode(" ", $photoIdsInOrder);
+    // Retrieve photos
+    $photos = Photo::where(function($query) use ($photoIdsInOrderArray) {
+              foreach ($photoIdsInOrderArray as $photoId) {
+                $query->orWhere('id', '=', $photoId);
+              }
+            })->get();
+    // Check that the number of photos corresponds
+    if (count($photoIdsInOrderArray) != count($photos)) {
+      return $errorResponse;
+    }
+    // Check that all albums belong to the same album
+    $albumId = 0;
+    foreach ($photos as $photo) {
+      if (!$albumId) $albumId = $photo->album_id;
+      if ($albumId != $photo->album_id) {
+        return $errorResponse;
+      }
+    }
+    if (!$albumId) return $errorResponse;
+    // Check that the user has the right to modify this album
+    $album = PhotoAlbum::find($albumId);
+    if (!$album || !$this->user->can(Privilege::$POST_PHOTOS, $album->section_id)) {
+      return $errorResponse;
+    }
+    // Get list of positions
+    $positions = array();
+    foreach ($photos as $photo) {
+      $positions[] = $photo->position;
+    }
+    sort($positions);
+    // Assign new positions
+    foreach ($photos as $photo) {
+      // Get new order of this album
+      $index = array_search($photo->id, $photoIdsInOrderArray);
+      if ($index === false) return $errorResponse;
+      // Assign position
+      $photo->position = $positions[$index];
+    }
+    // Save all photos
+    foreach ($photos as $photo) {
+      try {
+        $photo->save();
+      } catch (Exception $ex) {
+        return $errorResponse;
+      }
+    }
+    
+    return json_encode(array('result' => "Success"));
+  }
+  
 }
