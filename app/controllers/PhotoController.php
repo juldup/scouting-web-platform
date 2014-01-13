@@ -4,20 +4,28 @@ class PhotoController extends BaseController {
   
   public function showPage() {
     
+    $albumId = Route::input('album_id');
+    
     $albums = PhotoAlbum::where('archive', '=', '')
             ->where('section_id', '=', $this->section->id)
             ->where('photo_count', '!=', 0)
             ->orderBy('position')
             ->get();
     
+    $currentAlbum = null;
+    $photos = null;
     if (count($albums)) {
-      $currentAlbum = $albums[0];
+      if ($albumId) {
+        $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
+                ->where('archive', '=', '')
+                ->where('section_id', '=', $this->section->id)
+                ->where('photo_count', '!=', 0)
+                ->first();
+      }
+      if (!$currentAlbum) $currentAlbum = $albums[0];
       $photos = Photo::where('album_id', '=', $currentAlbum->id)
               ->orderBy('position')
               ->get();
-    } else {
-      $currentAlbum = null;
-      $photos = null;
     }
     
     return View::make('pages.photos.photos', array(
@@ -163,6 +171,24 @@ class PhotoController extends BaseController {
               ->with('success_message', "L'album a été supprimé.");
   }
   
+  public function changeAlbumName() {
+    $errorResponse = json_encode(array("result" => "Failure"));
+    $albumId = Input::get('id');
+    $newName = Input::get('value');
+    $album = PhotoAlbum::find($albumId);
+    $sectionId = $album ? $album->section_id : null;
+    if (!$sectionId || !$newName || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return $errorResponse;
+    }
+    try {
+      $album->name = $newName;
+      $album->save();
+    } catch (Exception $ex) {
+      return $errorResponse;
+    }
+    return json_encode(array('result' => "Success"));
+  }
+  
   public function showEditAlbum($album_id) {
     $album = PhotoAlbum::find($album_id);
     if (!$album) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Cet album n'existe pas.");
@@ -183,24 +209,6 @@ class PhotoController extends BaseController {
         'album' => $album,
         'photos' => $photos,
     ));
-  }
-  
-  public function changeAlbumName() {
-    $errorResponse = json_encode(array("result" => "Failure"));
-    $albumId = Input::get('id');
-    $newName = Input::get('value');
-    $album = PhotoAlbum::find($albumId);
-    $sectionId = $album ? $album->section_id : null;
-    if (!$sectionId || !$newName || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
-      return $errorResponse;
-    }
-    try {
-      $album->name = $newName;
-      $album->save();
-    } catch (Exception $ex) {
-      return $errorResponse;
-    }
-    return json_encode(array('result' => "Success"));
   }
   
   public function changePhotoOrder() {
@@ -344,6 +352,27 @@ class PhotoController extends BaseController {
         "photo_thumbnail_url" => $photo->getThumbnailURL(),
     ));
     
+  }
+  
+  public function changePhotoCaption() {
+    $errorResponse = json_encode(array("result" => "Failure"));
+    $photoId = Input::get('id');
+    $newCaption = Input::get('value');
+    $photo = Photo::find($photoId);
+    $albumId = $photo ? $photo->album_id : null;
+    $album = PhotoAlbum::find($albumId);
+    $sectionId = $album ? $album->section_id : null;
+    if (!$sectionId || !$newCaption || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      die($sectionId . "," . $newCaption);
+      return $errorResponse;
+    }
+    try {
+      $photo->caption = $newCaption;
+      $photo->save();
+    } catch (Exception $ex) {
+      return $errorResponse;
+    }
+    return json_encode(array('result' => "Success"));
   }
   
 }

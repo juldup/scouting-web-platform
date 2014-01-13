@@ -7,6 +7,7 @@
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/js/reorderList.js"></script>
   <script src="{{ URL::to('/') }}/js/editAlbum.js"></script>
+  <script src="{{ URL::to('/') }}/js/editableText.js"></script>
   <script>
     var savePhotoOrderURL = "{{ URL::route('ajax_change_photo_order') }}";
     var deletePhotoURL = "{{ URL::route('ajax_delete_photo') }}";
@@ -42,9 +43,14 @@
                 </div>
               </td>
               <td>
-                <p>
-                  Description : {{ $photo->caption }} <span class="glyphicon glyphicon-edit"></span>
-                </p>
+                <span class="editable-text"
+                      data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}"
+                      data-editable-id="{{ $photo->id }}">
+                  Description : 
+                  <span class="editable-text-value">
+                    {{{ $photo->caption }}}
+                  </span>
+                </span>
               </td>
               <td>
                 <a class="btn-sm btn-default" onclick="deletePhoto(this)">
@@ -69,9 +75,11 @@
               </div>
             </td>
             <td>
-              <p>
-                Description : <span class="glyphicon glyphicon-edit"></span>
-              </p>
+              <span class="editable-text"
+                    data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}">
+                Description : 
+                <span class="editable-text-value"></span>
+              </span>
             </td>
             <td>
               <a class="btn-sm btn-default" onclick="deletePhoto(this)">
@@ -86,7 +94,7 @@
                   <strong>Glisse ici</strong> des photos depuis ton ordinateur pour les ajouter (jpeg/png)
                 </p>
                 <p>
-                  ou clique simplement ici pour les sélectionner
+                  ou <strong>clique ici</strong> pour les sélectionner.
                 </p>
               </div>
               <input type='file' style='display: none;' multiple id='file-input' onChange='picturesManuallySelected()' />

@@ -1,63 +1,99 @@
 $().ready(function() {
-  $(".editable-text").each(function() {
-    // Add edit icon
-    $(this).append("<span class='glyphicon glyphicon-edit'></span>");
-    $(this).on('click', function() {
-      $(this).changeToEditMode();
-    });
-  });
+  // Initialize all editable texts in the page
+  $(".editable-text:visible").initEditableText();
 });
 
-$.fn.changeToEditMode = function() {
+// Adds an edit icon and makes the text clickable for editing
+$.fn.initEditableText = function() {
+  console.log('init');
+  // Add edit icon
+  $(this).append("<span class='glyphicon glyphicon-edit editable-edit-icon'></span>");
+  // Add click action
+  $(this).on('click', function() {
+    $(this).changeEditableTextToEditMode();
+  });
+}
+
+// Changes editable text to edit mode
+$.fn.changeEditableTextToEditMode = function() {
   if ($(this).data('editing') !== true) {
     // Dismiss all other texts 
-    $('.editable-text').changeToNormalMode();
+    $('.editable-text').changeEditableTextToNormalMode();
+    // Change editing status
     $(this).data('editing', true);
+    // Hide text and edit icon
     $(this).find('.editable-text-value').hide();
-    $(this).find('.glyphicon-edit').hide();
+    $(this).find('.editable-edit-icon').hide();
+    // Create input text
     $(this).append('<input type="text" class="editable-text-input">');
-    var textInput = $(this).find('input');
+    var textInput = $(this).find('input.editable-text-input');
+    // Initialize input text value
     textInput.val($(this).find('.editable-text-value').text().trim());
+    // Link keys to actions
     textInput.on('keyup', function(event) {
+      // On 'enter' key, submit text
       if (event.which === 13 || event.keyCode === 13) {
         $(event.target).closest(".editable-text").submitEditableText();
       }
+      // On 'escape' key, cancel
+      if (event.which === 27 || event.keyCode === 27) {
+        $(event.target).closest(".editable-text").changeEditableTextToNormalMode();
+      }
     });
+    // Give focus to text input
     textInput.focus();
     textInput.select();
-    $(this).append(' <button class="btn btn-primary">OK</button>');
-    $(this).find('button').on('click', function(event) {
+    // Add submit button
+    $(this).append(' <button class="btn btn-primary editable-submit-button">OK</button>');
+    $(this).find('button.editable-submit-button').on('click', function(event) {
       event.stopPropagation();
       $(this).closest(".editable-text").submitEditableText();
+    });
+    // Add cancel button
+    $(this).append(' <button class="btn btn-default editable-cancel-button">Annuler</button>');
+    $(this).find('button.editable-cancel-button').on('click', function(event) {
+      event.stopPropagation();
+      $(this).closest(".editable-text").changeEditableTextToNormalMode();
     });
   }
 }
 
-$.fn.changeToNormalMode = function() {
+// Changes editable text back from edit mode
+$.fn.changeEditableTextToNormalMode = function() {
+  // Change editing status back
   $(this).data('editing', false);
-  $(this).find('button').remove();
-  $(this).find('input').remove();
+  // Remove form elements
+  $(this).find('button.editable-submit-button').remove();
+  $(this).find('button.editable-cancel-button').remove();
+  $(this).find('input.editable-text-input').remove();
+  // Show normal elements
   $(this).find('.editable-text-value').show();
-  $(this).find('.glyphicon-edit').show();
+  $(this).find('.editable-edit-icon').show();
 }
 
+// Submits the value of an editable text
 $.fn.submitEditableText = function() {
-  var newValue = $(this).find('input').val().trim();
+  var newValue = $(this).find('input.editable-text-input').val().trim();
   if (newValue === "" || newValue === $(this).find('.editable-text-value').text().trim()) {
-    $(this).changeToNormalMode();
+    // No change to submit, just cancel
+    $(this).changeEditableTextToNormalMode();
   } else {
+    // Remember editable text for after ajax query
     var editableText = $(this);
+    // Submit using ajax
     $.ajax({
       url: $(this).data('editable-submit-url'),
       type: "POST",
       data: {id: $(this).data('editable-id'), value: newValue}
     }).done(function(json) {
-      editableText.changeToNormalMode();
-      console.log("JSON: " + json);
+      // Revert to normal mode
+      editableText.changeEditableTextToNormalMode();
       var data = JSON.parse(json);
       if (data.result === "Success") {
+        // Update text value
         editableText.find('.editable-text-value').text(newValue);
       } else {
+        // Display error message
         alert("Une erreur est survenue. La nouvelle valeur n'a pas été enregistrée.");
       }
     });

@@ -128,6 +128,8 @@ function uploadNextPicture() {
         newRow.attr('id', "photo-" + data.photo_id);
         newRow.data('draggable-id', data.photo_id);
         newRow.initDraggableRow();
+        newRow.find('.editable-text').data('editable-id', data.photo_id);
+        newRow.find('.editable-text').initEditableText();
         newRow.show();
         $("#photo_row_new_" + data.id).before(newRow);
       } else {

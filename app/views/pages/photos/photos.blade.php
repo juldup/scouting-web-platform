@@ -36,7 +36,7 @@
                   @if ($album == $current_album)
                     <strong>{{ $album->name }}</strong>
                   @else
-                    <a href='#'>{{ $album->name }}</a>
+                    <a href='{{ URL::route('photo_album', array('album_id' => $album->id, 'section_slug' => $user->currentSection->slug)) }}'>{{ $album->name }}</a>
                   @endif
                 </td>
                 <td>{{ $album->photo_count }} {{ $album->photo_count > 1 ? "photos" : "photo" }}</td>
@@ -87,7 +87,7 @@
                   </div>
                 </div>
                 @if ($photo->caption)
-                  <div class="carousel-caption">{{ $photo->caption }}</div>
+                  <div class="carousel-caption">{{{ $photo->caption }}}</div>
                 @endif
                 <div class="carousel-counter">{{ $photoCounter++ }} / {{ count($photos) }}</div>
               </div>

@@ -119,8 +119,10 @@ Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailCo
 
 // Photos
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
+Route::get('photos-{album_id}/{section_slug?}', array("as" => "photo_album", "uses" => "PhotoController@showPage"));
 Route::get('photo/{format}/{photo_id}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
 Route::get('photos/telecharger-album/{album_id}', array("as" => "download_photo_album", "uses" => "PhotoController@downloadAlbum"));
+Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
 Route::get('gestion/photos/supprimer-album/{album_id}/{section_slug?}', array("as" => "delete_photo_album", "uses" => "PhotoController@deletePhotoAlbum"));
 Route::get('gestion/photos/album/{album_id}/{section_slug?}', array("as" => "edit_photo_album", "uses" => "PhotoController@showEditAlbum"));
@@ -130,6 +132,7 @@ Route::get('gestion/photos/nouvel-album/{section_slug}', array("as" => "create_p
 Route::get('ajax/gestion/photos/supprimer-photo', array("as" => "ajax_delete_photo", "uses" => "PhotoController@deletePhoto"));
 Route::post('ajax/gestion/photos/ajouter-photo', array("as" => "ajax_add_photo", "uses" => "PhotoController@addPhoto"));
 Route::post('ajax/gestion/photos/changer-nom-album', array("as" => "ajax_change_album_name", "uses" => "PhotoController@changeAlbumName"));
+Route::post('ajax/gestion/photos/changer-description-photo', array("as" => "ajax_change_photo_caption", "uses" => "PhotoController@changePhotoCaption"));
 
 // Leaders
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
