@@ -9,10 +9,11 @@
 @stop
 
 @section('content')
-
+  
+  <h1>Contacts</h1>
+  
   <div class="well">
     <legend>Contacter les animateurs d'unité</legend>
-
     @foreach ($unitLeaders as $leader)
       <div class='row'>
         <div class="col-md-3">

@@ -360,6 +360,25 @@ class CreateDatabase extends Migration {
       $table->foreign('cover_picture_id')->references('id')->on('photos')->onDelete('set null');
     });
     
+    // E-mails
+    Schema::create('emails', function($table) {
+      $table->increments('id');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->date('date');
+      $table->time('time');
+      $table->string('subject');
+      $table->text('body_html');
+      $table->text('recipient_list');
+      $table->string('sender');
+      $table->string('archive');
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('date');
+      $table->index('archive');
+    });
+    
     // Test data
     DB::table('sections')->insert(array(
         'id' => 2,
@@ -449,6 +468,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('emails');
     Schema::table('photo_albums', function($table) {
       $table->dropForeign("photo_albums_cover_picture_id_foreign");
     });
