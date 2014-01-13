@@ -25,17 +25,8 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Album photos {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Album "{{ $album->name }}"</h1>
       @include ('subviews.flashMessages')
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class="col-md-12">
-      <p>
-        <label>Nom de l'album :</label>
-        {{ $album->name }} <span class="glyphicon glyphicon-edit"></span>
-      </p>
     </div>
   </div>
   

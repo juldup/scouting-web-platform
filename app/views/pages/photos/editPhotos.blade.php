@@ -7,6 +7,7 @@
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/js/editPhotos.js"></script>
   <script src="{{ URL::to('/') }}/js/reorderList.js"></script>
+  <script src="{{ URL::to('/') }}/js/editableText.js"></script>
   <script>
     var saveAlbumOrderURL = "{{ URL::route('ajax_change_album_order') }}";
   </script>
@@ -36,7 +37,13 @@
             @foreach($albums as $album)
               <tr class="draggable-row" data-draggable-id="{{ $album->id }}">
                 <td>
-                  {{ $album->name }}
+                  <span class="editable-text"
+                        data-editable-submit-url="{{ URL::route('ajax_change_album_name') }}"
+                        data-editable-id="{{ $album->id }}">
+                    <span class="editable-text-value">
+                      {{ $album->name }}
+                    </span>
+                  </span>
                 </td>
                 <td>
                   @if ($album->photo_count)

@@ -162,6 +162,24 @@ class PhotoController extends BaseController {
     ));
   }
   
+  public function changeAlbumName() {
+    $errorResponse = json_encode(array("result" => "Failure"));
+    $albumId = Input::get('id');
+    $newName = Input::get('value');
+    $album = PhotoAlbum::find($albumId);
+    $sectionId = $album ? $album->section_id : null;
+    if (!$sectionId || !$newName || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return $errorResponse;
+    }
+    try {
+      $album->name = $newName;
+      $album->save();
+    } catch (Exception $ex) {
+      return $errorResponse;
+    }
+    return json_encode(array('result' => "Success"));
+  }
+  
   public function changePhotoOrder() {
     $errorResponse = json_encode(array("result" => "Failure"));
     $photoIdsInOrder = Input::get('photo_order');
