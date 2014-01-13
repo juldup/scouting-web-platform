@@ -37,22 +37,24 @@
         <tbody>
           @foreach($photos as $photo)
             <tr class="photo-row draggable-row" id="photo-{{ $photo->id }}" data-draggable-id="{{ $photo->id }}">
-              <td>
+              <td class="photo-thumnail-column">
                 <div class="photo-thumbnail">
                   <img src='{{ $photo->getThumbnailURL() }}' />
                 </div>
               </td>
-              <td>
+              <td class="photo-data-column">
                 <span class="editable-text"
+                      data-editable-input-type="textarea"
+                      data-editable-allow-empty="1"
                       data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}"
                       data-editable-id="{{ $photo->id }}">
-                  Description : 
+                  <strong>Description :</strong>
                   <span class="editable-text-value">
                     {{{ $photo->caption }}}
                   </span>
                 </span>
               </td>
-              <td>
+              <td class="photo-actions-column">
                 <a class="btn-sm btn-default" onclick="deletePhoto(this)">
                   Supprimer
                 </a>
@@ -60,7 +62,7 @@
             </tr>
           @endforeach
           <tr style="display: none;" id="upload-row-prototype" class="photo-row">
-            <td>
+            <td class="photo-thumnail-column">
               <div class="photo-thumbnail">
                 <img src="{{ URL::to('/') }}/images/loading.gif" />
               </div>
@@ -69,19 +71,20 @@
             <td></td>
           </tr>
           <tr style="display: none;" id="photo-row-prototype" class="photo-row">
-            <td>
+            <td class="photo-thumnail-column">
               <div class="photo-thumbnail">
                 <img src="" />
               </div>
             </td>
-            <td>
+            <td class="photo-data-column">
               <span class="editable-text"
+                    data-editable-input-type="textarea"
                     data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}">
-                Description : 
+                <strong>Description :</strong>
                 <span class="editable-text-value"></span>
               </span>
             </td>
-            <td>
+            <td class="photo-actions-column">
               <a class="btn-sm btn-default" onclick="deletePhoto(this)">
                 Supprimer
               </a>

@@ -41,7 +41,7 @@
           <tbody>
             @foreach($albums as $album)
               <tr class="draggable-row" data-draggable-id="{{ $album->id }}">
-                <td>
+                <td class="photo-album-name-column">
                   <span class="editable-text"
                         data-editable-submit-url="{{ URL::route('ajax_change_album_name') }}"
                         data-editable-id="{{ $album->id }}">
@@ -50,14 +50,14 @@
                     </span>
                   </span>
                 </td>
-                <td>
+                <td class="photo-album-count-column">
                   @if ($album->photo_count)
                     {{ $album->photo_count }} {{ $album->photo_count > 1 ? "photos" : "photo" }}
                   @else
                     L'album est vide
                   @endif
                 </td>
-                <td>
+                <td class="photo-album-actions-column">
                   <a class="btn-sm btn-default" href="{{ URL::route('edit_photo_album', array('album_id' => $album->id)) }}">
                     Modifier l'album
                   </a>

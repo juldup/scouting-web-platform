@@ -360,13 +360,12 @@ class PhotoController extends BaseController {
   public function changePhotoCaption() {
     $errorResponse = json_encode(array("result" => "Failure"));
     $photoId = Input::get('id');
-    $newCaption = Input::get('value');
+    $newCaption = Input::get('value', "");
     $photo = Photo::find($photoId);
     $albumId = $photo ? $photo->album_id : null;
     $album = PhotoAlbum::find($albumId);
     $sectionId = $album ? $album->section_id : null;
-    if (!$sectionId || !$newCaption || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
-      die($sectionId . "," . $newCaption);
+    if (!$sectionId || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
       return $errorResponse;
     }
     try {

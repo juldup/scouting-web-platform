@@ -5,7 +5,6 @@ $().ready(function() {
 
 // Adds an edit icon and makes the text clickable for editing
 $.fn.initEditableText = function() {
-  console.log('init');
   // Add edit icon
   $(this).append("<span class='glyphicon glyphicon-edit editable-edit-icon'></span>");
   // Add click action
@@ -25,16 +24,22 @@ $.fn.changeEditableTextToEditMode = function() {
     $(this).find('.editable-text-value').hide();
     $(this).find('.editable-edit-icon').hide();
     // Create input text
-    $(this).append('<input type="text" class="editable-text-input">');
-    var textInput = $(this).find('input.editable-text-input');
+    if ($(this).data('editable-input-type') === 'textarea') {
+      $(this).append('<textarea class="editable-text-input" rows="3"></textarea>');
+    } else {
+      $(this).append('<input type="text" class="editable-text-input">');
+    }
+    var textInput = $(this).find('.editable-text-input');
     // Initialize input text value
     textInput.val($(this).find('.editable-text-value').text().trim());
     // Link keys to actions
-    textInput.on('keyup', function(event) {
+    textInput.filter('input').on('keyup', function(event) {
       // On 'enter' key, submit text
       if (event.which === 13 || event.keyCode === 13) {
         $(event.target).closest(".editable-text").submitEditableText();
       }
+    });
+    textInput.on('keyup', function(event) {
       // On 'escape' key, cancel
       if (event.which === 27 || event.keyCode === 27) {
         $(event.target).closest(".editable-text").changeEditableTextToNormalMode();
@@ -65,7 +70,7 @@ $.fn.changeEditableTextToNormalMode = function() {
   // Remove form elements
   $(this).find('button.editable-submit-button').remove();
   $(this).find('button.editable-cancel-button').remove();
-  $(this).find('input.editable-text-input').remove();
+  $(this).find('.editable-text-input').remove();
   // Show normal elements
   $(this).find('.editable-text-value').show();
   $(this).find('.editable-edit-icon').show();
@@ -73,8 +78,9 @@ $.fn.changeEditableTextToNormalMode = function() {
 
 // Submits the value of an editable text
 $.fn.submitEditableText = function() {
-  var newValue = $(this).find('input.editable-text-input').val().trim();
-  if (newValue === "" || newValue === $(this).find('.editable-text-value').text().trim()) {
+  var newValue = $(this).find('.editable-text-input').val().trim();
+  if ((newValue === "" && !$(this).data('editable-allow-empty'))
+          || newValue === $(this).find('.editable-text-value').text().trim()) {
     // No change to submit, just cancel
     $(this).changeEditableTextToNormalMode();
   } else {

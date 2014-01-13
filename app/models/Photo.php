@@ -15,7 +15,7 @@ class Photo extends Eloquent {
   public static $PREVIEW_HEIGHT = 400;
   
   public function getPhotoURL($format) {
-    return URL::route('get_photo', array('format' => $format, 'photo_id' => $this->id));
+    return URL::route('get_photo', array('format' => $format, 'photo_id' => $this->id, 'filename' => $this->filename));
   }
   
   public function getThumbnailURL() {

@@ -120,7 +120,7 @@ Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailCo
 // Photos
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
 Route::get('photos-{album_id}/{section_slug?}', array("as" => "photo_album", "uses" => "PhotoController@showPage"));
-Route::get('photo/{format}/{photo_id}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
+Route::get('photo/{format}/{photo_id}/{filename?}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
 Route::get('photos/telecharger-album/{album_id}', array("as" => "download_photo_album", "uses" => "PhotoController@downloadAlbum"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
