@@ -32,9 +32,16 @@
       <div class="col-lg-12">
         @if ($user->isMember() || $doc->public)
           <legend>
-            <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
-              {{ $doc->title }}
-            </a>
+            <div class="row">
+              <div class="col-md-10">
+                <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
+                  {{ $doc->title }}
+                </a>
+              </div>
+              <div class="col-md-2 text-right">
+                <a class="btn-sm btn-default">Télécharger</a>
+              </div>
+            </div>
           </legend>
           <p>
             {{ Helper::rawToHTML($doc->description) }}
