@@ -10,6 +10,11 @@
   <script src="{{ URL::to('/') }}/js/editableText.js"></script>
   <script>
     var saveAlbumOrderURL = "{{ URL::route('ajax_change_album_order') }}";
+    @if ($selected_album_id)
+      $().ready(function() {
+        $(".editable-text[data-editable-id={{ $selected_album_id }}]").changeToEditMode();
+      });
+    @endif
   </script>
 @stop
 
@@ -49,7 +54,7 @@
                   @if ($album->photo_count)
                     {{ $album->photo_count }} {{ $album->photo_count > 1 ? "photos" : "photo" }}
                   @else
-                    Aucune photo
+                    L'album est vide
                   @endif
                 </td>
                 <td>
@@ -79,6 +84,11 @@
         <div class="row">
           <div class="col-md-12">
             <p>Il n'y a pas encore d'albums pour cette section.</p>
+            <p>
+              <a class="btn-sm btn-default" href="{{ URL::route('create_photo_album', array('section_slug' => $user->currentSection->slug)) }}">
+                Créer un nouvel album
+              </a>
+            </p>
           </div>
         </div>
       @endif

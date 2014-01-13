@@ -56,10 +56,33 @@ class PhotoController extends BaseController {
             ->orderBy('position')
             ->get();
     
+    $selectedAlbumId = Session::get('album_id', null);
+    
     return View::make('pages.photos.editPhotos', array(
         'albums' => $albums,
+        'selected_album_id' => $selectedAlbumId,
     ));
     
+  }
+  
+  public function createPhotoAlbum() {
+    if (!$this->user->can(Privilege::$POST_PHOTOS, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    try {
+      $album = PhotoAlbum::create(array(
+          'section_id' => $this->section->id,
+          'name' => "Album du " . Helper::dateToHuman(date('Y-m-d')),
+      ));
+      $album->position = $album->id;
+      $album->save();
+    } catch (Exception $ex) {
+      if ($album) $album.delete();
+      return Redirect::route('edit_photos')
+              ->with('error_message', "Une erreur est survenue. L'album n'a pas pu être créé.");
+    }
+    return Redirect::route('edit_photos')
+            ->with('album_id', $album->id);
   }
   
   public function changeAlbumOrder() {

@@ -10,6 +10,8 @@ $().ready(function() {
 
 $.fn.changeToEditMode = function() {
   if ($(this).data('editing') !== true) {
+    // Dismiss all other texts 
+    $('.editable-text').changeToNormalMode();
     $(this).data('editing', true);
     $(this).find('.editable-text-value').hide();
     $(this).find('.glyphicon-edit').hide();
@@ -21,6 +23,8 @@ $.fn.changeToEditMode = function() {
         $(event.target).closest(".editable-text").submitEditableText();
       }
     });
+    textInput.focus();
+    textInput.select();
     $(this).append(' <button class="btn btn-primary">OK</button>');
     $(this).find('button').on('click', function(event) {
       event.stopPropagation();
@@ -39,7 +43,7 @@ $.fn.changeToNormalMode = function() {
 
 $.fn.submitEditableText = function() {
   var newValue = $(this).find('input').val().trim();
-  if (newValue === "") {
+  if (newValue === "" || newValue === $(this).find('.editable-text-value').text().trim()) {
     $(this).changeToNormalMode();
   } else {
     var editableText = $(this);
