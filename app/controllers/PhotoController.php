@@ -14,14 +14,17 @@ class PhotoController extends BaseController {
     
     $currentAlbum = null;
     $photos = null;
-    if (count($albums)) {
-      if ($albumId) {
-        $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
-                ->where('archive', '=', '')
-                ->where('section_id', '=', $this->section->id)
-                ->where('photo_count', '!=', 0)
-                ->first();
+    if ($albumId) {
+      $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
+              ->where('archive', '=', '')
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->first();
+      if (!$currentAlbum) {
+        return Redirect::route('photos', array('section_slug' => $this->section->slug));
       }
+    }
+    if (count($albums)) {
       if (!$currentAlbum) $currentAlbum = $albums[0];
       $photos = Photo::where('album_id', '=', $currentAlbum->id)
               ->orderBy('position')
@@ -41,7 +44,7 @@ class PhotoController extends BaseController {
       return Helper::forbiddenResponse();
     }
     $photo = Photo::find($photo_id);
-    if (!$photo) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("La photo n'existe plus.");
+    if (!$photo) App::abort(404, "La photo n'existe plus.");
     $path = $photo->getPhotoPath($format);
     if (file_exists($path)) {
       return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
@@ -49,12 +52,12 @@ class PhotoController extends BaseController {
           "Content-Length" => filesize($path),
       ));
     } else {
-      throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("La photo n'existe plus.");
+      throw App::abort(404, "La photo n'existe plus.");
     }
   }
   
   public function downloadAlbum($album_id) {
-    throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Il est pour le moment impossible de télécharger les albums de photos.");
+    throw App::abort(404, "Il est pour le moment impossible de télécharger les albums de photos.");
   }
   
   public function showEdit() {
@@ -152,7 +155,7 @@ class PhotoController extends BaseController {
   
   public function deletePhotoAlbum($album_id) {
     $album = PhotoAlbum::find($album_id);
-    if (!$album) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Cet album n'existe pas");
+    if (!$album) App::abort(404, "Cet album n'existe pas.");
     $sectionId = $album->section_id;
     if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
       return Helper::forbiddenResponse();
@@ -191,7 +194,7 @@ class PhotoController extends BaseController {
   
   public function showEditAlbum($album_id) {
     $album = PhotoAlbum::find($album_id);
-    if (!$album) throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Cet album n'existe pas.");
+    if (!$album) App::abort(404, "Cet album n'existe pas.");
     if (!$this->user->can(Privilege::$POST_PHOTOS, $album->section_id)) {
       return Helper::forbiddenResponse();
     }

@@ -153,7 +153,7 @@ class HealthCardController extends BaseController {
     
     $member = Member::find($member_id);
     
-    if (!$member) throw new NotFoundHttpException();
+    if (!$member) App::abort(404, "Ce membre n'existe pas.");
     
     if (!$this->user->isOwnerOfMember($member_id) &&
             !$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $member->section)) {

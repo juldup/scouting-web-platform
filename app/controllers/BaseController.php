@@ -51,10 +51,6 @@ abstract class BaseController extends Controller {
     }
     // Select current tab
     $this->selectSection($sectionSlug);
-    // Register 404 response
-    App::missing(function(Exception $exception) {
-      return Response::view('errors.404', array("message" => $exception->getMessage()), 404);
-    });
   }
   
   protected function selectSection($section_slug) {

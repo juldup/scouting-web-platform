@@ -40,7 +40,7 @@ class PageImageController extends BaseController {
   public function removeImage($image_id) {
     $image = PageImage::find($image_id);
     if (!$image) {
-      throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Image does not exist");
+      App::abort(404, "Image does not exist");
     }
     if (file_exists($image->getPath())) {
       unlink($image->getPath());

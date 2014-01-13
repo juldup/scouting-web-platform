@@ -110,7 +110,7 @@ class NewsController extends BaseController {
     $news = News::find($news_id);
     
     if (!$news) {
-      throw new NotFoundHttpException("Cette nouvelle n'existe pas.");
+     App::abort(404, "Cette nouvelle n'existe pas.");
     }
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {

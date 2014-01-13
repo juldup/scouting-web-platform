@@ -177,7 +177,7 @@ class DocumentController extends BaseController {
     $document = Document::find($document_id);
     
     if (!$document) {
-      throw new NotFoundHttpException("Ce document n'existe pas.");
+      App::abort(404, "Ce document n'existe pas.");
     }
     
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
