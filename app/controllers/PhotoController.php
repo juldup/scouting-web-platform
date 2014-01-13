@@ -57,7 +57,38 @@ class PhotoController extends BaseController {
   }
   
   public function downloadAlbum($album_id) {
-    throw App::abort(404, "Il est pour le moment impossible de télécharger les albums de photos.");
+    // Check that the user is allowed to download photos
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenResponse();
+    }
+    // Gather photos
+    $photos = Photo::where('album_id', '=', $album_id)
+              ->orderBy('position')
+              ->get();
+    if (!count($photos)) {
+      return App::abort(404, "Cet album est vide.");
+    }
+    // Create zip file in temporary folder
+    $filename = tempnam(sys_get_temp_dir(), "photos.zip.");
+    $zip = new ZipArchive();
+    $zip->open($filename);
+    // Add each photo in the zip file
+    foreach ($photos as $photo) {
+      $zip->addFile($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL), $photo->filename);
+    }
+    $zip->close();
+    if (file_exists($filename)) {
+      // Output file
+      $response = Illuminate\Http\Response::create(file_get_contents($filename), 200, array(
+          "Content-Type" => "application/octet-stream",
+          "Content-Length" => filesize($filename),
+          "Content-Disposition" => 'attachment; filename="photos.zip"',
+      ));
+      unlink($filename);
+      return $response;
+    } else {
+      throw App::abort(404, "La photo n'existe plus.");
+    }
   }
   
   public function showEdit() {
