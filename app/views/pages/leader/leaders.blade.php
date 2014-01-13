@@ -80,7 +80,7 @@
             @if ($leader->has_picture)
               <img class="leader_picture" src="{{ $leader->getPictureURL() }}" />
             @else
-              <img class="leader_picture" src="" />
+              <img class="leader_picture" src="" alt=" Pas de photo " />
             @endif
           </div>
           <div class="col-md-6">

@@ -42,7 +42,7 @@
                 <td>{{ $album->photo_count }} {{ $album->photo_count > 1 ? "photos" : "photo" }}</td>
                 <td>
                   <a class="btn-sm btn-default" href="{{ URL::route('download_photo_album', array('album_id' => $album->id)) }}">
-                    Télécharger l'album
+                    <span class="glyphicon glyphicon-download-alt"></span> Télécharger l'album
                   </a>
                 </td>
               </tr>
