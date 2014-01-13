@@ -37,28 +37,36 @@
   <div class="row">
     <div class='col-lg-12'>
       
-      <div id="news_form"
+      <div id="news_form" class="form-horizontal well"
            @if (!Session::has('_old_input')) style="display: none;" @endif
            >
         {{ Form::open(array('url' => URL::route('manage_news_submit', array('section_slug' => $user->currentSection->slug)))) }}
           {{ Form::hidden('news_id', 0) }}
-          <p>
-            Titre :
-            {{ Form::text('news_title', '', array('size' => '35', 'placeholder' => "Titre de la nouvelle")) }}
-          <p>
-            Contenu :
-            {{ Form::textarea('news_content', '', array('cols' => '35', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
-          </p>
-          <p>
-            Section :
-            {{ Form::select('section', $sections, $user->currentSection->id) }}
-          </p>
-          <p>
-            {{ Form::submit('Enregistrer') }}
-            <a id='delete_link' style="display: none;" href="">Supprimer</a>
-            <a href="javascript:dismissNewsForm()">Fermer</a>
-          </p>
-
+          <div class="form-group">
+            {{ Form::label('news_title', "Titre", array("class" => "col-md-2 control-label")) }}
+            <div class="col-md-5">
+              {{ Form::text('news_title', '', array('class' => 'form-control', 'placeholder' => "Titre de la nouvelle")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('news_content', "Contenu", array("class" => "col-md-2 control-label")) }}
+            <div class="col-md-5">
+              {{ Form::textarea('news_content', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('section', "Section", array("class" => "col-md-2 control-label")) }}
+            <div class="col-md-5">
+              {{ Form::select('section', $sections, $user->currentSection->id, array('class' => 'form-control')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-5 col-md-offset-2">
+              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+              <a class="btn btn-danger" id='delete_link' style="display: none;" href="">Supprimer</a>
+              <a class="btn btn-default" href="javascript:dismissNewsForm()">Fermer</a>
+            </div>
+          </div>
         {{ Form::close() }}
       </div>
       
@@ -73,10 +81,22 @@
   </div>
   
   @foreach ($news as $newsItem)
-    <div class="row">
+    <div class="row well">
       <div class="col-lg-12">
-        <h2>{{ $newsItem->title }}</h2>
-        <p>{{ $newsItem->getHumanDate() }} <a href="javascript:editNews({{ $newsItem->id }})">Modifier</a></p>
+        <legend>
+          <div class="row">
+            <div class="col-md-10">
+              {{ $newsItem->title }} – {{ $newsItem->getHumanDate() }}
+            </div>
+            <div class="col-md-2">
+              <a class="btn-sm btn-default" href="javascript:editNews({{ $newsItem->id }})">Modifier</a>
+            </div>
+          </div>
+          
+        </legend>
+        <p>
+          
+        </p>
         <div>
           {{ Helper::rawToHTML($newsItem->content) }}
         </div>

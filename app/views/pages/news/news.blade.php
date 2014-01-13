@@ -19,10 +19,14 @@
   </div>
   
   @foreach ($news as $newsItem)
-    <div class="row">
+    <div class="row well">
       <div class="col-lg-12">
-        <h2>{{ $newsItem->title }}</h2>
-        <p>{{ $newsItem->getHumanDate() }}</p>
+        <legend>
+          @if ($user->currentSection->id == 1)
+            {{ Section::find($newsItem->section_id)->name }} :
+          @endif
+          {{ $newsItem->title }} – {{ $newsItem->getHumanDate() }}
+        </legend>
         <div>
           {{ Helper::rawToHTML($newsItem->content) }}
         </div>

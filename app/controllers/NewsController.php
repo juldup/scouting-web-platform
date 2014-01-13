@@ -7,10 +7,14 @@ class NewsController extends BaseController {
     $oneYearAgo = Helper::oneYearAgo();
     
     if ($this->section->id == 1) {
-      $news = News::where('news_date', '>=', $oneYearAgo)->get();
+      $news = News::where('news_date', '>=', $oneYearAgo)
+              ->orderBy('id', 'DESC')
+              ->get();
     } else {
       $news = News::where('news_date', '>=', $oneYearAgo)
-              ->where('section_id', '=', $this->section->id)->get();
+              ->where('section_id', '=', $this->section->id)
+              ->orderBy('id', 'DESC')
+              ->get();
     }
     
     return View::make('pages.news.news', array(
@@ -29,7 +33,9 @@ class NewsController extends BaseController {
     
     $oneYearAgo = Helper::oneYearAgo();
     $news = News::where('news_date', '>=', $oneYearAgo)
-              ->where('section_id', '=', $this->section->id)->get();
+            ->orderBy('id', 'DESC')
+            ->where('section_id', '=', $this->section->id)
+            ->get();
     
     $sections = Section::getSectionsForSelect();
     
@@ -64,6 +70,9 @@ class NewsController extends BaseController {
       if ($newsId) {
         $news = News::find($newsId);
         if ($news) {
+          if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
+            return Helper::forbiddenResponse();
+          }
           $news->title = $title;
           $news->content = $content;
           $news->section_id = $sectionId;
