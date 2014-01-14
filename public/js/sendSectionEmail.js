@@ -15,9 +15,9 @@ $().ready(function() {
   $("#email-form").submit(function() {
     // Check subject
     var subject = $("input#subject").val().trim();
-    if (subject == "" || subject == defaultSubject.trim()) {
-      alert("Tu dois entrer un sujet !");
+    if (subject === "" || subject === defaultSubject.trim()) {
       $("input#subject").focus();
+      alert("Tu dois entrer un sujet !");
       return false;
     }
     // Check e-mail message
@@ -30,8 +30,8 @@ $().ready(function() {
     // Check sender address
     var address = $("input#sender_address").val().trim();
     if (!validateEmail(address)) {
-      alert("L'adresse de l'expéditeur n'est pas valide !");
       $("input#sender_address").focus();
+      alert("L'adresse de l'expéditeur n'est pas valide !");
       return false;
     }
     // Extra recipients
@@ -48,8 +48,8 @@ $().ready(function() {
       }
     });
     if (extraRecipientError !== "") {
-      alert(extraRecipientError);
       $("textarea#extra_recipients").focus();
+      alert(extraRecipientError);
       return false;
     }
     // Compte le nombre de destinataires
@@ -57,7 +57,8 @@ $().ready(function() {
       alert("Il n'y a aucun destinataire sélectionné !");
       return false;
     }
-    return false;
+    // Everything is correct
+    return true;
   });
 });
 

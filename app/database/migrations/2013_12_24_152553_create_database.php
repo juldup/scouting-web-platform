@@ -395,9 +395,12 @@ class CreateDatabase extends Migration {
       $table->longText('email_object');
       $table->integer('priority');
       $table->boolean('sent')->default(false);
+      $table->integer('last_retry')->default(0);
       $table->timestamps();
       
       $table->index('created_at');
+      $table->index('priority');
+      $table->index('last_retry');
     });
     
     // Test data

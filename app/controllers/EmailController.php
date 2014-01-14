@@ -142,7 +142,7 @@ class EmailController extends BaseController {
     // Create confirmation email
     $message = Swift_Message::newInstance();
     $message->setSubject($subject);
-    $message->setBody("<p><strong><em>Votre e-mail a bien été envoyé aux destinataires sélectionnées&nbsp;:</em></strong></p><p>&nbsp;</p>" . $body, 'text/html', 'utf-8');
+    $message->setBody("<p><strong><em>[Cet e-mail a bien été envoyé aux destinataires sélectionnés]</em></strong></p>" . $body, 'text/html', 'utf-8');
     $message->setFrom(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME));
     $message->setTo($senderAddress, $senderName ? $senderName : null);
     $serializedMessage = serialize($message);

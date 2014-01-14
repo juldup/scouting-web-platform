@@ -166,3 +166,8 @@ Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpControll
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
 Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));
 Route::post('gestion/accueil/{section_slug?}', array("as" => "edit_home_page_submit", "uses" => "HomePageController@savePage"));
+
+// Cron tasks
+Route::get('/envoi-automatique-emails', array("as" => "send_emails_automatically", "uses" => function() {
+  ScoutMailer::sendPendingEmails();
+}));
