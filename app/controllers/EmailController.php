@@ -86,7 +86,6 @@ class EmailController extends BaseController {
       }
     }
     // Gather recipients
-    $recipientList = "";
     $recipientArray = array();
     $allInput = Input::all();
     foreach ($allInput as $key=>$value) {
@@ -116,7 +115,7 @@ class EmailController extends BaseController {
           'time' => date('H:i:s'),
           'subject' => $subject,
           'body_html' => $body,
-          'recipient_list' => $recipientList,
+          'recipient_list' => implode(", ", $recipientArray),
           'sender_name' => $senderName,
           'sender_email' => $senderAddress,
       ));

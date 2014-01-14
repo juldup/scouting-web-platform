@@ -80,8 +80,12 @@ class Helper {
     if ($sqlDate == "0000-00-00" || $sqlDate == "0" || !$sqlDate) return "";
     return date('j/n/Y', strtotime($sqlDate));
   }
-
-
+  
+  public static function timeToHuman($time) {
+    $parts = explode(":", $time);
+    return $parts[0] . "h" . $parts[1];
+  }
+  
   public static function charAt($string, $index) {
     return substr($string, $index, 1);
   }

@@ -23,4 +23,24 @@
     </div>
   </div>
   
+  @if ($user->isMember())
+    
+    @foreach($emails as $email)
+      <div class="row">
+        <div class="col-md-12">
+          <div class="well">
+            <legend>
+              {{ $email->subject }} – {{ Helper::dateToHuman($email->date) }} à {{ Helper::timeToHuman($email->time) }}
+            </legend>
+            <p>
+              {{ $email->body_html }}
+            </p>
+          </div>
+        </div>
+      </div>
+    @endforeach
+  @else
+    XXX
+  @endif
+  
 @stop
