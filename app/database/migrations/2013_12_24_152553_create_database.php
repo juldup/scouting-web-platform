@@ -62,7 +62,6 @@ class CreateDatabase extends Migration {
       $table->string('de_la_section');
       $table->string('la_section');
       $table->string('subgroup_name')->default('Équipe');
-      $table->text('last_email_content')->default("");
       $table->timestamps();
       
       $table->index('slug');
@@ -78,7 +77,6 @@ class CreateDatabase extends Migration {
         'email' => '',
         'de_la_section' => "de l'unité",
         'la_section' => "l'unité",
-        'last_email_content' => "",
     ));
     
     // Pages
@@ -370,13 +368,36 @@ class CreateDatabase extends Migration {
       $table->string('subject');
       $table->text('body_html');
       $table->text('recipient_list');
-      $table->string('sender');
-      $table->string('archive');
+      $table->string('sender_name')->nullable();
+      $table->string('sender_email');
+      $table->string('archive')->default('');
       $table->timestamps();
       
       $table->index('section_id');
       $table->index('date');
       $table->index('archive');
+    });
+    
+    // E-mail attachments
+    Schema::create('email_attachments', function($table) {
+      $table->increments('id');
+      $table->integer('email_id')->unsigned()->nullable();
+      $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
+      $table->string('filename');
+      $table->timestamps();
+      
+      $table->index('email_id');
+    });
+    
+    // Pending e-mails
+    Schema::create('pending_emails', function($table) {
+      $table->increments('id');
+      $table->longText('email_object');
+      $table->integer('priority');
+      $table->boolean('sent')->default(false);
+      $table->timestamps();
+      
+      $table->index('created_at');
     });
     
     // Test data
@@ -391,7 +412,6 @@ class CreateDatabase extends Migration {
         'email' => '',
         'de_la_section' => "de la meute",
         'la_section' => "la meute",
-        'last_email_content' => "",
         'subgroup_name' => "Sizaine",
     ));
     DB::table('sections')->insert(array(
@@ -405,7 +425,6 @@ class CreateDatabase extends Migration {
         'email' => 'troupe@monunite.com',
         'de_la_section' => "de la troupe",
         'la_section' => "la troupe",
-        'last_email_content' => "",
         'subgroup_name' => "Patrouille",
     ));
     DB::table('users')->insert(array(
@@ -424,7 +443,7 @@ class CreateDatabase extends Migration {
         'nationality' => "BE",
         'section_id' => 1,
         'phone_member' => "0482/52.36.91",
-        'email_member' => "jos@vandervelde.com",
+        'email_member' => "julien.dupuis+1@gmail.com",
         'is_leader' => true,
         'leader_in_charge' => true,
         'leader_name' => "Koala",
@@ -440,8 +459,8 @@ class CreateDatabase extends Migration {
         'gender' => "F",
         'nationality' => "BE",
         'section_id' => 2,
-        'phone1' => "123456798",
-        'email1' => "jos@vandervelde.com",
+        'phone1' => "010/12.34.56",
+        'email1' => "julien.dupuis+2@gmail.com",
         'subgroup' => 'Champions',
         'validated' => true,
     ));
@@ -453,11 +472,35 @@ class CreateDatabase extends Migration {
         'nationality' => "BE",
         'section_id' => 3,
         'phone1' => "010/45.46.47",
-        'email1' => "michael@vendenputt.com",
+        'email1' => "julien.dupuis+3@gmail.com",
         'subgroup' => 'Tortues',
         'totem' => 'Hérisson',
         'quali' => 'Aux longues épines',
         'validated' => true,
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_HOST,
+        'value' => 'email-smtp.us-east-1.amazonaws.com'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_PORT,
+        'value' => '587'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_SECURITY,
+        'value' => 'tls'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_USERNAME,
+        'value' => 'AKIAJT46KXQ3MMV5OBHQ'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_PASSWORD,
+        'value' => 'AtE++d6p4vK0fdmIMngTTC/wAlSSz8C95i6EkajewPJ+'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$DEFAULT_EMAIL_FROM_ADDRESS,
+        'value' => 'site@sv20.be'
     ));
     
 	}
@@ -468,6 +511,8 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('pending_emails');
+    Schema::drop('email_attachments');
     Schema::drop('emails');
     Schema::table('photo_albums', function($table) {
       $table->dropForeign("photo_albums_cover_picture_id_foreign");

@@ -68,16 +68,16 @@
         </div>
         
         <legend>Choix des destinataires</legend>
-        @if (count($recipients) >= 1)
         <div class="recipient-list">
-          <div class="form-group">
-            <div class="col-md-8 col-md-offset-4">
-              <p>
-                <a class="btn-sm btn-default recipient-check-all" href="">Sélectionner tous les destinataires</a>
-                <a class="btn-sm btn-default recipient-uncheck-all" href="">Désélectionner tous les destinataires</a>
-              </p>
+          @if (count($recipients) >= 1)
+            <div class="form-group">
+              <div class="col-md-8 col-md-offset-4">
+                <p>
+                  <a class="btn-sm btn-default recipient-check-all" href="">Sélectionner tous les destinataires</a>
+                  <a class="btn-sm btn-default recipient-uncheck-all" href="">Désélectionner tous les destinataires</a>
+                </p>
+              </div>
             </div>
-          </div>
           @endif
           @foreach ($recipients as $category=>$members)
           <div class="form-group">

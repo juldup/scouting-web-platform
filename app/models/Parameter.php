@@ -34,6 +34,14 @@ class Parameter extends Eloquent {
   public static $PRICE_3_LEADERS = "Price for three leaders";
   public static $UNIT_BANK_ACCOUNT = "Unit bank account";
   
+  public static $SMTP_HOST = "Smtp host";
+  public static $SMTP_PORT = "Smtp port";
+  public static $SMTP_USERNAME = "Smtp username";
+  public static $SMTP_PASSWORD = "Smtp password";
+  public static $SMTP_SECURITY  = "Smtp security";
+  
+  public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
+  
   private static $parameters = null;
   
   private static function fetchParameters() {

@@ -64,10 +64,95 @@ class EmailController extends BaseController {
   }
   
   public function submitSectionEmail() {
+    if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
     $subject = Input::get('subject');
-    if ($subject == "" || $subject == $this->defaultSubject())
-      return Redirect::route('send_section_email')->withInput()->with('error_message', "Tu dois choisir un sujet à l'e-mail");
-    return Redirect::route('send_section_email')->withInput();
+    $body = Input::get('body');
+    $senderName = Input::get('sender_name');
+    $senderAddress = Input::get('sender_address');
+    $files = Input::file('attachments');
+    $attachments = array();
+    // Create attachments
+    foreach ($files as $file) {
+      if ($file != null) {
+        try {
+          $attachments[] = EmailAttachment::newFromFile($file);
+        } catch (Exception $ex) {
+          return Redirect::route('send_section_email')
+                  ->withInput()
+                  ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
+        }
+      }
+    }
+    // Gather recipients
+    $recipientList = "";
+    $recipientArray = array();
+    $allInput = Input::all();
+    foreach ($allInput as $key=>$value) {
+      if (strpos($key, "parent_") === 0) {
+        $memberId = substr($key, strlen("parent_"));
+        $member = Member::find($memberId);
+        if ($member) {
+          if ($member->email1 && !in_array($member->email1, $recipientArray)) $recipientArray[] = $member->email1;
+          if ($member->email2 && !in_array($member->email2, $recipientArray)) $recipientArray[] = $member->email2;
+          if ($member->email3 && !in_array($member->email3, $recipientArray)) $recipientArray[] = $member->email3;
+        }
+      }
+      if (strpos($key, "member_") === 0) {
+        $memberId = substr($key, strlen("member_"));
+        $member = Member::find($memberId);
+        if ($member) {
+          if ($member->email_member && !in_array($member->email_member, $recipientArray))
+                  $recipientArray[] = $member->email_member;
+        }
+      }
+    }
+    // Create e-mail
+    try {
+      Email::create(array(
+          'section_id' => $this->section->id,
+          'date' => date('Y-m-d'),
+          'time' => date('H:i:s'),
+          'subject' => $subject,
+          'body_html' => $body,
+          'recipient_list' => $recipientList,
+          'sender_name' => $senderName,
+          'sender_email' => $senderAddress,
+      ));
+    } catch (Exception $ex) {
+      return Redirect::route('send_section_email')
+              ->withInput()
+              ->with('error_message', "Une erreur s'est produite. L'e-mail n'a pas été envoyé. $ex");
+    }
+    // Create pending e-mails
+    foreach ($recipientArray as $recipient) {
+      $message = Swift_Message::newInstance();
+      $message->setSubject($subject);
+      $message->setBody($body, 'text/html', 'utf-8');
+      $message->setFrom($senderAddress, $senderName ? $senderName : null);
+      $message->setTo($recipient);
+      $serializedMessage = serialize($message);
+      $pendingEmail = PendingEmail::create(array(
+          'email_object' => $serializedMessage,
+          'priority' => PendingEmail::$SECTION_EMAIL_PRIORITY,
+          'sent' => false,
+      ));
+    }
+    // Create confirmation email
+    $message = Swift_Message::newInstance();
+    $message->setSubject($subject);
+    $message->setBody("<p><strong><em>Votre e-mail a bien été envoyé aux destinataires sélectionnées&nbsp;:</em></strong></p><p>&nbsp;</p>" . $body, 'text/html', 'utf-8');
+    $message->setFrom(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME));
+    $message->setTo($senderAddress, $senderName ? $senderName : null);
+    $serializedMessage = serialize($message);
+    $pendingEmail = PendingEmail::create(array(
+        'email_object' => $serializedMessage,
+        'priority' => PendingEmail::$SECTION_SENDER_PRIORITY,
+        'sent' => false,
+    ));
+    return Redirect::route('manage_emails')
+            ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }
   
 }

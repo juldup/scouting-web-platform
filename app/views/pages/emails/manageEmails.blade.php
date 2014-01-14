@@ -20,6 +20,7 @@
 <div class="row">
   <div class="col-md-12">
     <h1>Gestion des e-mails {{ $user->currentSection->de_la_section }}</h1>
+    @include('subviews.flashMessages')
   </div>
 </div>
 @stop
