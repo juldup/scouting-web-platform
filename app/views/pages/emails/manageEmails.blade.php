@@ -30,10 +30,15 @@
         <div class="well">
           <legend>
             <div class="row">
-              <div class="col-md-10">
+              <div class="col-md-9">
                 {{ $email->subject }} – {{ Helper::dateToHuman($email->date) }}
               </div>
-              <div class="col-md-2 text-right">
+              <div class="col-md-3 text-right">
+                @if ($email->canBeDeleted())
+                  <a class="btn-sm btn-default" href="{{ URL::route('manage_emails_delete', array('email_id' => $email->id)) }}">
+                    Supprimer
+                  </a>&nbsp;
+                @endif
                 <a class="btn-sm btn-default" href="#">Archiver</a>
               </div>
             </div>

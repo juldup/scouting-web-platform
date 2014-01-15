@@ -154,4 +154,29 @@ class EmailController extends BaseController {
             ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }
   
+  public function deleteEmail($email_id) {
+    if (!$this->user->can(Privilege::$SEND_EMAILS)) {
+      return Helper::forbiddenResponse();
+    }
+    // Retrieve e-mail
+    $email = Email::find($email_id);
+    if (!$email) App::abort(404, "Cet e-mail n'existe pas.");
+    // Delete e-mail if it is less than one week old
+    if ($email->canBeDeleted()) {
+      // Delete e-mail
+      try {
+        $email->deleteWithAttachments();
+        return Redirect::route('manage_emails')
+                ->with('success_message', "L'e-mail a été supprimé.");
+      } catch (Exception $ex) {
+        return Redirect::route('manage_emails')
+                ->with('error_message', "Une erreur est survenue. L'e-mail n'a pas pu être supprimé.");
+      }
+    } else {
+      // The e-mail is too old and cannot be deleted
+      return Redirect::route('manage_emails')
+              ->with('error_message', "Cet e-mail est trop vieux. Il ne peut plus être supprimé mais peut être archivé.");
+    }
+  }
+  
 }

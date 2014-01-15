@@ -1,17 +1,19 @@
 $().ready(function() {
+  // Checks all recipients within recipient list
   $(".recipient-check-all").click(function(event) {
     var parent = $(event.target).closest('.recipient-list');
     console.log(parent);
     parent.find('.recipient-checkbox').prop('checked', true).trigger("change");
     return false;
   });
+  // Unchecks all recipients within recipien list
   $(".recipient-uncheck-all").click(function(event) {
     var parent = $(event.target).closest('.recipient-list');
     console.log(parent);
     parent.find('.recipient-checkbox').prop('checked', false).trigger("change");
     return false;
   });
-  // Check form in javascript to avoid losing the attachments
+  // Checks form in javascript to avoid losing the attachments
   $("#email-form").submit(function() {
     // Check subject
     var subject = $("input#subject").val().trim();
