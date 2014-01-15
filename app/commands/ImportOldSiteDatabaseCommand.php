@@ -2,10 +2,20 @@
 
 class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
   
-  protected $name = "scouts:import-old";
+  protected $name = "scouts:import-old-data";
   protected $description = "Imports database from the older version of the website";
   
   protected $sections = array();
+  protected $calendarTypes = array(
+      'reunion' => 'normal',
+      'special' => 'special',
+      'conge' => 'break',
+      'animateurs' => 'leaders',
+      'we' => 'weekend',
+      'camp' => 'camp',
+      'barpi' => 'bar',
+      'toilettes' => 'cleaning',
+  );
   
   protected $rootFolder = "/home/julien/Websites/scouts-site";
   protected $newSiteRootURL = "http://localhost/scouts-laravel/public/";
@@ -217,6 +227,21 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       }
     }
     
+    // TODO Privileges
+    
+    // Calendar
+    $query = $pdo->prepare("SELECT * FROM calendrier");
+    $query->execute();
+    foreach ($query->fetchAll() as $calendarItem) {
+      CalendarItem::create(array(
+          'start_date' => $calendarItem['startDate'],
+          'end_date' => $calendarItem['endDate'],
+          'section_id' => $this->sectionToId($calendarItem['section']),
+          'event' => $calendarItem['event'],
+          'description' => $calendarItem['description'],
+          'type' => $this->calendarTypes[$calendarItem['type']],
+      ));
+    }
   }
   
   protected function resetDatabase() {

@@ -111,7 +111,7 @@ class CreateDatabase extends Migration {
       
       
       $table->timestamps();
-    });     
+    });
     
     // Users
     Schema::create('users', function($table) {
