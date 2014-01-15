@@ -42,8 +42,8 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array('name' => Parameter::$SHOW_UNIFORMS, 'value' => 'true'));
     DB::table('parameters')->insert(array('name' => Parameter::$SHOW_UNIT_POLICY, 'value' => 'true'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_1_CHILD, 'value' => '40,75'));
-    DB::table('parameters')->insert(array('name' => Parameter::$PRICE_2_CHILDS, 'value' => '32,25'));
-    DB::table('parameters')->insert(array('name' => Parameter::$PRICE_3_CHILDS, 'value' => '26,75'));
+    DB::table('parameters')->insert(array('name' => Parameter::$PRICE_2_CHILDREN, 'value' => '32,25'));
+    DB::table('parameters')->insert(array('name' => Parameter::$PRICE_3_CHILDREN, 'value' => '26,75'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_1_LEADER, 'value' => '40,75'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_2_LEADERS, 'value' => '32,25'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_3_LEADERS, 'value' => '26,75'));
@@ -431,10 +431,6 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array(
         'name' => Parameter::$SMTP_PASSWORD,
         'value' => 'AtE++d6p4vK0fdmIMngTTC/wAlSSz8C95i6EkajewPJ+'
-    ));
-    DB::table('parameters')->insert(array(
-        'name' => Parameter::$DEFAULT_EMAIL_FROM_ADDRESS,
-        'value' => 'site@sv20.be'
     ));
     
 	}

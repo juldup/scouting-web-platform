@@ -12,6 +12,109 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     $pdo = new PDO('mysql:host=localhost;dbname=scouts-site', 'scouts-site', 'scouts', array());
     $pdo->query('set names "utf8"');
     
+    // Parameters and pages
+    $query = $pdo->prepare("SELECT * FROM parameters");
+    $query->execute();
+    foreach ($query->fetchAll() as $parameter) {
+      if ($parameter['param'] == 'adressesUtiles') {
+        Page::create(array(
+          'type' => 'addresses',
+          'section_id' => 1,
+          'content_html' => $parameter['value'],
+        ));
+      }
+      if ($parameter['param'] == 'charte') {
+        Page::create(array(
+          'type' => 'unit_policy',
+          'section_id' => 1,
+          'content_html' => $parameter['value'],
+        ));
+      }
+      if ($parameter['param'] == 'descriptionSite') {
+        // TODO
+      }
+      if ($parameter['param'] == 'docCategories') {
+        // TODO
+      }
+      if ($parameter['param'] == 'emailDefaultFromAddress') {
+        Parameter::create(array(
+            'name' => Parameter::$DEFAULT_EMAIL_FROM_ADDRESS,
+            'value' => $parameter['value'],
+        ));
+      }
+      if ($parameter['param'] == 'emailUnite') {
+        Section::where('id', '=', 1)
+                ->update(array('email' => $parameter['value']));
+      }
+      if ($parameter['param'] == 'headerSpecialContent') {
+        // TODO
+      }
+      if ($parameter['param'] == 'lunite') {
+        // TODO
+      }
+      if ($parameter['param'] == 'motsCles') {
+        // TODO
+      }
+      if ($parameter['param'] == 'nomUniteTitre') {
+        Parameter::create(array(
+            'name' => Parameter::$UNIT_LONG_NAME,
+            'value' => $parameter['value'],
+        ));
+      }
+      if ($parameter['param'] == 'numéro de compte unité') {
+        Parameter::where('name', '=', Parameter::$UNIT_BANK_ACCOUNT)
+                ->update(array('value' => $parameter['value']));
+      }
+      if ($parameter['param'] == 'pageAccueil') {
+        Page::where('type', '=', 'home')
+                ->where('section_id', '=', 1)
+                ->update(array('content_html' => $parameter['value']));
+      }
+      if ($parameter['param'] == 'pageUnite') {
+        Page::create(array(
+          'type' => 'section_home',
+          'section_id' => 1,
+          'content_html' => $parameter['value'],
+        ));
+      }
+      if ($parameter['param'] == 'prix normal un enfant') {
+        Parameter::where('name', '=', Parameter::$PRICE_1_CHILD)
+                ->update(array('value' =>$parameter['value']));
+      }
+      if ($parameter['param'] == 'prix normal deux enfants') {
+        Parameter::where('name', '=', Parameter::$PRICE_2_CHILDREN)
+                ->update(array('value' =>$parameter['value']));
+      }
+      if ($parameter['param'] == 'prix normal trois enfants') {
+        Parameter::where('name', '=', Parameter::$PRICE_3_CHILDREN)
+                ->update(array('value' =>$parameter['value']));
+      }
+      if ($parameter['param'] == 'prix animateur un enfant') {
+        Parameter::where('name', '=', Parameter::$PRICE_1_LEADER)
+                ->update(array('value' =>$parameter['value']));
+      }
+      if ($parameter['param'] == 'prix animateur deux enfants') {
+        Parameter::where('name', '=', Parameter::$PRICE_2_LEADERS)
+                ->update(array('value' =>$parameter['value']));
+      }
+      if ($parameter['param'] == 'prix animateur trois enfants') {
+        Parameter::where('name', '=', Parameter::$PRICE_3_LEADERS)
+                ->update(array('value' =>$parameter['value']));
+      }
+      if ($parameter['param'] == 'sigleUnite') {
+        Parameter::create(array(
+            'name' => Parameter::$UNIT_SHORT_NAME,
+            'value' => $parameter['value'],
+        ));
+      }
+      if ($parameter['param'] == 'webmasterEmail') {
+        Parameter::create(array(
+            'name' => Parameter::$WEBMASTER_EMAIL,
+            'value' => $parameter['value'],
+        ));
+      }
+    }
+    
     // Sections
     $query = $pdo->prepare("SELECT * FROM sections, sectionsAll WHERE sections.id=sectionsAll.sectionId ORDER BY sectionId");
     $query->execute();
@@ -29,6 +132,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
           'subgroup_name' => self::subgroupNameFor($section['symbolFede']),
       ));
       $this->sections[$section['nom']] = $sectionObject->id;
+      // TODO section pages
     }
     
     // Users

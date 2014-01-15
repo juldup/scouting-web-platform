@@ -2,6 +2,8 @@
 
 class Parameter extends Eloquent {
   
+  protected $guarded = array('id', 'created_at', 'updated_at');
+  
   public static $CALENDAR_DOWNLOADABLE = "Calendar downloadable";
   public static $SHOW_SECTIONS = "Show sections";
   public static $SHOW_ADDRESSES = "Show addresses";
@@ -23,16 +25,18 @@ class Parameter extends Eloquent {
   public static $SHOW_SUGGESTIONS = "Show suggestions";
   public static $SHOW_GUEST_BOOK = "Show guest book";
   public static $SHOW_HELP = "Show help";
+  
   public static $UNIT_SHORT_NAME = "Unit short name";
   public static $UNIT_LONG_NAME = "Unit long name";
+  public static $UNIT_BANK_ACCOUNT = "Unit bank account";
+  public static $WEBMASTER_EMAIL = "Webmaster e-mail address";
   
   public static $PRICE_1_CHILD = "Price for one child";
-  public static $PRICE_2_CHILDS = "Price for two childs";
-  public static $PRICE_3_CHILDS = "Price for three childs";
+  public static $PRICE_2_CHILDREN = "Price for two children";
+  public static $PRICE_3_CHILDREN = "Price for three children";
   public static $PRICE_1_LEADER = "Price for one leader";
   public static $PRICE_2_LEADERS = "Price for two leaders";
   public static $PRICE_3_LEADERS = "Price for three leaders";
-  public static $UNIT_BANK_ACCOUNT = "Unit bank account";
   
   public static $SMTP_HOST = "Smtp host";
   public static $SMTP_PORT = "Smtp port";
