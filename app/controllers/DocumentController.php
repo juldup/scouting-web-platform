@@ -4,12 +4,8 @@ class DocumentController extends BaseController {
   
   public function showPage($year = null, $month = null) {
     
-    $thisYear = Helper::thisYear();
-    
-    $documents = Document::where(function($query) use ($thisYear) {
-      $query->where('archive', '=', $thisYear);
-      $query->orWhere('archive', '=', '');
-    })->where('section_id', '=', $this->section->id)->get();
+    $documents = Document::where('archived', '=', false)
+            ->where('section_id', '=', $this->section->id)->get();
     
     $documentSelectList = array();
     foreach ($documents as $document) {
@@ -32,10 +28,8 @@ class DocumentController extends BaseController {
     
     $thisYear = Helper::thisYear();
     
-    $documents = Document::where(function($query) use ($thisYear) {
-      $query->where('archive', '=', $thisYear);
-      $query->orWhere('archive', '=', '');
-    })->where('section_id', '=', $this->section->id)->get();
+    $documents = Document::where('archived', '=', $false)
+            ->where('section_id', '=', $this->section->id)->get();
     
     return View::make('pages.documents.editDocuments', array(
         'page_url' => URL::route('documents', array('section_slug' => $this->section->slug)),
@@ -139,6 +133,7 @@ class DocumentController extends BaseController {
                 'doc_date' => date('Y-m-d'),
                 'title' => $title,
                 'description' => $description,
+                'category' => '', // TODO document categories
                 'public' => $public,
                 'filename' => 'document',
                 'section_id' => $this->section->id,

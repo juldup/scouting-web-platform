@@ -2,7 +2,7 @@
 
 class Document extends Eloquent {
   
-  protected $fillable = array('title', 'description', 'doc_date', 'section_id');
+  protected $guarded = array('id', 'created_at', 'updated_at');
   
   protected static $FOLDER_PATH = "site_data/documents/";
   

@@ -6,6 +6,8 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
   protected $description = "Imports database from the older version of the website";
   
   protected $sections = array();
+  protected $members = array();
+  protected $users = array();
   protected $calendarTypes = array(
       'reunion' => 'normal',
       'special' => 'special',
@@ -161,6 +163,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       $newUser->current_visit = $user['currentVisit'];
       $newUser->verified = $user['verified'];
       $newUser->save();
+      $this->users[$user['pseudo']] = $newUser;
     }
     
     // Members
@@ -222,6 +225,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
           'year_in_section' => $member['annee'] ? $member['annee'] : 1,
           'validated' => true,
       ));
+      $this->members[$member['listingId']] = $newMember->id;
       if ($hasPicture) {
         copy($picturePath, $newMember->getPicturePath());
       }
@@ -242,6 +246,106 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
           'type' => $this->calendarTypes[$calendarItem['type']],
       ));
     }
+    
+    // News
+    $query = $pdo->prepare("SELECT * FROM news WHERE deleted='0'");
+    $query->execute();
+    foreach ($query->fetchAll() as $news) {
+      News::create(array(
+          'news_date' => substr($news['date'], 0, 10),
+          'section_id' => $this->sectionToId($news['section']),
+          'title' => $news['titre'],
+          'body' => $news['text'],
+      ));
+    }
+    
+    // Documents
+    $query = $pdo->prepare("SELECT * FROM documents");
+    $query->execute();
+    foreach ($query->fetchAll() as $document) {
+      $path = $this->rootFolder . "/" . $document['path'];
+      if (file_exists($path)) {
+        $newDocument = Document::create(array(
+            'doc_date' => $document['date'],
+            'title' => $document['nom'],
+            'description' => $document['description'],
+            'public' => $document['public'] ? true : false,
+            'filename' => $document['filename'],
+            'category' => $document['categorie'],
+            'section_id' => $this->sectionToId($document['section']),
+        ));
+        copy($path, $newDocument->getPath());
+      } else {
+        echo "Warning: document file $path does not exist.\n";
+      }
+    }
+    
+    // Links
+    $query = $pdo->prepare("SELECT * FROM liens");
+    $query->execute();
+    foreach ($query->fetchAll() as $link) {
+      Link::create(array(
+          'title' => $link['nom'],
+          'url' => $link['adresse'],
+          'description' => $link['description'],
+      ));
+    }
+    
+    // Health cards
+    $query = $pdo->prepare("SELECT * FROM fichemedicale");
+    $query->execute();
+    foreach ($query->fetchAll() as $healthCard) {
+      $memberId = $this->members[$healthCard['idInListing']];
+      $user = $this->users[$healthCard['user']];
+      if ($memberId && $user) {
+        $newHealthCard = HealthCard::create(array(
+            'member_id' => $memberId,
+            'contact1_name' => $healthCard['contact1Nom'],
+            'contact1_address' => $healthCard['contact1Adresse'],
+            'contact1_phone' => $healthCard['contact1Tel'],
+            'contact1_relationship' => $healthCard['contact1LienParente'],
+            'contact2_name' => $healthCard['contact2Nom'],
+            'contact2_address' => $healthCard['contact2Adresse'],
+            'contact2_phone' => $healthCard['contact2Tel'],
+            'contact2_relationship' => $healthCard['contact2LienParente'],
+            'doctor_name' => $healthCard['medecinNom'],
+            'doctor_address' => $healthCard['medecinAdresse'],
+            'doctor_phone' => $healthCard['medecinTel'],
+            'has_no_constrained_activities' => $healthCard['participer'] ? true : false,
+            'constrained_activities_details' => $healthCard['participerDetails'],
+            'medical_data' => $healthCard['donneesMedicales'],
+            'medical_history' => $healthCard['maladiesSubies'],
+            'has_tetanus_vaccine' => $healthCard['vaccinTetanos'] ? true : false,
+            'tetanus_vaccine_details' => $healthCard['vaccinTetanosDetails'],
+            'has_allergy' => $healthCard['allergique'] ? true : false,
+            'allergy_details' => $healthCard['allergieDetails'],
+            'allergy_consequences' => $healthCard['allergieConsequences'],
+            'has_special_diet' => $healthCard['regimeAlimentaire'] ? true : false,
+            'special_diet_details' => $healthCard['regimeAlimentaireDetails'],
+            'other_important_information' => $healthCard['autresRenseignements'],
+            'has_drugs' => $healthCard['medicaments'] ? true : false,
+            'drugs_details' => $healthCard['medicamentsDetails'],
+            'drugs_autonomy' => $healthCard['medicamentsAutonome'],
+            'comments' => $healthCard['infosCommentaires'],
+        ));
+        $newHealthCard->signatory_id = $user->id;
+        $newHealthCard->signatory_email = $user->email;
+        $newHealthCard->reminder_sent = $healthCard['rappelEnvoye'];
+        $newHealthCard->signature_date = $healthCard['date'];
+        $newHealthCard->save();
+      } else {
+        echo "Warning: missing member/user for health card: " . $healthCard['idInListing'];
+      }
+    }
+    
+    // TODO Photos and albums
+    
+    // TODO E-mails (+ attachments)
+    
+    
+    
+    // TODO Archived leaders, accounts, annual feast, listing snapshots, guest book, suggestions, userLog
+    
   }
   
   protected function resetDatabase() {
@@ -312,12 +416,12 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     DB::table('pages')->insert(array(
         'type' => 'home',
         'section_id' => 1,
-        'content_html' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
+        'body_html' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
     ));
     DB::table('pages')->insert(array(
         'type' => 'registration',
         'section_id' => 1,
-        'content_html' => '<p><span style="font-size:20px"><strong>Comment s&#39;inscrire ?</strong></span></p><p>Pour <strong>inscrire</strong> un enfant ou un ado ne faisant pas encore partie de l&#39;unit&eacute; :</p><ul><li>Premi&egrave;rement, nous vous invitons &agrave; prendre connaissance de notre (ACCES CHARTE).</li><li>Deuxi&egrave;mement, vous devez prendre (ACCES CONTACT) avec l&#39;animateur d&#39;unit&eacute;.</li><li>Troisi&egrave;mement, vous devez remplir le (ACCES FORMULAIRE).</li><li>Finalement, vous devez verser le montant de la cotisation sur le compte de l&#39;unit&eacute; (BEXX-XXXX-XXXX-XXXX).</li></ul><p>Pour <strong>r&eacute;inscrire</strong> un scout, connectez-vous au site avec un compte valide et rendez-vous sur cette même page.<br />&nbsp;</p><p><span style="font-size:20px"><strong>Cotisation et prix</strong></span></p><p>Le scoutisme est un groupement o&ugrave; les animateurs sont b&eacute;n&eacute;voles. Malgr&eacute; cela, il vous est demand&eacute; de payer une cotisation qui couvre :</p><ul><li>L&#39;inscription dans l&#39;unit&eacute; (achat de mat&eacute;riel, financement des locaux, organisation d&#39;activit&eacute;s, etc.)</li><li>L&#39;inscription au sein de la f&eacute;d&eacute;ration scoute (revues, outils, formation des animateurs, promotion du scoutisme dans les pays d&eacute;favoris&eacute;s, etc.)</li><li>Une <a href="http://www.lesscouts.be/organiser/assurances/deux-assurances-de-base/">assurance</a> en responsabilit&eacute; civile et couvrant les accidents corporels pouvant survenir pendant nos activit&eacute;s</li></ul><p><strong>Combien dois-je payer ?</strong></p><ul><li>Le montant s&#39;&eacute;l&egrave;ve &agrave; <strong>(PRIX UN ENFANT) euros</strong> pour un enfant ((PRIX UN ANIMATEUR) euros s&#39;il est animateur).</li><li>Si vous avez deux enfants dans l&#39;unit&eacute;, vous payerez <strong>(PRIX DEUX ENFANTS) euros</strong> par enfant ((PRIX DEUX ANIMATEURS) euros par animateur).</li><li>Si vous avez trois enfants ou plus dans l&#39;unit&eacute;, le prix est de <strong>(PRIX TROIS ENFANTS) euros</strong> par enfant ((PRIX TROIS ANIMATEURS) euros par animateur).</li><li>&Agrave; ces frais s&#39;ajouteront les frais des activit&eacute;s sp&eacute;ciales, week-ends et grand camp, qui vous seront demand&eacute;s au cours de l&#39;ann&eacute;e.</li><li>Le prix ne doit jamais &ecirc;tre un frein &agrave; la participation. Si vous avez des difficult&eacute;s financi&egrave;res, n&#39;h&eacute;sitez pas &agrave; nous en parler, nous trouverons une solution ensemble.</li></ul><p><strong>Comment dois-je payer ?</strong></p><ul><li>Par virement bancaire sur le compte de l&#39;unit&eacute; : <strong>BEXX-XXXX-XXXX-XXXX</strong></li><li>Avec la mention &quot;Cotisation : NOM PR&Eacute;NOM(S)&quot;</li></ul>',
+        'body_html' => '<p><span style="font-size:20px"><strong>Comment s&#39;inscrire ?</strong></span></p><p>Pour <strong>inscrire</strong> un enfant ou un ado ne faisant pas encore partie de l&#39;unit&eacute; :</p><ul><li>Premi&egrave;rement, nous vous invitons &agrave; prendre connaissance de notre (ACCES CHARTE).</li><li>Deuxi&egrave;mement, vous devez prendre (ACCES CONTACT) avec l&#39;animateur d&#39;unit&eacute;.</li><li>Troisi&egrave;mement, vous devez remplir le (ACCES FORMULAIRE).</li><li>Finalement, vous devez verser le montant de la cotisation sur le compte de l&#39;unit&eacute; (BEXX-XXXX-XXXX-XXXX).</li></ul><p>Pour <strong>r&eacute;inscrire</strong> un scout, connectez-vous au site avec un compte valide et rendez-vous sur cette même page.<br />&nbsp;</p><p><span style="font-size:20px"><strong>Cotisation et prix</strong></span></p><p>Le scoutisme est un groupement o&ugrave; les animateurs sont b&eacute;n&eacute;voles. Malgr&eacute; cela, il vous est demand&eacute; de payer une cotisation qui couvre :</p><ul><li>L&#39;inscription dans l&#39;unit&eacute; (achat de mat&eacute;riel, financement des locaux, organisation d&#39;activit&eacute;s, etc.)</li><li>L&#39;inscription au sein de la f&eacute;d&eacute;ration scoute (revues, outils, formation des animateurs, promotion du scoutisme dans les pays d&eacute;favoris&eacute;s, etc.)</li><li>Une <a href="http://www.lesscouts.be/organiser/assurances/deux-assurances-de-base/">assurance</a> en responsabilit&eacute; civile et couvrant les accidents corporels pouvant survenir pendant nos activit&eacute;s</li></ul><p><strong>Combien dois-je payer ?</strong></p><ul><li>Le montant s&#39;&eacute;l&egrave;ve &agrave; <strong>(PRIX UN ENFANT) euros</strong> pour un enfant ((PRIX UN ANIMATEUR) euros s&#39;il est animateur).</li><li>Si vous avez deux enfants dans l&#39;unit&eacute;, vous payerez <strong>(PRIX DEUX ENFANTS) euros</strong> par enfant ((PRIX DEUX ANIMATEURS) euros par animateur).</li><li>Si vous avez trois enfants ou plus dans l&#39;unit&eacute;, le prix est de <strong>(PRIX TROIS ENFANTS) euros</strong> par enfant ((PRIX TROIS ANIMATEURS) euros par animateur).</li><li>&Agrave; ces frais s&#39;ajouteront les frais des activit&eacute;s sp&eacute;ciales, week-ends et grand camp, qui vous seront demand&eacute;s au cours de l&#39;ann&eacute;e.</li><li>Le prix ne doit jamais &ecirc;tre un frein &agrave; la participation. Si vous avez des difficult&eacute;s financi&egrave;res, n&#39;h&eacute;sitez pas &agrave; nous en parler, nous trouverons une solution ensemble.</li></ul><p><strong>Comment dois-je payer ?</strong></p><ul><li>Par virement bancaire sur le compte de l&#39;unit&eacute; : <strong>BEXX-XXXX-XXXX-XXXX</strong></li><li>Avec la mention &quot;Cotisation : NOM PR&Eacute;NOM(S)&quot;</li></ul>',
     ));
     
     Schema::table('photo_albums', function($table) {
@@ -337,15 +441,15 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     return null;
   }
   
-  protected function createPage($type, $sectionId, $contentHTML) {
+  protected function createPage($type, $sectionId, $bodyHTML) {
     $page = Page::create(array(
       'type' => $type,
       'section_id' => $sectionId,
-      'content_html' => $contentHTML,
+      'body_html' => $bodyHTML,
     ));
     
     $matches = array();
-    preg_match_all("/src\=[\"\'].*[\"\']/", $contentHTML, $matches);
+    preg_match_all("/src\=[\"\'].*[\"\']/", $bodyHTML, $matches);
     foreach ($matches[0] as $match) {
       $src = substr($match, 5, strlen($match) - 6);
       $srcPath = $this->rootFolder . "/" . $src;
@@ -359,8 +463,8 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
         ));
         copy($srcPath, $image->getPath());
         $url = str_replace(URL::to('/') . "/", $this->newSiteRootURL, $image->getURL());
-        $contentHTML = str_replace($match, 'src="' . $url . '"', $contentHTML);
-        $page->content_html = $contentHTML;
+        $bodyHTML = str_replace($match, 'src="' . $url . '"', $bodyHTML);
+        $page->body_html = $bodyHTML;
         $page->save();
       } else {
         echo "Warning: file $srcPath does not exist.\n";

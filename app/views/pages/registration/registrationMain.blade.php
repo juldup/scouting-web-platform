@@ -23,8 +23,8 @@
 @stop
 
 @section('content')
-  <div class="row page_content">
+  <div class="row page_body">
     <h1>{{ $page_title }}</h1>
-    {{ $page_content }}
+    {{ $page_body }}
   </div>
 @stop

@@ -6,7 +6,7 @@ class PhotoController extends BaseController {
     
     $albumId = Route::input('album_id');
     
-    $albums = PhotoAlbum::where('archive', '=', '')
+    $albums = PhotoAlbum::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->where('photo_count', '!=', 0)
             ->orderBy('position')
@@ -16,7 +16,7 @@ class PhotoController extends BaseController {
     $photos = null;
     if ($albumId) {
       $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
-              ->where('archive', '=', '')
+              ->where('archived', '=', false)
               ->where('section_id', '=', $this->section->id)
               ->where('photo_count', '!=', 0)
               ->first();
@@ -93,7 +93,7 @@ class PhotoController extends BaseController {
   
   public function showEdit() {
     
-    $albums = PhotoAlbum::where('archive', '=', '')
+    $albums = PhotoAlbum::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('position')
             ->get();
@@ -135,7 +135,7 @@ class PhotoController extends BaseController {
     $albumIdsInOrderArray = explode(" ", $albumIdsInOrder);
     
     // Retrieve albums
-    $albums = PhotoAlbum::where('archive', '=', '')
+    $albums = PhotoAlbum::where('archived', '=', false)
             ->where(function($query) use ($albumIdsInOrderArray) {
               foreach ($albumIdsInOrderArray as $albumId) {
                 $query->orWhere('id', '=', $albumId);

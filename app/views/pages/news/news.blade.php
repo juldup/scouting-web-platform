@@ -28,7 +28,7 @@
           {{ $newsItem->title }} – {{ $newsItem->getHumanDate() }}
         </legend>
         <div>
-          {{ Helper::rawToHTML($newsItem->content) }}
+          {{ Helper::rawToHTML($newsItem->body) }}
         </div>
       </div>
     </div>

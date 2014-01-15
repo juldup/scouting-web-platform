@@ -17,7 +17,7 @@ abstract class GenericPageController extends BaseController {
     }
     $editURL = URL::route($this->getEditRouteName(), $sectionSlugArray);
     return View::make('pages.page')
-            ->with('page_content', $page->content_html)
+            ->with('page_body', $page->body_html)
             ->with('page_title', $this->getPageTitle())
             ->with('edit_url', $editURL)
             ->with('can_edit', $this->canEdit());
@@ -30,7 +30,7 @@ abstract class GenericPageController extends BaseController {
     $page = $this->getPage();
     $images = PageImage::where('page_id', '=', $page->id)->get()->all();
     return View::make('pages.editPage')
-            ->with('page_content', $page->content_html)
+            ->with('page_body', $page->body_html)
             ->with('page_title', $this->getPageTitle())
             ->with('page_id', $page->id)
             ->with('images', $images)
@@ -41,9 +41,9 @@ abstract class GenericPageController extends BaseController {
     if (!$this->canEdit()) {
       return Helper::forbiddenResponse();
     }
-    $newContent = Input::get('page_content');
+    $newbody = Input::get('page_body');
     $page = $this->getPage();
-    $page->content_html = $newContent;
+    $page->body_html = $newBody;
     $page->save();
     
     $sectionSlugArray = array();
@@ -64,7 +64,7 @@ abstract class GenericPageController extends BaseController {
       $page = Page::create(array(
           "type" => $this->getPageType(),
           "section_id" => $sectionId,
-          "content_html" => "<p>Cette page n'existe pas encore.</p>",
+          "body_html" => "<p>Cette page n'existe pas encore.</p>",
       ));
     }
     return $page;

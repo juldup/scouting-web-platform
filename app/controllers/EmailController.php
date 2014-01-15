@@ -3,7 +3,7 @@
 class EmailController extends BaseController {
   
   public function showPage() {
-    $emails = Email::where('archive', '=', '')
+    $emails = Email::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('id', 'DESC')
             ->get();
@@ -17,7 +17,7 @@ class EmailController extends BaseController {
     if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
       return Helper::forbiddenResponse();
     }
-    $emails = Email::where('archive', '=', '')
+    $emails = Email::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('id', 'DESC')
             ->get();

@@ -52,7 +52,7 @@ class NewsController extends BaseController {
     
     $newsId = Input::get('news_id');
     $title = Input::get('news_title');
-    $content = Input::get('news_content');
+    $body = Input::get('news_body');
     $sectionId = Input::get('section');
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $sectionId)) {
@@ -63,7 +63,7 @@ class NewsController extends BaseController {
     if (!$title) {
       $success = false;
       $message = "Tu dois entrer un titre.";
-    } else if (!$content) {
+    } else if (!$body) {
       $success = false;
       $message = "Tu dois entrer un contenu.";
     } else {
@@ -74,7 +74,7 @@ class NewsController extends BaseController {
             return Helper::forbiddenResponse();
           }
           $news->title = $title;
-          $news->content = $content;
+          $news->body = $body;
           $news->section_id = $sectionId;
           try {
             $news->save();
@@ -94,7 +94,7 @@ class NewsController extends BaseController {
           $news = News::create(array(
               'news_date' => date('Y-m-d'),
               'title' => $title,
-              'content' => $content,
+              'body' => $body,
               'section_id' => $sectionId,
           ));
           $section_slug = $news->getSection()->slug;

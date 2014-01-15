@@ -8,7 +8,7 @@
     @foreach ($news as $item)
       news[{{ $item->id }}] = {
         'title': "{{ Helper::sanitizeForJavascript($item->title) }}",
-        'content': "{{ Helper::sanitizeForJavascript($item->content) }}",
+        'body': "{{ Helper::sanitizeForJavascript($item->body) }}",
         'section': {{ $item->section_id }},
         'delete_url': "{{ URL::route('manage_news_delete', array('news_id' => $item->id)) }}"
       };
@@ -49,9 +49,9 @@
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('news_content', "Contenu", array("class" => "col-md-2 control-label")) }}
+            {{ Form::label('news_body', "Contenu", array("class" => "col-md-2 control-label")) }}
             <div class="col-md-5">
-              {{ Form::textarea('news_content', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
+              {{ Form::textarea('news_body', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
             </div>
           </div>
           <div class="form-group">
@@ -98,7 +98,7 @@
           
         </p>
         <div>
-          {{ Helper::rawToHTML($newsItem->content) }}
+          {{ Helper::rawToHTML($newsItem->body) }}
         </div>
       </div>
     </div>

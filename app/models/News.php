@@ -2,7 +2,7 @@
 
 class News extends Eloquent {
   
-  protected $fillable = array('title', 'content', 'news_date', 'section_id');
+  protected $fillable = array('title', 'body', 'news_date', 'section_id');
   
   public function getSection() {
     return Section::find($this->section_id);

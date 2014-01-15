@@ -11,7 +11,7 @@
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/ckeditor/ckeditor.js"></script>
   <script>
-    CKEDITOR.replace('page_content', {
+    CKEDITOR.replace('page_body', {
       language: 'fr',
       extraAllowedContent: 'img[!src,width,height]',
       extraPlugins: 'divarea',
@@ -30,10 +30,10 @@
 
 @section('content')
   
-  <div class="row page_content">
+  <div class="row page_body">
     <form name="edit_page" method="post" action="" id="edit_page_form">
       <h1>{{ $page_title }}</h1>
-      <textarea cols="80" id="page_content" name="page_content" rows="10">{{ $page_content }}</textarea>
+      <textarea cols="80" id="page_body" name="page_body" rows="10">{{ $page_body }}</textarea>
       <p>
         Images: <input type="button" id="uploader" value="Ajouter" />
         <span id="image_list"></span>

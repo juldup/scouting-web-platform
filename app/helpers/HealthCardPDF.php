@@ -123,7 +123,7 @@ class HealthCardPDF {
     $this->pdf->SetFont('Times','I',8);
     $this->pdf->MultiCell(190,3,"Cette fiche a été complétée en ligne sur " . URL::route('health_card') . 
             " et doit être mise à jour avec précision au début de chaque année scoute, et avant chaque camp," . 
-            " par les parents ou par un médecin.  Les informations contenues dans la fiche santé sont confidentielles." .
+            " par les parents ou par un médecin. Les informations contenues dans la fiche santé sont confidentielles." .
             " Les animateurs à qui ces informations sont confiées sont tenus de respecter la loi du 8 décembre 1992" .
             " relative à la protection de la vie privée ainsi qu'à la loi du 19 juillet 2006 modifiant celle du 3" .
             " juillet 2005 relative aux droits des volontaires (notion de secret professionnel stipulée dans" .
@@ -197,9 +197,9 @@ class HealthCardPDF {
     
     $this->entry("Est-$il en ordre de vaccination contre le tétanos ?", "20", ($healthCard->has_tetanus_vaccine ? "OUI" : "|NON"));
     $this->pdf->Ln();
-    if ($healthCard->tetanusVaccineDetails) {
+    if ($healthCard->tetanus_vaccine_details) {
       $this->title("Date du dernier rappel : ");
-      $this->multiline($healthCard->tetanusVaccineDetails, 137);
+      $this->multiline($healthCard->tetanus_vaccine_details, 137);
       $this->pdf->Ln(self::$SMALL_INTERLINE);
     } else $this->pdf->Ln(self::$SMALL_INTERLINE);
     
@@ -320,7 +320,7 @@ class HealthCardPDF {
   }
   
   public function outputPDF($filename) {
-    $this->pdf->Output($filename . ".pdf", "I");
+    $this->pdf->Output($filename . ".pdf", "D");
     
   }
   
