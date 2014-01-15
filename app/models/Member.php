@@ -4,7 +4,7 @@ class Member extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
-  protected static $PICTURE_FOLDER_PATH = "../app/storage/site_data/leader_pictures/";
+  protected static $PICTURE_FOLDER_PATH = "site_data/leader_pictures/";
   
   public function getSection() {
     return Section::find($this->section_id);
@@ -36,7 +36,7 @@ class Member extends Eloquent {
   }
   
   public function getPicturePathFolder() {
-    return self::$PICTURE_FOLDER_PATH;
+    return storage_path(self::$PICTURE_FOLDER_PATH);
   }
   
   public function getPicturePathFilename() {

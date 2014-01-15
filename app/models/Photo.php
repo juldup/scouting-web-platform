@@ -4,7 +4,7 @@ class Photo extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
-  protected static $PHOTO_FOLDER_PATH = "../app/storage/site_data/photos/";
+  protected static $PHOTO_FOLDER_PATH = "site_data/photos/";
   public static $FORMAT_THUMBNAIL = "thumbnail";
   public static $FORMAT_PREVIEW = "preview";
   public static $FORMAT_ORIGINAL = "original";
@@ -35,7 +35,7 @@ class Photo extends Eloquent {
   }
   
   public function getPhotoPathFolder($format) {
-    return self::$PHOTO_FOLDER_PATH . $format . "/";
+    return storage_path(self::$PHOTO_FOLDER_PATH . $format . "/");
   }
   
   public function getPhotoPathFilename() {

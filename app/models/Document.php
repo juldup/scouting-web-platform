@@ -4,7 +4,7 @@ class Document extends Eloquent {
   
   protected $fillable = array('title', 'description', 'doc_date', 'section_id');
   
-  protected static $FOLDER_PATH = "../app/storage/site_data/documents/";
+  protected static $FOLDER_PATH = "site_data/documents/";
   
   public function getSection() {
     return Section::find($this->section_id);
@@ -19,7 +19,7 @@ class Document extends Eloquent {
   }
   
   public function getPathFolder() {
-    return self::$FOLDER_PATH;
+    return storage_path(self::$FOLDER_PATH);
   }
   
   public function getPathFilename() {

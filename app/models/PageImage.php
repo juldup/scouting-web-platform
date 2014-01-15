@@ -2,7 +2,7 @@
 
 class PageImage extends Eloquent {
   
-  protected static $FOLDER_PATH = "../app/storage/site_data/images/pages/";
+  protected static $FOLDER_PATH = "site_data/images/pages/";
 
   protected $fillable = array('page_id', 'original_name');
   
@@ -15,7 +15,7 @@ class PageImage extends Eloquent {
   }
   
   public function getPathFolder() {
-    return self::$FOLDER_PATH;
+    return storage_path(self::$FOLDER_PATH);
   }
   
   public function getPathFilename() {

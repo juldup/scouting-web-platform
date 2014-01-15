@@ -4,7 +4,7 @@ class EmailAttachment extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
-  protected static $FOLDER_PATH = "../app/storage/site_data/email_attachments/";
+  protected static $FOLDER_PATH = "site_data/email_attachments/";
   
   public static function newFromFile($file) {
     // Check that file is not empty
@@ -29,7 +29,7 @@ class EmailAttachment extends Eloquent {
   }
   
   public function getPathFolder() {
-    return self::$FOLDER_PATH;
+    return storage_path(self::$FOLDER_PATH);
   }
   
   public function getPathFilename() {
