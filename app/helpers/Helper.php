@@ -203,4 +203,24 @@ class Helper {
     return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
   }
   
+  public static function slugify($text) {
+    // Based on: http://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string#2955878
+    // Remove special characters
+    $text = self::removeSpecialCharacters($text);
+    // Replace non letter or digits by -
+    $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+    // Trim
+    $text = trim($text, '-');
+    // Transliterate
+    $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+    // Lowercase
+    $text = strtolower($text);
+    // Remove unwanted characters
+    $text = preg_replace('~[^-\w]+~', '', $text);
+    if (empty($text)) {
+      throw new Exception("Could not slugify text");
+    }
+    return $text;
+  }
+  
 }

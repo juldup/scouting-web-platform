@@ -404,32 +404,6 @@ class CreateDatabase extends Migration {
     });
     
     // Test data
-    DB::table('sections')->insert(array(
-        'id' => 2,
-        'name' => 'Louveteaux',
-        'slug' => 'louveteaux',
-        'position' => 2,
-        'section_type' => 'L',
-        'section_type_number' => 1,
-        'color' => "#FF0000",
-        'email' => '',
-        'de_la_section' => "de la meute",
-        'la_section' => "la meute",
-        'subgroup_name' => "Sizaine",
-    ));
-    DB::table('sections')->insert(array(
-        'id' => 3,
-        'name' => 'Éclaireurs',
-        'slug' => 'eclaireurs',
-        'position' => 2,
-        'section_type' => 'E',
-        'section_type_number' => 1,
-        'color' => "#0000FF",
-        'email' => 'troupe@monunite.com',
-        'de_la_section' => "de la troupe",
-        'la_section' => "la troupe",
-        'subgroup_name' => "Patrouille",
-    ));
     DB::table('users')->insert(array(
         'id' => 1,
         'password' => '963f0ec339ffa5b7dbe86993f3b2f7b3296ab046663724b30cf77964b4338102895297f5b4b',
@@ -437,49 +411,6 @@ class CreateDatabase extends Migration {
         'email' => 'julien.dupuis@gmail.com',
         'is_webmaster' => true,
         'verified' => true,
-    ));
-    DB::table('members')->insert(array(
-        'first_name' => "Jos",
-        'last_name' => "Vandervelde",
-        'birth_date' => "1980-10-10",
-        'gender' => "M",
-        'nationality' => "BE",
-        'section_id' => 1,
-        'phone_member' => "0482/52.36.91",
-        'email_member' => "julien.dupuis+1@gmail.com",
-        'is_leader' => true,
-        'leader_in_charge' => true,
-        'leader_name' => "Koala",
-        'leader_description' => "Je suis l'animateur d'unité",
-        'leader_role' => "Responsable",
-        'has_picture' => false,
-        'validated' => true,
-    ));
-    DB::table('members')->insert(array(
-        'first_name' => "Josette",
-        'last_name' => "Vandervelde",
-        'birth_date' => "2005-10-10",
-        'gender' => "F",
-        'nationality' => "BE",
-        'section_id' => 2,
-        'phone1' => "010/12.34.56",
-        'email1' => "julien.dupuis+2@gmail.com",
-        'subgroup' => 'Champions',
-        'validated' => true,
-    ));
-    DB::table('members')->insert(array(
-        'first_name' => "Jocelyne",
-        'last_name' => "van den Putt",
-        'birth_date' => "2005-8-8",
-        'gender' => "F",
-        'nationality' => "BE",
-        'section_id' => 3,
-        'phone1' => "010/45.46.47",
-        'email1' => "julien.dupuis+3@gmail.com",
-        'subgroup' => 'Tortues',
-        'totem' => 'Hérisson',
-        'quali' => 'Aux longues épines',
-        'validated' => true,
     ));
     DB::table('parameters')->insert(array(
         'name' => Parameter::$SMTP_HOST,
