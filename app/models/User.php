@@ -189,16 +189,20 @@ class User extends Eloquent {
     if ($this->associatedMembers === null) {
       // Find all members sharing an e-mail address with this use
       $email = $this->email;
-      $this->associatedMembers = Member::where(function($query) use ($email) {
-        $query->where('email1', '=', $email);
-        $query->orWhere('email2', '=', $email);
-        $query->orWhere('email3', '=', $email);
-        $query->orWhere(function($query) use ($email) {
-          $query->where('email_member', '=', $email);
-          $query->where('is_leader', '=', true);
-        });
-      })->where('validated', '=', true)
-              ->get();
+      if ($email) {
+        $this->associatedMembers = Member::where(function($query) use ($email) {
+          $query->where('email1', '=', $email);
+          $query->orWhere('email2', '=', $email);
+          $query->orWhere('email3', '=', $email);
+          $query->orWhere(function($query) use ($email) {
+            $query->where('email_member', '=', $email);
+            $query->where('is_leader', '=', true);
+          });
+        })->where('validated', '=', true)
+                ->get();
+      } else {
+        $this->associatedMembers = array();
+      }
     }
     return $this->associatedMembers;
   }
