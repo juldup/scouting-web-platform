@@ -56,6 +56,8 @@ Route::get('contacts/{section_slug?}', array("as" => "contacts", "uses" => "Cont
 
 // Annual feast
 Route::get('fete-unite/{section_slug?}', array("as" => "annual_feast", "uses" => "AnnualFeastController@showPage"));
+Route::get('gestion/fete-unite/{section_slug?}', array("as" => "edit_annual_feast_page", "uses" => "AnnualFeastController@showEdit"));
+Route::post('gestion/fete-unite/{section_slug?}', array("as" => "edit_annual_feast_page_submit", "uses" => "AnnualFeastController@savePage"));
 
 // Registration
 Route::get('inscription/formulaire/{section_slug?}', array("as" => "registration_form", "uses" => "RegistrationController@showForm"));

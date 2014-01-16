@@ -41,7 +41,7 @@ abstract class GenericPageController extends BaseController {
     if (!$this->canEdit()) {
       return Helper::forbiddenResponse();
     }
-    $newbody = Input::get('page_body');
+    $newBody = Input::get('page_body');
     $page = $this->getPage();
     $page->body_html = $newBody;
     $page->save();
