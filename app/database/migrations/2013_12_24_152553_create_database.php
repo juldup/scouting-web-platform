@@ -331,8 +331,8 @@ class CreateDatabase extends Migration {
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->string('name');
       $table->integer('photo_count')->default(0);
-      $table->integer('cover_picture_id')->unsigned()->nullable();
       $table->integer('position')->default(0);
+      $table->date('date')->default('0000-00-00');
       $table->boolean('archived')->default(false);
       $table->date('last_update')->default('0000-00-00');
       $table->timestamps();
@@ -355,10 +355,6 @@ class CreateDatabase extends Migration {
       
       $table->index('album_id');
       $table->index('position');
-    });
-    
-    Schema::table('photo_albums', function($table) {
-      $table->foreign('cover_picture_id')->references('id')->on('photos')->onDelete('set null');
     });
     
     // E-mails
@@ -447,9 +443,6 @@ class CreateDatabase extends Migration {
     Schema::drop('pending_emails');
     Schema::drop('email_attachments');
     Schema::drop('emails');
-    Schema::table('photo_albums', function($table) {
-      $table->dropForeign("photo_albums_cover_picture_id_foreign");
-    });
     Schema::drop('photos');
     Schema::drop('photo_albums');
     Schema::drop('health_cards');

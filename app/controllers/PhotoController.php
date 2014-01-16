@@ -355,14 +355,9 @@ class PhotoController extends BaseController {
       $photo->save();
       // Move file
       $file->move($photo->getPhotoPathFolder(Photo::$FORMAT_ORIGINAL), $photo->getPhotoPathFilename());
-      // Create thumbnail picture
-      $thumbnail = new Resizer($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL));
-      $thumbnail->resizeImage(Photo::$THUMBNAIL_WIDTH, Photo::$THUMBNAIL_HEIGHT, "crop");
-      $thumbnail->saveImage($photo->getPhotoPath(Photo::$FORMAT_THUMBNAIL));
-      // Create preview picture
-      $preview = new Resizer($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL));
-      $preview->resizeImage(Photo::$PREVIEW_WIDTH, Photo::$PREVIEW_HEIGHT, "portrait");
-      $preview->saveImage($photo->getPhotoPath(Photo::$FORMAT_PREVIEW));
+      // Create thumbnail and preview pictures
+      $photo->createThumbnailPicture();
+      $photo->createPreviewPicture();
     } catch (Exception $ex) {
       die ($ex);
       // Revert if possible

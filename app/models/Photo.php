@@ -42,4 +42,18 @@ class Photo extends Eloquent {
     return $this->id . ".photo";
   }
   
+  // Create thumbnail picture
+  public function createThumbnailPicture() {
+    $thumbnail = new Resizer($this->getPhotoPath(Photo::$FORMAT_ORIGINAL));
+    $thumbnail->resizeImage(Photo::$THUMBNAIL_WIDTH, Photo::$THUMBNAIL_HEIGHT, "crop");
+    $thumbnail->saveImage($this->getPhotoPath(Photo::$FORMAT_THUMBNAIL));
+  }
+  
+  // Create preview picture
+  public function createPreviewPicture() {
+    $preview = new Resizer($this->getPhotoPath(Photo::$FORMAT_ORIGINAL));
+    $preview->resizeImage(Photo::$PREVIEW_WIDTH, Photo::$PREVIEW_HEIGHT, "portrait");
+    $preview->saveImage($this->getPhotoPath(Photo::$FORMAT_PREVIEW));
+  }
+  
 }
