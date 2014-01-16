@@ -60,10 +60,11 @@
         <div class="form-group">
           {{ Form::label('attachments', "Pièces jointes", array('class' => 'col-md-2 control-label')) }}
           <div class="col-md-5">
-            {{ Form::file('attachments[0]', array('class' => 'form-control btn btn-default')) }}
-            {{ Form::file('attachments[1]', array('class' => 'form-control btn btn-default')) }}
-            {{ Form::file('attachments[2]', array('class' => 'form-control btn btn-default')) }}
-            {{ Form::file('attachments[3]', array('class' => 'form-control btn btn-default')) }}
+            <div class="attachment-input-wrapper" style='display: none;'>
+              {{ Form::file('attachments[0]', array('class' => 'btn btn-default')) }}
+              <a class="remove-attachment btn btn-default">Supprimer</a>
+            </div>
+            <a id="add-attachment-button" class="btn btn-default">Ajouter</a>
           </div>
         </div>
         

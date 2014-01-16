@@ -1,3 +1,5 @@
+var attachmentCount = 0;
+
 $().ready(function() {
   // Checks all recipients within recipient list
   $(".recipient-check-all").click(function(event) {
@@ -12,6 +14,18 @@ $().ready(function() {
     console.log(parent);
     parent.find('.recipient-checkbox').prop('checked', false).trigger("change");
     return false;
+  });
+  // Adds an attachment
+  $("#add-attachment-button").click(function(event) {
+    attachmentCount++;
+    var clone = $(".attachment-input-wrapper").first().clone();
+    clone.show();
+    clone.find("input").attr('name', 'attachments[' + attachmentCount + ']')
+    $(this).before(clone);
+    clone.find('.remove-attachment').click(function() {
+      $(this).closest(".attachment-input-wrapper").remove();
+    });
+    clone.find("input").trigger('click');
   });
   // Checks form in javascript to avoid losing the attachments
   $("#email-form").submit(function() {
