@@ -340,7 +340,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       }
     }
     
-    // TODO Photos and albums
+    // Photos and albums
     $query = $pdo->prepare("SELECT * FROM repertoires");
     $query->execute();
     foreach ($query->fetchAll() as $album) {
@@ -466,6 +466,26 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
         'type' => 'registration',
         'section_id' => 1,
         'body_html' => '<p><span style="font-size:20px"><strong>Comment s&#39;inscrire ?</strong></span></p><p>Pour <strong>inscrire</strong> un enfant ou un ado ne faisant pas encore partie de l&#39;unit&eacute; :</p><ul><li>Premi&egrave;rement, nous vous invitons &agrave; prendre connaissance de notre (ACCES CHARTE).</li><li>Deuxi&egrave;mement, vous devez prendre (ACCES CONTACT) avec l&#39;animateur d&#39;unit&eacute;.</li><li>Troisi&egrave;mement, vous devez remplir le (ACCES FORMULAIRE).</li><li>Finalement, vous devez verser le montant de la cotisation sur le compte de l&#39;unit&eacute; (BEXX-XXXX-XXXX-XXXX).</li></ul><p>Pour <strong>r&eacute;inscrire</strong> un scout, connectez-vous au site avec un compte valide et rendez-vous sur cette même page.<br />&nbsp;</p><p><span style="font-size:20px"><strong>Cotisation et prix</strong></span></p><p>Le scoutisme est un groupement o&ugrave; les animateurs sont b&eacute;n&eacute;voles. Malgr&eacute; cela, il vous est demand&eacute; de payer une cotisation qui couvre :</p><ul><li>L&#39;inscription dans l&#39;unit&eacute; (achat de mat&eacute;riel, financement des locaux, organisation d&#39;activit&eacute;s, etc.)</li><li>L&#39;inscription au sein de la f&eacute;d&eacute;ration scoute (revues, outils, formation des animateurs, promotion du scoutisme dans les pays d&eacute;favoris&eacute;s, etc.)</li><li>Une <a href="http://www.lesscouts.be/organiser/assurances/deux-assurances-de-base/">assurance</a> en responsabilit&eacute; civile et couvrant les accidents corporels pouvant survenir pendant nos activit&eacute;s</li></ul><p><strong>Combien dois-je payer ?</strong></p><ul><li>Le montant s&#39;&eacute;l&egrave;ve &agrave; <strong>(PRIX UN ENFANT) euros</strong> pour un enfant ((PRIX UN ANIMATEUR) euros s&#39;il est animateur).</li><li>Si vous avez deux enfants dans l&#39;unit&eacute;, vous payerez <strong>(PRIX DEUX ENFANTS) euros</strong> par enfant ((PRIX DEUX ANIMATEURS) euros par animateur).</li><li>Si vous avez trois enfants ou plus dans l&#39;unit&eacute;, le prix est de <strong>(PRIX TROIS ENFANTS) euros</strong> par enfant ((PRIX TROIS ANIMATEURS) euros par animateur).</li><li>&Agrave; ces frais s&#39;ajouteront les frais des activit&eacute;s sp&eacute;ciales, week-ends et grand camp, qui vous seront demand&eacute;s au cours de l&#39;ann&eacute;e.</li><li>Le prix ne doit jamais &ecirc;tre un frein &agrave; la participation. Si vous avez des difficult&eacute;s financi&egrave;res, n&#39;h&eacute;sitez pas &agrave; nous en parler, nous trouverons une solution ensemble.</li></ul><p><strong>Comment dois-je payer ?</strong></p><ul><li>Par virement bancaire sur le compte de l&#39;unit&eacute; : <strong>BEXX-XXXX-XXXX-XXXX</strong></li><li>Avec la mention &quot;Cotisation : NOM PR&Eacute;NOM(S)&quot;</li></ul>',
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_HOST,
+        'value' => 'email-smtp.us-east-1.amazonaws.com'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_PORT,
+        'value' => '587'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_SECURITY,
+        'value' => 'tls'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_USERNAME,
+        'value' => 'AKIAJT46KXQ3MMV5OBHQ'
+    ));
+    DB::table('parameters')->insert(array(
+        'name' => Parameter::$SMTP_PASSWORD,
+        'value' => 'AtE++d6p4vK0fdmIMngTTC/wAlSSz8C95i6EkajewPJ+'
     ));
   }
   

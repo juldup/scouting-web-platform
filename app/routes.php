@@ -21,6 +21,11 @@ View::composer('menu.tabs', "TabsComposer");
 
 // ROUTES
 
+// Cron tasks
+Route::get('/envoi-automatique-emails', array("as" => "send_emails_automatically", "uses" => function() {
+  ScoutMailer::sendPendingEmails();
+}));
+
 // Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
 Route::post('login/{section_slug?}', array("as" => "login_submit", "uses" => "UserController@submitLogin"));
@@ -170,7 +175,3 @@ Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageControll
 Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));
 Route::post('gestion/accueil/{section_slug?}', array("as" => "edit_home_page_submit", "uses" => "HomePageController@savePage"));
 
-// Cron tasks
-Route::get('/envoi-automatique-emails', array("as" => "send_emails_automatically", "uses" => function() {
-  ScoutMailer::sendPendingEmails();
-}));

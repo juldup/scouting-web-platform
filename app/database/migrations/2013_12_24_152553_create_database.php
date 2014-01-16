@@ -370,6 +370,7 @@ class CreateDatabase extends Migration {
       $table->string('sender_name')->nullable();
       $table->string('sender_email');
       $table->boolean('archived')->default(false);
+      $table->boolean('deleted')->default(false);
       $table->timestamps();
       
       $table->index('section_id');
@@ -391,7 +392,13 @@ class CreateDatabase extends Migration {
     // Pending e-mails
     Schema::create('pending_emails', function($table) {
       $table->increments('id');
-      $table->longText('email_object');
+      $table->integer('section_email_id')->unsigned()->nullable();
+      $table->foreign('section_email_id')->references('id')->on('emails')->onDelete('cascade');
+      $table->text('raw_body')->nullable();
+      $table->string('subject');
+      $table->string('sender_email');
+      $table->string('sender_name');
+      $table->string('recipient');
       $table->integer('priority');
       $table->boolean('sent')->default(false);
       $table->integer('last_retry')->default(0);
@@ -400,6 +407,7 @@ class CreateDatabase extends Migration {
       $table->index('created_at');
       $table->index('priority');
       $table->index('last_retry');
+      $table->index('sent');
     });
     
     // Test data

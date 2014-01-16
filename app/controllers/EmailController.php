@@ -4,6 +4,7 @@ class EmailController extends BaseController {
   
   public function showPage() {
     $emails = Email::where('archived', '=', false)
+            ->where('deleted', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('id', 'DESC')
             ->get();
@@ -18,6 +19,7 @@ class EmailController extends BaseController {
       return Helper::forbiddenResponse();
     }
     $emails = Email::where('archived', '=', false)
+            ->where('deleted', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('id', 'DESC')
             ->get();
@@ -72,6 +74,7 @@ class EmailController extends BaseController {
     $senderName = Input::get('sender_name');
     $senderAddress = Input::get('sender_address');
     $files = Input::file('attachments');
+    $extraRecipients = Input::get('extra_recipients');
     $attachments = array();
     // Create attachments
     foreach ($files as $file) {
@@ -107,9 +110,19 @@ class EmailController extends BaseController {
         }
       }
     }
+    // Add extra recipients
+    $extraRecipientArray = explode(",", $extraRecipients);
+    foreach ($extraRecipientArray as $extra) {
+      $address = trim($extra);
+      if (filter_var($address, FILTER_VALIDATE_EMAIL) && !in_array($address, $recipientArray)) {
+        $recipientArray[] = $address;
+      }
+    }
+    // Add sender as a recipient
+    if (!in_array($senderAddress, $recipientArray)) $recipientArray[] = $senderAddress;
     // Create e-mail
     try {
-      Email::create(array(
+      $email = Email::create(array(
           'section_id' => $this->section->id,
           'date' => date('Y-m-d'),
           'time' => date('H:i:s'),
@@ -119,6 +132,10 @@ class EmailController extends BaseController {
           'sender_name' => $senderName,
           'sender_email' => $senderAddress,
       ));
+      foreach ($attachments as $attachment) {
+        $attachment->email_id = $email->id;
+        $attachment->save();
+      }
     } catch (Exception $ex) {
       return Redirect::route('send_section_email')
               ->withInput()
@@ -126,30 +143,16 @@ class EmailController extends BaseController {
     }
     // Create pending e-mails
     foreach ($recipientArray as $recipient) {
-      $message = Swift_Message::newInstance();
-      $message->setSubject($subject);
-      $message->setBody($body, 'text/html', 'utf-8');
-      $message->setFrom($senderAddress, $senderName ? $senderName : null);
-      $message->setTo($recipient);
-      $serializedMessage = serialize($message);
-      $pendingEmail = PendingEmail::create(array(
-          'email_object' => $serializedMessage,
+      PendingEmail::create(array(
+          'subject' => $subject,
+          'section_email_id' => $email->id,
+          'sender_email' => $senderAddress,
+          'sender_name' => $senderName,
+          'recipient' => $recipient,
           'priority' => PendingEmail::$SECTION_EMAIL_PRIORITY,
           'sent' => false,
       ));
     }
-    // Create confirmation email
-    $message = Swift_Message::newInstance();
-    $message->setSubject($subject);
-    $message->setBody("<p><strong><em>[Cet e-mail a bien été envoyé aux destinataires sélectionnés]</em></strong></p>" . $body, 'text/html', 'utf-8');
-    $message->setFrom(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME));
-    $message->setTo($senderAddress, $senderName ? $senderName : null);
-    $serializedMessage = serialize($message);
-    $pendingEmail = PendingEmail::create(array(
-        'email_object' => $serializedMessage,
-        'priority' => PendingEmail::$SECTION_SENDER_PRIORITY,
-        'sent' => false,
-    ));
     return Redirect::route('manage_emails')
             ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }
@@ -165,7 +168,8 @@ class EmailController extends BaseController {
     if ($email->canBeDeleted()) {
       // Delete e-mail
       try {
-        $email->deleteWithAttachments();
+        $email->deleted = true;
+        $email->save();
         return Redirect::route('manage_emails')
                 ->with('success_message', "L'e-mail a été supprimé.");
       } catch (Exception $ex) {
