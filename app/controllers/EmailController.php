@@ -14,6 +14,27 @@ class EmailController extends BaseController {
     ));
   }
   
+  public function downloadAttachment($attachment_id) {
+    if (!$this->user->isMember()) return Helper::forbiddenResponse();
+    $attachment = EmailAttachment::find($attachment_id);
+    if (!$attachment) App::abort(404, "Ce document n'existe plus.");
+    $email = Email::find($attachment->email_id);
+    if (!$email || $email->deleted) App::abort(404, "Cet e-mail a été supprimé. Il n'est plus possible d'accéder à ses pièces jointes.");
+    
+    $path = $attachment->getPath();
+    $filename = str_replace("\"", "", $attachment->filename);
+    if (file_exists($path)) {
+      return Response::make(file_get_contents($path), 200, array(
+          'Content-Type' => 'application/octet-stream',
+          'Content-length' => filesize($path),
+          'Content-Transfer-Encoding' => 'Binary',
+          'Content-disposition' => "attachment; filename=\"$filename\"",
+      ));
+    } else {
+      return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus.");
+    }
+  }
+  
   public function showManage() {
     if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
       return Helper::forbiddenResponse();

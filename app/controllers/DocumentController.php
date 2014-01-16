@@ -39,7 +39,7 @@ class DocumentController extends BaseController {
   
   public function downloadDocument($document_id) {
     $document = Document::find($document_id);
-    if (!$document) throw new NotFoundException();
+    if (!$document) App::abort("Ce document n'existe plus.");
     
     if (!$document->public && !$this->user->isMember()) {
       return Helper::forbiddenResponse();
@@ -55,9 +55,8 @@ class DocumentController extends BaseController {
           'Content-disposition' => "attachment; filename=\"$filename\"",
       ));
     } else {
-      return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus");
+      return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus.");
     }
-    
   }
   
   public function sendByEmail() {

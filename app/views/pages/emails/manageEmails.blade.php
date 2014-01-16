@@ -47,7 +47,22 @@
             {{ $email->body_html }}
           </p>
           <p>&nbsp;</p>
-          <p>
+          @if ($email->hasAttachments())
+            <p class="email-attachment-list">
+              @if (count($email->getAttachments()) == 1)
+                <strong>Pièce jointe :</strong>
+              @else
+                <strong>Pièces jointes :</strong>
+              @endif
+              @foreach ($email->getAttachments() as $attachment)
+                <a href="{{ URL::route('download_attachment', array('attachment_id' => $attachment->id)) }}">
+                  {{ $attachment->filename }}
+                </a>
+                <span class="horiz-divider"></span>
+              @endforeach
+            </p>
+          @endif
+          <p class="email-recipient-list">
             <strong>Destinataires :</strong>
             {{ $email->recipient_list }}
           </p>
