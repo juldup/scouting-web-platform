@@ -61,7 +61,8 @@ function addImageToList(data) {
           "<span id='image_" + data.image_id + "'>" +
           " <a href=\"javascript:editPageInsertImage('" + data.url + "');\">" +
           "<img src='" + data.url + "' class='image_preview_edit_page'/></a>" +
-          " <input type='button' onclick='removeImage(" + data.image_id + ")' value='-' />");
+          " <input type='button' onclick='removeImage(" + data.image_id + ")' value='-' />" +
+          " <span class='horiz-divider'></span>");
 }
 
 $().ready(function() {

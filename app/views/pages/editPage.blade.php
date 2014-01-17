@@ -30,15 +30,26 @@
 
 @section('content')
   
-  <div class="row page_body">
+  <div class="row page_body form-horizontal">
     <form name="edit_page" method="post" action="" id="edit_page_form">
       <h1>{{ $page_title }}</h1>
-      <textarea cols="80" id="page_body" name="page_body" rows="10">{{ $page_body }}</textarea>
-      <p>
-        Images: <input type="button" id="uploader" value="Ajouter" />
-        <span id="image_list"></span>
-      </p>
-      <p><button class="button" type="submit">Enregistrer</button></p>
+      <div class="form-group">
+        <div class="col-md-12">
+          <textarea cols="80" id="page_body" name="page_body" rows="10">{{ $page_body }}</textarea>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="control-label col-md-2">Images</label>
+        <div class="col-md-10">
+          <input type="button" id="uploader" value="Ajouter" class="btn btn-default" />
+          <span id="image_list"></span>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-md-10 col-md-offset-2">
+          <button class="btn btn-primary" type="submit">Enregistrer</button>
+        </div>
+      </div>
     </form>
   </div>
   

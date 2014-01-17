@@ -176,7 +176,9 @@ Route::get('gestion/livre-or/{section_slug?}', array("as" => "edit_guest_book", 
 Route::get('gestion/livre-or/supprimer/{entry_id}', array("as" => "edit_guest_book_delete", "uses" => "GuestBookController@delete"));
 
 // Help
-Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpController@showPage"));
+Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpPageController@showPage"));
+Route::get('gestion/aide/{section_slug?}', array("as" => "edit_help_page", "uses" => "HelpPageController@showEdit"));
+Route::post('gestion/aide/{section_slug?}', array("as" => "edit_help_page_submit", "uses" => "HelpPageController@savePage"));
 
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
