@@ -176,3 +176,6 @@ Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageControll
 Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));
 Route::post('gestion/accueil/{section_slug?}', array("as" => "edit_home_page_submit", "uses" => "HomePageController@savePage"));
 
+// Personal e-mails
+Route::get('/email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));
+Route::post('/email-personnel/soumettre/{contact_type}/{member_id}', array("as" => "personal_email_submit", "uses" => "PersonalEmailController@submit"));

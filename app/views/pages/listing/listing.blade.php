@@ -86,7 +86,11 @@
                       <td>{{ $member->subgroup }}</td>
                     @endif
                   <td>{{ $member->getPublicPhone() }}</td>
-                  <td><a class="btn-sm btn-primary" href="">Envoyer un e-mail</a></td>
+                  <td>
+                    <a class="btn-sm btn-primary" href="{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PARENTS, "member_id" => $member->id)) }}">
+                      Envoyer un e-mail
+                    </a>
+                  </td>
                 </tr>
                 <tr id="details_{{ $member->id }}" class="details_member" style="display: none;">
                   <td colspan="{{ 5 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">

@@ -35,7 +35,9 @@
           </p>
         </div>
         <div class="col-md-4">
-          <a class='btn-sm btn-primary' href='envoiEmail.php?dest={{ $leader->id }}'>Contacter {{ $leader->leader_name }} par e-mail</a>
+          <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PERSONAL, "member_id" => $leader->id)) }}'>
+            Contacter {{ $leader->leader_name }} par e-mail
+          </a>
         </div>
       </div>
     @endforeach
@@ -57,7 +59,7 @@
           </p>
         </div>
         <div class="col-md-3">
-          <a class='btn-sm btn-primary' href='mailto:{{ $leader->getSection()->email }}'>Contacter {{ $leader->leader_name }} par e-mail</a>
+          <a class='btn-sm btn-default' href='mailto:{{ $leader->getSection()->email }}'>Contacter {{ $leader->leader_name }} par e-mail</a>
         </div>
       </div>
     @endforeach
@@ -76,7 +78,7 @@
         <p>{{ $webmaster['phone'] }}</p>
       </div>
       <div class="col-md-4">
-        <a class='btn-sm btn-primary' href='envoiEmail.php?dest=webmaster'>Contacter {{ $webmaster['name'] }} par e-mail</a>
+        <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_WEBMASTER, 'member_id' => 0)) }}'>Contacter {{ $webmaster['name'] }} par e-mail</a>
       </div>
     </div>
   </div>

@@ -76,6 +76,18 @@ class Member extends Eloquent {
     return $phones;
   }
   
+  public function hasParentsEmailAddress() {
+    return $this->email1 || $this->email2 || $this->email3 ? true : false;
+  }
+  
+  public function getParentsEmailAddresses() {
+    $emails = array();
+    if ($this->email1) $emails[] = $this->email1;
+    if ($this->email2) $emails[] = $this->email2;
+    if ($this->email3) $emails[] = $this->email3;
+    return $emails;
+  }
+  
   public function getAllEmailAddresses($separator = " - ") {
     $emails = "";
     if ($this->email1)
