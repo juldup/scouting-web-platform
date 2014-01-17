@@ -164,6 +164,8 @@ Route::get('gestion/listing/delete/{member_id}/{section_slug?}', array("as" => "
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));
+Route::get('gestion/suggestions/{section_slug?}', array("as" => "edit_suggestions", "uses" => "SuggestionController@showEdit"));
+Route::post('suggestions/submit', array("as" => "suggestions_submit", "uses" => "SuggestionController@submit"));
 
 // Guest book
 Route::get('livre-or/{section_slug?}', array("as" => "guest_book", "uses" => "GuestBookController@showPage"));

@@ -410,6 +410,16 @@ class CreateDatabase extends Migration {
       $table->index('sent');
     });
     
+    // Suggestions
+    Schema::create('suggestions', function($table) {
+      $table->increments('id');
+      $table->text('body');
+      $table->text('response')->nullable();
+      $table->integer('user_id')->unsigned()->nullable();
+      $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+      $table->timestamps();
+    });
+    
     // Test data
     DB::table('users')->insert(array(
         'id' => 1,
@@ -448,6 +458,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('suggestions');
     Schema::drop('pending_emails');
     Schema::drop('email_attachments');
     Schema::drop('emails');
