@@ -7,6 +7,6 @@ $().ready(function() {
       $(".suggestion-edit-response").slideUp();
       $(this).closest('.suggestion-response').find('.suggestion-edit-response').slideDown();
     }
-    return false
+    return false;
   });
 });

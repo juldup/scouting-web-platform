@@ -420,6 +420,14 @@ class CreateDatabase extends Migration {
       $table->timestamps();
     });
     
+    // Guest book
+    Schema::create('guest_book_entries', function($table) {
+      $table->increments('id');
+      $table->text('body');
+      $table->string('author');
+      $table->timestamps();
+    });
+    
     // Test data
     DB::table('users')->insert(array(
         'id' => 1,
@@ -458,6 +466,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('guest_book_entries');
     Schema::drop('suggestions');
     Schema::drop('pending_emails');
     Schema::drop('email_attachments');

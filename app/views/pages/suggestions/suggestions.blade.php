@@ -38,6 +38,7 @@
         avis sur le site et la vie dans l'unité. Vos suggestions peuvent être
         de n'importe quel ordre.
       </p>
+      @include('subviews.flashMessages')
     </div>
   </div>
   @if (!$managing)
@@ -69,7 +70,7 @@
   @endif
   <div class="row">
     <div class="col-md-12">
-      <h1>Suggestions</h1>
+      <h2>Suggestions</h2>
     </div>
     @if (count($suggestions))
       @foreach ($suggestions as $suggestion)

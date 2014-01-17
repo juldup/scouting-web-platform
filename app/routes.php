@@ -171,6 +171,9 @@ Route::post('gestion/suggestion/soumettre-reponse/{suggestion_id}', array("as" =
 
 // Guest book
 Route::get('livre-or/{section_slug?}', array("as" => "guest_book", "uses" => "GuestBookController@showPage"));
+Route::post('livre-or/soumettre', array("as" => "guest_book_submit", "uses" => "GuestBookController@submit"));
+Route::get('gestion/livre-or/{section_slug?}', array("as" => "edit_guest_book", "uses" => "GuestBookController@showEdit"));
+Route::get('gestion/livre-or/supprimer/{entry_id}', array("as" => "edit_guest_book_delete", "uses" => "GuestBookController@delete"));
 
 // Help
 Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpController@showPage"));
