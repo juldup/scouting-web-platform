@@ -180,6 +180,12 @@ Route::get('aide/{section_slug?}', array("as" => "help", "uses" => "HelpPageCont
 Route::get('gestion/aide/{section_slug?}', array("as" => "edit_help_page", "uses" => "HelpPageController@showEdit"));
 Route::post('gestion/aide/{section_slug?}', array("as" => "edit_help_page_submit", "uses" => "HelpPageController@savePage"));
 
+// Leaders' corner
+Route::get('gestion/coin-des-animateurs/aide/{section_slug?}', array("as" => "leader_help", "uses" => "LeaderHelpController@showPage"));
+
+// Members
+Route::get('gestion/membres/{section_slug?}', array("as" => "user_list", "uses" => "UserController@showUserList"));
+
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
 Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));

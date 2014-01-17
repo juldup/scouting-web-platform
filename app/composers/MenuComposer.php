@@ -71,6 +71,16 @@ class MenuComposer {
       $menuItems['Aide'] = $helpCategory;
     }
     
+    $user = View::shared('user');
+    if ($user->isLeader()) {
+      $leaderCategory = array();
+      $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
+      $leaderCategory["Gérer les membres"] = 'user_list';
+      if (count($leaderCategory)) {
+        $menuItems['Gestion du site'] = $leaderCategory;
+      }
+    }
+    
     $menuArray = array();
     foreach ($menuItems as $submenuName => $submenu) {
       $items = array();

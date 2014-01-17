@@ -101,7 +101,9 @@
     @else
       <div class="col-md-12">
         <p>Le livre d'or est vide :-(</p>
-        <p>Soyez le premier à y laisser un petit mot</p>
+        @if (!$managing)
+          <p>Soyez le premier à y laisser un petit mot.</p>
+        @endif
       </div>
     @endif
   </div>
