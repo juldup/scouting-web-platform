@@ -1,5 +1,11 @@
 @extends('base')
 
+@section('additional_javascript')
+  @if ($managing)
+    <script src="{{ URL::to('/') }}/js/edit_suggestions.js"></script>
+  @endif
+@stop
+
 @section('back_links')
   @if ($managing)
     <p>
@@ -74,26 +80,53 @@
                 <div class="col-md-10">
                   {{ Helper::dateToHuman($suggestion->created_at) }}
                 </div>
-                <div class="col-md-2 text-right">
-                  <a class="btn-sm btn-danger">Supprimer</a>
-                </div>
+                @if ($managing)
+                  <div class="col-md-2 text-right">
+                    <a class="btn-sm btn-danger" href="{{ URL::route('edit_suggestions_delete', array('suggestion_id' => $suggestion->id)) }}">
+                      Supprimer
+                    </a>
+                  </div>
+                @endif
               </div>
-              
             </legend>
             {{ $suggestion->body }}
-            @if ($suggestion->response)
-              <div class="suggestion-response">
-                <strong>Réponse : </strong>
-                {{ $suggestion->response }}
-              </div>
-              <div class="text-right">
-                <a class="btn-sm btn-default">Changer la réponse</a>
-              </div>
-            @else
-              <div class="text-right">
-                <a class="btn-sm btn-primary">Répondre</a>
-              </div>
-            @endif
+            <div class="suggestion-response">
+              @if ($suggestion->response)
+                <div>
+                  <strong>Réponse : </strong>
+                  {{ $suggestion->response }}
+                </div>
+              @endif
+              @if ($managing)
+                <p>
+                  <strong>Auteur : </strong>
+                  @if ($suggestion->user_id)
+                    {{ User::find($suggestion->user_id)->email }}
+                  @else
+                    anonyme
+                  @endif
+                </p>
+                @if ($suggestion->response)
+                  <div class="text-right">
+                    <a class="btn-sm btn-default suggestion-edit-response-button" href="">Changer la réponse</a>
+                  </div>
+                @else
+                  <div class="text-right">
+                    <a class="btn-sm btn-primary suggestion-edit-response-button" href="">Répondre</a>
+                  </div>
+                @endif
+                <div class="form-horizontal suggestion-edit-response" style="display:none;">
+                  {{ Form::open(array('url' => URL::route('edit_suggestions_submit_response', array('suggestion_id' => $suggestion->id)))) }}
+                    <div class="form-group">
+                    {{ Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) }}
+                    </div>
+                  <div class="form-group">
+                    {{ Form::submit('Enregistrer', array('class' => "btn btn-primary")) }}
+                  </div>
+                  {{ Form::close() }}
+                </div>
+              @endif
+            </div>
           </div>
         </div>
       @endforeach
