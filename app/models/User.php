@@ -235,7 +235,7 @@ class User extends Eloquent {
     }
     
     // Find section id
-    if ($section === "") {
+    if (!$section) {
       $sectionId = $this->currentSection->id;
     } else if (is_numeric($section)) {
       $sectionId = $section;

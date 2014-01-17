@@ -73,6 +73,10 @@ class ListingController extends BaseController {
     $member = Member::find($memberId);
     if ($member) {
       
+      $fullPrivileges = false;
+      $leaderPrivileges = false;
+      $memberPrivileges = false;
+      
       if ($this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId) &&
               $this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section)) {
         $fullPrivileges = true;
