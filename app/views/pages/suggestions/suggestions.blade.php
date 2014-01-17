@@ -90,12 +90,12 @@
                 @endif
               </div>
             </legend>
-            {{ $suggestion->body }}
+            {{ Helper::rawToHTML($suggestion->body) }}
             <div class="suggestion-response">
               @if ($suggestion->response)
                 <div>
                   <strong>Réponse : </strong>
-                  {{ $suggestion->response }}
+                  {{ Helper::rawToHTML($suggestion->response) }}
                 </div>
               @endif
               @if ($managing)
