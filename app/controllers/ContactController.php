@@ -13,13 +13,18 @@ class ContactController extends BaseController {
             ->get();
     
     // Find sections' leaders in charge
-    $sectionLeaders = Member::leftJoin('sections', "section_id", '=', "sections.id")
-            ->where('is_leader', '=', true)
-            ->where('leader_in_charge', '=', true)
-            ->where('section_id', '!=', 1)
-            ->where('validated', '=', true)
-            ->orderBy('sections.position')
+    $sections = Section::where('id', '!=', 1)
+            ->orderBy('position')
             ->get();
+    $sectionLeaders = array();
+    foreach ($sections as $section) {
+      $leader = Member::where('is_leader', '=', true)
+              ->where('leader_in_charge', '=', true)
+              ->where('validated', '=', true)
+              ->where('section_id', '=', $section->id)
+              ->first();
+      if ($leader) $sectionLeaders[] = $leader;
+    }
     
     return View::make('pages.contacts', array(
         "unitLeaders" => $unitLeaders,
