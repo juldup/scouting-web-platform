@@ -387,3 +387,36 @@ td.photo-actions-column {
 .suggestion-response, .suggestion-edit-response {
     margin-top: 12px;
 }
+
+@navbar-col1: #ffffff;
+@navbar-col2: #ececec;
+@navbar-col3: #e8e8e8;
+@navbar-col4: #e0e0e0;
+@navbar-col5: #d8d8d8;
+
+.first-nav-bar {
+    margin-bottom: 0px;
+    border-bottom: none;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col1), color-stop(100%, @navbar-col2), to(@navbar-col3));
+    background-image: -webkit-linear-gradient(@navbar-col1, @navbar-col2, @navbar-col3);
+    background-image: -moz-linear-gradient(top, @navbar-col1, @navbar-col2, @navbar-col3);
+    background-image: linear-gradient(@navbar-col1, @navbar-col2, @navbar-col3);
+    z-index: 20;
+}
+
+.first-nav-bar .dropdown-menu {
+    border-top: none;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
+    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+}
+
+.second-nav-bar {
+    border-top: 1px solid @navbar-col4;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
+    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+    z-index: 15;
+}

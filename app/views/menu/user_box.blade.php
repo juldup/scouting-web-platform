@@ -11,9 +11,6 @@
       <ul class='dropdown-menu'>
         <li><a href="{{ URL::route('logout') }}">Déconnexion</a></li>
         <li><a href="{{ URL::route('edit_user') }}">Modifier</a></li>
-        @if ($user->isLeader())
-          <li><a href="{{ URL::route('home') }}">Coin animateurs</a></li>
-        @endif
       </ul>
     </li>
   @endif

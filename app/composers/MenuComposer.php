@@ -77,7 +77,7 @@ class MenuComposer {
       $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
       $leaderCategory["Gérer les membres"] = 'user_list';
       if (count($leaderCategory)) {
-        $menuItems['Gestion du site'] = $leaderCategory;
+        $menuItems['Coin des animateurs'] = $leaderCategory;
       }
     }
     
