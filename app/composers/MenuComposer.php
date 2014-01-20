@@ -75,7 +75,10 @@ class MenuComposer {
     if ($user->isLeader()) {
       $leaderCategory = array();
       $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
-      $leaderCategory["Gérer les membres"] = 'user_list';
+      $leaderCategory["Trésorerie"] = 'accounts';
+      $leaderCategory["Gestion des sections"] = 'section_data';
+      $leaderCategory["Gérer les utilisateurs du site"] = 'user_list';
+      $leaderCategory["Paramètres du site"] = 'edit_parameters';
       if (count($leaderCategory)) {
         $menuItems['Coin des animateurs'] = $leaderCategory;
       }

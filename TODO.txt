@@ -1,0 +1,29 @@
+TODO list
+
+- Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
+- Birthdays in calendar
+- Download calendar as a pdf
+- Send e-mail in Unit: all members from all sections as recipients
+- Leader archives
+- Send e-mail: include archived leaders (+ old members ?)
+- Archives (news, documents, e-mails, photos, leaders, listing?)
+- What's new + flag new items (news, documents, e-mails, photos)
+- Rotate pictures
+- Document categories
+- Download listing as pdf (+ export to Excell, CVS and envelops)
+- Re-registration + manage them
+- Change scouts from one section to another
+- Change year in section
+- Export listing (?)
+- Change section data (e-mail, color, code)
+- Create/modify/delete/reorder sections
+- Export leaders' e-mail addresses
+- Privileges
+- Accounting
+- Change site parameters
+- Help for leaders
+- Manage member list
+- List recent changes (optional)
+- Retrieve credentials
+- Section icons
+- New website configuration helper

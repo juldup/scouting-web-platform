@@ -46,10 +46,10 @@ Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageI
 Route::post('images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
 Route::get('images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
 
-// Sections
+// Section pages
 Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionPageController@showPage"));
-Route::get('gestion/section/{section_slug}', array("as" => "edit_section_page", "uses" => "SectionPageController@showEdit"));
-Route::post('gestion/section/{section_slug}', array("as" => "edit_section_page_submit", "uses" => "SectionPageController@savePage"));
+Route::get('gestion/page-section/{section_slug}', array("as" => "edit_section_page", "uses" => "SectionPageController@showEdit"));
+Route::post('gestion/page-section/{section_slug}', array("as" => "edit_section_page_submit", "uses" => "SectionPageController@savePage"));
 
 // Addresses
 Route::get('adresses/{section_slug?}', array("as" => "addresses", "uses" => "AddressPageController@showPage"));
@@ -185,6 +185,15 @@ Route::get('gestion/coin-des-animateurs/aide/{section_slug?}', array("as" => "le
 
 // Members
 Route::get('gestion/membres/{section_slug?}', array("as" => "user_list", "uses" => "UserController@showUserList"));
+
+// Accounts
+Route::get('gestion/tresorerie/{section_slug?}', array("as" => "accounts", "uses" => "AccountController@showPage"));
+
+// Section data
+Route::get('gestion/donnees-section/{section_slug?}', array("as" => "section_data", "uses" => "SectionDataController@showPage"));
+
+// Parameters
+Route::get('gestion/parametres/{section_slug?}', array("as" => "edit_parameters", "uses" => "ParameterController@showEdit"));
 
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
