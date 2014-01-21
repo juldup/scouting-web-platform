@@ -38,8 +38,14 @@ class CalendarController extends BaseController {
     // Number of days of the week after the last of the month
     $blank_days_after = (6 - $end_day_number + $day_offset) % 7;
     
-    $query = CalendarItem::where('start_date', '<=', "$year-$month-$days_in_month")
-            ->where('end_date', '>=', "$year-$month-1");
+    if ($this->user->isLeader()) {
+      $query = CalendarItem::where('start_date', '<=', "$year-$month-$days_in_month")
+              ->where('end_date', '>=', "$year-$month-1");
+    } else {
+      $query = CalendarItem::visibleToAllMembers()
+              ->where('start_date', '<=', "$year-$month-$days_in_month")
+              ->where('end_date', '>=', "$year-$month-1");
+    }
     if ($this->section->id != 1) {
       $query = $query->where('section_id', '=', $this->section->id);
     }

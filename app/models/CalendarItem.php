@@ -42,4 +42,9 @@ class CalendarItem extends Eloquent {
     return floor($diff / (3600*24)) + 1;
   }
   
+  public static function visibleToAllMembers() {
+    return CalendarItem::where('type', '!=', 'leaders')
+            ->where('type', '!=', 'cleaning');
+  }
+  
 }

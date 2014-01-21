@@ -28,7 +28,8 @@ class CalendarPDF {
     $lastDate = (!$secondSemester ? ($month >= 8 ? $year : $year - 1) . "-12-31" : ($month >= 8 ? $year + 1 : $year) . "-07-31");
     $this->firstDateTimestamp = round(strtotime($firstDate) / 60 / 60 / 24);
     
-    $calendarItems = CalendarItem::where('start_date', '<=', $lastDate)
+    $calendarItems = CalendarItem::visibleToAllMembers()
+            ->where('start_date', '<=', $lastDate)
             ->where('end_date', '>=', $firstDate)
             ->where(function($query) use ($sections) {
               $query->where('section_id', '=', 1);
@@ -187,7 +188,8 @@ class CalendarPDF {
       $pdf->MultiCell($cellWidth, $cellHeight, $this->dateToHuman($date), 0, '', 1);
       $pdf->Line($margin, $dateStartingPosition[$date], $margin + $cellWidth, $dateStartingPosition[$date]);
       foreach ($sections as $section) {
-        $calendarItem = CalendarItem::where('start_date', '<', $date)
+        $calendarItem = CalendarItem::visibleToAllMembers()
+                ->where('start_date', '<', $date)
                 ->where('end_date', '>=', $date)
                 ->where(function($query) use ($section) {
                   $query->where('section_id', '=', 1);
@@ -198,9 +200,10 @@ class CalendarPDF {
           $pdf->Line($margin + ($i+1)*$cellWidth, $dateStartingPosition[$date], $margin + ($i+2)*$cellWidth, $dateStartingPosition[$date]);
         }
       }
-      $calendarItem = CalendarItem::where('start_date', '<=', $date)
-          ->where('end_date', '>=', $date)
-          ->where('section_id', '=', 1)->first();
+      $calendarItem = CalendarItem::visibleToAllMembers()
+              ->where('start_date', '<=', $date)
+              ->where('end_date', '>=', $date)
+              ->where('section_id', '=', 1)->first();
       if ($calendarItem) {
         $pdf->Line($margin , $dateStartingPosition[$date], $margin, $dateEndingPosition[$date]);
         $pdf->Line($margin + $cellWidth, $dateStartingPosition[$date], $margin + $cellWidth, $dateEndingPosition[$date]);
@@ -241,10 +244,14 @@ class CalendarPDF {
     $delasection = "de l'unité";
     if (count($sections) == 1) $delasection = $sections[0]->de_la_section;
     $pdf->MultiCell(538,30,'Éphémérides ' . ($month >= 8 ? $year . '-' . ($year+1) : ($year-1) . '-' . $year) . " " . $delasection, 0, 'C');
-    $pdf->Ln(35);
+    
+    $pdf->SetFont('Helvetica','',12);
+    $pdf->MultiCell(538,11,"Version du " . Helper::dateToHuman(date('Y-m-d')), 0, 'C');
+    $pdf->Ln(30);
     
     $pdf->SetFont('Helvetica','I',12);
     $pdf->MultiCell(538,11,"Attention, le calendrier est susceptible de changer. Tenez-vous informés.", 0, 'C');
+    
     $pdf->Ln(15);
     
     $pdf->SetFont('Helvetica','',$cellHeight);

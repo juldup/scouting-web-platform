@@ -1,7 +1,5 @@
 TODO list
 
-- Make private (leader/cleaning) events invisible to non-leader members
-- Colors in calendar
 - Document categories
 - Download listing as pdf (+ export to Excell, CVS and envelops)
 - Re-registration + manage them
