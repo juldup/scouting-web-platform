@@ -1,7 +1,7 @@
 TODO list
 
-- Send e-mail in Unit: all members from all sections as recipients
-- Download calendar as a pdf
+- Make private (leader/cleaning) events invisible to non-leader members
+- Colors in calendar
 - Document categories
 - Download listing as pdf (+ export to Excell, CVS and envelops)
 - Re-registration + manage them
@@ -30,3 +30,6 @@ TODO list
 - Section icons
 
 - New website configuration helper
+
+
+- Make sure all forms are closed

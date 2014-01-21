@@ -53,11 +53,9 @@ class CalendarController extends BaseController {
       $startDay = ($itemStartDate[0] == $year && $itemStartDate[1] == $month) ? $itemStartDate[2] : 1;
       $itemEndDate = explode('-', $item->end_date);
       $endDay = ($itemEndDate[0] == $year && $itemEndDate[1] == $month) ? $itemEndDate[2] : $days_in_month;
-      
       for ($day = $startDay + 0; $day <= $endDay; $day++) {
         $events[$day][] = $item;
       }
-      
     }
     
     // Get section list for section selection
@@ -88,9 +86,26 @@ class CalendarController extends BaseController {
         'today_month' => date('m'),
         'today_year' => date('Y'),
         'sections' => $sections,
+        'sectionList' => Section::where('id', '!=', 1)->get(),
         'event_types' => $eventTypes,
         'calendar_items' => $calendarItems,
+        'include_second_semester_by_default' => date('m') <= 7,
     ));
+  }
+  
+  public function downloadCalendar() {
+    $firstSemester = Input::has('semester_1');
+    $secondSemester = Input::has('semester_2');
+    if (!$firstSemester && !$secondSemester) {
+      return Redirect::route('calendar')->with('error_message', "Vous n'avez sélectionné aucun semestre.");
+    }
+    $sections = array();
+    foreach (Section::orderBy('position')->get() as $section) {
+      if (Input::has("section_" . $section->id)) {
+        $sections[] = $section;
+      }
+    }
+    CalendarPDF::downloadCalendarFor($sections, $firstSemester, $secondSemester);
   }
   
   public function showEdit($year = null, $month = null) {
