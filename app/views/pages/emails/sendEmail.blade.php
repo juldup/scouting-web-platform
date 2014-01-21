@@ -69,40 +69,79 @@
         </div>
         
         <legend>Choix des destinataires</legend>
-        <div class="recipient-list">
+        <div class="recipient-list-wrapper">
           @if (count($recipients) >= 1)
             <div class="form-group">
-              <div class="col-md-8 col-md-offset-4">
+              <div class="col-md-8 col-md-offset-0">
                 <p>
-                  <a class="btn-sm btn-default recipient-check-all" href="">Sélectionner tous les destinataires</a>
-                  <a class="btn-sm btn-default recipient-uncheck-all" href="">Désélectionner tous les destinataires</a>
+                  <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
+                  <a class="btn-sm btn-default recipient-uncheck-all" href=""><span class="glyphicon glyphicon-unchecked"></span></a>
                 </p>
               </div>
             </div>
           @endif
-          @foreach ($recipients as $category=>$members)
-          <div class="form-group">
-            {{ Form::label(null, $category, array('class' => 'control-label col-md-4')); }}
-            <div class="col-md-8 recipient-list">
-              <p>
-                <a class="btn-sm btn-default recipient-check-all" href="">Sélectionner tout</a>
-                <a class="btn-sm btn-default recipient-uncheck-all" href="">Désélectionner tout</a>
-              </p>
-              @foreach ($members as $member)
-                <p>
-                  {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, true, array('class' => 'recipient-checkbox')) }}
-                  <span class="horiz-divider"></span>
-                  {{ $member['member']->first_name }} {{ $member['member']->last_name }}
-                </p>
-              @endforeach
-            </div>
+          <div class="recipient-list">
+            @foreach ($recipients as $superCategory=>$subCategory)
+              <div class="recipient-list-wrapper">
+                @if ($superCategory)
+                  <div class="form-group">
+                    <div class="col-md-12">
+                      {{ Form::label(null, $superCategory) }}
+                      &nbsp;
+                      &nbsp;
+                      <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
+                      <a class="btn-sm btn-default recipient-uncheck-all" href=""><span class="glyphicon glyphicon-unchecked"></span></a>
+                      <span class="recipient-list-warning" style="display:none;">&nbsp;&nbsp;Les destinaires cachés restent cochés/décochés.</span>
+                    </div>
+                  </div>
+                @endif
+                <div class="recipient-list">
+                  @foreach ($subCategory as $category=>$members)
+                    <div class="recipient-list-wrapper">
+                      <div class="form-group">
+                        @if ($superCategory)
+                          <div class="col-md-offset-1 col-md-11">
+                        @else
+                          <div class="col-md-12">
+                        @endif
+                          {{ Form::label(null, $category, array('class' => '')); }}
+                          &nbsp;
+                          &nbsp;
+                          <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
+                          <a class="btn-sm btn-default recipient-uncheck-all" href=""><span class="glyphicon glyphicon-unchecked"></span></a>
+                          <span class="recipient-list-warning" style="display:none;">&nbsp;&nbsp;Les destinaires cachés restent cochés/décochés.</span>
+                        </div>
+                      </div>
+                      <div class="form-group recipient-list">
+                        @if ($superCategory)
+                          <div class="col-md-10 col-md-offset-2">
+                        @else
+                          <div class="col-md-11 col-md-offset-1">
+                        @endif
+                          @foreach ($members as $member)
+                            <div class="col-md-4">
+                              <p>
+                                {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, true, array('class' => 'recipient-checkbox')) }}
+                                &nbsp;&nbsp;
+                                {{ $member['member']->first_name }} {{ $member['member']->last_name }}
+                              </p>
+                            </div>
+                          @endforeach
+                        </div>
+                      </div>
+                    </div>
+                  @endforeach
+                </div>
+              </div>
+            @endforeach
           </div>
-          @endforeach
         </div>
         <div class="form-group">
-          {{ Form::label('extra_recipients', "Destinataires supplémentaires", array('class' => 'control-label col-md-4')) }}
-          <div class="col-md-6">
-            {{ Form::textarea('extra_recipients', '', array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Entre leurs adresses e-mail séparées par des virgules.")) }}
+          {{ Form::label('extra_recipients', "Destinataires supplémentaires", array('class' => 'col-md-3')) }}
+        </div>
+        <div class="form-group">
+          <div class="col-md-12">
+            {{ Form::textarea('extra_recipients', '', array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) }}
           </div>
         </div>
         

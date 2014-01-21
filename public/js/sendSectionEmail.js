@@ -3,17 +3,36 @@ var attachmentCount = 0;
 $().ready(function() {
   // Checks all recipients within recipient list
   $(".recipient-check-all").click(function(event) {
-    var parent = $(event.target).closest('.recipient-list');
-    console.log(parent);
+    var parent = $(event.target).closest('.recipient-list-wrapper');
     parent.find('.recipient-checkbox').prop('checked', true).trigger("change");
+    // Unhide list
+    parent.find('.recipient-list').slideDown();
+    parent.find('.recipient-list-warning').hide();
     return false;
   });
   // Unchecks all recipients within recipien list
   $(".recipient-uncheck-all").click(function(event) {
-    var parent = $(event.target).closest('.recipient-list');
-    console.log(parent);
+    var parent = $(event.target).closest('.recipient-list-wrapper');
     parent.find('.recipient-checkbox').prop('checked', false).trigger("change");
+    // Unhide list
+    parent.find('.recipient-list').slideDown();
+    parent.find('.recipient-list-warning').hide();
     return false;
+  });
+  // Toggle recipient list visibility on label press
+  $(".recipient-list-wrapper label").click(function(event) {
+    var parent = $(event.target).closest('.recipient-list-wrapper');
+    var warning = parent.find(".recipient-list-warning").first();
+    var recipientList = parent.find(".recipient-list").first();
+    if (recipientList.is(":visible")) {
+      recipientList.slideUp(null, function() {
+        warning.show();
+      });
+    } else {
+      recipientList.slideDown(null, function() {
+        warning.hide();
+      });
+    }
   });
   // Adds an attachment
   $("#add-attachment-button").click(function(event) {

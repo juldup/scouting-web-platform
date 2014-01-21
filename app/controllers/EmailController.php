@@ -54,11 +54,55 @@ class EmailController extends BaseController {
     if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
       return Helper::forbiddenResponse();
     }
+    $recipients = array();
+    if ($this->section->id == 1) {
+      $parents = array();
+      $scouts = array();
+      $leaders = array();
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+      foreach ($sections as $section) {
+        $recipientList = $this->getRecipientsForSection($section->id);
+        if (array_key_exists('parents', $recipientList)) $parents['Parents ' . $section->de_la_section] = $recipientList['parents'];
+        if (array_key_exists('scouts', $recipientList)) $scouts['Scouts ' . $section->de_la_section] = $recipientList['scouts'];
+        if (array_key_exists('leaders', $recipientList)) $leaders['Animateurs ' . $section->de_la_section] = $recipientList['leaders'];
+      }
+      $recipientList = $this->getRecipientsForSection(1);
+      if (array_key_exists('leaders', $recipientList)) $leaders["Équipe d'unité"] = $recipientList['leaders'];
+//      foreach ($parents as $category=>$list) {
+//        $recipients[$category] = $list;
+//      }
+//      foreach ($scouts as $category=>$list) {
+//        $recipients[$category] = $list;
+//      }
+//      foreach ($leaders as $category=>$list) {
+//        $recipients[$category] = $list;
+//      }
+      if (count($parents)) $recipients['Parents'] = $parents;
+      if (count($scouts)) $recipients['Scouts'] = $scouts;
+      if (count($leaders)) $recipients['Animateurs'] = $leaders;
+    } else {
+      $recipientList = $this->getRecipientsForSection($this->section->id);
+      if (array_key_exists('parents', $recipientList)) $recipients['Parents'] = $recipientList['parents'];
+      if (array_key_exists('scouts', $recipientList)) $recipients['Scouts'] = $recipientList['scouts'];
+      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs'] = $recipientList['leaders'];
+      $recipients = array($recipients);
+    }
+    return View::make('pages.emails.sendEmail', array(
+        'default_subject' => $this->defaultSubject(),
+        'recipients' => $recipients,
+    ));
+  }
+  
+  protected function getRecipientsForSection($sectionId) {
     $parents = array();
     $scouts = array();
     $leaders = array();
     $members = Member::where('validated', '=', true)
-            ->where('section_id', '=', $this->section->id)
+            ->where('section_id', '=', $sectionId)
+            ->orderBy('last_name')
+            ->orderBy('first_name')
             ->get();
     foreach ($members as $member) {
       if ($member->is_leader) {
@@ -68,18 +112,15 @@ class EmailController extends BaseController {
           $parents[$member->id] = array('member' => $member, 'type' => 'parent');
         }
         if ($member->email_member) {
-          $scouts[$member->id] = array('member' => $member, 'type' => 'parent');
+          $scouts[$member->id] = array('member' => $member, 'type' => 'member');
         }
       }
     }
     $recipients = array();
-    if (count($parents)) $recipients['Parents'] = $parents;
-    if (count($scouts)) $recipients['Scouts'] = $scouts;
-    if (count($leaders)) $recipients['Animateurs'] = $leaders;
-    return View::make('pages.emails.sendEmail', array(
-        'default_subject' => $this->defaultSubject(),
-        'recipients' => $recipients,
-    ));
+    if (count($parents)) $recipients['parents'] = $parents;
+    if (count($scouts)) $recipients['scouts'] = $scouts;
+    if (count($leaders)) $recipients['leaders'] = $leaders;
+    return $recipients;
   }
   
   private function defaultSubject() {
