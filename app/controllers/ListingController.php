@@ -46,6 +46,20 @@ class ListingController extends BaseController {
     ));
   }
   
+  public function downloadListing() {
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->section->id == 1) {
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+    } else {
+      $sections = array($this->section);
+    }
+    ListingPDF::downloadListing($sections, 'pdf');
+  }
+  
   public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {

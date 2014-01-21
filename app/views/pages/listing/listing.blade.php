@@ -31,29 +31,48 @@
 @section('content')
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       @include('subviews.flashMessages')
     </div>
   </div>
   
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-md-12">
       @include('subviews.editMemberForm', array('form_legend' => "Modifier un membre", 'submit_url' => URL::route('listing_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => false, 'edit_identity' => true, 'edit_section' => $can_change_section, 'edit_totem' => $can_manage,'edit_leader' => false))
     </div>
   </div>
+
+  @if ($user->currentSection->id == 1)
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug)) }}">
+          Télécharger le listing de toute l'unité
+        </a>
+      </div>
+    </div>
+  @endif
   
   @foreach ($sections as $sct)
   
     <div class="row">
-      <div class="col-lg-12">
-        <h1>Listing {{ $sct['section_data']->de_la_section }}</h1>
+      <div class="col-md-12">
+        <h1>
+          Listing {{ $sct['section_data']->de_la_section }}
+        </h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $sct['section_data']->slug)) }}">
+          Télécharger le listing {{ $sct['section_data']->de_la_section }}
+        </a>
       </div>
     </div>
   
     @if ($sct['members']->count())
     
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
           <table class="table table-striped table-hover">
             <thead>
               <th></th>
@@ -72,7 +91,7 @@
               @foreach ($sct['members'] as $member)
                 <tr>
                   <td>
-                    <a class="btn-sm btn-primary" href="javascript:showMemberDetails({{ $member->id }})">Détails</a>
+                    <a class="btn-sm btn-default" href="javascript:showMemberDetails({{ $member->id }})">Détails</a>
                     @if ($user->isOwnerOfMember($member))
                       <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">Modifier</a>
                     @endif
@@ -87,7 +106,7 @@
                     @endif
                   <td>{{ $member->getPublicPhone() }}</td>
                   <td>
-                    <a class="btn-sm btn-primary" href="{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PARENTS, "member_id" => $member->id)) }}">
+                    <a class="btn-sm btn-default" href="{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PARENTS, "member_id" => $member->id)) }}">
                       Envoyer un e-mail
                     </a>
                   </td>
@@ -149,6 +168,11 @@
                   </td>
                 </tr>
               @endforeach
+              <tr>
+                <td colspan="{{ 5 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">
+                  
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -157,7 +181,7 @@
     @else
       
       <div class="row">
-        <div class="col-lg-12">
+        <div class="col-md-12">
           <p>Il n'y a aucun membre dans cette section.</p>
         </div>
       </div>

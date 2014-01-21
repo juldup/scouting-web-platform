@@ -162,6 +162,7 @@ Route::get('gestion/listing/{section_slug?}', array("as" => "manage_listing", "u
 Route::post('gestion/listing/submit/{section_slug?}', array("as" => "manage_listing_submit", "uses" => "ListingController@manageSubmit"));
 Route::post('listing/submit/{section_slug?}', array("as" => "listing_submit", "uses" => "ListingController@submit"));
 Route::get('gestion/listing/delete/{member_id}/{section_slug?}', array("as" => "manage_listing_delete", "uses" => "ListingController@deleteMember"));
+Route::get('gestion/listing/telecharger/{section_slug}', array("as" => "download_listing", "uses" => "ListingController@downloadListing"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));
