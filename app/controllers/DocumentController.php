@@ -7,33 +7,78 @@ class DocumentController extends BaseController {
     $documents = Document::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)->get();
     
+    // Generate document selector
     $documentSelectList = array();
     foreach ($documents as $document) {
       $documentSelectList[$document->id] = $document->title;
     }
     
+    // Generate category list
+    $documentsInCategories = $this->generateCategoryList($documents);
+    
     return View::make('pages.documents.documents', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section),
         'edit_url' => URL::route('manage_documents', array('section_slug' => $this->section->slug)),
-        'documents' => $documents,
+        'documents' => $documentsInCategories,
         'documentSelectList' => $documentSelectList,
     ));
   }
   
+  public function updateCategoryName($category) {
+    if ($category == "Pour les scouts") {
+      $category = "Pour les " . $this->section->getScoutName();
+    }
+    return $category;
+  }
+  
+  public function generateCategoryList($documents) {
+    // Create an array per category
+    $documentsInCategories = array();
+    $categories = explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES));
+    foreach ($categories as $category) {
+      $documentsInCategories[$this->updateCategoryName($category)] = array();
+    }
+    $documentsInCategories["Divers"] = array();
+    // Put documents in categories and generate document selector
+    $documentSelectList = array();
+    foreach ($documents as $document) {
+      $documentSelectList[$document->id] = $document->title;
+      $category = $this->updateCategoryName($document->category);
+      if (array_key_exists($category, $documentsInCategories)) {
+        $documentsInCategories[$category][] = $document;
+      } else {
+        $documentsInCategories["Divers"][] = $document;
+      }
+    }
+    // Remove empty categories
+    foreach ($documentsInCategories as $category=>$docs) {
+      if (count($docs) == 0) unset($documentsInCategories[$category]);
+    }
+    return $documentsInCategories;
+  }
+  
   public function showEdit() {
-    
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->user->currentSection)) {
       return Helper::forbiddenResponse();
     }
-    
-    $thisYear = Helper::thisYear();
-    
-    $documents = Document::where('archived', '=', $false)
+    // Get documents
+    $documents = Document::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)->get();
-    
+    // Sort documents per category
+    $documentsInCategories = $this->generateCategoryList($documents);
+    // Generate category list for select
+    $categoriesRaw = explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES));
+    $categories = array();
+    foreach ($categoriesRaw as $category) {
+      $categories[$category] = $this->updateCategoryName($category);
+    }
+    $categories["Divers"] = "Divers";
+    // Generate view
     return View::make('pages.documents.editDocuments', array(
         'page_url' => URL::route('documents', array('section_slug' => $this->section->slug)),
         'documents' => $documents,
+        'documents_in_categories' => $documentsInCategories,
+        'categories' => $categories,
     ));
   }
   
@@ -77,7 +122,8 @@ class DocumentController extends BaseController {
     $docId = Input::get('doc_id');
     $title = Input::get('doc_title');
     $description = Input::get('description');
-    $public = Input::get('public');
+    $category = Input::get('category');
+    $public = Input::get('public') ? true : false;
     $file = Input::file('document');
     $filename = Input::get('filename');
     $actualFileName = ($file ? $file->getClientOriginalName() : null);
@@ -100,6 +146,7 @@ class DocumentController extends BaseController {
           $document->title = $title;
           $document->description = $description;
           $document->public = $public;
+          $document->category = $category;
           $document->setFileName($filename, $actualFileName);
           try {
             $document->save();
@@ -132,7 +179,7 @@ class DocumentController extends BaseController {
                 'doc_date' => date('Y-m-d'),
                 'title' => $title,
                 'description' => $description,
-                'category' => '', // TODO document categories
+                'category' => $category,
                 'public' => $public,
                 'filename' => 'document',
                 'section_id' => $this->section->id,

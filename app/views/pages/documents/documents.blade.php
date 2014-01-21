@@ -27,28 +27,35 @@
     </div>
   </div>
   
-  @foreach ($documents as $doc)
-    <div class="row well clickable-no-default clickable">
+  @foreach ($documents as $category=>$docs)
+    <div class="row">
       <div class="col-lg-12">
-        @if ($user->isMember() || $doc->public)
-          <legend>
-            <div class="row">
-              <div class="col-md-10">
-                <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
-                  {{ $doc->title }}
-                </a>
-              </div>
-              <div class="col-md-2 text-right">
-                <a class="btn-sm btn-default">Télécharger</a>
-              </div>
-            </div>
-          </legend>
-          <p>
-            {{ Helper::rawToHTML($doc->description) }}
-          </p>
-        @endif
+        <h3>{{ $category }}</h3>
       </div>
     </div>
+    @foreach ($docs as $doc)
+      <div class="row well clickable-no-default clickable">
+        <div class="col-lg-12">
+          @if ($user->isMember() || $doc->public)
+            <legend>
+              <div class="row">
+                <div class="col-md-10">
+                  <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
+                    {{ $doc->title }}
+                  </a>
+                </div>
+                <div class="col-md-2 text-right">
+                  <a class="btn-sm btn-default">Télécharger</a>
+                </div>
+              </div>
+            </legend>
+            <p>
+              {{ Helper::rawToHTML($doc->description) }}
+            </p>
+          @endif
+        </div>
+      </div>
+    @endforeach
   @endforeach
   
   @if (count($documents) == 0)

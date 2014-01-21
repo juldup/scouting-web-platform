@@ -48,6 +48,7 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_2_LEADERS, 'value' => '32,25'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_3_LEADERS, 'value' => '26,75'));
     DB::table('parameters')->insert(array('name' => Parameter::$UNIT_BANK_ACCOUNT, 'value' => 'BE00-0000-0000-0000'));
+    DB::table('parameters')->insert(array('name' => Parameter::$DOCUMENT_CATEGORIES, 'value' => 'Convocations;Documents administratifs;Informations générales;Pour les scouts'));
     
     // Sections
     Schema::create('sections', function($table) {

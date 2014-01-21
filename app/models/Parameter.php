@@ -29,7 +29,9 @@ class Parameter extends Eloquent {
   public static $UNIT_SHORT_NAME = "Unit short name";
   public static $UNIT_LONG_NAME = "Unit long name";
   public static $UNIT_BANK_ACCOUNT = "Unit bank account";
+  public static $DOCUMENT_CATEGORIES = "Document categories";
   public static $WEBMASTER_EMAIL = "Webmaster e-mail address";
+  public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
   
   public static $PRICE_1_CHILD = "Price for one child";
   public static $PRICE_2_CHILDREN = "Price for two children";
@@ -43,8 +45,6 @@ class Parameter extends Eloquent {
   public static $SMTP_USERNAME = "Smtp username";
   public static $SMTP_PASSWORD = "Smtp password";
   public static $SMTP_SECURITY  = "Smtp security";
-  
-  public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
   
   private static $parameters = null;
   

@@ -13,6 +13,7 @@
       documents[{{ $doc->id }}] = {
         'title': "{{ Helper::sanitizeForJavascript($doc->title) }}",
         'description': "{{ Helper::sanitizeForJavascript($doc->description) }}",
+        'category': "{{ Helper::sanitizeForJavascript($doc->category) }}",
         'public': {{ $doc->public ? "true" : "false" }},
         'filename': "{{ Helper::sanitizeForJavascript($doc->filename) }}",
         'delete_url': "{{ URL::route('manage_documents_delete', array('document_id' => $doc->id)) }}"
@@ -72,6 +73,12 @@
             </div>
           </div>
           <div class="form-group">
+            {{ Form::label('category', 'Catégorie', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-5">
+              {{ Form::select('category', $categories, null, array('class' => 'form-control')) }}
+            </div>
+          </div>
+          <div class="form-group">
             {{ Form::label('public', 'Public', array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-1">
               {{ Form::checkbox('public') }}
@@ -109,38 +116,41 @@
     </div>
   </div>
   
-  @foreach ($documents as $doc)
-    <div class="row">
-      <div class="col-md-6">
-        <div class="well">
-          <legend>{{ $doc->title }}</legend>
+  @foreach ($documents_in_categories as $category=>$docs)
+    <h3>{{ $category }}</h3>
+    @foreach ($docs as $doc)
+      <div class="row">
+        <div class="col-md-6">
+          <div class="well">
+            <legend>{{ $doc->title }}</legend>
+            <p>
+              {{ Helper::rawToHTML($doc->description) }}
+            </p>
+          </div>
+        </div>
+        <div class="col-md-6">
           <p>
-            {{ Helper::rawToHTML($doc->description) }}
+            <a class="btn btn-primary" href="javascript:editDocument({{ $doc->id }})">
+              Modifier
+            </a>
+            @if ($doc->public)
+              <p>
+                <span class="label label-warning">
+                  Ce document est public ! Il peut être consulté par tous les internautes.
+                </span>
+              </p>
+            @else
+              <p>
+                Ce document est privé. Il est réservé aux membres de l'unité.
+              </p>
+            @endif
+            <p>
+              <strong>Fichier :</strong> {{ $doc->filename }}
+            </p>
           </p>
         </div>
       </div>
-      <div class="col-md-6">
-        <p>
-          <a class="btn btn-primary" href="javascript:editDocument({{ $doc->id }})">
-            Modifier
-          </a>
-          @if ($doc->public)
-            <p>
-              <span class="label label-warning">
-                Ce document est public ! Il peut être consulté par tous les internautes.
-              </span>
-            </p>
-          @else
-            <p>
-              Ce document est privé. Il est réservé aux membres de l'unité.
-            </p>
-          @endif
-          <p>
-            <strong>Fichier :</strong> {{ $doc->filename }}
-          </p>
-        </p>
-      </div>
-    </div>
+    @endforeach
   @endforeach
   
 @stop
