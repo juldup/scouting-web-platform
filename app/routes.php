@@ -164,6 +164,7 @@ Route::post('listing/submit/{section_slug?}', array("as" => "listing_submit", "u
 Route::get('gestion/listing/delete/{member_id}/{section_slug?}', array("as" => "manage_listing_delete", "uses" => "ListingController@deleteMember"));
 Route::get('listing/telecharger/{section_slug}/{format?}', array("as" => "download_listing", "uses" => "ListingController@downloadListing"));
 Route::get('gestion/listing/telecharger/{format}/{section_slug}', array("as" => "download_full_listing", "uses" => "ListingController@downloadFullListing"));
+Route::get('gestion/listing/enveloppes/{format}/{section_slug}', array("as" => "download_envelops", "uses" => "ListingController@downloadEnvelops"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));

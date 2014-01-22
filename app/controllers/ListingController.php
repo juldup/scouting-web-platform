@@ -60,20 +60,6 @@ class ListingController extends BaseController {
     ListingPDF::downloadListing($sections, $format);
   }
   
-  public function downloadFullListing($format, $section_slug) {
-    if (!$this->user->isLeader()) {
-      return Helper::forbiddenResponse();
-    }
-    if ($this->section->id == 1) {
-      $sections = Section::where('id', '!=', 1)
-              ->orderBy('position')
-              ->get();
-    } else {
-      $sections = array($this->section);
-    }
-    ListingPDF::downloadListingng($sections, $format, true);
-  }
-  
   public function showEdit() {
     
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
@@ -147,6 +133,34 @@ class ListingController extends BaseController {
       return Redirect::to(URL::previous())
             ->with($success ? 'success_message' : 'error_message', $message)
             ->withInput();
+  }
+  
+  public function downloadFullListing($format, $section_slug) {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->section->id == 1) {
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+    } else {
+      $sections = array($this->section);
+    }
+    ListingPDF::downloadListing($sections, $format, true);
+  }
+  
+  public function downloadEnvelops($format, $section_slug) {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->section->id == 1) {
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+    } else {
+      $sections = array($this->section);
+    }
+    EnvelopsPDF::downloadEnvelops($sections, $format);
   }
   
 }

@@ -1,6 +1,5 @@
 TODO list
 
-- Download listing as pdf (+ export to Excell, CVS and envelops)
 - Re-registration + manage them
 - Change scouts from one section to another
 - Change year in section
@@ -27,6 +26,7 @@ TODO list
 - Export listing (?)
 - List recent changes (optional)
 - Section icons
+- Logs
 
 - New website configuration helper
 

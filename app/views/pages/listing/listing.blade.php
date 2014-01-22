@@ -57,17 +57,6 @@
             Télécharger le listing de toute l'unité
           </a>
         </p>
-        @if ($user->isLeader())
-          <p>
-            <label>Télécharger le listing complet :</label>
-            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
-              Excel
-            </a>
-            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'csv')) }}">
-              CSV
-            </a>
-          </p>
-        @endif
       </div>
     </div>
   @endif
@@ -88,17 +77,6 @@
             Télécharger le listing {{ $sct['section_data']->de_la_section }}
           </a>
         </p>
-        @if ($user->isLeader())
-          <p>
-            <label>Télécharger le listing complet {{ $sct['section_data']->de_la_section }} :</label>
-            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $sct['section_data']->slug, 'format' => 'excel')) }}">
-              Excel
-            </a>
-            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $sct['section_data']->slug, 'format' => 'csv')) }}">
-              CSV
-            </a>
-          </p>
-        @endif
       </div>
     </div>
   

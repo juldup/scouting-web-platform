@@ -48,17 +48,24 @@
           CSV
         </a>
       </p>
-      @if ($user->isLeader())
-        <p>
-          <label>Télécharger le listing complet {{ $user->currentSection->de_la_section }} :</label>
-          <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
-            Excel
-          </a>
-          <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'csv')) }}">
-            CSV
-          </a>
-        </p>
-      @endif
+      <p>
+        <label>Télécharger le listing complet {{ $user->currentSection->de_la_section }} :</label>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
+          Excel
+        </a>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'csv')) }}">
+          CSV
+        </a>
+      </p>
+      <p>
+        <label>Télécharger les enveloppes :</label>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_envelops', array('section_slug' => $user->currentSection->slug, 'format' => 'c5_6')) }}">
+          C5/6
+        </a>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_envelops', array('section_slug' => $user->currentSection->slug, 'format' => 'c6')) }}">
+          C6
+        </a>
+      </p>
     </div>
   </div>
   
