@@ -9,7 +9,8 @@
     "jtgrimes/less4laravel": "0.2.*",
     "michelf/php-markdown": "1.4.*",
     "tecnick.com/tcpdf": "dev-master",
-    "phpexcel/phpexcel": "dev-master"
+    "phpoffice/phpexcel": "dev-master",
+    "setasign/fpdi": "dev-master"
   },
   "autoload": {
     "classmap": [
