@@ -46,7 +46,7 @@ class ListingController extends BaseController {
     ));
   }
   
-  public function downloadListing() {
+  public function downloadListing($section_slug, $format = "pdf") {
     if (!$this->user->isMember()) {
       return Helper::forbiddenResponse();
     }
@@ -57,7 +57,21 @@ class ListingController extends BaseController {
     } else {
       $sections = array($this->section);
     }
-    ListingPDF::downloadListing($sections, 'pdf');
+    ListingPDF::downloadListing($sections, $format);
+  }
+  
+  public function downloadFullListing($format, $section_slug) {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->section->id == 1) {
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+    } else {
+      $sections = array($this->section);
+    }
+    ListingPDF::downloadListing($sections, $format, true);
   }
   
   public function showEdit() {

@@ -22,7 +22,7 @@
   @if ($can_manage)
     <p>
       <a href='{{ URL::route('manage_listing', array('section_slug' => $user->currentSection->slug)) }}'>
-        Modifier le listing
+        Gérer le listing
       </a>
     </p>
   @endif
@@ -44,10 +44,30 @@
 
   @if ($user->currentSection->id == 1)
     <div class="row">
+      <div class="col-md-12">
+        <h1>
+          Listing {{ $user->currentSection->de_la_section }}
+        </h1>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-12 text-right">
-        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug)) }}">
-          Télécharger le listing de toute l'unité
-        </a>
+        <p>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug)) }}">
+            Télécharger le listing de toute l'unité
+          </a>
+        </p>
+        @if ($user->isLeader())
+          <p>
+            <label>Télécharger le listing complet :</label>
+            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
+              Excel
+            </a>
+            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'csv')) }}">
+              CSV
+            </a>
+          </p>
+        @endif
       </div>
     </div>
   @endif
@@ -56,16 +76,29 @@
   
     <div class="row">
       <div class="col-md-12">
-        <h1>
+        <h2>
           Listing {{ $sct['section_data']->de_la_section }}
-        </h1>
+        </h2>
       </div>
     </div>
     <div class="row">
       <div class="col-md-12 text-right">
-        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $sct['section_data']->slug)) }}">
-          Télécharger le listing {{ $sct['section_data']->de_la_section }}
-        </a>
+        <p>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $sct['section_data']->slug)) }}">
+            Télécharger le listing {{ $sct['section_data']->de_la_section }}
+          </a>
+        </p>
+        @if ($user->isLeader())
+          <p>
+            <label>Télécharger le listing complet {{ $sct['section_data']->de_la_section }} :</label>
+            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $sct['section_data']->slug, 'format' => 'excel')) }}">
+              Excel
+            </a>
+            <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $sct['section_data']->slug, 'format' => 'csv')) }}">
+              CSV
+            </a>
+          </p>
+        @endif
       </div>
     </div>
   

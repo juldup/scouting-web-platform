@@ -35,6 +35,34 @@
   </div>
   
   <div class="row">
+    <div class="col-md-12 text-right">
+      <p>
+        <label>Télécharger le listing {{ $user->currentSection->de_la_section }} :</label>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug)) }}">
+          PDF
+        </a>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
+          Excel
+        </a>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'csv')) }}">
+          CSV
+        </a>
+      </p>
+      @if ($user->isLeader())
+        <p>
+          <label>Télécharger le listing complet {{ $user->currentSection->de_la_section }} :</label>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
+            Excel
+          </a>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'csv')) }}">
+            CSV
+          </a>
+        </p>
+      @endif
+    </div>
+  </div>
+  
+  <div class="row">
     <div class="col-lg-12">
       @include('subviews.flashMessages')
     </div>

@@ -3,19 +3,22 @@
 class ListingPDF {
   
   protected $output;
+  protected $exportPrivateData;
   
   protected $normalStyle = null;
   protected $headerStyle = null;
   protected $titleStyle = null;
   
-  public static function downloadListing($sections, $output = 'pdf') {
-    if ($output != "excel") $output = "pdf";
+  public static function downloadListing($sections, $output = 'pdf', $exportPrivateData = false) {
+    if ($output != "excel" && $output != "csv") $output = "pdf";
+    if ($output != "pdf" && $exportPrivateData) $exportPrivateData = false;
     $listingExcel = new ListingPDF();
-    $listingExcel->doDownloadListing($sections, $output);
+    $listingExcel->doDownloadListing($sections, $output, $exportPrivateData);
   }
   
-  public function doDownloadListing($sections, $output) {
+  protected function doDownloadListing($sections, $output, $exportPrivateData) {
     $this->output = $output;
+    $this->exportPrivateData = $exportPrivateData;
     // Determine title part
     if (count($sections) == 1) {
       $delasection = $sections[0]->de_la_section;
@@ -39,6 +42,18 @@ class ListingPDF {
       header("Content-type: application/vnd.ms-excel");
       header("Content-Transfer-Encoding: Binary");
       header("Content-disposition: attachment; filename=\"listing_$sectionSlug.xls\"");
+      $objWriter->save("php://output");
+    } else if ($this->output == 'csv') {
+      $excelDocument = $this->createExcelFile($delasection);
+      // Create a sheet for each section
+      foreach ($sections as $section) {
+        // Create excel document
+        $this->fillInSheetForSection($excelDocument, 0, $section, true);
+      }
+      // Export to csv
+      $objWriter = PHPExcel_IOFactory::createWriter($excelDocument, 'CSV');
+      header("Content-type: application/text");
+      header("Content-disposition: attachment; filename=\"listing_$sectionSlug.csv\"");
       $objWriter->save("php://output");
     } else {
       // Init pdf rendering
@@ -134,7 +149,7 @@ class ListingPDF {
     return $excelDocument;
   }
   
-  protected function fillInSheetForSection($excelDocument, $sheetIndex, $section) {
+  protected function fillInSheetForSection($excelDocument, $sheetIndex, $section, $csvMode = false) {
     // Create sheet(s) to match index
     while ($excelDocument->getSheetCount() < $sheetIndex + 1) {
       $excelDocument->createSheet();
@@ -145,32 +160,48 @@ class ListingPDF {
     $excelDocument->getActiveSheet()->getDefaultRowDimension()->setRowHeight(15);
     // Start at first row
     $row = 1;
+    if ($csvMode) {
+      $row = $excelDocument->getActiveSheet()->getHighestRow();
+      if ($row != 1) $row++;
+    }
     // Check whether this section has subgroups and/or totems
-    $hasSubgroup = Member::where('validated', '=', 1)
-            ->where('is_leader', '=', false)
-            ->where('section_id', '=', $section->id)
-            ->whereNotNull('subgroup')
-            ->where('subgroup', '!=', '')
-            ->first() ? true : false;
-    $hasTotem = Member::where('validated', '=', 1)
-            ->where('is_leader', '=', false)
-            ->where('section_id', '=', $section->id)
-            ->whereNotNull('totem')
-            ->where('totem', '!=', '')
-            ->first() ? true : false;
+    $hasSubgroup = $csvMode ? true :
+      $hasSubgroup = Member::where('validated', '=', 1)
+              ->where('is_leader', '=', false)
+              ->where('section_id', '=', $section->id)
+              ->whereNotNull('subgroup')
+              ->where('subgroup', '!=', '')
+              ->first() ? true : false;
+    $hasTotem = $csvMode ? true :
+      Member::where('validated', '=', 1)
+              ->where('is_leader', '=', false)
+              ->where('section_id', '=', $section->id)
+              ->whereNotNull('totem')
+              ->where('totem', '!=', '')
+              ->first() ? true : false;
     // Columns
     $titles = array();
     $titles[] = "N°";
+    if ($csvMode) {
+      $titles[] = "Section";
+    }
     $titles[] = "Nom";
     $titles[] = "Prénom";
     if ($hasTotem) $titles[] = "Totem";
-    if ($hasSubgroup) $titles[] = $section->subgroup_name;
+    if ($hasSubgroup) $titles[] = ($csvMode ? "Sous-groupe" : $section->subgroup_name);
     $titles[] = "DDN";
     $titles[] = "Adresse";
     $titles[] = "CP";
     $titles[] = "Localité";
     $titles[] = "Téléphone";
-    if (!$hasTotem && !$hasSubgroup) {
+    if ($this->exportPrivateData) {
+      // TODO
+      $title[] = "Handicap";
+      $title[] = "Quali";
+    }
+    if ($csvMode) {
+      $colSizes = Array(4,10,25,20,13,40,6,22,17);
+    } elseif (!$hasTotem && !$hasSubgroup) {
       $colSizes = Array(4,25,20,13,40,6,22,17);
     } elseif ($hasSubgroup && !$hasTotem) {
       $colSizes = Array(4,22,18,20,13,30,6,22,17);
@@ -190,13 +221,15 @@ class ListingPDF {
       $row++;
     }
     // Column headers
-    $letter = 'A';
-    foreach ($titles as $title) {
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", "$title");
-      $letter++;
+    if (!$csvMode || $row == 1) {
+      $letter = 'A';
+      foreach ($titles as $title) {
+        $excelDocument->getActiveSheet()->setCellValue("$letter$row", "$title");
+        $letter++;
+      }
+      $excelDocument->getActiveSheet()->setSharedStyle($this->headerStyle, "A$row:$lastColumn$row");
+      $row++;
     }
-    $excelDocument->getActiveSheet()->setSharedStyle($this->headerStyle, "A$row:$lastColumn$row");
-    $row++;
     // Get listing
     $members = Member::where('validated', '=', true)
             ->where('is_leader', '=', false)
@@ -206,12 +239,16 @@ class ListingPDF {
             ->get();
     // Write member rows
     $counter = 1;
+    if ($csvMode) $counter = $row - 1;
     foreach ($members as $member) {
       $letter = 'B';
       // Print row number
       $excelDocument->getActiveSheet()->setCellValue("A$row", $counter);
       $counter++;
       // Print column information
+      if ($csvMode) {
+        $excelDocument->getActiveSheet()->setCellValue("$letter$row", $section->name); $letter++;
+      }
       $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->last_name); $letter++;
       $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->first_name); $letter++;
       if ($hasTotem) {
