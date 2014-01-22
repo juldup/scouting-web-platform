@@ -11,7 +11,7 @@ class ListingPDF {
   
   public static function downloadListing($sections, $output = 'pdf', $exportPrivateData = false) {
     if ($output != "excel" && $output != "csv") $output = "pdf";
-    if ($output != "pdf" && $exportPrivateData) $exportPrivateData = false;
+    if ($output == "pdf" && $exportPrivateData) $exportPrivateData = false;
     $listingExcel = new ListingPDF();
     $listingExcel->doDownloadListing($sections, $output, $exportPrivateData);
   }
@@ -179,7 +179,15 @@ class ListingPDF {
               ->whereNotNull('totem')
               ->where('totem', '!=', '')
               ->first() ? true : false;
+    $hasQuali = $csvMode ? true :
+      Member::where('validated', '=', 1)
+              ->where('is_leader', '=', false)
+              ->where('section_id', '=', $section->id)
+              ->whereNotNull('quali')
+              ->where('quali', '!=', '')
+              ->first() ? true : false;
     // Columns
+    $subgroupName = ($csvMode ? "Sous-groupe" : $section->subgroup_name);
     $titles = array();
     $titles[] = "N°";
     if ($csvMode) {
@@ -188,27 +196,56 @@ class ListingPDF {
     $titles[] = "Nom";
     $titles[] = "Prénom";
     if ($hasTotem) $titles[] = "Totem";
-    if ($hasSubgroup) $titles[] = ($csvMode ? "Sous-groupe" : $section->subgroup_name);
+    if ($this->output != 'pdf' && $hasQuali) $titles[] = "Quali";
+    if ($hasSubgroup) $titles[] = $subgroupName;
     $titles[] = "DDN";
     $titles[] = "Adresse";
     $titles[] = "CP";
     $titles[] = "Localité";
-    $titles[] = "Téléphone";
-    if ($this->exportPrivateData) {
-      // TODO
-      $title[] = "Handicap";
-      $title[] = "Quali";
+    if (!$this->exportPrivateData) {
+      $titles[] = "Téléphone";
+    } else {
+      $titles[] = "Téléphone 1";
+      $titles[] = "Téléphone 2";
+      $titles[] = "Téléphone 3";
+      $titles[] = "Téléphone personnel";
+      $titles[] = "E-mail du scout";
+      $titles[] = "E-mail";
+      $titles[] = "Handicap";
     }
-    if ($csvMode) {
-      $colSizes = Array(4,10,25,20,13,40,6,22,17);
-    } elseif (!$hasTotem && !$hasSubgroup) {
-      $colSizes = Array(4,25,20,13,40,6,22,17);
-    } elseif ($hasSubgroup && !$hasTotem) {
-      $colSizes = Array(4,22,18,20,13,30,6,22,17);
-    } elseif ($hasSubgroup && $hasTotem) {
-      $colSizes = Array(4,18,17,15,15,13,32,6,22,17);
-    } elseif ($hasTotem && !$hasSubgroup) {
-      $colSizes = Array(4,20,18,15,13,35,6,22,17);
+    if ($this->output == 'pdf') {
+      // Special column sizes for pdf output
+      if (!$hasTotem && !$hasSubgroup) {
+        $colSizes = Array(4,25,20,13,40,6,22,17);
+      } elseif ($hasSubgroup && !$hasTotem) {
+        $colSizes = Array(4,22,18,20,13,30,6,22,17);
+      } elseif ($hasSubgroup && $hasTotem) {
+        $colSizes = Array(4,18,17,15,15,13,32,6,22,17);
+      } elseif ($hasTotem && !$hasSubgroup) {
+        $colSizes = Array(4,20,18,15,13,35,6,22,17);
+      }
+    } else {
+      $colSizes = array();
+      foreach ($titles as $title) {
+        if ($title == "N°") $colSizes[] = 4;
+        elseif ($title == "Section") $colSizes[] = 10;
+        elseif ($title == "Nom") $colSizes[] = 25;
+        elseif ($title == "Prénom") $colSizes[] = 20;
+        elseif ($title == "Totem") $colSizes[] = 15;
+        elseif ($title == $subgroupName) $colSizes[] = 15;
+        elseif ($title == "DDN") $colSizes[] = 13;
+        elseif ($title == "Adresse") $colSizes[] = 40;
+        elseif ($title == "CP") $colSizes[] = 6;
+        elseif ($title == "Localité") $colSizes[] = 22;
+        elseif ($title == "Téléphone") $colSizes[] = 17;
+        elseif ($title == "Quali") $colSizes[] = 20;
+        elseif ($title == "Téléphone 1" || $title == "Téléphone 2" || $title == "Téléphone 3") $colSizes[] = 25;
+        elseif ($title == "Téléphone personnel") $colSizes[] = 17;
+        elseif ($title == "E-mail du scout") $colSizes[] = 25;
+        elseif ($title == "E-mail") $colSizes[] = 60;
+        elseif ($title == "Handicap") $colSizes[] = 50;
+        else throw new Exception("Unknown column $title");
+      }
     }
     // Letter of the last column
     $lastColumn = chr(64 + count($titles));
@@ -241,27 +278,50 @@ class ListingPDF {
     $counter = 1;
     if ($csvMode) $counter = $row - 1;
     foreach ($members as $member) {
-      $letter = 'B';
-      // Print row number
-      $excelDocument->getActiveSheet()->setCellValue("A$row", $counter);
-      $counter++;
+      $letter = 'A';
       // Print column information
-      if ($csvMode) {
-        $excelDocument->getActiveSheet()->setCellValue("$letter$row", $section->name); $letter++;
+      foreach ($titles as $title) {
+        if ($title == "N°")
+          $excelDocument->getActiveSheet()->setCellValue("A$row", $counter++);
+        elseif ($title == "Section")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $section->name);
+        elseif($title == "Nom")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->last_name);
+        elseif($title == "Prénom")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->first_name);
+        elseif($title == "Totem")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->totem);
+        elseif($title == $subgroupName)
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->subgroup);
+        elseif($title == "DDN")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", Helper::dateToHuman($member->birth_date));
+        elseif($title == "Adresse")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->address);
+        elseif($title == "CP")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->postcode);
+        elseif($title == "Localité")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->city);
+        elseif($title == "Téléphone")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getPublicPhone());
+        elseif($title == "Quali")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->quali);
+        elseif($title == "Téléphone 1")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->phone1 . ($member->phone1_owner ? " (" . $member->phone1_owner . ")" : ""));
+        elseif($title == "Téléphone 2")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->phone2 . ($member->phone2_owner ? " (" . $member->phone2_owner . ")" : ""));
+        elseif($title == "Téléphone 3")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->phone3 . ($member->phone3_owner ? " (" . $member->phone3_owner . ")" : ""));
+        elseif($title == "Téléphone personnel")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->phone_member);
+        elseif($title == "E-mail du scout")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->email_member);
+        elseif($title == "E-mail")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getAllEmailAddresses(", ", false));
+        elseif ($title == "Handicap")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->has_handicap ? $member->handicap_details : "");
+        else throw new Exception("Unknown title " . $title);
+        $letter++;
       }
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->last_name); $letter++;
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->first_name); $letter++;
-      if ($hasTotem) {
-        $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->totem); $letter++;
-      }
-      if ($hasSubgroup) {
-        $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->subgroup); $letter++;
-      }
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", Helper::dateToHuman($member->birthdate)); $letter++;
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->address); $letter++;
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->postcode); $letter++;
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->city); $letter++;
-      $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getPublicPhone()); $letter++;
       // Set style
       $excelDocument->getActiveSheet()->setSharedStyle($this->normalStyle, "A$row:$lastColumn$row");
       // Increment row

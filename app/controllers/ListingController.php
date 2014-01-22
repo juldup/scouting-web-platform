@@ -71,7 +71,7 @@ class ListingController extends BaseController {
     } else {
       $sections = array($this->section);
     }
-    ListingPDF::downloadListing($sections, $format, true);
+    ListingPDF::downloadListingng($sections, $format, true);
   }
   
   public function showEdit() {

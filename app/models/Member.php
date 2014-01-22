@@ -88,7 +88,7 @@ class Member extends Eloquent {
     return $emails;
   }
   
-  public function getAllEmailAddresses($separator = " - ") {
+  public function getAllEmailAddresses($separator = " - ", $includePersonal = true) {
     $emails = "";
     if ($this->email1)
       $emails .= $this->email1;
@@ -96,7 +96,7 @@ class Member extends Eloquent {
       $emails .= ($emails ? $separator : "") . $this->email2;
     if ($this->email3)
       $emails .= ($emails ? $separator : "") . $this->email3;
-    if ($this->email_member)
+    if ($this->email_member && $includePersonal)
       $emails .= ($emails ? $separator : "") . $this->email_member . " (personnel)";
     return $emails;
   }
