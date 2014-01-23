@@ -16,13 +16,36 @@ class RegistrationController extends GenericPageController {
     $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
     $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
     
+    $familyMembers = array();
+    if ($this->user->isMember()) {
+      $familyMembers = $this->user->getAssociatedMembers();
+    }
+    
 //    formulaire d'inscription.
     return View::make('pages.registration.registrationMain', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'page_title' => $this->getPageTitle(),
         'page_body' => $pageBody,
+        'family_members' => $familyMembers,
+        'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
     ));
+  }
+  
+  public function reregistrate($member_id) {
+    if (!$this->user->isOwnerOfMember($member_id)) {
+      return Helper::forbiddenResponse();
+    }
+    $member = Member::find($member_id);
+    if (!$member) return App::abort(404, "Ce member n'existe pas.");
+    try {
+      $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
+      $member->save();
+      return Redirect::route('registration')->with('success_message', "La réinscription de " . $member->first_name . " " . $member->last_name . " a été enregistrée.");
+    } catch (Exception $ex) {
+      return Redirect::route('registration')->with('error_message', "Une erreur est survenue. La réinscription de "
+              . $member->first_name . " " . $member->last_name . " n'a pas été enregistrée. Contactez l'animateur d'unité. $ex");
+    }
   }
   
   public function showForm() {

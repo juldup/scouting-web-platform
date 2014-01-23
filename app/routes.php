@@ -72,6 +72,7 @@ Route::get('gestion/inscription/page-principale/{section_slug?}', array("as" => 
 Route::post('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page_submit", "uses" => "RegistrationController@savePage"));
 Route::get('gestion/inscription/valider-supprimer/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manage"));
 Route::post('gestion/inscription/valider-supprimer/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
+Route::get('inscription/reinscription/{member_id}', array("as" => "reregistration", "uses" => "RegistrationController@reregistrate"));
 
 // Health card
 Route::get('fiche-sante/completer/{member_id}/{section_slug?}', array("as" => "health_card_edit", "uses" => "HealthCardController@showEdit"));
