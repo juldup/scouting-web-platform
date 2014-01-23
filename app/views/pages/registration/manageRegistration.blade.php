@@ -50,6 +50,9 @@
         'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($member->family_in_other_units_details) }}",
       };
     @endforeach
+    var reregisterMemberURL = "{{ URL::route('ajax_reregister') }}";
+    var unreregisterMemberURL = "{{ URL::route('ajax_cancel_reregistration') }}";
+    var deleteMemberURL = "{{ URL::route('ajax_delete_member') }}";
   </script>
 @stop
 
@@ -135,7 +138,7 @@
           @foreach ($active_members as $member)
             <?php $unreregistered = $member->isReregistered() ? " style='display: none;' " : "" ?>
             <?php $reregistered = $member->isReregistered() ? "" : " style='display: none;' " ?>
-            <tr class="member-row" data_member_id="{{ $member-> id }}">
+            <tr class="member-row" data-member-id="{{ $member->id }}">
               <th>
                 <span class="member-name">
                   {{ $member->first_name }} {{ $member->last_name }}

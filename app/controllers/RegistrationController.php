@@ -173,4 +173,51 @@ class RegistrationController extends GenericPageController {
       return Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message)->withInput();
   }
   
+  public function ajaxReregister() {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour réinscrire un scout."));
+    }
+    $memberId = Input::get('member_id');
+    $member = Member::find($memberId);
+    if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+    try {
+      $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
+      $member->save();
+      return json_encode(array('result' => 'Success'));
+    } catch (Exception $ex) {
+      return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
+    }
+  }
+  
+  public function ajaxCancelReregistration() {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour annuler la réinscription d'un scout."));
+    }
+    $memberId = Input::get('member_id');
+    $member = Member::find($memberId);
+    if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+    try {
+      $member->last_reregistration = null;
+      $member->save();
+      return json_encode(array('result' => 'Success'));
+    } catch (Exception $ex) {
+      return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
+    }
+  }
+  
+  public function ajaxDeleteMember() {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour désinscrire un scout."));
+    }
+    $memberId = Input::get('member_id');
+    $member = Member::find($memberId);
+    if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+    try {
+      $member->delete();
+      return json_encode(array('result' => 'Success'));
+    } catch (Exception $ex) {
+      return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
+    }
+  }
+  
 }

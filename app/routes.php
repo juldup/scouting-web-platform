@@ -43,8 +43,8 @@ Route::get('renvoyer-lien-validation', array("as" => "user_resend_validation_lin
 
 // Images
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
-Route::post('images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
-Route::get('images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
+Route::post('ajax/images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
+Route::get('ajax/images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
 
 // Section pages
 Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionPageController@showPage"));
@@ -73,6 +73,9 @@ Route::post('gestion/inscription/page-principale/{section_slug?}', array("as" =>
 Route::get('gestion/inscription/valider-supprimer/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manage"));
 Route::post('gestion/inscription/valider-supprimer/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
 Route::get('inscription/reinscription/{member_id}', array("as" => "reregistration", "uses" => "RegistrationController@reregistrate"));
+Route::get('ajax/gestion/inscription/reinscription', array("as" => "ajax_reregister", "uses" => "RegistrationController@ajaxReregister"));
+Route::get('ajax/gestion/inscription/annulation-reinscription', array("as" => "ajax_cancel_reregistration", "uses" => "RegistrationController@ajaxCancelReregistration"));
+Route::get('ajax/gestion/inscription/desinscription', array("as" => "ajax_delete_member", "uses" => "RegistrationController@ajaxDeleteMember"));
 
 // Health card
 Route::get('fiche-sante/completer/{member_id}/{section_slug?}', array("as" => "health_card_edit", "uses" => "HealthCardController@showEdit"));
