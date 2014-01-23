@@ -21,7 +21,6 @@ class RegistrationController extends GenericPageController {
       $familyMembers = $this->user->getAssociatedMembers();
     }
     
-//    formulaire d'inscription.
     return View::make('pages.registration.registrationMain', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
@@ -118,9 +117,19 @@ class RegistrationController extends GenericPageController {
               ->whereRaw('members.section_id = sections.id');
     })->get();
     
+    $query = Member::where('validated', '=', true)
+            ->where('is_leader', '=', false)
+            ->orderBy('last_name')
+            ->orderBy('first_name');
+    if ($this->section->id != 1) {
+      $query->where('section_id', '=', $this->section->id);
+    }
+    $activeMembers = $query->get();
+    
     return View::make('pages.registration.manageRegistration', array(
         'registrations' => $pendingRegistrations,
         'other_sections' => $otherSection,
+        'active_members' => $activeMembers,
     ));
     
   }

@@ -27,6 +27,10 @@ class Member extends Eloquent {
     else return false;
   }
   
+  public function isReregistered() {
+    return $this->last_reregistration == date('Y') . "-" . (date('Y') + 1);
+  }
+  
   public function getPictureURL() {
     return URL::route('get_leader_picture', array('leader_id' => $this->id));
   }

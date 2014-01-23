@@ -62,3 +62,26 @@ function editRegistration(memberId) {
   }
   $("#member_form").slideDown();
 }
+
+$().ready(function() {
+  $(".reregister-member-button").on('click', function() {
+    var row = $(this).closest('.member-row');
+    row.find('.unreregistered').hide();
+    row.find('.reregistered').show();
+    return false;
+  });
+  $(".cancel-reregistration-button").on('click', function() {
+    var row = $(this).closest('.member-row');
+    row.find('.unreregistered').show();
+    row.find('.reregistered').hide();
+    return false;
+  });
+  $(".delete-member-button").on('click', function() {
+    var row = $(this).closest('.member-row');
+    var memberName = row.find('.member-name').text().trim();
+    if (confirm("Cette action va supprimer définitivement " + memberName + " du listing. Continuer ?")) {
+      row.remove();
+    }
+    return false;
+  });
+});
