@@ -31,7 +31,7 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
-  public function reregistrate($member_id) {
+  public function reregister($member_id) {
     if (!$this->user->isOwnerOfMember($member_id)) {
       return Helper::forbiddenResponse();
     }
@@ -71,7 +71,6 @@ class RegistrationController extends GenericPageController {
                 "Veuillez réessayer ou <a href='" . URL::route('contacts') . 
                 "'>contacter l'animateur d'unité</a>.";
       }
-    
     }
     
     if ($success)
@@ -99,55 +98,45 @@ class RegistrationController extends GenericPageController {
     return "Inscription dans l'unité";
   }
   
-  public function manage() {
-    
+  public function manageRegistration() {
+    // Check that the user is allowed to reach this page
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
       return Helper::forbiddenResponse();
     }
-    
+    // Gather pending registrations
     $pendingRegistrations = Member::where('validated', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->get();
-    
+    // List other sections that contain pending registrations
     $otherSection = Section::where('id', '!=', $this->section->id)
             ->whereExists(function($query) {
-      $query->select(DB::raw(1))
-              ->from('members')
-              ->where('validated', '=', false)
-              ->whereRaw('members.section_id = sections.id');
-    })->get();
-    
-    $query = Member::where('validated', '=', true)
-            ->where('is_leader', '=', false)
-            ->orderBy('last_name')
-            ->orderBy('first_name');
-    if ($this->section->id != 1) {
-      $query->where('section_id', '=', $this->section->id);
-    }
-    $activeMembers = $query->get();
-    
+              $query->select(DB::raw(1))
+                      ->from('members')
+                      ->where('validated', '=', false)
+                      ->whereRaw('members.section_id = sections.id');
+            })->get();
+    // Render view
     return View::make('pages.registration.manageRegistration', array(
         'registrations' => $pendingRegistrations,
         'other_sections' => $otherSection,
-        'active_members' => $activeMembers,
     ));
-    
   }
   
   public function manageSubmit() {
-    
+    // Get input data
     $sectionId = Input::get('section_id');
     $memberId = Input::get('member_id');
-    
+    // Find member
     $member = Member::find($memberId);
     if ($member) {
+      // Make sure the user is allowed to change member data
       if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section_id) ||
               !$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
         return Helper::forbiddenResponse();
       }
-      
+      // Update member
       $result = $member->updateFromInput(true, true, true, true, true);
-      
+      // Create result message
       if ($result === true) {
         $success = true;
         $name = $member->first_name . " " . $member->last_name;
@@ -165,12 +154,32 @@ class RegistrationController extends GenericPageController {
       $success = false;
       $message = "Une erreur est survenue. Le nouveau membre n'a pas été inscrit.";
     }
-    
+    // Redirect to page with result message
     if ($success)
       return Redirect::to(URL::route('manage_registration', array('section_slug' => $this->section->slug)))
               ->with($success ? 'success_message' : 'error_message', $message);
     else
       return Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message)->withInput();
+  }
+  
+  public function manageReregistration() {
+    // Make sure the user is allowed to access this page
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    // List scouts
+    $query = Member::where('validated', '=', true)
+            ->where('is_leader', '=', false)
+            ->orderBy('last_name')
+            ->orderBy('first_name');
+    if ($this->section->id != 1) {
+      $query->where('section_id', '=', $this->section->id);
+    }
+    $activeMembers = $query->get();
+    // Render view
+    return View::make('pages.registration.manageReregistration', array(
+        'active_members' => $activeMembers,
+    ));
   }
   
   public function ajaxReregister() {
@@ -218,6 +227,26 @@ class RegistrationController extends GenericPageController {
     } catch (Exception $ex) {
       return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
     }
+  }
+  
+  public function manageYearInSection() {
+    // Make sure the user is allowed to access this page
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    // Render view
+    return View::make('pages.registration.manageYearInSection', array(
+    ));
+  }
+  
+  public function manageMemberSection() {
+    // Make sure the user is allowed to access this page
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    // Render view
+    return View::make('pages.registration.manageMemberSection', array(
+    ));
   }
   
 }

@@ -1,6 +1,5 @@
 TODO list
 
-- Re-registration + manage them
 - Change scouts from one section to another
 - Change year in section
 - Change section data (e-mail, color, code)
@@ -12,7 +11,7 @@ TODO list
 - Edit subgroup in listing
 
 - Manage member list
-- Help for leaders
+- Help for leaders + task list
 - Leader archives
 - Send e-mail: include archived leaders (+ old members ?)
 - Archives (news, documents, e-mails, photos, leaders, listing?)

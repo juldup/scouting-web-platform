@@ -68,14 +68,17 @@ Route::post('gestion/fete-unite/{section_slug?}', array("as" => "edit_annual_fea
 Route::get('inscription/formulaire/{section_slug?}', array("as" => "registration_form", "uses" => "RegistrationController@showForm"));
 Route::post('inscription/formulaire/submit/{section_slug?}', array("as" => "registration_form_submit", "uses" => "RegistrationController@submit"));
 Route::get('inscription/{section_slug?}', array("as" => "registration", "uses" => "RegistrationController@showMain"));
+Route::get('inscription/reinscription/{member_id}', array("as" => "reregistration", "uses" => "RegistrationController@reregister"));
 Route::get('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page", "uses" => "RegistrationController@showEdit"));
 Route::post('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page_submit", "uses" => "RegistrationController@savePage"));
-Route::get('gestion/inscription/valider-supprimer/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manage"));
-Route::post('gestion/inscription/valider-supprimer/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
-Route::get('inscription/reinscription/{member_id}', array("as" => "reregistration", "uses" => "RegistrationController@reregistrate"));
+Route::get('gestion/inscription/nouvelles-inscriptions/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manageRegistration"));
+Route::post('gestion/inscription/nouvelles-inscriptions/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
+Route::get('gestion/inscription/reinscription/{section_slug?}', array("as" => "manage_reregistration", "uses" => "RegistrationController@manageReregistration"));
 Route::get('ajax/gestion/inscription/reinscription', array("as" => "ajax_reregister", "uses" => "RegistrationController@ajaxReregister"));
 Route::get('ajax/gestion/inscription/annulation-reinscription', array("as" => "ajax_cancel_reregistration", "uses" => "RegistrationController@ajaxCancelReregistration"));
 Route::get('ajax/gestion/inscription/desinscription', array("as" => "ajax_delete_member", "uses" => "RegistrationController@ajaxDeleteMember"));
+Route::get('gestion/inscription/annee-des-scouts/{section_slug?}', array("as" => "manage_year_in_section", "uses" => "RegistrationController@manageYearInSection"));
+Route::get('gestion/inscription/changer-de-section/{section_slug?}', array("as" => "manage_member_section", "uses" => "RegistrationController@manageMemberSection"));
 
 // Health card
 Route::get('fiche-sante/completer/{member_id}/{section_slug?}', array("as" => "health_card_edit", "uses" => "HealthCardController@showEdit"));

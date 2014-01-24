@@ -66,12 +66,9 @@
 
 @section('content')
   
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Gestion des inscriptions {{ $user->currentSection->de_la_section }}</h1>
-      @include('subviews.flashMessages')
-    </div>
-  </div>
+  @include('pages.registration.manageRegistrationMenu', array('selected' => 'registration'))
+  
+  @include('subviews.flashMessages')
   
   <?php echo $__env->make('subviews.editMemberForm', array(
       'form_legend' => "Inscription d'un membre",
@@ -83,7 +80,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h2>Nouvelles inscriptions en attente pour {{ $user->currentSection->la_section }}</h2>
+      <h1>Nouvelles inscriptions en attente pour {{ $user->currentSection->la_section }}</h1>
       @if (count($registrations))
       <table class="table table-striped table-hover">
           <thead>
@@ -126,46 +123,6 @@
           @endforeach
         </p>
       @endif
-      
-    </div>
-  </div>
-  
-  <div class="row">
-    <div class="col-md-12">
-      <h2>Réinscription des membres actifs {{ $user->currentSection->de_la_section }}</h2>
-      <table class="table table-striped table-hover reregistration-table">
-        <tbody>
-          @foreach ($active_members as $member)
-            <?php $unreregistered = $member->isReregistered() ? " style='display: none;' " : "" ?>
-            <?php $reregistered = $member->isReregistered() ? "" : " style='display: none;' " ?>
-            <tr class="member-row" data-member-id="{{ $member->id }}">
-              <th>
-                <span class="member-name">
-                  {{ $member->first_name }} {{ $member->last_name }}
-                </span>
-                <span class="reregistered" {{ $reregistered }}>
-                  est réinscrit
-                </span>
-              </th>
-              <td>
-                <a class='btn-sm btn-primary unreregistered reregister-member-button' href="" {{ $unreregistered }}>
-                  Réinscrire
-                </a>
-              </td>
-              <td>
-                <a class='btn-sm btn-warning unreregistered delete-member-button' href="" {{ $unreregistered }}>
-                  Désinscrire
-                </a>
-              </td>
-              <td>
-                <a class='btn-sm btn-default cancel-reregistration-button reregistered' href="" {{ $reregistered }}>
-                  Annuler la réinscription
-                </a>
-              </td>
-            </tr>
-          @endforeach
-        </tbody>
-      </table>
     </div>
   </div>
 @stop
