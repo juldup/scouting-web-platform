@@ -183,12 +183,15 @@ class RegistrationController extends GenericPageController {
   }
   
   public function ajaxReregister() {
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL)) {
-      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour réinscrire un scout."));
-    }
+    // Find member
     $memberId = Input::get('member_id');
     $member = Member::find($memberId);
     if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+    // Check privileges
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section_id)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour réinscrire un scout."));
+    }
+    // Update last reregistration year
     try {
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
       $member->save();
@@ -199,12 +202,15 @@ class RegistrationController extends GenericPageController {
   }
   
   public function ajaxCancelReregistration() {
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL)) {
-      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour annuler la réinscription d'un scout."));
-    }
+    // Find member
     $memberId = Input::get('member_id');
     $member = Member::find($memberId);
     if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+    // Check privileges
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section_id)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour annuler la réinscription d'un scout."));
+    }
+    // Cancel last reregistration year
     try {
       $member->last_reregistration = null;
       $member->save();
@@ -215,12 +221,15 @@ class RegistrationController extends GenericPageController {
   }
   
   public function ajaxDeleteMember() {
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL)) {
-      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour désinscrire un scout."));
-    }
+    // Find member
     $memberId = Input::get('member_id');
     $member = Member::find($memberId);
     if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+    // Check privilege
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section_id)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour désinscrire un scout."));
+    }
+    // Delete member
     try {
       $member->delete();
       return json_encode(array('result' => 'Success'));
@@ -234,9 +243,68 @@ class RegistrationController extends GenericPageController {
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
       return Helper::forbiddenResponse();
     }
+    // List scouts
+    $activeMembers = Member::where('validated', '=', true)
+            ->where('is_leader', '=', false)
+            ->orderBy('year_in_section', 'DESC')
+            ->orderBy('birth_date')
+            ->where('section_id', '=', $this->section->id)
+            ->get();
     // Render view
     return View::make('pages.registration.manageYearInSection', array(
+        'active_members' => $activeMembers,
     ));
+  }
+  
+  public function ajaxUpdateYearInSection() {
+    if (Input::has('section_id')) {
+      $sectionId = Input::get('section_id');
+      // Make sure the user is allowed to access this page
+      if (!$this->user->can(Privilege::$EDIT_LISTING_LIMITED, $sectionId)) {
+        return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour changer l'année d'un scout."));
+      }
+      try {
+        // Update year for each member of the section
+        Member::where('validated', '=', true)
+                ->where('is_leader', '=', false)
+                ->where('section_id', '=', $sectionId)
+                ->increment('year_in_section');
+        // Retrieve members
+        $members = Member::where('validated', '=', true)
+                ->where('is_leader', '=', false)
+                ->where('section_id', '=', $sectionId)
+                ->get();
+        $memberYears = array();
+        foreach ($members as $member) {
+          $memberYears[$member->id] = $member->year_in_section;
+        }
+        return json_encode(array("result" => "Success", 'years' => $memberYears));
+      } catch (Exception $ex) {
+        return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
+      }
+    } else {
+      // Find member
+      $memberId = Input::get('member_id');
+      $member = Member::find($memberId);
+      if (!$member) return json_encode(array("result" => "Failure", "message" => "Ce membre n'existe pas."));
+      // Get year in section
+      $yearInSection = Input::get('year') + 0;
+      if ($yearInSection <= 0) {
+        return json_encode(array("result" => "Failure", "message" => "L'année doit être un nombre positif."));
+      }
+      // Make sure the user is allowed to access this page
+      if (!$this->user->can(Privilege::$EDIT_LISTING_LIMITED, $member->section_id)) {
+        return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour changer l'année d'un scout."));
+      }
+      // Update year in section
+      try {
+        $member->year_in_section = $yearInSection;
+        $member->save();
+        return json_encode(array('result' => 'Success'));
+      } catch (Exception $ex) {
+        return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
+      }
+    }
   }
   
   public function manageMemberSection() {

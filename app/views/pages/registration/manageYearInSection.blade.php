@@ -5,7 +5,11 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/manage_registration.js"></script>
+  <script src="{{ URL::to('/') }}/js/manage_year_in_section.js"></script>
+  <script>
+    var changeYearURL = "{{ URL::route('ajax_update_year_in_section') }}";
+    var currentSectionId = {{ $user->currentSection->id }};
+  </script>
 @stop
 
 @section('back_links')
@@ -27,4 +31,47 @@
     </div>
   </div>
   
+  @if (count($active_members))
+    <div class="row">
+      <div class="col-md-12">
+        <table class="table table-striped table-hover wide-table">
+          <tbody>
+            @foreach ($active_members as $member)
+              <tr class="member-row" data-member-id="{{ $member->id }}">
+                <th>
+                  {{ $member->first_name }} {{ $member->last_name }}
+                </th>
+                <td class="space-on-right">
+                  {{ Helper::dateToHuman($member->birth_date) }}
+                </td>
+                <td>
+                  <a class='btn-sm btn-default decrease-year-button' href="">
+                    -
+                  </a>
+                </td>
+                <td>
+                  <span class='member-year'>{{ $member->year_in_section }}</span>
+                </td>
+                <td>
+                  <a class='btn-sm btn-default increase-year-button' href="">
+                    +
+                  </a>
+                </td>
+                <td class="space-on-left">
+                  @if ($member == $active_members[0])
+                    <a class='btn-sm btn-default increase-all-button' href="">
+                      Tout augmenter de 1
+                    </a>
+                  @endif
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
+    </div>
+  @else
+    <p>Il n'y aucun membre dans cette section.</p>
+  @endif
+
 @stop

@@ -79,6 +79,7 @@ Route::get('ajax/gestion/inscription/annulation-reinscription', array("as" => "a
 Route::get('ajax/gestion/inscription/desinscription', array("as" => "ajax_delete_member", "uses" => "RegistrationController@ajaxDeleteMember"));
 Route::get('gestion/inscription/annee-des-scouts/{section_slug?}', array("as" => "manage_year_in_section", "uses" => "RegistrationController@manageYearInSection"));
 Route::get('gestion/inscription/changer-de-section/{section_slug?}', array("as" => "manage_member_section", "uses" => "RegistrationController@manageMemberSection"));
+Route::get('ajax/gestion/inscription/annee-des-scouts/changer', array("as" => "ajax_update_year_in_section", "uses" => "RegistrationController@ajaxUpdateYearInSection"));
 
 // Health card
 Route::get('fiche-sante/completer/{member_id}/{section_slug?}', array("as" => "health_card_edit", "uses" => "HealthCardController@showEdit"));

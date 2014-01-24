@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/manage_registration.js"></script>
+  <script src="{{ URL::to('/') }}/js/manage_reregistration.js"></script>
   <script>
     var reregisterMemberURL = "{{ URL::route('ajax_reregister') }}";
     var unreregisterMemberURL = "{{ URL::route('ajax_cancel_reregistration') }}";
@@ -34,7 +34,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <table class="table table-striped table-hover reregistration-table">
+      <table class="table table-striped table-hover wide-table">
         <tbody>
           @foreach ($active_members as $member)
             <?php $unreregistered = $member->isReregistered() ? " style='display: none;' " : "" ?>
