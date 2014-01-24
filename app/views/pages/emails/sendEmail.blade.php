@@ -72,7 +72,7 @@
         <div class="recipient-list-wrapper">
           @if (count($recipients) >= 1)
             <div class="form-group">
-              <div class="col-md-8 col-md-offset-0">
+              <div class="col-md-8">
                 <p>
                   <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
                   <a class="btn-sm btn-default recipient-uncheck-all" href=""><span class="glyphicon glyphicon-unchecked"></span></a>

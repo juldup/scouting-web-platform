@@ -312,9 +312,59 @@ class RegistrationController extends GenericPageController {
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
       return Helper::forbiddenResponse();
     }
+    // List scouts
+    $activeMembers = Member::where('validated', '=', true)
+            ->where('is_leader', '=', false)
+            ->orderBy('year_in_section', 'DESC')
+            ->orderBy('birth_date')
+            ->where('section_id', '=', $this->section->id)
+            ->get();
     // Render view
     return View::make('pages.registration.manageMemberSection', array(
+        'active_members' => $activeMembers,
     ));
+  }
+  
+  public function submitUpdateSection($section_slug) {
+    $sectionFrom = Section::where('slug', '=', $section_slug)->first();
+    $sectionTo = Section::find(Input::get('destination'));
+    $memberIdsToTransfer = Input::get('members');
+    if (!$sectionFrom || !$sectionTo || !is_array($memberIdsToTransfer) || !count($memberIdsToTransfer)) {
+      return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
+              ->with('error_message', "Une erreur est survenue. Les changements n'ont pas été enregistrés");
+    }
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionFrom) &&
+            !$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionTo)) {
+      return Helper::forbiddenResponse();
+    }
+    $errorList = "";
+    $success = false;
+    foreach ($memberIdsToTransfer as $memberId=>$val) {
+      $member = Member::find($memberId);
+      if ($member && $member->section_id == $sectionFrom->id) {
+        try {
+          $member->section_id = $sectionTo->id;
+          $member->year_in_section = 1;
+          $member->save();
+          $success = true;
+        } catch (Exception $ex) {
+          $errorList .= ($errorList ? ", " : "") . $member->first_name . " " . $member->last_name;
+        }
+      } else {
+        $errorList .= ($errorList ? ", " : "") . $member->first_name . " " . $member->last_name;
+      }
+    }
+    if (!$success) {
+      return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
+              ->with('error_message', "Une erreur s'est produite. Les changements n'ont pas été enregistrés.");
+    } elseif ($errorList) {
+      return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
+              ->with('error_message', "Le transfert a été opéré, sauf pour : $errorList");
+    } else {
+      return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
+              ->with('success_message', "Le transfert a été opéré avec succès.");
+    }
+    
   }
   
 }

@@ -71,7 +71,7 @@
       </div>
     </div>
   @else
-    <p>Il n'y aucun membre dans cette section.</p>
+    <p>Il n'y a aucun membre dans cette section.</p>
   @endif
 
 @stop

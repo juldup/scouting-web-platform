@@ -33,3 +33,4 @@ TODO list
 
 - Make sure all forms are closed
 - Comment code
+- Check how the site behave on tablets (col-sm instead of col-md)

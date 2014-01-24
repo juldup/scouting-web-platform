@@ -107,7 +107,7 @@
   </div>
   
   <div class="row">
-    <div class="col-md-4 col-md-offset-0">
+    <div class="col-md-4">
       <p>
         <a class='btn btn-primary' href="javascript:addDocument()">
           Ajouter un nouveau document
