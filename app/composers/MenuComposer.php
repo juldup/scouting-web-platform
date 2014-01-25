@@ -74,6 +74,7 @@ class MenuComposer {
     $user = View::shared('user');
     if ($user->isLeader()) {
       $leaderCategory = array();
+      $leaderCategory["Coin des animateurs"] = 'leader_corner';
       $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
       $leaderCategory["Trésorerie"] = 'accounts';
       $leaderCategory["Gestion des sections"] = 'section_data';

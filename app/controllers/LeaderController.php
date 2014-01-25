@@ -35,7 +35,7 @@ class LeaderController extends BaseController {
     ));
   }
   
-  public function showEdit($section_slug, $memberId = false) {
+  public function showEdit($section_slug = null, $memberId = false) {
     
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();

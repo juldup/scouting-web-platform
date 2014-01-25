@@ -195,6 +195,7 @@ Route::post('gestion/aide/{section_slug?}', array("as" => "edit_help_page_submit
 
 // Leaders' corner
 Route::get('gestion/coin-des-animateurs/aide/{section_slug?}', array("as" => "leader_help", "uses" => "LeaderHelpController@showPage"));
+Route::get('gestion/coin-des-animateurs/{section_slug?}', array("as" => "leader_corner", "uses" => "LeaderCornerController@showPage"));
 
 // Members
 Route::get('gestion/membres/{section_slug?}', array("as" => "user_list", "uses" => "UserController@showUserList"));

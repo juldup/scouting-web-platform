@@ -1,7 +1,5 @@
 TODO list
 
-- Change scouts from one section to another
-- Change year in section
 - Change section data (e-mail, color, code)
 - Create/modify/delete/reorder sections
 - Privileges
