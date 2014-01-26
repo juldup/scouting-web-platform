@@ -329,6 +329,7 @@ class PhotoController extends BaseController {
   
   public function addPhoto() {
     // Get input data
+    try {
     $file = Input::file('file');
     $uploadId = Input::get('id', 0);
     $albumId = Input::get('album_id');
@@ -380,6 +381,9 @@ class PhotoController extends BaseController {
         "photo_id" => $photo->id,
         "photo_thumbnail_url" => $photo->getThumbnailURL(),
     ));
+    } catch (Exception $e) {
+      return json_encode(array("result" => "Failure", "message" => "$e"));
+    }
     
   }
   

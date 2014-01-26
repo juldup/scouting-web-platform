@@ -24,6 +24,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-album'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Album "{{ $album->name }}"</h1>

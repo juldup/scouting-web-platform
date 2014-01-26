@@ -49,13 +49,13 @@ $.fn.changeEditableTextToEditMode = function() {
     textInput.focus();
     textInput.select();
     // Add submit button
-    $(this).append(' <button class="btn btn-primary editable-submit-button">OK</button>');
+    $(this).append(' <button class="btn-sm btn-primary editable-submit-button">OK</button>');
     $(this).find('button.editable-submit-button').on('click', function(event) {
       event.stopPropagation();
       $(this).closest(".editable-text").submitEditableText();
     });
     // Add cancel button
-    $(this).append(' <button class="btn btn-default editable-cancel-button">Annuler</button>');
+    $(this).append(' <button class="btn-sm btn-default editable-cancel-button">Annuler</button>');
     $(this).find('button.editable-cancel-button').on('click', function(event) {
       event.stopPropagation();
       $(this).closest(".editable-text").changeEditableTextToNormalMode();

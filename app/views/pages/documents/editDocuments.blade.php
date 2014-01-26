@@ -32,6 +32,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-documents'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Documents {{ $user->currentSection->de_la_section }}</h1>

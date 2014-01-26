@@ -26,6 +26,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-photos'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Gestion des photos {{ $user->currentSection->de_la_section }}</h1>

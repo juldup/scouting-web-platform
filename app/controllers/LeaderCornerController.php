@@ -81,16 +81,32 @@ class LeaderCornerController extends BaseController {
             "Paramètres du site" => array(
                 'url' => URL::route('edit_parameters'),
                 'help' => 'parametres',
+            )
+        ),
+        "Supervision" => array(
+            "Changements récents" => array(
+                'url' => "",
+                'help' => 'changements-recents',
             ),
             "Liste des membres" => array(
                 'url' => URL::route('user_list'),
                 'help' => 'liste-membres',
             )
-        ),
+        )
     );
+    
+    $helpSections = array('general');
+    foreach ($operations as $ops) {
+      foreach ($ops as $operationData) {
+        if (!in_array($operationData['help'], $helpSections)) {
+          $helpSections[] = $operationData['help'];
+        }
+      }
+    }
     
     return View::make('pages.leaderCorner.leaderCorner', array(
         'operations' => $operations,
+        'help_sections' => $helpSections,
     ));
   }
   

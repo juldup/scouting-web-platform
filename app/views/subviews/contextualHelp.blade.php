@@ -1,91 +1,118 @@
-@section('back_to_top')
-  <a href="#" class="back-to-top"></a>
-@stop
 
-<a name='{{ $help }}'>&nbsp;</a>
-<div class="well help-content">
+<div class="help-wrapper">
+  <div class="help-toggle-button">
+    <a class="help-badge" href=""></a>
+  </div>
+<div class="well help-content" style="displxay: none;">
 
-@if ($help == 'general')
-  <legend>Informations générales sur la structure du site</legend>
-  <p>Ce site a été conçu pour être modulable.  Toutes les informations annuelles (listing, photos, calendrier, documents, etc.) sont changeables.<p>
-  <p>Il y a deux manières de visiter le site : en tant que visiteur, parent, scout, ou bien en tant qu'animateur.  Les animateurs ont le droit de modifier toutes les informations se trouvant sur le site.  Sois donc prudent avec ce que tu fais, car certaines opérations ne peuvent être annulées.</p>
-  <h3>Les droits d'accès</h3>
-  <p>Les accès aux pages et informations du site dépendent du statut du visiteur :</p>
-  <table style='margin-left: 50px'>
-    <tr><td style='vertical-align: top'><span class='important'>Non inscrit</span>&nbsp;: <td>Accès limité aux pages publiques.</tr>
-    <tr><td style='vertical-align: top'><span class='important'>Visiteur</span>&nbsp;: <td>Il peut écrire dans le livre d'or, mais n'a accès à aucune information privée.</tr>
-    <tr><td style='vertical-align: top'><span class='important'>Membre</span>&nbsp;: <td>Un membre (scout ou parent) peut consulter les listings limités, télécharger les documents, voir les e-mail, les photos et créer des fiches santé pour sa famille.  Un compte d'utilisateur est automatiquement membre si son adresse e-mail a été validée et fait partie de nos listings.</tr>
-    <tr><td style='vertical-align: top'><span class='important'>Animateur</span>&nbsp;: <td>Un animateur peut accéder au coin des animateurs. Certains droits lui sont attribués par l'animateur d'unité.</tr>
-    <tr><td style='vertical-align: top'><span class='important'>Webmaster</span>&nbsp;: <td>Il n'a aucune limitation.</tr>
-  </table>
-  <h3>Les onglets</h3>
-  <p>Chaque section possède un onglet (voir en haut de la page).  Changer d'onglet adapte le site à la section, tant pour les visiteurs que pour les animateurs.  En particulier, les données modifiables sont limitées à celles de ta section, à moins que tu n'aies des privilèges spéciaux.</p>
-@endif
+<legend>Aide</legend>
 
-@if ($help == 'calendrier')
-  <legend>Calendrier @yield('back_to_top')</legend>
-  <p>Cette page permet d'ajouter/modifier/supprimer des événements dans le calendrier.  Pour modifier le calendrier d'une section, il faut sélectionner l'onglet de la section.</p>
+@if ($help == 'edit-calendar')
+  <p>Cette page permet d'ajouter/modifier/supprimer des événements dans le calendrier.
+    Pour modifier le calendrier d'une section, il faut sélectionner cette section dans le menu.</p>
   <h3>Ajouter un événement</h3>
   <ol>
-    <li>Sélectionne dans le calendrier la date de début de l'événement
-    <li>Une fenêtre apparaît pour l'ajout d'événement
-    <li>Choisis le nombre de jours (en comptant le premier et le dernier jour de l'activité, ex: vendredi à dimanche = 3 jours).
-    <li>Activité = nom de l'activité (telle qu'elle apparaitra dans le calendrier)
-    <li>Description = détails de l'activité (apparait quand on laisse la souris sur un événement et affichée dans la liste d'événements)
-    <li>Le type d'événement déterminera l'icône ; les types <i>Animateurs uniquement</i> et <i>Nettoyage toilettes</i> ne seront visibles que par les animateurs
-    <li>Vérifie que la bonne section est sélectionnée
+    <li>Sélectionne dans le calendrier la date de début de l'événement</li>
+    <li>Une fenêtre apparait pour l'ajout d'événement</li>
+    <li>Choisis le nombre de jours (en comptant le premier et le dernier jour de l'activité, ex: vendredi à dimanche = 3 jours).</li>
+    <li>Activité = nom de l'activité (telle qu'elle apparaitra dans le calendrier)</li>
+    <li>Description = détails de l'activité, Indique-y toutes les infos pratiques</li>
+    <li>Le type d'événement déterminera l'icône ; les types <em>Animateurs</em> et <em>Nettoyage</em> ne seront visibles que par les animateurs</li>
+    <li>Vérifie que la bonne section est sélectionnée</li>
     <li><span class='important'>Enregistrer</span> ajoute immédiatement l'événement dans le calendrier
   </ol>
   <h3>Modifier un événement</h3>
-  Il suffit de cliquer sur l'événement dans le calendrier pour le modifier.
+  <p>Il suffit de cliquer sur l'événement dans le calendrier pour le modifier.</p>
   <h3>Supprimer un événement</h3>
-  <p>Il est inutile de supprimer les événements qui se sont déjà déroulés (ceux-ci sont grisés dans la liste en bas, et les événements des années précédentes ne sont plus affichés dans la liste).
-  <p>Pour supprimer un événement, deux possibilités :
-  <ul>
-    <li>Cliquer sur l'événement dans le calendrier, et cliquer sur supprimer.
-    <li>Cliquer directement sur le bouton supprimer dans la liste.
-  </ul>
+  <p>Il est inutile de supprimer les événements qui se sont déjà déroulés.
+    Pour supprimer un événement, clique sur l'événement dans le calendrier, puis clique sur supprimer.</p>
 @endif
 
-@if ($help == 'photos')
-  <legend>Gérer les photos @yield('back_to_top')</legend>
+@if ($help == 'edit-photos')
   <h3>Créer un album</h3>
-  <p>Tu peux créer un album via <span class='important'>Ajouter un album</span>. L'idéal est de créer un album par réunion ou activité.</p>
-  <p>Tu peux <span class='important'>réordonner</span> les répertoires en les glissant.</p>
-  <p>Tu peux <span class='important'>supprimer</span> un répertoire à condition qu'il soit vide. Pour le vider, clique dessus et déplace ses photos vers la poubelle.</p>
-  <h3>Mettre des photos en ligne</h3>
-  <p>Clique sur un répertoire pour y ajouter des photos. Glisse des photos dans la zone appropriée</p>
-  <p>Les photos au format <span class='important'>jpg</span> et <span class='important'>png</span> sont acceptées.
-  <p>Les photos seront affichées par ordre alphabétique des noms de fichiers. Tu peux cependant sélectionner la photo de couverture via le<img height=24 style="vertical-align: middle" src='images/photoSecondaire.png'>; elle apparaitra en premier.</p>
-  <p>Tu peux faire <span class='important'>tourner</span> une photo mal orientée. Tu peux également lui adjoindre un <span class='important'>commentaire</span> qui apparaitra sous la photo.</p>
-  <p>Tu peux supprimer des photos en les glissant vers la poubelle, ou les glisser vers un autre album.</p>
+  <p>Tu peux créer un album via le bouton <strong><em>Créer un nouvel album</em></strong>. L'idéal est de créer un album par réunion ou activité.</p>
+  <p>Une fois l'album créé, commence par lui donner un titre.</p>
+  <p>Clique ensuite sur <strong><em>Modifier l'album</em></strong> pour lui ajouter des photos.</p>
+  <h3>Opérations sur les répertoires</h3>
+  <p>Tu peux <strong>réordonner</strong> les répertoires en les glissant.</p>
+  <p>Tu peux <strong>supprimer</strong> un répertoire à condition qu'il soit vide.
+    Pour le vider, clique sur <strong><em>Modifier l'album</em></strong> et supprime les photos qu'il contient.</p>
 @endif
 
-@if ($help == 'documents')
-  <legend>Gérer les documents @yield('back_to_top')</legend>
-  <p>Cette page te permet d'ajouter, modifier et archiver des documents. Place ici tous les documents destinés aux parents ou aux animés, en particulier les convocations envoyées aux parents.
-  <p>Pour ajouter un document, il suffit de cliquer sur <span class='important'>Ajouter un document</span>, en indiquer le nom et la description, choisir le fichier et valider.
-     Un document peut également être modifié, remplacé ou supprimé. Pour remplacer un document, modifie-le et sélectionne un nouveau fichier.
-  <p>Il n'est pas possible se supprimer des documents qui sont en ligne depuis plus d'une semaine.  Les documents obsolètes peuvent être archivés, et seront donc toujours disponibles.
-     Si un document doit absolument être supprimé car son contenu n'est pas adéquat, contacte le <a href="envoiEmail.php?dest=webmaster">webmaster du site</a>.
+@if ($help == 'edit-album')
+  <p>Glisse des photos depuis ton ordinateur vers la zone appropriée ou clique sur cette zone pour
+    sélectionner une ou plusieurs photos.</p>
+  <p>Les photos au format <strong>jpeg</strong> et <strong>png</strong> sont acceptées.</p>
+  <p>Tu peux <strong>réordonner</strong> les photos en les glissant-déplaçant.</p>
+  <p>Tu peux faire <strong>tourner</strong> une photo mal orientée.
+    Tu peux également lui adjoindre une <strong>description</strong> qui apparaitra sous la photo.</p>
+  <p>Supprimer une photo l'enlève définitivement de l'album.</p>
+@endif
+
+@if ($help == 'edit-documents')
+  <p>Cette page te permet d'ajouter, modifier et archiver des documents. Place ici tous les documents destinés aux parents ou aux scouts, en particulier les convocations envoyées aux parents.</p>
+  <p>
+    Pour ajouter un document, il suffit de cliquer sur <strong><em>Ajouter un nouveau document</em></strong>.
+    Un formulaire apparait. Indique le titre du document et la description, choisis le fichier, sélectionne la catégorie appropriée et enregistre-le.
+  </p>
+  <p>
+    Il est conseillé de garder les documents <strong>privés</strong>.
+    En effet, ils contiennent souvent des informations qui ne devraient pas tomber dans n'importe quelles mains.
+  </p>
+  <p>Un document peut également être modifié, remplacé ou supprimé. Pour remplacer un document, modifie-le et sélectionne un nouveau fichier.</p>
+  <p>
+    Il n'est pas possible se supprimer des documents qui sont en ligne depuis plus d'une semaine.
+    Les documents obsolètes peuvent être archivés, et seront donc toujours disponibles.
+     Si un document doit absolument être supprimé car son contenu n'est pas adéquat, contacte le <a href="{{ URL::route('personal_email', array('type' => 'webmaster', 'member_id' => 0)) }}">webmaster du site</a>.
   <h3>Les différents champs à compléter</h3>
-  <ul>
-    <li><span class='important'>Titre</span>&nbsp;: c'est le nom qui sera affiché dans la liste
-    <li><span class='important'>Description</span>&nbsp;: la description sera affichée en-dessous
-    <li><span class='important'>Catégorie</span>&nbsp;: les documents sont triés par catégorie, le choix de la catégorie est limité
-    <li><span class='important'>Fichier</span>&nbsp;: sélectionne le fichier à télécharger
-    <li><span class='important'>Nom du fichier</span>&nbsp;: nom qu'aura le fichier quand on le téléchargera.  Pour garder le nom d'origine, laisse-le vide.
-    <li><span class='important'>Public</span>&nbsp;: si cette case est cochée, le document est public, donc visible par tous les internautes et pas juste les membres
-    <li><span class='important'>Valider&nbsp;</span>: enregistre le document
-  </ul>
+  <div class="row">
+    <div class="col-md-2 text-right"><strong>Titre</strong> </div>
+    <div class="col-md-10">C'est le nom qui sera affiché dans la liste</div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 text-right"><strong>Description</strong> </div>
+    <div class="col-md-10">La description sera affichée en-dessous</div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 text-right"><strong>Document</strong> </div>
+    <div class="col-md-10">Sélectionne le fichier à télécharger</div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 text-right"><strong>Nom du fichier</strong> </div>
+    <div class="col-md-10">Nom qu'aura le fichier quand on le téléchargera. Pour garder le nom d'origine, laisse-le vide.</div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 text-right"><strong>Catégorie</strong> </div>
+    <div class="col-md-10">Les documents sont triés par catégorie, le choix de la catégorie est limité</div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 text-right"><strong>Public</strong> </div>
+    <div class="col-md-10">Si cette case est cochée, le document est public, donc visible par tous les internautes et pas juste les membres</div>
+  </div>
 @endif
 
-@if ($help == 'nouvelles')
-  <legend>Gérer les nouvelles @yield('back_to_top') </legend>
-  <p>Indique dans les nouvelles tout ce que tu veux communiquer (réunion spéciale qui s'est bien déroulée, produit en vente par la section, etc.)
-  <p>Pour créer une nouvelle nouvelle, clique sur <span class='important'>Ajouter une nouvelle</span>.  Choisis le titre, et n'oublie pas la section.
-  <p>La date d'une nouvelle est la date à laquelle la nouvelle est écrite.  Cette date figurera dans la liste des nouvelles.  Les nouvelles de plus d'un an ne sont plus affichées.  <!--Les nouvelles de plus d'un mois ne sont plus affichées dans la barre défilante.-->
-  <p>Il est également possible de modifier une nouvelle.  Quand tu ne veux plus qu'une nouvelle s'affiche, clique sur <span class='important'>Modifier</span> et désélectionne la case <span class='important'>afficher</span>.  Si tu veux la supprimer définitivement, clique sur <span class='important'>Supprimer</span> (la nouvelle reste présente dans la base de données).
+@if ($help == 'edit-news')
+  <p>
+    Indique dans les nouvelles tout ce que tu veux communiquer
+    (réunion spéciale qui s'est bien déroulée, produit en vente par la section, etc.)
+  </p>
+  <p>
+    Pour créer une nouvelle nouvelle, clique sur <strong><em>Ajouter une nouvelle</em></strong>.
+    Choisis le titre, et n'oublie pas la section.
+  </p>
+  <p>
+    La date d'une nouvelle est la date à laquelle la nouvelle est écrite.
+    Cette date figurera dans la liste des nouvelles.
+    Les nouvelles de plus d'un an ne sont plus affichées.
+  </p>
+  <p>
+    Il est également possible de <strong>modifier</strong> une nouvelle.
+    La date de la nouvelle restera la date à laquelle elle a été créée.
+  </p>
+  <p>
+    Pour <strong>supprimer</strong> une nouvelle, clique sur <strong><em>Modifier</em></strong> puis
+    sur <strong><em>Supprimer</em></strong>.
+  </p>
 @endif
 
 @if ($help == 'emails')
@@ -304,4 +331,5 @@
   <p>Cette page t'offre un aperçu des changements récemment effectués sur le site.
 @endif
 
+</div>
 </div>

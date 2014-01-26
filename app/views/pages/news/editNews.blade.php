@@ -26,6 +26,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-news'))
+  
   <div class="row">
     <div class="col-lg-12">
   

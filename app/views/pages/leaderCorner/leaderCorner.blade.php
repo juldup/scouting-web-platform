@@ -24,11 +24,8 @@
     @endforeach
   </div>
   
-  @include('subviews.leaderHelp', array('help' => 'general'))
-  @foreach ($operations as $ops)
-    @foreach ($ops as $operationData)
-      @include('subviews.leaderHelp', array('help' => $operationData['help'], 'show_title' => true))
-    @endforeach
+  @foreach ($help_sections as $help)
+    @include('subviews.leaderHelp', array('help' => $help, 'show_title' => true))
   @endforeach
   
 @stop

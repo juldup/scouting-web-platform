@@ -106,3 +106,10 @@ $().ready(function() {
     return false;
   });
 });
+
+$().ready(function() {
+  $(".help-toggle-button .help-badge").click(function() {
+    $(this).closest(".help-wrapper").find(".help-content").slideToggle();
+    return false;
+  });
+});

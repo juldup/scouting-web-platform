@@ -8,11 +8,11 @@ class CalendarItem extends Eloquent {
         'normal' => "Réunion normale",
         'special' => "Activité spéciale",
         'break' => "Congé",
-        'leaders' => "Animateurs",
         'weekend' => "Week-end",
         'camp' => "Grand camp",
         'bar' => "Bar Pi's",
-        'cleaning' => "Nettoyage",
+        'leaders' => "Animateurs (privé)",
+        'cleaning' => "Nettoyage (privé)",
     );
   
   public function getSection() {
