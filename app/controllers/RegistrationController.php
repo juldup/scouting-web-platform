@@ -122,6 +122,24 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  public function deleteRegistration($member_id) {
+    $member = Member::find($member_id);
+    $sectionId = $member ? $member->section_id : null;
+    if ($sectionId) {
+      if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
+        return Helper::forbiddenResponse();
+      }
+      try {
+        $member->delete();
+        return Redirect::route('manage_registration')
+                ->with("success_message", "La demande d'inscription de " . $member->first_name . " " . $member->last_name . " a été supprimée.");
+      } catch (Exception $ex) {
+      }
+    }
+    return Redirect::route('manage_registration')
+                ->with("error_message", "Une erreur est survenue. La demande d'inscription n'a pas été supprimée. $memberId");
+  }
+  
   public function manageSubmit() {
     // Get input data
     $sectionId = Input::get('section_id');
@@ -345,6 +363,7 @@ class RegistrationController extends GenericPageController {
         try {
           $member->section_id = $sectionTo->id;
           $member->year_in_section = 1;
+          $member->subgroup = null;
           $member->save();
           $success = true;
         } catch (Exception $ex) {

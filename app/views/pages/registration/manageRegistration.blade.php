@@ -66,9 +66,9 @@
 
 @section('content')
   
-  @include('pages.registration.manageRegistrationMenu', array('selected' => 'registration'))
+  @include('subviews.contextualHelp', array('help' => 'edit-new-registrations'))
   
-  @include('subviews.flashMessages')
+  @include('pages.registration.manageRegistrationMenu', array('selected' => 'registration'))
   
   <?php echo $__env->make('subviews.editMemberForm', array(
       'form_legend' => "Inscription d'un membre",
@@ -81,8 +81,9 @@
   <div class="row">
     <div class="col-md-12">
       <h1>Nouvelles inscriptions en attente pour {{ $user->currentSection->la_section }}</h1>
+      @include('subviews.flashMessages')
       @if (count($registrations))
-      <table class="table table-striped table-hover">
+      <table class="table table-striped table-hover wide-table">
           <thead>
             <tr>
               <th></th>
@@ -94,9 +95,17 @@
           <tbody>
             @foreach ($registrations as $member)
               <tr>
-                <td><a class="btn-sm btn-primary" href="javascript:editRegistration({{ $member->id }})">Inscrire</a></td>
-                <td>{{ $member->first_name }}</td>
-                <td>{{ $member->last_name }}</td>
+                <td class="space-on-right">
+                  <a class="btn-sm btn-primary" href="javascript:editRegistration({{ $member->id }})">
+                    Inscrire
+                  </a>
+                  &nbsp;
+                  <a class="btn-sm btn-danger delete-registration-button" href="{{ URL::route('edit_delete_registration', array('member_id' => $member->id)) }})">
+                    Supprimer
+                  </a>
+                </td>
+                <td class="space-on-right">{{ $member->first_name }}</td>
+                <td class="space-on-right">{{ $member->last_name }}</td>
                 <td>{{ $member->is_leader ? "Oui" : "Non" }}</td>
               </tr>
             @endforeach

@@ -29,7 +29,7 @@ function checkEnter(e) {
 // Insert image at current location
 function editPageInsertImage(imageURL) {
   var element = CKEDITOR.dom.element.createFromHtml("<img style='max-width: 80%' src='" + imageURL + "'/>");
-  CKEDITOR.instances['page_content'].insertElement(element);
+  CKEDITOR.instances['page_body'].insertElement(element);
 }
 
 // Uploads an image and adds it to the list

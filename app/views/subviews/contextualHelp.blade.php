@@ -146,28 +146,55 @@
   </p>
 @endif
 
-@if ($help == 'inscriptions')
-  <legend>Gérer les inscriptions, désinscriptions et passages @yield('back_to_top')</legend>
-  <p>Cette page permet d'inscrire des nouveaux scouts ou animateurs, de changer des scouts d'année ou de section.</p>
+@if ($help == 'edit-new-registrations')
+  <p>Cette page permet d'inscrire des nouveaux scouts ou animateurs ayant rempli le formulaire d'inscription.</p>
   <h3>Validation d'une nouvelle inscription</h3>
-  <p>Dans la liste, clique sur <span class='important'>Inscrire</span> à côté du nom du scout à inscrire.
+  <p>Dans la liste, clique sur <strong><em>Inscrire</em></strong> à côté du nom du scout à inscrire.
      Un formulaire apparaît, avec les informations entrées par les parents pré-encodées.
-     Vérifie les données <span class='important'>attentivement</span> avant d'inscrire définitivement le scout, en particulier la section dans laquelle il s'inscrit.
-  <p>Une demande d'inscription erronée ou non acceptée peut être supprimée.
+     Vérifie les données attentivement avant d'inscrire définitivement le scout, en particulier la section dans laquelle il s'inscrit.
+  </p>
+  <p>Une demande d'inscription erronée ou non acceptée peut être supprimée.</p>
+@endif
+
+@if ($help == 'edit-reregistrations')
   <h3>Réinscription</h3>
-  ...
-  <h3>Passage d'une section à une autre</h3>
-  <p>Cet outil te permet de faire évoluer des scouts d'une section à une autre.
-  <p>Premièrement, sélectionne la section d'origine et la section d'arrivée, et clique sur <span class='important'>OK</span>.
-  <p>Sélectionne les scouts que tu veux faire monter (ils sont classés par année, les scouts devant monter sont donc normalement en haut de la liste).  <span class='important'>Faire monter</span> change les scouts sélectionnés de section, met leur année à 1 et supprime leur nom de patrouille/sizaine/hutte.
-  <p>Si une fausse manœuvre a été effectuée, tu peux refaire l'opération dans l'autre sens, ou directement faire le changement dans le listing.
-  <h3>Augmentation de l'année des animés</h3>
-  <p>Cet outil permet d'augmenter d'une année une liste d'animés.
-     Sélectionne tout d'abord la section, puis la liste d'animés à augmenter d'une année.
-     Ceux-ci apparaissent par ordre inverse d'année.
-     L'année actuelle apparaît entre parenthèses.
-  <p><span class='important'>Attention</span> à ne pas sélectionner les animés qui viennent de monter dans la section et dont l'année est à 1.
+  <p>Cette page permet de gérer les réinscriptions. Utiliser cette page n'est pas indispensable pour
+    le bon déroulement des réinscriptions, mais elle permet d'avoir une vue sur les scouts qui se réinscrivent
+    et ceux qui n'ont pas encore décidé ou quittent l'unité.
+  </p>
+  <p>Les parents peuvent eux-même marquer leurs enfants comme réinscrit. Cela peut être une manière de gérer les réinscriptions.</p>
+  <p>Sur cette page, tu peux le marquer les scouts comme réinscrits, les désinscrire <strong>(attention&nbsp;: effet immédiat)</strong>, ou annuler
+  leur réinscription.</p>  
+@endif
+
+@if ($help == 'edit-year-in-section')
+  <h3>Augmentation de l'année des scouts</h3>
+  <p>Cet outil permet d'augmenter d'une année une liste de scouts.
+     Tu peux augmenter l'année de tous les scouts d'un coup, ou régler l'année de chacun indépendemment.
+     Les scouts apparaissent par ordre inverse d'année.
+  </p>
+  <p><strong>Attention</strong> à ne pas sélectionner les scouts qui viennent de monter dans la section et dont l'année est à 1.
      Il vaut mieux faire l'opération de changement d'année avant l'opération de changement de section.
+  </p>
+@endif
+
+@if ($help == 'edit-member-section')
+  <h3>Passage d'une section à une autre</h3>
+  <p>
+    Cet outil te permet de faire évoluer des scouts d'une section à une autre.
+  </p>
+  <p>
+    Premièrement, sélectionne la section de destination.
+  </p>
+  <p>
+    Sélectionne les scouts que tu veux faire passer en cliquent sur <strong><em>Faire passer</em></strong> (ils sont classés par année, les scouts devant monter
+    d'une section sont donc normalement en haut de la liste).
+    Le passage n'est fait que lorsque tu cliques sur <strong><em>Enregistrer les transferts</em></strong>.
+    Cela change les scouts sélectionnés de section, met leur année à 1 et supprime leur nom de patrouille/sizaine/hutte.
+  </p>
+  <p>
+    Si une fausse manœuvre a été effectuée, tu peux refaire l'opération dans l'autre sens, ou directement faire le changement dans le listing.
+  </p>
 @endif
 
 @if ($help == 'listing')

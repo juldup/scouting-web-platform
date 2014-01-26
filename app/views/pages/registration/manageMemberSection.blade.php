@@ -18,6 +18,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-member-section'))
+  
   @include('pages.registration.manageRegistrationMenu', array('selected' => 'change_section'))
   
   <div class="row">

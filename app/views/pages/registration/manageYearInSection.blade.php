@@ -22,6 +22,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-year-in-section'))
+  
   @include('pages.registration.manageRegistrationMenu', array('selected' => 'change_year'))
   
   <div class="row">
@@ -35,10 +37,18 @@
     <div class="row">
       <div class="col-md-12">
         <table class="table table-striped table-hover wide-table">
+          <thead>
+            <tr>
+              <th class="text-right space-on-right">Nom</th>
+              <th class="space-on-right">Date de naissance</th>
+              <th colspan="3" class="text-center">Année</th>
+              <th></th>
+            </tr>
+          </thead>
           <tbody>
             @foreach ($active_members as $member)
               <tr class="member-row" data-member-id="{{ $member->id }}">
-                <th>
+                <th class="space-on-right">
                   {{ $member->first_name }} {{ $member->last_name }}
                 </th>
                 <td class="space-on-right">

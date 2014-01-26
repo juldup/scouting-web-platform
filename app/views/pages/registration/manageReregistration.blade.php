@@ -23,6 +23,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-reregistrations'))
+  
   @include('pages.registration.manageRegistrationMenu', array('selected' => 'reregistration'))
   
   <div class="row">
@@ -39,7 +41,7 @@
             <?php $unreregistered = $member->isReregistered() ? " style='display: none;' " : "" ?>
             <?php $reregistered = $member->isReregistered() ? "" : " style='display: none;' " ?>
             <tr class="member-row" data-member-id="{{ $member->id }}">
-              <th>
+              <th class="space-on-right">
                 <span class="member-name">
                   {{ $member->first_name }} {{ $member->last_name }}
                 </span>

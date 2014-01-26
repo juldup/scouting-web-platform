@@ -6,17 +6,17 @@
 
 @section('forward_links')
   {{-- Link to management --}}
-  @if ($can_edit)
-    <p>
-      <a href='{{ URL::route('edit_registration_page') }}'>
-        Modifier cette page
-      </a>
-    </p>
-  @endif
   @if ($can_manage)
     <p>
       <a href='{{ URL::route('manage_registration') }}'>
         Gérer les inscriptions
+      </a>
+    </p>
+  @endif
+  @if ($can_edit)
+    <p>
+      <a href='{{ URL::route('edit_registration_page') }}'>
+        Modifier cette page
       </a>
     </p>
   @endif
