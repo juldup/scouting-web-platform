@@ -115,21 +115,35 @@
   </p>
 @endif
 
-@if ($help == 'emails')
-  <legend>Envoi d'un e-mail aux parents @yield('back_to_top')</legend>
+@if ($help == 'email-section')
   <p>Cet outil te permet d'envoyer un e-mail à tous les parents d'une section.
      L'adresse de chacun restera confidentielle, ceci permet d'éviter le spamming et l'abu d'envoi d'e-mails de la part des parents.
   <ol>
-    <li>Entre le sujet de ton message (une en-tête est déjà encodée, libre à toi de la garder).
-    <li>Tape le message
-    <li>Vérifie l'adresse de l'expéditeur
-    <li>Tu peux joindre jusqu'à 4 documents
+    <li>Entre le sujet de ton message (une en-tête est déjà encodée, libre à toi de la garder).</li>
+    <li>Tape le message</li>
+    <li>Vérifie le nom et l'adresse de l'expéditeur</li>
+    <li>Tu peux joindre des documents</li>
     <li>Vérifie les destinataires (décoche ceux à qui tu ne veux pas envoyer l'e-mail).
-        Par défaut, les destinataires sont les parents, les animés (éclaireurs et pionniers), les animateurs de la section et les animateurs d'unité.
-        Tu peux cocher ou décocher toute la liste une partie grâce aux cases à cocher et aux boutons.
-        Tu peux également ajouter des destinataires supplémentaires.
+      Tu peux cocher/décocher tous les membres d'une catégorie d'un seul clic.
+      <br />
+      Tu peux également ajouter des destinataires supplémentaires. Encode-les séparés par des virgules.</li>
   </ol>
-  <p>Note que si le nombre d'e-mails partant du site est trop important, certains e-mails seront automatiquement envoyés plus tard.</p>
+  <p>
+    Note l'e-mail sera pas envoyé instantanément, l'envoi sera réparti dans les minutes suivantes.
+    Il sera envoyé a l'adresse d'expéditeur en dernier. À ce moment, tu sauras que tout le monde l'a reçu.
+  </p>
+@endif
+
+@if ($help == 'edit-emails')
+  <p>
+    Sur cette page, tu peux voir tous les e-mails envoyés aux sections depuis le site.
+    En particulier, tu peux voir la liste d'adresses e-mail auxquelles chaque e-mail a été envoyé.
+  </p>
+  <p>
+    Tu peux <strong>supprimer</strong> un e-mail dans un délai de 7 jours après l'envoi.
+    Ensuite, il n'est plus possible de supprimer un e-mail, mais les e-mails peuvent toujours être archivés.
+    Le but de ceci est de garder une trace des e-mails envoyés.
+  </p>
 @endif
 
 @if ($help == 'inscriptions')

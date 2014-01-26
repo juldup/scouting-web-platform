@@ -20,7 +20,7 @@ $().ready(function() {
     return false;
   });
   // Toggle recipient list visibility on label press
-  $(".recipient-list-wrapper label").click(function(event) {
+  $(".recipient-list-wrapper label.recipient-category").click(function(event) {
     var parent = $(event.target).closest('.recipient-list-wrapper');
     var warning = parent.find(".recipient-list-warning").first();
     var recipientList = parent.find(".recipient-list").first();

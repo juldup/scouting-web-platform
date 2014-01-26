@@ -23,6 +23,9 @@
 @stop
 
 @section('content')
+  
+  @include('subviews.contextualHelp', array('help' => 'email-section'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Envoi d'un e-mail aux parents {{ $user->currentSection->de_la_section }}</h1>
@@ -86,7 +89,7 @@
                 @if ($superCategory)
                   <div class="form-group">
                     <div class="col-md-12">
-                      {{ Form::label(null, $superCategory) }}
+                      {{ Form::label(null, $superCategory, array('class' => 'recipient-category')) }}
                       &nbsp;
                       &nbsp;
                       <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
@@ -104,7 +107,7 @@
                         @else
                           <div class="col-md-12">
                         @endif
-                          {{ Form::label(null, $category, array('class' => '')); }}
+                          {{ Form::label(null, $category, array('class' => 'recipient-category')); }}
                           &nbsp;
                           &nbsp;
                           <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
@@ -146,9 +149,13 @@
         </div>
         
         <legend>Envoyer</legend>
+        <p class="alert alert-danger">
+          ATTENTION ! Les e-mails envoyés via cette page seront visibles sur le site par <strong>TOUS LES MEMBRES</strong> de l'unité.
+          N'envoie pas d'e-mails à caractère personnel.
+        </p>
         <div class="form-group">
-          <div class="col-md-8 col-md-offset-4">
-            {{ Form::submit('Envoyer', array('class' => 'btn btn-primary')) }}
+          <div class="col-md-8 col-md-offset-2">
+            {{ Form::submit('Envoyer maintenant', array('class' => 'btn btn-primary')) }}
           </div>
         </div>
         {{ Form::close() }}
