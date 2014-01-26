@@ -28,6 +28,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-listing'))
+  
   <div class="row">
     <div class="col-lg-12">
       <h1>Gestion du listing {{ $user->currentSection->de_la_section }}</h1>
@@ -37,7 +39,7 @@
   <div class="row">
     <div class="col-md-12 text-right">
       <p>
-        <label>Télécharger le listing {{ $user->currentSection->de_la_section }} :</label>
+        <label>Télécharger le listing simple {{ $user->currentSection->de_la_section }} :</label>
         <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug)) }}">
           PDF
         </a>
@@ -96,7 +98,9 @@
             @foreach ($members as $member)
               <tr>
                 <td>
-                  <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">Modifier</a>
+                  <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">
+                    Modifier
+                  </a>
                   <a class="btn-sm btn-danger warning-delete" href="{{ URL::route('manage_listing_delete', array('member_id' => $member->id)) }}">
                     Supprimer
                   </a>

@@ -135,6 +135,25 @@ class ListingController extends BaseController {
             ->withInput();
   }
   
+  public function deleteMember($member_id) {
+    $member = Member::find($member_id);
+    $sectionId = $member ? $member->section_id : null;
+    if ($sectionId) {
+      if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
+        return Helper::forbiddenResponse();
+      }
+      try {
+        $member->delete();
+        return Redirect::route('manage_listing')
+                ->with('success_message', $member->first_name . " " . $member->last_name
+                        . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
+      } catch (Exception $ex) {
+      }
+    }
+    return Redirect::route('manage_listing')
+            ->with('error_message', "Une erreur est survenue. Le membre n'a pas été supprimé.");
+  }
+  
   public function downloadFullListing($format, $section_slug) {
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();

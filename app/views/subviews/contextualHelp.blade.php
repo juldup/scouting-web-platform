@@ -197,33 +197,30 @@
   </p>
 @endif
 
-@if ($help == 'listing')
-  <legend>Modifier le listing @yield('back_to_top')</legend>
-  <p>Le listing du site web est le listing officiel de l'unité.  Il est disponible en ligne à tous les membres, et est utilisé pour mettre à jour le listing de la fédération.  <span class='important'>Il est donc primordial qu'il soit bien entretenu.</span>
+@if ($help == 'edit-listing')
+  <p>
+    Le listing du site web est le listing officiel de l'unité.
+    Il est disponible en ligne à tous les membres, et est utilisé pour mettre
+    à jour le listing de la fédération.
+    <strong>Il est donc primordial qu'il soit bien entretenu.</strong>
+  </p>
   <p>Cette page permet de modifier le listing et de l'exporter.</p>
-  <h3>Modifier et exporter le listing</h3>
-  <p>Pour modifier une ligne du listing, il suffit de cliquer sur le bouton <a class='button' onClick='self.location="gestionEditionListing.php"'>Modifier</a>.
-     Dans le tableau qui apparait, clique sur un champ pour le modifier. Les changements sont immédiats (dès qu'on clique hors du champ de saisie).
-  <p>Il est possible de supprimer un scout du listing via ce formulaire.
-  <p>Tu peux exporter le listing en format <span class='important'>Excel</span> ou <span class='important'>CSV</span>.
-     Il est également possible de sortir les adresses imprimables sur des enveloppes. 
-  <h3>Listing pour la fédération</h3>
-  <p>Cet outil n'est à utiliser que par l'animateur d'unité responsable des listings.
-  <p>Pour que cet outil fonctionne correctement, il est important que le listing soit correctement complété.
-  <p>Pour obtenir un listing pour la fédé, il faut
-    <ol>
-      <li>Sauvergarder le listing actuel (le nom est la date et l'heure de la sauvegarde).
-      <li>Sélectionner deux dates : la date du listing précédent donné à la fédé, et la date du dernier listing.
-      <li>Cliquer sur <span class='important'>Exporter</span>.  Une page s'affiche avec le listing au format fédé.
-      <li>Il est possible de l'exporter sous deux formats :
-        <ul>
-          <li>PDF : format à imprimer et envoyer, avec les modifications barrées et corrigées
-          <li>Excel : format à envoyer par e-mail, avec uniquement les nouvelles valeurs et les membres supprimés
-        </ul>
-      <li>Le même fichier sera toujours regénéré à partir des deux mêmes dates, et il est tout à fait possible d'exporter les deux formats, car les données sauvegardées ne peuvent plus être changées.
-    </ol>
-  <p>Le bouton <span class='important'>Mode Excel</span> permet de prévisualiser le contenu du fichier Excel.
-  <p>Avec cet outil, il est également possible d'obtenir un listing sans les modifications&nbsp;: il suffit de sélectionner deux fois la date voulue.
+  <h3>Modifier</h3>
+  <p>Pour modifier une ligne du listing, il suffit de cliquer sur le bouton <strong><em>Modifier</em></strong> en face d'un membre.
+     Un formulaire avec les données du scout apparait. Fais les modifications nécessaires et enregistre les changements.
+  </p>
+  <p>
+    Il est possible de <strong>supprimer</strong> un scout du listing. Attention à ne pas commettre d'erreur,
+    la suppression est immédiate et définitive.
+  </p>
+  <h3>Exporter le listing</h3>
+  <p>
+    Tu peux exporter le listing au format <strong>PDF</strong>, <strong>Excel</strong> ou <strong>CSV</strong>.
+    Le listing simple contient uniquement quelques données, le listing complet contient toutes les données.
+  </p>
+  <p>
+    Il est également possible de sortir les adresses imprimables sur des enveloppes.
+  </p>
 @endif
 
 @if ($help == 'pages')
