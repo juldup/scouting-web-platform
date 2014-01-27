@@ -31,18 +31,18 @@ class User extends Eloquent {
   
   // Returns the user with the given login and password
   public static function getWithUsernameAndPassword($username, $password) {
-    
+    // Get users corresponding to username (as username or e-mail address)
     $users = User::where(function($query) use ($username) {
       $query->where('username', '=', $username);
       $query->orWhere('email', '=', strtolower($username));
     })->get();
-    
+    // Check password for each of them
     foreach ($users as $user) {
       if (self::testPassword($password, $user->password)) {
         return $user;
       }
     }
-    
+    // None match
     return null;
   }
   
@@ -103,7 +103,14 @@ class User extends Eloquent {
     // Retrieve salt from hash
     $salt = substr($hashedPassword, 0, 11);
     // Cookie password is password hashed once
-    return hash('sha256', $salt . $password);
+    $cookiePassword = hash('sha256', $salt . $password);
+    // Make sure cookie converts to hashed password, for backward compatibility
+    if ($salt . hash('sha256', $salt . $cookiePassword) == $hashedPassword) {
+      return $cookiePassword;
+    }
+    // This password is an old password, encode cookie with md5 instead
+    $cookiePassword = md5($salt . $password);
+    return $cookiePassword;
   }
   
   public static function testPassword($rawPassword, $hashedPassword) {
