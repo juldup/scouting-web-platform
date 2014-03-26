@@ -3,6 +3,10 @@
 class ListingController extends BaseController {
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_LISTING)) {
+      return App::abort(404);
+    }
     
     if ($this->section->id == 1) {
       $sections = Section::where('id', '!=', 1)

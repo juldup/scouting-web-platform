@@ -212,6 +212,7 @@ Route::post('ajax/gestion/donnees-section/changer-ordre-sections', array("as" =>
 
 // Parameters
 Route::get('gestion/parametres/{section_slug?}', array("as" => "edit_parameters", "uses" => "ParameterController@showEdit"));
+Route::post('gestion/parametres/submit', array("as" => "edit_parameters_submit", "uses" => "ParameterController@submitParameters"));
 
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));

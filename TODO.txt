@@ -2,7 +2,6 @@ TODO list
 
 - Privileges
 - Accounting
-- Change site parameters
 - Retrieve credentials
 - Edit subgroup in listing
 - Delete leaders from listing

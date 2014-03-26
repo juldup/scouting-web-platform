@@ -17,5 +17,8 @@ class SectionPageController extends GenericPageController {
   protected function getPageTitle() {
     return $this->section->name;
   }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_SECTIONS);
+  }
   
 }

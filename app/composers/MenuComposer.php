@@ -22,7 +22,7 @@ class MenuComposer {
     $generalCategory = array();
     if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
       $generalCategory["Fête d'unité"] = 'annual_feast';
-    if (Parameter::get(Parameter::$SHOW_CONTACTS))
+    if (Parameter::get(Parameter::$SHOW_REGISTRATION))
       $generalCategory["Inscriptions"] = 'registration';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
       $generalCategory["Fiches santé"] = 'health_card';

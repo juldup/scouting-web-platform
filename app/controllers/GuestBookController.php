@@ -3,6 +3,10 @@
 class GuestBookController extends BaseController {
   
   public function showPage($section_slug = null, $managing = false) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_GUEST_BOOK)) {
+      return App::abort(404);
+    }
     $entries = GuestBookEntry::orderBy('id', 'DESC')->get();
     return View::make('pages.guest_book.guest_book', array(
         'guest_book_entries' => $entries,
@@ -33,6 +37,10 @@ class GuestBookController extends BaseController {
   }
   
   public function showEdit($section_slug = null) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_GUEST_BOOK)) {
+      return App::abort(404);
+    }
     if (!$this->user->can(Privilege::$DELETE_GUEST_BOOK_ENTRIES, 1)) {
       return Helper::forbiddenResponse();
     }

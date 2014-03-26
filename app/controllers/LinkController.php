@@ -3,6 +3,10 @@
 class LinkController extends BaseController {
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_LINKS)) {
+      return App::abort(404);
+    }
     
     $links = Link::all();
     
@@ -13,6 +17,10 @@ class LinkController extends BaseController {
   }
   
   public function showEdit() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_LINKS)) {
+      return App::abort(404);
+    }
     
     if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) {
       return Helper::forbiddenResponse();

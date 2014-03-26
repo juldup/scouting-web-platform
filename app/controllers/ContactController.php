@@ -3,6 +3,10 @@
 class ContactController extends BaseController {
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_CONTACTS)) {
+      return App::abort(404);
+    }
     
     // Find unit staff
     $unitLeaders = Member::where('is_leader', '=', true)

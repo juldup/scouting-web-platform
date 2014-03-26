@@ -69,4 +69,21 @@ class Parameter extends Eloquent {
     }
   }
   
+  public static function set($parameterName, $value) {
+    // Get parameter
+    $parameter = Parameter::where('name', '=', $parameterName)->first();
+    if (!$parameter) {
+      // Parameter does not exist, create one
+      $parameter = new Parameter();
+      $parameter->name = $parameterName;
+    }
+    // Update parameter value
+    $parameter->value = $value;
+    $parameter->save();
+    // Update fetched parameters
+    if (self::$parameters != null) {
+      self::$parameters[$parameterName] = $value;
+    }
+  }
+  
 }

@@ -3,6 +3,10 @@
 class HealthCardController extends BaseController {
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_HEALTH_CARDS)) {
+      return App::abort(404);
+    }
     
     $ownedMembers = $this->user->getAssociatedMembers();
     
@@ -27,6 +31,10 @@ class HealthCardController extends BaseController {
   }
   
   public function showEdit($member_id) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_HEALTH_CARDS)) {
+      return App::abort(404);
+    }
     
     if (!$this->user->isOwnerOfMember($member_id)) {
       return Helper::forbiddenResponse();
@@ -183,6 +191,10 @@ class HealthCardController extends BaseController {
   }
   
   public function showManage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_HEALTH_CARDS)) {
+      return App::abort(404);
+    }
     
     if (!$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $this->section)) {
       return Helper::forbiddenResponse();

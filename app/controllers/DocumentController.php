@@ -3,6 +3,10 @@
 class DocumentController extends BaseController {
   
   public function showPage($year = null, $month = null) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_DOCUMENTS)) {
+      return App::abort(404);
+    }
     
     $documents = Document::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)->get();

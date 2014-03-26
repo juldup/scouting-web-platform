@@ -17,5 +17,8 @@ class AnnualFeastController extends GenericPageController {
   protected function getPageTitle() {
     return "Fête d'unité";
   }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_ANNUAL_FEAST);
+  }
   
 }

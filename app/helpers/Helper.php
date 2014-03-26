@@ -223,4 +223,13 @@ class Helper {
     return $text;
   }
   
+  public static function formatCashAmount($amount) {
+    $amount = trim($amount);
+    $amount = str_replace(",", ".", $amount);
+    $amount = (float)$amount;
+    $integerPart = (int)$amount;
+    $decimalPart = (int)round(($amount - $integerPart) * 100);
+    return $integerPart . "," . ($decimalPart >= 10 ? "" : "0") . $decimalPart;
+  }
+  
 }

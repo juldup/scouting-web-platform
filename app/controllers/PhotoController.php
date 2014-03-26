@@ -3,6 +3,10 @@
 class PhotoController extends BaseController {
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_PHOTOS)) {
+      return App::abort(404);
+    }
     
     $albumId = Route::input('album_id');
     
@@ -92,6 +96,10 @@ class PhotoController extends BaseController {
   }
   
   public function showEdit() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_PHOTOS)) {
+      return App::abort(404);
+    }
     
     $albums = PhotoAlbum::where('archived', '=', false)
             ->where('section_id', '=', $this->section->id)

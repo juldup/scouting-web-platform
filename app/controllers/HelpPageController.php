@@ -17,5 +17,8 @@ class HelpPageController extends GenericPageController {
   protected function getPageTitle() {
     return "Aide";
   }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_HELP);
+  }
   
 }

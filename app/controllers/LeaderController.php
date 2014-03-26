@@ -3,6 +3,10 @@
 class LeaderController extends BaseController {
   
   public function showPage($archive = null) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_LEADERS)) {
+      return App::abort(404);
+    }
     
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)

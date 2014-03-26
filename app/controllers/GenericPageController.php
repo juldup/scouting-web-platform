@@ -7,8 +7,13 @@ abstract class GenericPageController extends BaseController {
   protected abstract function isSectionPage();
   protected abstract function getPageType();
   protected abstract function getPageTitle();
+  protected abstract function canDisplayPage();
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!$this->canDisplayPage()) {
+      return App::abort(404);
+    }
     $page = $this->getPage();
     $sectionSlugArray = array();
     if ($this->isSectionPage()) {
@@ -24,6 +29,10 @@ abstract class GenericPageController extends BaseController {
   }
   
   public function showEdit() {
+    // Make sure this page can be displayed
+    if (!$this->canDisplayPage()) {
+      return App::abort(404);
+    }
     if (!$this->canEdit()) {
       return Helper::forbiddenResponse();
     }

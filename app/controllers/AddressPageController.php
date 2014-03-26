@@ -17,5 +17,8 @@ class AddressPageController extends GenericPageController {
   protected function getPageTitle() {
     return "Adresses utiles";
   }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_ADDRESSES);
+  }
   
 }

@@ -3,6 +3,10 @@
 class SuggestionController extends BaseController {
   
   public function showPage($section_slug = null, $managing = false) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_SUGGESTIONS)) {
+      return App::abort(404);
+    }
     $suggestions = Suggestion::orderBy('id', 'DESC')->get();
     return View::make('pages.suggestions.suggestions', array(
         'suggestions' => $suggestions,
@@ -23,6 +27,10 @@ class SuggestionController extends BaseController {
   }
   
   public function showEdit($section_slug = null) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_SUGGESTIONS)) {
+      return App::abort(404);
+    }
     if (!$this->user->can(Privilege::$MANAGE_SUGGESIONS, 1)) {
       return Helper::forbiddenResponse();
     }

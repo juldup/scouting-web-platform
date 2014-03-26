@@ -3,6 +3,10 @@
 class EmailController extends BaseController {
   
   public function showPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_EMAILS)) {
+      return App::abort(404);
+    }
     $emails = Email::where('archived', '=', false)
             ->where('deleted', '=', false)
             ->where('section_id', '=', $this->section->id)
@@ -36,6 +40,10 @@ class EmailController extends BaseController {
   }
   
   public function showManage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_EMAILS)) {
+      return App::abort(404);
+    }
     if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
       return Helper::forbiddenResponse();
     }

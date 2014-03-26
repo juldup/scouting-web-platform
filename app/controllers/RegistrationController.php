@@ -3,32 +3,44 @@
 class RegistrationController extends GenericPageController {
   
   public function showMain() {
-    $page = $this->getPage();
-    $pageBody = $page->body_html;
-    $pageBody = str_replace("(PRIX UN ENFANT)", Parameter::get(Parameter::$PRICE_1_CHILD), $pageBody);
-    $pageBody = str_replace("(PRIX DEUX ENFANTS)", Parameter::get(Parameter::$PRICE_2_CHILDREN), $pageBody);
-    $pageBody = str_replace("(PRIX TROIS ENFANTS)", Parameter::get(Parameter::$PRICE_3_CHILDREN), $pageBody);
-    $pageBody = str_replace("(PRIX UN ANIMATEUR)", Parameter::get(Parameter::$PRICE_1_LEADER), $pageBody);
-    $pageBody = str_replace("(PRIX DEUX ANIMATEURS)", Parameter::get(Parameter::$PRICE_2_LEADERS), $pageBody);
-    $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
-    $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
-    $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
-    $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
-    $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
-    
-    $familyMembers = array();
-    if ($this->user->isMember()) {
-      $familyMembers = $this->user->getAssociatedMembers();
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_REGISTRATION)) {
+      return App::abort(404);
     }
     
-    return View::make('pages.registration.registrationMain', array(
-        'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
-        'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
-        'page_title' => $this->getPageTitle(),
-        'page_body' => $pageBody,
-        'family_members' => $familyMembers,
-        'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
-    ));
+    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+      $page = $this->getPage();
+      $pageBody = $page->body_html;
+      $pageBody = str_replace("(PRIX UN ENFANT)", Parameter::get(Parameter::$PRICE_1_CHILD), $pageBody);
+      $pageBody = str_replace("(PRIX DEUX ENFANTS)", Parameter::get(Parameter::$PRICE_2_CHILDREN), $pageBody);
+      $pageBody = str_replace("(PRIX TROIS ENFANTS)", Parameter::get(Parameter::$PRICE_3_CHILDREN), $pageBody);
+      $pageBody = str_replace("(PRIX UN ANIMATEUR)", Parameter::get(Parameter::$PRICE_1_LEADER), $pageBody);
+      $pageBody = str_replace("(PRIX DEUX ANIMATEURS)", Parameter::get(Parameter::$PRICE_2_LEADERS), $pageBody);
+      $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
+      $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
+      $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
+      $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
+      $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
+      
+      $familyMembers = array();
+      if ($this->user->isMember()) {
+        $familyMembers = $this->user->getAssociatedMembers();
+      }
+      
+      return View::make('pages.registration.registrationMain', array(
+          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
+          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'page_title' => $this->getPageTitle(),
+          'page_body' => $pageBody,
+          'family_members' => $familyMembers,
+          'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
+      ));
+    } else {
+      return View::make('pages.registration.registrationInactive', array(
+          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'page_title' => $this->getPageTitle(),
+      ));
+    }
   }
   
   public function reregister($member_id) {
@@ -96,6 +108,9 @@ class RegistrationController extends GenericPageController {
   }
   protected function getPageTitle() {
     return "Inscription dans l'unité";
+  }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_REGISTRATION);
   }
   
   public function manageRegistration() {

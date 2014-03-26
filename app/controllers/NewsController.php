@@ -3,6 +3,10 @@
 class NewsController extends BaseController {
   
   public function showPage($year = null, $month = null) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_NEWS)) {
+      return App::abort(404);
+    }
     
     $oneYearAgo = Helper::oneYearAgo();
     
@@ -26,6 +30,10 @@ class NewsController extends BaseController {
   }
   
   public function showEdit() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_NEWS)) {
+      return App::abort(404);
+    }
     
     if (!$this->user->can(Privilege::$EDIT_NEWS, $this->user->currentSection)) {
       return Helper::forbiddenResponse();

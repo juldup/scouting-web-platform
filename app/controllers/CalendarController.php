@@ -7,6 +7,10 @@ class CalendarController extends BaseController {
   }
   
   private function showCalendar($year = null, $month = null, $editing = false) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_CALENDAR)) {
+      return App::abort(404);
+    }
     
     // TODO Display birthdays
     
@@ -115,6 +119,11 @@ class CalendarController extends BaseController {
   }
   
   public function showEdit($year = null, $month = null) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_CALENDAR)) {
+      return App::abort(404);
+    }
+    
     if (!$this->user->can(Privilege::$EDIT_CALENDAR, $this->user->currentSection)) {
       return Helper::forbiddenResponse();
     }

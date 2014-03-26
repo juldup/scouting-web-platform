@@ -348,7 +348,7 @@
   <p>Tu peux réinitialiser la liste, par exemple au début d'une nouvelle année.</p>
 @endif
 
-@if ($help == 'parametres')
+@if ($help == 'parameters')
   <legend>Paramètres du site @yield('back_to_top')</legend>
   <p>Sur cette page, tu peux:
     <ul>

@@ -17,5 +17,8 @@ class UniformPageController extends GenericPageController {
   protected function getPageTitle() {
     return "Uniforme " . $this->section->de_la_section;
   }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_UNIFORMS);
+  }
   
 }

@@ -17,5 +17,8 @@ class UnitPolicyPageController extends GenericPageController {
   protected function getPageTitle() {
     return "Charte d'unité";
   }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_UNIT_POLICY);
+  }
   
 }

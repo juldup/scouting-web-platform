@@ -17,6 +17,9 @@ class HomePageController extends GenericPageController {
   protected function getPageTitle() {
     return "";
   }
+  protected function canDisplayPage() {
+    return true;
+  }
   
   public function showPage() {
     $routeParameters = Route::current()->parameters();
