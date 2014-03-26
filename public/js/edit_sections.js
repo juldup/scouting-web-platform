@@ -1,15 +1,24 @@
 $().ready(function() {
+  // Edit button
   $(".edit-button").click(function(event) {
     event.preventDefault();
     editSection($(this).closest("[data-section-id]").data('section-id'));
   });
+  // Details button
   $(".details-button").click(function(event) {
     event.preventDefault();
     showSectionDetails($(this).closest("[data-section-id]").data('section-id'));
   });
+  // Create section button
+  $(".add-button").click(function(event) {
+    event.preventDefault();
+    createSection();
+  });
+  // Dismiss form button
   $(".dismiss-form").click(function(event) {
     $(this).closest("#section_form").slideUp();
   });
+  // Delete button
   $("#section_form #delete_button").click(function(event) {
     event.preventDefault();
     if (confirm("Supprimer définitivement cette section ?") && confirm("Attention ! Cette opération ne pourra pas être annulée")) {
@@ -26,7 +35,6 @@ $().ready(function() {
       thisColorSample.css('background-color', event.color.toHex());
       $("#section_form [name='section_color']").val(event.color.toHex());
     }).on('hidePicker', function(event) {
-      console.log('disable');
       thisColorSample.colorpicker('destroy');
     });
     thisColorSample.colorpicker('show');
@@ -42,7 +50,26 @@ $().ready(function() {
   });
 });
 
+function createSection(sectionId) {
+  var defaultColor = "#FF8800";
+  $("#section_form legend").text("Créer une nouvelle section");
+  $("#section_form [name='section_id']").val(0);
+  $("#section_form [name='section_name']").val("");
+  $("#section_form [name='section_email']").val("");
+  $("#section_form [name='section_type']").val("");
+  $("#section_form [name='section_type_number']").val("");
+  $("#section_form [name='section_color']").val(defaultColor);
+  $("#section_form .color-sample").css('background-color', defaultColor);
+  $("#section_form [name='section_la_section']").val("");
+  $("#section_form [name='section_de_la_section']").val("");
+  $("#section_form [name='section_subgroup_name']").val("");
+  $("#section_form #delete_button").hide();
+  $("#section_form #delete_button").attr('href', "");
+  $("#section_form").slideDown();
+}
+
 function editSection(sectionId) {
+  $("#section_form legend").text("Modifier la section");
   $("#section_form [name='section_id']").val(sectionId);
   $("#section_form [name='section_name']").val(sections[sectionId].name);
   $("#section_form [name='section_email']").val(sections[sectionId].email);
@@ -78,7 +105,6 @@ function saveDraggableOrder(table, sectionOrder) {
     data = JSON.parse(json);
     if (data.result === "Success") {
       // OK, do nothing
-      console.log("Order saved");
     } else {
       alert("Le nouvel ordre des sections n'a pas pu être sauvé.");
       // Reload page

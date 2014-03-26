@@ -188,6 +188,15 @@
               </td>
             </tr>
           @endforeach
+          @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
+            <tr>
+              <td>
+                <a class="btn-sm btn-primary add-button" href="">
+                  Ajouter une nouvelle section
+                </a>
+              </td>
+            </tr>
+          @endif
         </tbody>
       </table>
     </div>

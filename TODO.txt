@@ -1,12 +1,11 @@
 TODO list
 
-- Change section data (e-mail, color, code)
-- Create/modify/delete/reorder sections
 - Privileges
 - Accounting
 - Change site parameters
 - Retrieve credentials
 - Edit subgroup in listing
+- Delete leaders from listing
 
 - Manage member list
 - Help for leaders + task list

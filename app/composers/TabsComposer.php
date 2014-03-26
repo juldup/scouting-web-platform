@@ -12,7 +12,7 @@ class TabsComposer {
     $currentRoute = Route::currentRouteName();
     $routeParameters = Route::current()->parameters();
     
-    $sections = Section::all();//orderBy('position');
+    $sections = Section::orderBy('position')->get();
     foreach ($sections as $section) {
       $routeParameters['section_slug'] = $section->slug;
       $tabs[] = array(
