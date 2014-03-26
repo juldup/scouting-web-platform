@@ -8,7 +8,7 @@ function saveAlbumOrder(table, albumOrder) {
     if (data.result === "Success") {
       // OK, do nothing
     } else {
-      alert("Le nouvel ordre des albums n'a pas pu être sauvé");
+      alert("Le nouvel ordre des albums n'a pas pu être sauvé.");
       // Reload page
       window.location = window.location;
     }

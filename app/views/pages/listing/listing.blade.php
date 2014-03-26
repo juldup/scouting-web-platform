@@ -179,11 +179,6 @@
                   </td>
                 </tr>
               @endforeach
-              <tr>
-                <td colspan="{{ 5 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">
-                  
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>

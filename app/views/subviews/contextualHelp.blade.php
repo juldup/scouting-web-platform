@@ -3,7 +3,7 @@
   <div class="help-toggle-button">
     <a class="help-badge" href=""></a>
   </div>
-<div class="well help-content" style="displxay: none;">
+<div class="well help-content" style="display: none;">
 
 <legend>Aide</legend>
 
@@ -245,30 +245,31 @@
 @endif
 
 @if ($help == 'sections')
-  <legend>Modification des sections @yield('back_to_top')</legend>
-  <h3>Données d'une section (dans l'onglet de la section)</h3>
-  <p>Il est possible de modifier :
+  <h3>Ajouter une section</h3>
+  <p>Lorsqu'une nouvelle section est créée, tu peux l'ajouter ici. Encode les informations suivantes&nbsp;:
     <ul>
-      <li>L'adresse e-mail de la section</li>
-      <li>La couleur de la section (clique sur <span class='important'>Sélectionner</span>)</span></li>
-      <li><span class='interdit'>Les codes fédé de la section (normalement, à ne jamais modifier)</span></li>
+      <li><strong>Nom</strong> : nom de la section (ex.: Waingunga, Louveteaux, Meute, Éclaireurs, Troupe, Pionniers...)</li>
+      <li><strong>E-mail</strong> : l'adresse e-mail de la section (pour l'envoi de courriers électroniques et la page de contacts)</li>
+      <li><strong>Sigle</strong> : le code donné par la fédération à la section, utilisé notamment pour déterminer le type d'onglet à afficher (ex.: B 1, L 2, E 3, P 1)</li>
+      <li><strong>Couleur</strong> : la couleur utilisée pour le calendrier</li>
+      <li><strong>"la section"</strong> : utilisé pour remplir certains textes du site (ex.: la meute Waingunga)</li>
+      <li><strong>"de la section"</strong> : utlisé pour remplir certains textes du site (ex.: de la Waingunga)</li>
+      <li><strong>Sous-groupes</strong> : le nom des petits groupes de la section, au singulier (ex.: Hutte, Patrouille, Sizaine)</li>
     </ul>
-  <p>Clique sur <span class='important'>Valider</span> pour enregistrer tes changements.
-  <h3>Créer et renommer des sections (dans l'onglet "Unité")</h3>
-  <p>Tu peux changer l'ordre dans lequel les sections apparaissent dans les onglets et dans les listes.</p>
-  <p>Tu peux créer une nouvelle section. Encode les informations suivantes&nbsp;:
-     <ul>
-       <li><span class='important'>Nom</span> : nom de la section (p.ex. Waingunga)</li>
-       <li><span class='important'>"la section"</span> : utilisé pour remplir certains textes du site (p.ex. la meute Waingunga)</li>
-       <li><span class='important'>"de la section"</span> : utlisé pour remplir certains textes du site (p.ex. de la Waingunga)</li>
-       <li><span class='important'>Couleur</span> : la couleur utilisée pour le calendrier</li>
-       <li><span class='important'>E-mail</span> : l'adresse e-mail de la section (pour l'envoi de courriers électroniques et la page de contacts)</li>
-       <li><span class='important'>Code fédération</span> : le code donné par la fédération à la section, utilisé notamment pour déterminer le type d'onglet à afficher (p.ex. B 1, L 2, E 3, P 1)</li>
-     </ul>
-  <p>Tu peux renommer une section existante.</p>
-  <p>Tu peux supprimer une section si elle n'existe plus.
-     Attention, cette opération ne peut être défaite.
-     Il vaut parfois mieux garder la section et indiquer dans sa page d'accueil qu'elle n'existe plus.
+  </p>
+  <h3>Modifier une section</h3>
+  <p>Si tu as le droit de modifier une section, tu verras un bouton <strong>Modifier</strong> sur sa ligne. Tu peux changer toutes les informations de la section.</p>
+  <h3>Supprimer une section</h3>
+  <p>
+    Tu peux supprimer une section si elle n'existe plus.
+    Attention, cette opération ne peut être défaite.
+    Il vaut parfois mieux garder la section et indiquer dans sa page d'accueil qu'elle n'existe plus.
+  </p>
+  <h3>Réordonner les sections</h3>
+  <p>
+    Tu peux changer l'ordre dans lequel les sections apparaissent dans les onglets et dans les listes.
+    Il suffit de cliquer-déplacer la ligne d'une section dans la liste.
+    Il est recommandé de classer les sections par ordre d'âge.
   </p>
 @endif
 

@@ -206,6 +206,9 @@ Route::get('gestion/tresorerie/{section_slug?}', array("as" => "accounts", "uses
 
 // Section data
 Route::get('gestion/donnees-section/{section_slug?}', array("as" => "section_data", "uses" => "SectionDataController@showPage"));
+Route::post('gestion/donnees-section/submit/{section_slug?}', array("as" => "edit_section_submit", "uses" => "SectionDataController@submitSectionData"));
+Route::get('gestion/donnees-section/supprimer/{section_id}', array("as" => "edit_section_delete", "uses" => "SectionDataController@deleteSection"));
+Route::post('ajax/gestion/donnees-section/changer-ordre-sections', array("as" => "ajax_change_section_order", "uses" => "SectionDataController@changeSectionOrder"));
 
 // Parameters
 Route::get('gestion/parametres/{section_slug?}', array("as" => "edit_parameters", "uses" => "ParameterController@showEdit"));

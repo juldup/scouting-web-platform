@@ -158,7 +158,7 @@ class PhotoController extends BaseController {
     if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
       return $errorResponse;
     }
-    // Get list of positions
+    // Get the list of positions
     $positions = array();
     foreach ($albums as $album) {
       $positions[] = $album->position;
