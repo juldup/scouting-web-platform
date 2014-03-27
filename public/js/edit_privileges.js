@@ -10,7 +10,7 @@ $().ready(function() {
     event.preventDefault();
     var category = $(this).data("category");
     var leaderId = $(this).data("leader-id");
-    $("input[data-category='" + category + "'][data-leader-id='" + leaderId + "']").each(function() {
+    $("input[data-category='" + category + "'][data-leader-id='" + leaderId + "']:enabled").each(function() {
       $(this).prop('checked', true).trigger('change');
     });
   });
@@ -18,7 +18,7 @@ $().ready(function() {
     event.preventDefault();
     var category = $(this).data("category");
     var leaderId = $(this).data("leader-id");
-    $("input[data-category='" + category + "'][data-leader-id='" + leaderId + "']").each(function() {
+    $("input[data-category='" + category + "'][data-leader-id='" + leaderId + "']:enabled").each(function() {
       $(this).prop('checked', false).trigger('change');
     });
   });
