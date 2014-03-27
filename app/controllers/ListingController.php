@@ -47,6 +47,8 @@ class ListingController extends BaseController {
         'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
         'sections' => $sectionArray,
         'editable_members' => $editableMembers,
+        'subgroup_choices' => $this->createSubgroupList(),
+        'subgroup_name' => $this->section->subgroup_name,
     ));
   }
   
@@ -80,8 +82,25 @@ class ListingController extends BaseController {
     return View::make('pages.listing.editListing', array(
         'members' => $members,
         'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'subgroup_choices' => $this->createSubgroupList(),
+        'subgroup_name' => $this->section->subgroup_name,
     ));
     
+  }
+  
+  private function createSubgroupList() {
+    $subgroups = DB::table('members')
+            ->select('subgroup')
+            ->distinct()
+            ->where('section_id', '=', $this->section->id)
+            ->get();
+    $subgroupList = array("" => "(Sélectionner)");
+    foreach ($subgroups as $subgroup) {
+      if ($subgroup->subgroup)
+        $subgroupList[$subgroup->subgroup] = $subgroup->subgroup;
+    }
+    if (count($subgroupList) == 1) $subgroupList = null;
+    return $subgroupList;
   }
   
   public function submit() {

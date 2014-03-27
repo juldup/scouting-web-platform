@@ -117,7 +117,18 @@
       <div class="col-md-6 form-horizontal">
         <div class="form-group">
           {{ Form::label('section', "Section", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>{{ Form::select('section', Section::getSectionsForSelect(), '', array('class' => 'form-control', ($edit_section ? "enabled" : "disabled") )) }}</div>
+          <div class='col-md-8'>{{ Form::select('section', Section::getSectionsForSelect(), '', array('class' => 'form-control medium', ($edit_section ? "enabled" : "disabled") )) }}</div>
+        </div>
+        <div class="form-group">
+          {{ Form::label('subgroup', isset($subgroup_name) && $subgroup_name ? $subgroup_name : 'Patrouille', array('class' => 'control-label col-md-4')) }}
+          <div class="col-md-8">
+            @if ($edit_totem && isset($subgroup_choices) && $subgroup_choices)
+              {{ Form::text('subgroup', '', array('class' => 'form-control medium', ($edit_totem ? "enabled" : "disabled") )) }}
+              {{ Form::select('subgroup_select', $subgroup_choices, '', array('class' => 'form-control medium', ($edit_totem ? "enabled" : "disabled") )) }}
+            @else
+              {{ Form::text('subgroup', '', array('class' => 'form-control', ($edit_totem ? "enabled" : "disabled") )) }}
+            @endif
+          </div>
         </div>
         <div class="form-group">
           {{ Form::label('totem', "Totem", array('class' => 'control-label col-md-4')) }}

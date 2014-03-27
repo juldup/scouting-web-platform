@@ -9,6 +9,9 @@ $().ready(function() {
   if (!$("#member_form input[name='is_leader']").prop("checked")) {
     $("#member_form .leader_specific").hide();
   }
+  $("#member_form select[name='subgroup_select']").change(function() {
+    $("#member_form input[name='subgroup']").val($(this).val());
+  });
 });
 
 $().ready(function() {
@@ -41,6 +44,7 @@ function editMember(memberId) {
   $("#member_form [name='leader_description']").val(members[memberId].leader_description);
   $("#member_form [name='leader_role']").val(members[memberId].leader_role);
   $("#member_form [name='section']").val(members[memberId].section_id);
+  $("#member_form [name='subgroup']").val(members[memberId].subgroup);
   $("#member_form [name='phone1']").val(members[memberId].phone1);
   $("#member_form [name='phone1_owner']").val(members[memberId].phone1_owner);
   $("#member_form [name='phone1_private']").prop("checked", members[memberId].phone1_private).trigger("change");

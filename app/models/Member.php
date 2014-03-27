@@ -152,6 +152,7 @@ class Member extends Eloquent {
     if ($canEditTotem) {
       $this->totem = $data['totem'];
       $this->quali = $data['quali'];
+      $this->subgroup = $data['subgroup'];
     }
     
     if ($canEditLeader) {
@@ -215,6 +216,7 @@ class Member extends Eloquent {
     $leaderDescription = Input::get('leader_description');
     $leaderRole = Input::get('leader_role');
     $sectionId = Input::get('section');
+    $subgroup = Input::get('subgroup');
     $phone1Unformatted = Input::get('phone1');
     $phone1Owner = Input::get('phone1_owner');
     $phone1Private = Input::get('phone1_private') ? true : false;
@@ -337,6 +339,7 @@ class Member extends Eloquent {
           'leader_description' => $leaderDescription,
           'leader_role' => $leaderRole,
           'section_id' => $sectionId,
+          'subgroup' => $subgroup,
           'phone1' => $phone1,
           'phone1_owner' => $phone1Owner,
           'phone1_private' => $phone1Private,
