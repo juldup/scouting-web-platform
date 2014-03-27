@@ -17,6 +17,7 @@ class SectionDataController extends BaseController {
   public function submitSectionData() {
     $sectionId = Input::get('section_id');
     $name = Input::get('section_name');
+    $slug = Helper::slugify($name);
     $email = Input::get('section_email');
     $sectionType = Input::get('section_type');
     $sectionTypeNumber = Input::get('section_type_number');
@@ -32,6 +33,12 @@ class SectionDataController extends BaseController {
       $errorMessage .= "Le nom de la section ne peut pas être vide. ";
     elseif (!Helper::hasCorrectCapitals($name))
       $errorMessage .= "L'usage des majuscules dans le nom de la section n'est pas correct. ";
+    // Slug
+    $identicalSlugCount = Section::where('id', '!=', $sectionId)
+            ->where('slug', '=', $slug)
+            ->count();
+    if ($identicalSlugCount != 0)
+      $errorMessage .= "Il y a déjà une section portant ce nom. ";
     // E-mail
     if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL))
       $errorMessage .= "L'adresse e-mail n'est pas valide.";
@@ -63,6 +70,7 @@ class SectionDataController extends BaseController {
       $section = Section::find($sectionId);
       if ($section) {
         $section->name = $name;
+        $section->slug = $slug;
         $section->email = $email;
         $section->section_type = $sectionType;
         $section->section_type_number = $sectionTypeNumber;
@@ -92,6 +100,7 @@ class SectionDataController extends BaseController {
       }
       $section = new Section();
       $section->name = $name;
+      $section->slug = $slug;
       $section->email = $email;
       $section->section_type = $sectionType;
       $section->section_type_number = $sectionTypeNumber;
