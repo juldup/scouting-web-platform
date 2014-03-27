@@ -12,6 +12,8 @@
  */
 class Privilege extends Eloquent {
   
+  var $guarded = array('id', 'created_at', 'updated_at');
+  
   public static $UPDATE_OWN_LISTING_ENTRY = array(
       'id' => 'Update own listing entry',
       'text' => 'Modifier ses données personnelles dans le listing',
@@ -22,13 +24,6 @@ class Privilege extends Eloquent {
   public static $VIEW_PRIVATE_SUGGESTIONS = array(
       'id' => 'View private suggestions',
       'text' => 'Voir les suggestions privées',
-      'section' => false,
-      'predefined' => "ARSU"
-  );
-  
-  public static $VIEW_MEMBER_LIST = array(
-      'id' => 'View member list',
-      'text' => 'Voir la liste des membres',
       'section' => false,
       'predefined' => "ARSU"
   );
@@ -172,7 +167,6 @@ class Privilege extends Eloquent {
         self::$EDIT_CALENDAR,
         self::$POST_PHOTOS,
         self::$VIEW_HEALTH_CARDS,
-        self::$VIEW_MEMBER_LIST,
         self::$VIEW_PRIVATE_SUGGESTIONS,
         
         self::$EDIT_PAGES,
@@ -204,31 +198,89 @@ class Privilege extends Eloquent {
     $unitLeaderPrivileges = array();
     foreach (self::getPrivilegeList() as $privilege) {
       if (strpos($privilege['predefined'], "A") !== false) {
-        $basicPrivileges[] = $privilege;
-        if ($forSection && $privilege['section']) $unitTeamPrivileges[] = $privilege;
+        if ($forSection) {
+          $basicPrivileges[] = $privilege;
+          if ($privilege['section']) $unitTeamPrivileges[] = $privilege;
+        } else {
+          if ($privilege['section'])
+            $leaderInChargePrivileges[] = $privilege;
+          else
+            $basicPrivileges[] = $privilege;
+        }
       } elseif (strpos($privilege['predefined'], "R") !== false) {
-        $leaderInChargePrivileges[] = $privilege;
-        if ($forSection && $privilege['section']) $unitTeamPrivileges[] = $privilege;
+        if ($forSection) {
+          $leaderInChargePrivileges[] = $privilege;
+          if ($privilege['section']) $unitTeamPrivileges[] = $privilege;
+        } else {
+          $leaderInChargePrivileges[] = $privilege;
+        }
       } elseif (strpos($privilege['predefined'], "S") !== false) {
-        $unitTeamPrivileges[] = $privilege;
-        if ($forSection && $privilege['section']) $basicPrivileges[] = $privilege;
+        if ($forSection) {
+          $unitTeamPrivileges[] = $privilege;
+          if ($privilege['section']) $basicPrivileges[] = $privilege;
+        } else {
+          $unitTeamPrivileges[] = $privilege;
+        }
       } elseif (strpos($privilege['predefined'], "U") !== false) {
         $unitLeaderPrivileges[] = $privilege;
         if ($forSection && $privilege['section']) $leaderInChargePrivileges[] = $privilege;
       }
     }
-    return array(
-        "S" => array(
-          "Gestion de base" => $basicPrivileges,
-          "Gestion avancée" => $leaderInChargePrivileges,
-        ),
-        "U" => array(
-          "Gestion de l'unité" => $unitTeamPrivileges,
-          "Gestion avancée de l'unité" => $unitLeaderPrivileges,
-        ),
-    );
+    if ($forSection) {
+      return array(
+          "S" => array(
+            "Gestion de base" => $basicPrivileges,
+            "Gestion avancée" => $leaderInChargePrivileges,
+          ),
+          "U" => array(
+            "Gestion de l'unité" => $unitTeamPrivileges,
+            "Gestion avancée de l'unité" => $unitLeaderPrivileges,
+          ),
+      );
+    } else {
+      return array(
+          "S" => array(
+            "Gestion de base" => $basicPrivileges,
+          ),
+          "U" => array(
+            "Gestion avancée" => $leaderInChargePrivileges,
+            "Gestion de l'unité" => $unitTeamPrivileges,
+            "Gestion avancée de l'unité" => $unitLeaderPrivileges,
+          ),
+      );
+    }
   }
-
+  
+  public static function addBasePrivilegesForLeader($leader) {
+    foreach (self::getPrivilegeList() as $privilege) {
+      if (strpos($privilege['predefined'], "A") !== false) {
+        try {
+          Privilege::create(array(
+              'operation' => $privilege['id'],
+              'scope' => $privilege['section'] ? 'S' : 'U',
+              'member_id' => $leader->id,
+          ));
+        } catch (Exception $e) {}
+      }
+    }
+  }
+  
+  // Sets a privilege for a leader
+  public static function set($operation, $scope, $leaderId, $state) {
+    $privilege = Privilege::where('operation', '=', $operation)
+            ->where('scope', '=', $scope)
+            ->where('member_id', '=', $leaderId)
+            ->first();
+    if ($privilege && !$state) {
+      $privilege->delete();
+    } elseif (!$privilege && $state) {
+      Privilege::create(array(
+          'operation' => $operation,
+          'scope' => $scope,
+          'member_id' => $leaderId,
+      ));
+    }
+  }
 
   /*
         "U:Accéder au coin des animateurs", => everybody

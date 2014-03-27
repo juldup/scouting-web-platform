@@ -191,7 +191,7 @@ class Member extends Eloquent {
       if ($validate) $data['validated'] = true;
       $member = Member::create($data);
       if ($member->is_leader) return $member->uploadPictureFromInput();
-      else return true;
+      else return $member;
     } catch (Exception $e) {
       return false;
     }

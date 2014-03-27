@@ -166,6 +166,7 @@ Route::post('gestion/animateurs/scout-en-animateur/{section_slug}', array("as" =
 Route::post('gestion/animateurs/submit/{section_slug?}', array("as" => "edit_leaders_submit", "uses" => "LeaderController@submitLeader"));
 Route::get('gestion/animateurs/supprimer/{member_id}/{section_slug}', array("as" => "edit_leaders_delete", "uses" => "LeaderController@deleteLeader"));
 Route::get('gestion/privileges/{section_slug?}', array("as" => "edit_privileges", "uses" => "PrivilegeController@showEdit"));
+Route::post('ajax/gestion/privileges/change', array("as" => "ajax_change_privileges", "uses" => "PrivilegeController@updatePrivileges"));
 
 // Listing
 Route::get('listing/{section_slug?}', array("as" => "listing", "uses" => "ListingController@showPage"));

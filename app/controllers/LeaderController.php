@@ -116,10 +116,12 @@ class LeaderController extends BaseController {
     if ($memberId) {
       // Existing leader
       $leader = Member::find($memberId);
+      $wasLeaderBefore = $leader->is_leader;
       if ($leader) {
         $result = $leader->updateFromInput($editionLevel == "full", true, $editionLevel == "full", true, true);
 
         if ($result === true) {
+          Privilege::addBasePrivilegesForLeader($leader);
           $success = true;
           $message = "Les données de l'animateur ont été modifiées.";
         } else {
@@ -139,12 +141,14 @@ class LeaderController extends BaseController {
       }
 
       $result = Member::createFromInput(true);
-      if ($result === true) {
-        $success = true;
-        $message = "L'animateur a été ajouté au listing.";
-      } else {
+      if (is_string($result)) {
+        // An error has occured
         $success = false;
         $message = $result ? $result : "Une erreur est survenue. L'animateur n'a pas été ajouté.";
+      } else {
+        Privilege::addBasePrivilegesForLeader($result);
+        $success = true;
+        $message = "L'animateur a été ajouté au listing.";
       }
     }
         

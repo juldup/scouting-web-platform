@@ -73,15 +73,16 @@ class RegistrationController extends GenericPageController {
       $message = "Vous devez adhérer à la charte d'unité pour inscrire un enfant.";
     } else {
       $result = Member::createFromInput(false);
-      if ($result === true) {
-        $success = true;
-        $message = "Votre inscription a été enregistrée. L'animateur d'unité la validera prochainement.";
-      } else {
+      if (is_string($result)) {
+        // An error has occured
         $success = false;
         $message = $result;
         if (!$message) $message = "Une erreur est survenue. Votre inscription n'a pas été enregistrée. " .
                 "Veuillez réessayer ou <a href='" . URL::route('contacts') . 
                 "'>contacter l'animateur d'unité</a>.";
+      } else {
+        $success = true;
+        $message = "Votre inscription a été enregistrée. L'animateur d'unité la validera prochainement.";
       }
     }
     

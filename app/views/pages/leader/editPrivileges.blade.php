@@ -5,9 +5,10 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit_leaders.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit_privileges.js"></script>
   <script>
     var currentSection = {{ $user->currentSection->id }};
+    var commitPrivilegeChangesURL = "{{ URL::route('ajax_change_privileges') }}";
   </script>
 @stop
 
@@ -23,11 +24,11 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Privileges des animateurs {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Privilèges des animateurs {{ $user->currentSection->de_la_section }}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
-
+  
   <div class="row">
     <div class="col-md-12">
       @if (count($leaders))
@@ -51,10 +52,20 @@
               }
             ?>
             @foreach ($privilege_sublist as $category_name => $category_privileges)
-            <tr>
-              <th colspan="{{ count($leaders) + 1 }}">
-              {{ $category_name }}
+            <tr class="privilege-category">
+              <th>
+                {{ $category_name }}
               </th>
+              @foreach ($leaders as $leader)
+                <th>
+                  <a class="btn-sm btn-default privileges-check-all" href="" data-category="{{ $category_name }}" data-leader-id="{{ $leader->id }}" >
+                    <span class="glyphicon glyphicon-check"></span>
+                  </a>
+                  <a class="btn-sm btn-default privileges-uncheck-all" href="" data-category="{{ $category_name }}" data-leader-id="{{ $leader->id }}" >
+                    <span class="glyphicon glyphicon-unchecked"></span>
+                  </a>
+                </th>
+              @endforeach
             </tr>
               @foreach ($category_privileges as $privilege)
                 <tr>
@@ -63,8 +74,11 @@
                   </td>
                   @foreach ($leaders as $leader)
                     <th>
-                      <?php $checked = ($privilege_table[$privilege['id']][$leader->id] == "U" || ($sOrU == "S" && $privilege_table[$privilege['id']][$leader->id] == 'S')) ?>
-                      <input type="checkbox" @if ($checked) checked @endif />
+                      <?php $checked = ($sOrU == "U" && $privilege_table[$privilege['id']][$leader->id]['U']['state'])
+                              || ($sOrU == "S" && $privilege_table[$privilege['id']][$leader->id]['S']['state']); ?>
+                      <?php $disabled = !$privilege_table[$privilege['id']][$leader->id][$sOrU]['can_change'];?>
+                        <input class="privilege-checkbox" type="checkbox" @if ($checked) checked @endif @if ($disabled) disabled @endif
+                               data-privilege-id="{{ $privilege['id'] }}" data-category="{{ $category_name }}" data-scope="{{ $sOrU }}" data-leader-id="{{ $leader->id }}" />
                     </th>
                   @endforeach
                 </tr>
@@ -78,4 +92,5 @@
     </div>
   </div>
   
+  <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"</div>
 @stop

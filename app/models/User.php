@@ -250,8 +250,11 @@ class User extends Eloquent {
       $sectionId = $section->id;
     }
     
+    $operation = $action;
+    if (!is_string($operation)) $operation = $action['id'];
+    
     foreach ($this->getAssociatedLeaderMembers() as $leaderMember) {
-      $privileges = Privilege::where('member_id', '=', $leaderMember->id)->where("operation", "=", $action['id'])->get();
+      $privileges = Privilege::where('member_id', '=', $leaderMember->id)->where("operation", "=", $operation)->get();
       foreach ($privileges as $privilege) {
         if ($privilege->scope == 'U') {
           // Unit-wide privilege found, access granted

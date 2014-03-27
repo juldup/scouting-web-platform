@@ -533,3 +533,41 @@ table tbody > tr > .space-on-left, table thead > tr > .space-on-left {
 form .color-sample {
   cursor: pointer;
 }
+
+#pending-commit {
+  display: block;
+  position: fixed;
+  bottom: 20px;
+  left: 30px;
+  color: black;
+  z-index: 1000;
+  font-size: 3em;
+  width: 50px;
+  height: 52px;
+  opacity: .25;
+}
+
+#pending-commit span {
+  -moz-animation: spin 2s infinite linear;
+  -o-animation: spin 2s infinite linear;
+  -webkit-animation: spin 2s infinite linear;
+  animation: spin 2s infinite linear;
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+.table tbody > tr.privilege-category th {
+  padding-top: 30px;
+  background: white;
+}

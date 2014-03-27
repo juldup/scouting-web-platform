@@ -1,6 +1,6 @@
 TODO list
 
-- Privileges
+- Check privileges in all pages
 - Accounting
 
 - Help for leaders + task list
