@@ -64,7 +64,13 @@
           @foreach ($leaders as $leader)
             @if ($leader->id != $scout_to_leader)
               <tr>
-                <td><a class="btn-sm btn-primary" href="javascript:editLeader({{ $leader->id }})">Modifier</a></td>
+                <td>
+                  <a class="btn-sm btn-primary" href="javascript:editLeader({{ $leader->id }})">Modifier</a>
+                  <a class="btn-sm btn-danger warning-delete"
+                     href="{{ URL::route('edit_leaders_delete', array('member_id' => $leader->id, 'section_slug' => $user->currentSection->slug)) }}">
+                    Supprimer
+                  </a>
+                </td>
                 <td>{{ $leader->leader_name }} @if ($leader->leader_in_charge) (responsable) @endif</td>
                 <td>{{ $leader->first_name }}</td>
                 <td>{{ $leader->last_name }}</td>

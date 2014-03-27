@@ -157,6 +157,25 @@ class LeaderController extends BaseController {
             ->withInput();
   }
   
+  public function deleteLeader($leader_id, $section_slug) {
+    $member = Member::find($leader_id);
+    $sectionId = $member ? $member->section_id : null;
+    if ($sectionId) {
+      if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
+        return Helper::forbiddenResponse();
+      }
+      try {
+        $member->delete();
+        return Redirect::route('edit_leaders')
+                ->with('success_message', $member->first_name . " " . $member->last_name
+                        . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
+      } catch (Exception $ex) {
+      }
+    }
+    return Redirect::route('edit_leaders')
+            ->with('error_message', "Une erreur est survenue. L'animateur n'a pas été supprimé.");
+  }
+  
   private function editionLevelAllowed($memberId, $sectionId) {
     if (!$memberId) {
       // Creating new leader

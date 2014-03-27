@@ -12,9 +12,6 @@ $().ready(function() {
   $("#member_form select[name='subgroup_select']").change(function() {
     $("#member_form input[name='subgroup']").val($(this).val());
   });
-});
-
-$().ready(function() {
   $(".warning-delete").click(function() {
     return confirm("Veux-tu vraiment supprimer ce membre du listing ?");
   });

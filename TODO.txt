@@ -2,8 +2,6 @@ TODO list
 
 - Privileges
 - Accounting
-- Edit subgroup in listing
-- Delete leaders from listing
 
 - Manage member list
 - Help for leaders + task list

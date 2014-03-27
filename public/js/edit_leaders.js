@@ -2,6 +2,9 @@ $().ready(function() {
   $("#scout_to_leader select").bind('change', function() {
     $("#scout_to_leader form").trigger('submit');
   });
+  $(".warning-delete").click(function() {
+    return confirm("Veux-tu vraiment supprimer ce membre du listing ?");
+  });
 });
 
 function addLeader(sectionId) {
