@@ -257,23 +257,34 @@ class UserController extends BaseController {
         $passwordRecoveries = array();
         foreach ($users as $user) {
           $passwordRecoveries[$user->username] = PasswordRecovery::createForUser($user);
-
         }
-        var_dump($passwordRecoveries);
-        // TODO Send e-mail
+        // Send e-mail
+        $emailContent = View::make('emails.passwordRecovery', array(
+            'recoveries' => $passwordRecoveries,
+            'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME)
+        ))->render();
+        $pendingEmail = PendingEmail::create(array(
+            'subject' => 'Récupérer votre mot de passe',
+            'raw_body' => $emailContent,
+            'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+            'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+            'recipient' => $email,
+            'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+        ));
+        $pendingEmail->send();
         return Redirect::to(URL::current())->with('success_message', "Un e-mail a été envoyé à $email.");
       } else {
         return Redirect::to(URL::current())->with('error_message', "Aucun utilisateur n'est enregistré avec l'adresse $email.");
       }
     }
-    
-    // TODO send e-mail to retrieve password
     return View::make('user.retrieve_password');
   }
   
   public function changePassword($code) {
     if ($code != 'done') {
-      $passwordRecovery = PasswordRecovery::where('code', '=', $code)->first();
+      $passwordRecovery = PasswordRecovery::where('code', '=', $code)
+              ->where('timestamp', '>=', time() - 24*3600) // A password recovery code is valid for 24 hours
+              ->first();
       if (!$passwordRecovery) {
         $status = 'unknown';
       } else {
