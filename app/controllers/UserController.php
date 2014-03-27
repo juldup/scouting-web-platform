@@ -21,9 +21,9 @@ class UserController extends BaseController {
     $username = Input::get('login_username');
     $password = Input::get('login_password');
     $remember = Input::get('login_remember');
-
+    
     $user = User::getWithUsernameAndPassword($username, $password);
-
+    
     if ($user) {
       // Log user in
       Session::put('user_id', $user->id);
@@ -316,6 +316,32 @@ class UserController extends BaseController {
     return View::make('user.change_password', array(
         "status" => $status,
     ));
+  }
+  
+  public function showUserList() {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    $users = User::orderBy('last_visit', 'desc')->get();
+    return View::make('user.userList', array(
+        'users' => $users,
+        'can_delete' => ($this->user->can(Privilege::$DELETE_USERS)),
+    ));
+  }
+  
+  public function deleteUser($user_id) {
+    if (!$this->user->can(Privilege::$DELETE_USERS)) {
+      return Helper::forbiddenResponse();
+    }
+    $user = User::find($user_id);
+    if ($user) {
+      try {
+        $user->delete();
+        return Redirect::route('user_list')->with("success_message", "L'utilisateur " . $user->username . " a été supprimé du site.");
+      } catch (Exception $e) {
+      }
+    }
+    return Redirect::route('user_list')->with('error_message', "Une erreur est survenue. L'utilisateur n'a pas été supprimé");
   }
   
 }

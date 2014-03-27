@@ -3,13 +3,14 @@ TODO list
 - Privileges
 - Accounting
 
-- Manage member list
 - Help for leaders + task list
 - Leader archives
 - Send e-mail: include archived leaders (+ old members ?)
 - Archives (news, documents, e-mails, photos, leaders, listing?)
 - Export leaders' e-mail addresses
 - Access control for each page
+- Manage last visit
+- Show 'new since last visit'
 
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
 - Birthdays in calendar

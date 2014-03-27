@@ -159,7 +159,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       ));
       
       $newUser->is_webmaster = $user['privilege'] == "webmaster";
-      $newUser->last_visit = $user['lastVisit'];
+      $newUser->last_visit = strtotime($user['lastVisit']);
       $newUser->verification_code = $user['verificationCode'];
       $newUser->current_visit = $user['currentVisit'];
       $newUser->verified = $user['verified'];
