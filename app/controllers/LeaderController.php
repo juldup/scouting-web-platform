@@ -74,6 +74,12 @@ class LeaderController extends BaseController {
         'leaders' => $leaders,
         'scouts' => $scoutsForSelect,
         'scout_to_leader' => $memberId,
+        'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_delete' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_edit_all' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_edit_limited' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section) || $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_edit_own_data' => $this->user->can(Privilege::$UPDATE_OWN_LISTING_ENTRY, $this->section),
+        'can_add_leader' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1) && $this->user->can(Privilege::$SECTION_TRANSFER, 1),
     ));
   }
   
@@ -105,8 +111,10 @@ class LeaderController extends BaseController {
   public function submitLeader() {
     $memberId = Input::get('member_id');
     $sectionId = Input::get('section_id');
+    if (!$sectionId) $sectionId = $this->section->id;
     
     $editionLevel = $this->editionLevelAllowed($memberId, $sectionId);
+    $canChangeSection = $this->user->can(Privilege::$SECTION_TRANSFER, 1);
     if (!$editionLevel) {
       return Redirect::to(URL::previous())
               ->withInput()
@@ -118,10 +126,9 @@ class LeaderController extends BaseController {
       $leader = Member::find($memberId);
       $wasLeaderBefore = $leader->is_leader;
       if ($leader) {
-        $result = $leader->updateFromInput($editionLevel == "full", true, $editionLevel == "full", true, true);
-
+        $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true); 
         if ($result === true) {
-          Privilege::addBasePrivilegesForLeader($leader);
+          if (!$wasLeaderBefore) Privilege::addBasePrivilegesForLeader($leader);
           $success = true;
           $message = "Les données de l'animateur ont été modifiées.";
         } else {
@@ -204,7 +211,7 @@ class LeaderController extends BaseController {
       // Check if the user is modifying their own member entry
       if ($this->user->can(Privilege::$UPDATE_OWN_LISTING_ENTRY, $sectionId) &&
               $sectionId == $memberSectionId &&
-              $user->isOwnerOfMember($memberId)) {
+              $this->user->isOwnerOfMember($memberId)) {
         return "full";
       }
       

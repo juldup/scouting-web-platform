@@ -203,6 +203,10 @@ class Helper {
     return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
   }
   
+  public static function forbiddenNotMemberResponse() {
+    return Illuminate\Http\Response::create(View::make('forbiddenNotMember'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+  }
+  
   public static function slugify($text) {
     // Based on: http://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string#2955878
     // Remove special characters

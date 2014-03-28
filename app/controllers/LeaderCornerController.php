@@ -4,6 +4,10 @@ class LeaderCornerController extends BaseController {
   
   public function showPage() {
     
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    
     $operations = array(
         "Opérations courantes" => array(
             "Calendrier" => array(

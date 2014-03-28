@@ -164,7 +164,7 @@ class HealthCardController extends BaseController {
     if (!$member) App::abort(404, "Ce membre n'existe pas.");
     
     if (!$this->user->isOwnerOfMember($member_id) &&
-            !$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $member->section)) {
+            !$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $member->section_id)) {
       return Helper::forbiddenResponse();
     }
     

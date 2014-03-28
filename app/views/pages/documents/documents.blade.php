@@ -52,6 +52,17 @@
             <p>
               {{ Helper::rawToHTML($doc->description) }}
             </p>
+          @else
+            <legend>
+              <div class="row">
+                <div class="col-md-10">
+                  {{ $doc->title }}
+                </div>
+              </div>
+            </legend>
+            <p>
+              Document privé.
+            </p>
           @endif
         </div>
       </div>

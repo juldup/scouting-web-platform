@@ -23,22 +23,22 @@ class PrivilegeController extends BaseController {
     $privilegeRawData = Privilege::all();
     
     $privilegeTable = array();
-    foreach ($privilegeList as $sOrU=>$privilegeSublist) {
-      foreach ($privilegeSublist as $category) {
-        foreach ($category as $privilege) {
-          $privilegeTable[$privilege['id']] = array();
-          foreach ($leaders as $leader) {
-            $privilegeTable[$privilege['id']][$leader->id] = array(
-                'S' => array(
-                    'state' => false,
-                    'can_change' => $canEditPrivileges && $this->user->can($privilege, $this->section) && !$this->user->isOwnerOfMember($leader->id),
-                ),
-                'U' => array(
-                    'state' => false,
-                    'can_change' => $canEditPrivileges && $this->user->can($privilege, 1) && !$this->user->isOwnerOfMember($leader->id),
-                ),
-            );
-          }
+    foreach ($privilegeList as $category) {
+      foreach ($category as $privilegeData) {
+        $privilege = $privilegeData['privilege'];
+        $sOrU = $privilegeData['scope'];
+        $privilegeTable[$privilege['id']] = array();
+        foreach ($leaders as $leader) {
+          $privilegeTable[$privilege['id']][$leader->id] = array(
+              'S' => array(
+                  'state' => false,
+                  'can_change' => $canEditPrivileges && $this->user->can($privilege, $this->section) && !$this->user->isOwnerOfMember($leader->id),
+              ),
+              'U' => array(
+                  'state' => false,
+                  'can_change' => $canEditPrivileges && $this->user->can($privilege, 1) && !$this->user->isOwnerOfMember($leader->id),
+              ),
+          );
         }
       }
     }

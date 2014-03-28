@@ -8,6 +8,10 @@ class PhotoController extends BaseController {
       return App::abort(404);
     }
     
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenNotMemberResponse();
+    }
+    
     $albumId = Route::input('album_id');
     
     $albums = PhotoAlbum::where('archived', '=', false)
@@ -99,6 +103,10 @@ class PhotoController extends BaseController {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_PHOTOS)) {
       return App::abort(404);
+    }
+    
+    if (!$this->user->can(Privilege::$POST_PHOTOS, $this->section)) {
+      return Helper::forbiddenResponse();
     }
     
     $albums = PhotoAlbum::where('archived', '=', false)

@@ -116,6 +116,33 @@
         {{ Form::close() }}
       </div>
       
+      <div id="section-form-limited" class="form-horizontal well"
+           @if (!Session::has('_old_input')) style="display: none;" @endif
+           >
+        {{ Form::open(array('url' => URL::route('edit_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
+          {{ Form::hidden('section_id', 0) }}
+          <legend>Modifier la section</legend>
+          <div class="form-group">
+            {{ Form::label('section_email', 'Adresse e-mail', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-7">
+              {{ Form::text('section_email', '', array('class' => 'form-control')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            {{ Form::label('section_subgroup_name', 'Nom des sous-groupes', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-7">
+              {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'Patrouille, Sizaine, Hutte...')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-5 col-md-offset-3">
+              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+              <a class='btn btn-default dismiss-form'>Fermer</a>
+            </div>
+          </div>
+        {{ Form::close() }}
+      </div>
+      
     </div>
   </div>
 
@@ -143,6 +170,10 @@
                   <div class="col-md-3">
                     @if ($user->can(Privilege::$MANAGE_SECTIONS, $section))
                       <a class="btn-sm btn-primary edit-button" href="">
+                        Modifier
+                      </a>
+                    @elseif ($user->can(Privilege::$EDIT_SECTION_EMAIL_AND_SUBGROUP, $section))
+                      <a class="btn-sm btn-primary edit-limited-button" href="">
                         Modifier
                       </a>
                     @else

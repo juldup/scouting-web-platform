@@ -8,6 +8,10 @@ class ListingController extends BaseController {
       return App::abort(404);
     }
     
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenNotMemberResponse();
+    }
+    
     if ($this->section->id == 1) {
       $sections = Section::where('id', '!=', 1)
               ->orderBy('position')
@@ -44,7 +48,7 @@ class ListingController extends BaseController {
     return View::make('pages.listing.listing', array(
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
                         || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
-        'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
         'sections' => $sectionArray,
         'editable_members' => $editableMembers,
         'subgroup_choices' => $this->createSubgroupList(),
@@ -68,7 +72,7 @@ class ListingController extends BaseController {
   
   public function showEdit() {
     
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section) && !$this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)) {
       return Helper::forbiddenResponse();
     }
     
@@ -81,7 +85,8 @@ class ListingController extends BaseController {
     
     return View::make('pages.listing.editListing', array(
         'members' => $members,
-        'can_change_section' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_edit_identity' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'subgroup_choices' => $this->createSubgroupList(),
         'subgroup_name' => $this->section->subgroup_name,
     ));
@@ -110,15 +115,18 @@ class ListingController extends BaseController {
     $member = Member::find($memberId);
     if ($member) {
       
-      $fullPrivileges = false;
+      $sectionTransferPrivileges = false;
       $leaderPrivileges = false;
       $memberPrivileges = false;
       
       if ($this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId) &&
               $this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section)) {
-        $fullPrivileges = true;
         $leaderPrivileges = true;
         $memberPrivileges = true;
+      }
+      
+      if ($this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
+        $sectionTransferPrivileges = true;
       }
       
       if ($this->user->isOwnerOfMember($memberId)) {
@@ -130,12 +138,12 @@ class ListingController extends BaseController {
         $leaderPrivileges = true;
       }
       
-      if (!$fullPrivileges && !$memberPrivileges && !$leaderPrivileges) {
+      if (!$sectionTransferPrivileges && !$memberPrivileges && !$leaderPrivileges) {
         return Helper::forbiddenResponse();
       }
 
       
-      $result = $member->updateFromInput($memberPrivileges, true, $fullPrivileges, $leaderPrivileges, $leaderPrivileges);
+      $result = $member->updateFromInput($memberPrivileges, true, $sectionTransferPrivileges, $leaderPrivileges, $leaderPrivileges);
       if ($result === true) {
         $success = true;
         $message = "Les données ont été modifiées.";

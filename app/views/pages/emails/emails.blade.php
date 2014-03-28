@@ -55,7 +55,7 @@
       </div>
     @endforeach
   @else
-    XXX
+    @include('subviews.limitedAccess')
   @endif
   
 @stop

@@ -52,7 +52,7 @@
           </div>
           <div class="form-group">
             {{ Form::label('news_body', "Contenu", array("class" => "col-md-2 control-label")) }}
-            <div class="col-md-5">
+            <div class="col-md-8">
               {{ Form::textarea('news_body', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
             </div>
           </div>

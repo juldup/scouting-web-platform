@@ -79,7 +79,7 @@
   
   <div class="row">
     <div class="col-lg-12">
-      @include('subviews.editMemberForm', array('form_legend' => "Modifier un membre", 'submit_url' => URL::route('listing_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => false, 'edit_identity' => true, 'edit_section' => $can_change_section, 'edit_totem' => true, 'edit_leader' => false))
+      @include('subviews.editMemberForm', array('form_legend' => "Modifier un membre", 'submit_url' => URL::route('listing_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => false, 'edit_identity' => $can_edit_identity, 'edit_section' => $can_change_section, 'edit_totem' => true, 'edit_leader' => false))
     </div>
   </div>
   

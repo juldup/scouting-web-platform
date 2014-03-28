@@ -41,17 +41,7 @@
               </th>
             @endforeach
           </tr>
-          @foreach ($privilege_list as $sOrU => $privilege_sublist)
-            <?php
-              if ($sOrU == 'S' && $user->currentSection->id != 1) {
-                $delasection = $user->currentSection->de_la_section;
-                $lasection = $user->currentSection->la_section;
-              } else {
-                $delasection = "de toute l'unité";
-                $lasection = "toute l'unité";
-              }
-            ?>
-            @foreach ($privilege_sublist as $category_name => $category_privileges)
+          @foreach ($privilege_list as $category_name => $category_privileges)
             <tr class="privilege-category">
               <th>
                 {{ $category_name }}
@@ -67,22 +57,32 @@
                 </th>
               @endforeach
             </tr>
-              @foreach ($category_privileges as $privilege)
-                <tr>
-                  <td>
+            @foreach ($category_privileges as $privilegeData)
+              <?php
+                $sOrU = $privilegeData['scope'];
+                $privilege = $privilegeData['privilege'];
+                if ($sOrU == 'S' && $user->currentSection->id != 1) {
+                  $delasection = $user->currentSection->de_la_section;
+                  $lasection = $user->currentSection->la_section;
+                } else {
+                  $delasection = "de toute l'unité";
+                  $lasection = "toute l'unité";
+                }
+              ?>
+              <tr>
+                <td>
                   {{ str_replace("#lasection", $lasection, str_replace("#delasection", $delasection, $privilege['text'])) }}
-                  </td>
-                  @foreach ($leaders as $leader)
-                    <th>
-                      <?php $checked = ($sOrU == "U" && $privilege_table[$privilege['id']][$leader->id]['U']['state'])
-                              || ($sOrU == "S" && $privilege_table[$privilege['id']][$leader->id]['S']['state']); ?>
-                      <?php $disabled = !$privilege_table[$privilege['id']][$leader->id][$sOrU]['can_change'];?>
-                        <input class="privilege-checkbox" type="checkbox" @if ($checked) checked @endif @if ($disabled) disabled @endif
-                               data-privilege-id="{{ $privilege['id'] }}" data-category="{{ $category_name }}" data-scope="{{ $sOrU }}" data-leader-id="{{ $leader->id }}" />
-                    </th>
-                  @endforeach
-                </tr>
-              @endforeach
+                </td>
+                @foreach ($leaders as $leader)
+                  <th>
+                    <?php $checked = ($sOrU == "U" && $privilege_table[$privilege['id']][$leader->id]['U']['state'])
+                            || ($sOrU == "S" && $privilege_table[$privilege['id']][$leader->id]['S']['state']); ?>
+                    <?php $disabled = !$privilege_table[$privilege['id']][$leader->id][$sOrU]['can_change'];?>
+                      <input class="privilege-checkbox" type="checkbox" @if ($checked) checked @endif @if ($disabled) disabled @endif
+                             data-privilege-id="{{ $privilege['id'] }}" data-category="{{ $category_name }}" data-scope="{{ $sOrU }}" data-leader-id="{{ $leader->id }}" />
+                  </th>
+                @endforeach
+              </tr>
             @endforeach
           @endforeach
         </table>

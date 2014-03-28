@@ -2,6 +2,7 @@ TODO list
 
 - Check privileges in all pages
 - Accounting
+- Import colors from previous data
 
 - Help for leaders + task list
 - Leader archives
@@ -11,6 +12,7 @@ TODO list
 - Access control for each page
 - Manage last visit
 - Show 'new since last visit'
+- Edit advanced parameters (webmaster e-mail, etc.)
 
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
 - Birthdays in calendar
@@ -30,3 +32,5 @@ TODO list
 - Check how the site behave on tablets (col-sm instead of col-md)
 - Escape all user data with {{{ }}}
 - Change 'manage' to 'edit' everywhere or the other way around
+
+- When importing old data, make sure that document categories are set

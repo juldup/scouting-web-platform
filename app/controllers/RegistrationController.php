@@ -37,7 +37,9 @@ class RegistrationController extends GenericPageController {
       ));
     } else {
       return View::make('pages.registration.registrationInactive', array(
-          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
+                              || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)
+                              || $this->user->can(Privilege::$SECTION_TRANSFER, 1),
           'page_title' => $this->getPageTitle(),
       ));
     }
@@ -116,8 +118,8 @@ class RegistrationController extends GenericPageController {
   
   public function manageRegistration() {
     // Check that the user is allowed to reach this page
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
-      return Helper::forbiddenResponse();
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
+      return Redirect::route('manage_reregistration');
     }
     // Gather pending registrations
     $pendingRegistrations = Member::where('validated', '=', false)
@@ -135,6 +137,10 @@ class RegistrationController extends GenericPageController {
     return View::make('pages.registration.manageRegistration', array(
         'registrations' => $pendingRegistrations,
         'other_sections' => $otherSection,
+        'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
     ));
   }
   
@@ -199,7 +205,7 @@ class RegistrationController extends GenericPageController {
   public function manageReregistration() {
     // Make sure the user is allowed to access this page
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
-      return Helper::forbiddenResponse();
+      return Redirect::route('manage_year_in_section');
     }
     // List scouts
     $query = Member::where('validated', '=', true)
@@ -213,6 +219,10 @@ class RegistrationController extends GenericPageController {
     // Render view
     return View::make('pages.registration.manageReregistration', array(
         'active_members' => $activeMembers,
+        'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
     ));
   }
   
@@ -274,8 +284,8 @@ class RegistrationController extends GenericPageController {
   
   public function manageYearInSection() {
     // Make sure the user is allowed to access this page
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
-      return Helper::forbiddenResponse();
+    if (!$this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)) {
+      return Redirect::route('manage_member_section');
     }
     // List scouts
     $activeMembers = Member::where('validated', '=', true)
@@ -287,6 +297,10 @@ class RegistrationController extends GenericPageController {
     // Render view
     return View::make('pages.registration.manageYearInSection', array(
         'active_members' => $activeMembers,
+        'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
     ));
   }
   
@@ -343,7 +357,10 @@ class RegistrationController extends GenericPageController {
   
   public function manageMemberSection() {
     // Make sure the user is allowed to access this page
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
+    if (!$this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
+      if ($this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section) || $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
+        return Redirect::route('manage_registration');
+      }
       return Helper::forbiddenResponse();
     }
     // List scouts
@@ -356,6 +373,10 @@ class RegistrationController extends GenericPageController {
     // Render view
     return View::make('pages.registration.manageMemberSection', array(
         'active_members' => $activeMembers,
+        'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
     ));
   }
   
@@ -367,8 +388,7 @@ class RegistrationController extends GenericPageController {
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('error_message', "Une erreur est survenue. Les changements n'ont pas été enregistrés");
     }
-    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionFrom) &&
-            !$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionTo)) {
+    if (!$this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
       return Helper::forbiddenResponse();
     }
     $errorList = "";

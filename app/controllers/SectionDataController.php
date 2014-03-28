@@ -17,7 +17,6 @@ class SectionDataController extends BaseController {
   public function submitSectionData() {
     $sectionId = Input::get('section_id');
     $name = Input::get('section_name');
-    $slug = Helper::slugify($name);
     $email = Input::get('section_email');
     $sectionType = Input::get('section_type');
     $sectionTypeNumber = Input::get('section_type_number');
@@ -26,31 +25,38 @@ class SectionDataController extends BaseController {
     $de_la_section = Input::get('section_de_la_section');
     $subgroup_name = Input::get('section_subgroup_name');
     
+    $fullEdit = $this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId);
+    
     // Check validity
     $errorMessage = "";
-    // Name
-    if (!$name)
-      $errorMessage .= "Le nom de la section ne peut pas être vide. ";
-    elseif (!Helper::hasCorrectCapitals($name))
-      $errorMessage .= "L'usage des majuscules dans le nom de la section n'est pas correct. ";
-    // Slug
-    $identicalSlugCount = Section::where('id', '!=', $sectionId)
-            ->where('slug', '=', $slug)
-            ->count();
-    if ($identicalSlugCount != 0)
-      $errorMessage .= "Il y a déjà une section portant ce nom. ";
+    if ($fullEdit) {
+      // Name
+      if (!$name)
+        $errorMessage .= "Le nom de la section ne peut pas être vide. ";
+      elseif (!Helper::hasCorrectCapitals($name))
+        $errorMessage .= "L'usage des majuscules dans le nom de la section n'est pas correct. ";
+      // Slug
+      $slug = Helper::slugify($name);
+      $identicalSlugCount = Section::where('id', '!=', $sectionId)
+              ->where('slug', '=', $slug)
+              ->count();
+      if ($identicalSlugCount != 0)
+        $errorMessage .= "Il y a déjà une section portant ce nom. ";
+    }
     // E-mail
     if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL))
       $errorMessage .= "L'adresse e-mail n'est pas valide.";
-    // Color
-    if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color))
-      $errorMessage .= "La couleur n'est pas valide. ";
-    // "la section"
-    if (!$la_section)
-      $errorMessage .= "\"la section\" ne peut être vide. ";
-    // "de la section"
-    if (!$de_la_section)
-      $errorMessage .= "\"de la section\" ne peut être vide. ";
+    if ($fullEdit) {
+      // Color
+      if (!preg_match('/^#[0-9a-fA-F]{6}$/', $color))
+        $errorMessage .= "La couleur n'est pas valide. ";
+      // "la section"
+      if (!$la_section)
+        $errorMessage .= "\"la section\" ne peut être vide. ";
+      // "de la section"
+      if (!$de_la_section)
+        $errorMessage .= "\"de la section\" ne peut être vide. ";
+    }
     // Subgroup name
     $subgroup_name = ucfirst($subgroup_name);
     if ($subgroup_name && !Helper::hasCorrectCapitals($subgroup_name))
@@ -64,19 +70,21 @@ class SectionDataController extends BaseController {
     
     if ($sectionId) {
       // Modify a section
-      if (!$this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId)) {
+      if (!$this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId) && !$this->user->can(Privilege::$EDIT_SECTION_EMAIL_AND_SUBGROUP, $sectionId)) {
         return Helper::forbiddenResponse();
       }
       $section = Section::find($sectionId);
       if ($section) {
-        $section->name = $name;
-        $section->slug = $slug;
+        if ($fullEdit) {
+          $section->name = $name;
+          $section->slug = $slug;
+          $section->section_type = $sectionType;
+          $section->section_type_number = $sectionTypeNumber;
+          $section->color = $color;
+          $section->la_section = $la_section;
+          $section->de_la_section = $de_la_section;
+        }
         $section->email = $email;
-        $section->section_type = $sectionType;
-        $section->section_type_number = $sectionTypeNumber;
-        $section->color = $color;
-        $section->la_section = $la_section;
-        $section->de_la_section = $de_la_section;
         $section->subgroup_name = $subgroup_name;
 
         if (!$errorMessage) {

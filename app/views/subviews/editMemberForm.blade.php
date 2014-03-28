@@ -5,8 +5,11 @@
 <?php if (!isset($edit_section)) $edit_section = false; ?>
 <?php if (!isset($edit_totem)) $edit_totem = false; ?>
 <?php if (!isset($edit_leader)) $edit_leader = false; ?>
+<?php if (!isset($edit_others)) $edit_others = true; ?>
+<?php if (!isset($form_id)) $form_id = "member_form"; ?>
+<?php $can_edit_something = $edit_identity || $edit_contact || $edit_section || $edit_totem || $edit_leader || $edit_others; ?>
 
-<div id="member_form" class='well'
+<div id="{{ $form_id }}" class='well member-form-wrapper'
      @if (!Session::has('_old_input')) style="display: none;" @endif
      >
   <legend>{{ $form_legend }}</legend>
@@ -14,8 +17,10 @@
     <div class="form-group">
       <div class="col-md-12">
         <div class="text-center">
-          {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
-          <a class='btn btn-default' href="javascript:dismissMemberForm()">Fermer</a>
+          @if ($can_edit_something)
+            {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+          @endif
+          <a class='btn btn-default dismiss-form' href="javascript:dismissMemberForm()">Fermer</a>
         </div>
       </div>
     </div>
@@ -50,15 +55,15 @@
         </div>
         <div class="form-group">
           {{ Form::label('address', "Rue et numéro", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>{{ Form::text('address', '', array('class' => 'form-control')) }}</div>
+          <div class='col-md-8'>{{ Form::text('address', '', array('class' => 'form-control', ($edit_contact ? "enabled" : "disabled"))) }}</div>
         </div>
         <div class="form-group">
           {{ Form::label('postcode', "Code postal", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>{{ Form::text('postcode', '', array('class' => 'form-control')) }}</div>
+          <div class='col-md-8'>{{ Form::text('postcode', '', array('class' => 'form-control', ($edit_contact ? "enabled" : "disabled"))) }}</div>
         </div>
         <div class="form-group">
           {{ Form::label('city', "Localité", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>{{ Form::text('city', '', array('class' => 'form-control')) }}</div>
+          <div class='col-md-8'>{{ Form::text('city', '', array('class' => 'form-control', ($edit_contact ? "enabled" : "disabled"))) }}</div>
         </div>
         @if (!$leader_only)
           <div class="form-group">
@@ -138,71 +143,69 @@
           {{ Form::label('quali', "Quali", array('class' => 'control-label col-md-4')) }}
           <div class='col-md-8'>{{ Form::text('quali', '', array('class' => 'form-control', ($edit_totem ? "enabled" : "disabled") )) }}</div>
         </div>
-        @if ($edit_leader)
-          @if ($leader_only)
-            {{ Form::hidden('is_leader', true) }}
-          @else
-            <div class="form-group">
-              {{ Form::label('is_leader', "Animateur", array('class' => 'control-label col-md-4')) }}
-              <div class='col-md-8'>
-                <div class="checkbox">
-                  {{ Form::checkbox('is_leader') }}
-                </div>
-              </div>
-            </div>
-          @endif
-          <div class='form-group @if (!$leader_only) leader_specific @endif'>
-            {{ Form::label('leader_name', "Nom d'animateur", array('class' => 'control-label col-md-4')) }}
-            <div class='col-md-8'>{{ Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section", 'class' => 'form-control')) }}</div>
-          </div>
-          <div class='form-group @if (!$leader_only) leader_specific @endif'>
-            {{ Form::label('leader_in_charge', "Animateur responsable", array('class' => 'control-label col-md-4')) }}
+        @if ($leader_only)
+          {{ Form::hidden('is_leader', true) }}
+        @else
+          <div class="form-group">
+            {{ Form::label('is_leader', "Animateur", array('class' => 'control-label col-md-4')) }}
             <div class='col-md-8'>
               <div class="checkbox">
-                {{ Form::checkbox('leader_in_charge') }}
+                {{ Form::checkbox('is_leader') }}
               </div>
-            </div>
-          </div>
-          <div class='form-group @if (!$leader_only) leader_specific @endif'>
-            {{ Form::label('leader_description', "Description de l'animateur", array('class' => 'control-label col-md-4')) }}
-            <div class='col-md-8'>{{ Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs", 'class' => 'form-control', 'rows' => 3)) }}</div>
-          </div>
-          <div class='form-group @if (!$leader_only) leader_specific @endif'>
-            {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'control-label col-md-4')) }}
-            <div class='col-md-8'>{{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control')) }}</div>
-          </div>
-          <div class='form-group @if (!$leader_only) leader_specific @endif'>
-            {{ Form::label('picture', "Photo", array('class' => 'control-label col-md-4')) }}
-            <div class='col-md-8'>
-              {{ Form::file('picture', array('class' => 'btn btn-default')) }}
             </div>
           </div>
         @endif
+        <div class='form-group @if (!$leader_only) leader_specific @endif'>
+          {{ Form::label('leader_name', "Nom d'animateur", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-8'>{{ Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section", 'class' => 'form-control', $edit_leader ? "enabled" : "disabled")) }}</div>
+        </div>
+        <div class='form-group @if (!$leader_only) leader_specific @endif'>
+          {{ Form::label('leader_in_charge', "Animateur responsable", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-8'>
+            <div class="checkbox">
+              {{ Form::checkbox('leader_in_charge', 1, '', array($edit_leader ? "enabled" : "disabled")) }}
+            </div>
+          </div>
+        </div>
+        <div class='form-group @if (!$leader_only) leader_specific @endif'>
+          {{ Form::label('leader_description', "Description de l'animateur", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-8'>{{ Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs", 'class' => 'form-control', 'rows' => 3, $edit_leader ? "enabled" : "disabled")) }}</div>
+        </div>
+        <div class='form-group @if (!$leader_only) leader_specific @endif'>
+          {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-8'>{{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control', $edit_leader ? "enabled" : "disabled")) }}</div>
+        </div>
+        <div class='form-group @if (!$leader_only) leader_specific @endif'>
+          {{ Form::label('picture', "Photo", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-8'>
+            {{ Form::file('picture', array('class' => 'btn btn-default', $edit_leader ? "enabled" : "disabled")) }}
+          </div>
+        </div>
         <div class="row">
           {{ Form::label('has_handicap', "Handicap", array('class' => 'control-label col-md-4')) }}
           <div class='col-md-8'>
             <div class="checkbox">
-              {{ Form::checkbox('has_handicap') }}
+              {{ Form::checkbox('has_handicap', 1, '', array($edit_identity ? "enabled" : "disabled")) }}
             </div>
           </div>
         </div>
         <div class="form-group">
           <div class="col-md-8 col-md-offset-4">
-            {{ Form::textarea('handicap_details', '', array('placeholder' => "Détails du handicap", 'class' => 'form-control', 'rows' => 3)) }}
+            {{ Form::textarea('handicap_details', '', array('placeholder' => "Détails du handicap", 'class' => 'form-control', 'rows' => 3, $edit_identity ? "enabled" : "disabled")) }}
           </div>
         </div>
         <div class="form-group">
           {{ Form::label('comments', "Commentaires (privés)", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>{{ Form::textarea('comments', '', array('placeholder' => 'Toute information utile à partager aux animateurs', 'class' => 'form-control', 'rows' => 3)) }}</div>
+          <div class='col-md-8'>{{ Form::textarea('comments', '', array('placeholder' => 'Toute information utile à partager aux animateurs', 'class' => 'form-control', 'rows' => 3, $edit_others ? "enabled" : "disabled")) }}</div>
         </div>
         <div class="form-group">
-          {{ Form::label('family_in_other_units', "Famille autres unités", array('class' => 'control-label col-md-4')) }}
+          {{ Form::label('family_in_other_units', "Famille autres unités", array('class' => 'control-label col-md-4', $edit_others ? "enabled" : "disabled")) }}
           <div class='col-md-8'>
-            {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), '', array('class' => 'form-control')) }}
+            {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), '', array('class' => 'form-control', $edit_others ? "enabled" : "disabled")) }}
             {{ Form::textarea('family_in_other_units_details', '',
                       array('placeholder' => "S'il y a des membres de la même famille dans une autre unité, " .
                                               "cela peut entrainer une réduction de la cotisation. Indiquer " .
-                                              "ici qui et dans quelle(s) unité(s).", 'class' => 'form-control', 'rows' => 4)) }}
+                                              "ici qui et dans quelle(s) unité(s).", 'class' => 'form-control', 'rows' => 4, $edit_others ? "enabled" : "disabled")) }}
           </div>
         </div>
       </div>
@@ -210,8 +213,10 @@
     <div class="row">
       <div class="col-md-12">
         <div class="text-center">
-          {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
-          <a class='btn btn-default' href="javascript:dismissMemberForm()">Fermer</a>
+          @if ($can_edit_something)
+            {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+          @endif
+          <a class='btn btn-default dismiss-form' href="javascript:dismissMemberForm()">Fermer</a>
         </div>
       </div>
     </div>

@@ -108,7 +108,7 @@ class Member extends Eloquent {
   // If input data is correct, updates this and returns true.
   // If input data is incorrect, returns false or an error message.
   public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader) {
-    $data = self::checkInputData();
+    $data = self::checkInputData($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
     if (is_string($data)) {
       // An error has occured
       return $data;
@@ -197,12 +197,13 @@ class Member extends Eloquent {
     }
   }
   
-  public static function checkInputData() {
+  public static function checkInputData($canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
     $firstName = Input::get('first_name');
     $lastName = Input::get('last_name');
     $birthDateDay = Input::get('birth_date_day');
     $birthDateMonth = Input::get('birth_date_month');
     $birthDateYear = Input::get('birth_date_year');
+    $birthDate = Helper::checkAndReturnDate($birthDateYear, $birthDateMonth, $birthDateDay);
     $gender = Input::get('gender');
     $nationality = mb_strtoupper(Input::get('nationality'));
     $address = Input::get('address');
@@ -241,80 +242,86 @@ class Member extends Eloquent {
     
     $errorMessage = "";
     
-    if (!$firstName)
-      $errorMessage .= "Il manque le prénom. ";
-    elseif (!Helper::hasCorrectCapitals($firstName, true))
-      $errorMessage .= "L'usage des majuscules dans le prénom n'est pas correct. ";
-    
-    if (!$lastName)
-      $errorMessage .= "Il manque le nom de famille. ";
-    elseif (!Helper::hasCorrectCapitals($lastName, false))
-      $errorMessage .= "L'usage des majuscules dans le nom de famille n'est pas correct. ";
-    
-    $birthDate = Helper::checkAndReturnDate($birthDateYear, $birthDateMonth, $birthDateDay);
-    if (!$birthDate)
-      $errorMessage .= "La date de naissance n'est pas valide. ";
-    
-    if ($gender != 'M' && $gender != 'F')
-      $errorMessage .= "Le sexe n'est pas une entrée valide. ";
-    
-    if (strlen($nationality) < 2 || strlen($nationality) > 3)
-      $errorMessage .= "Utiliser la notation en deux lettres pour la nationality (BE, FR, ...). ";
-    
-    if (!$address || !$postcode || !$city)
-      $errorMessage .= "L'adresse n'est pas complète. ";
-    elseif (!is_numeric ($postcode))
-      $errorMessage .= "Le code postal doit être un nombre. ";
-    
-    $phone1 = Helper::formatPhoneNumber($phone1Unformatted);
-    if ($phone1Unformatted && !$phone1)
-      $errorMessage .= "Le numéro de téléphone \"$phone1Unformatted\" n'est pas valide. ";    
-    
-    $phone2 = Helper::formatPhoneNumber($phone2Unformatted);
-    if ($phone2Unformatted && !$phone2)
-      $errorMessage .= "Le numéro de téléphone \"$phone2Unformatted\" n'est pas valide. ";
-    
-    $phone3 = Helper::formatPhoneNumber($phone3Unformatted);
-    if ($phone3Unformatted && !$phone3)
-      $errorMessage .= "Le numéro de téléphone \"$phone3Unformatted\" n'est pas valide. ";
-    
-    $phoneMember = Helper::formatPhoneNumber($phoneMemberUnformatted);
-    if ($phoneMemberUnformatted && !$phoneMember)
-      $errorMessage .= "Le numéro de GSM du scout \"$phoneMemberUnformatted\" n'est pas correct. ";
-    
-    if (!$phone1Unformatted && !$phone2Unformatted && !$phone3Unformatted && !$phoneMemberUnformatted)
-      $errorMessage .= "Il est nécessaire d'indiquer au moins un numéro de téléphone. ";
-    
-    if ($email1 && !filter_var($email1, FILTER_VALIDATE_EMAIL))
-      $errorMessage .= "L'adresse e-mail \"$email1\" n'est pas valide. ";
-    
-    if ($email2 && !filter_var($email2, FILTER_VALIDATE_EMAIL))
-      $errorMessage .= "L'adresse e-mail \"$email2\" n'est pas valide. ";
-    
-    if ($email3 && !filter_var($email3, FILTER_VALIDATE_EMAIL))
-      $errorMessage .= "L'adresse e-mail \"$email3\" n'est pas valide. ";
-    
-    if ($emailMember && !filter_var($emailMember, FILTER_VALIDATE_EMAIL))
-      $errorMessage .= "L'adresse e-mail du scout \"$emailMember\" n'est pas valide. ";
-    
-    if ($totem && !Helper::hasCorrectCapitals($totem))
-      $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
-//    
-//    if ($quali && !Helper::hasCorrectCapitals($quali))
-//      $errorMessage .= "L'usage des majuscules dans le quali n'est pas correct (il doit commencer par une majuscule). ";
-    
-    if ($isLeader) {
-      if (!$leaderName)
-        $errorMessage .= "Il manque le nom d'animateur. ";
-      elseif (!Helper::hasCorrectCapitals ($leaderName, true))
-        $errorMessage .= "L'usage des majuscule dans le nom d'animateur n'est pas correct. ";
+    if ($canEditIdentity) {
+      if (!$firstName)
+        $errorMessage .= "Il manque le prénom. ";
+      elseif (!Helper::hasCorrectCapitals($firstName, true))
+        $errorMessage .= "L'usage des majuscules dans le prénom n'est pas correct. ";
+      
+      if (!$lastName)
+        $errorMessage .= "Il manque le nom de famille. ";
+      elseif (!Helper::hasCorrectCapitals($lastName, false))
+        $errorMessage .= "L'usage des majuscules dans le nom de famille n'est pas correct. ";
+      
+      if (!$birthDate)
+        $errorMessage .= "La date de naissance n'est pas valide. ";
+      
+      if ($gender != 'M' && $gender != 'F')
+        $errorMessage .= "Le sexe n'est pas une entrée valide. ";
+      
+      if (strlen($nationality) < 2 || strlen($nationality) > 3)
+        $errorMessage .= "Utiliser la notation en deux lettres pour la nationality (BE, FR, ...). ";
     }
     
-    if ($hasHandicap && !$handicapDetails)
-      $errorMessage .= "Merci de préciser la nature du handicap. ";
+    if ($canEditContact) {
+      if (!$address || !$postcode || !$city)
+        $errorMessage .= "L'adresse n'est pas complète. ";
+      elseif (!is_numeric ($postcode))
+        $errorMessage .= "Le code postal doit être un nombre. ";
+      
+      $phone1 = Helper::formatPhoneNumber($phone1Unformatted);
+      if ($phone1Unformatted && !$phone1)
+        $errorMessage .= "Le numéro de téléphone \"$phone1Unformatted\" n'est pas valide. ";    
+      
+      $phone2 = Helper::formatPhoneNumber($phone2Unformatted);
+      if ($phone2Unformatted && !$phone2)
+        $errorMessage .= "Le numéro de téléphone \"$phone2Unformatted\" n'est pas valide. ";
+      
+      $phone3 = Helper::formatPhoneNumber($phone3Unformatted);
+      if ($phone3Unformatted && !$phone3)
+        $errorMessage .= "Le numéro de téléphone \"$phone3Unformatted\" n'est pas valide. ";
+      
+      $phoneMember = Helper::formatPhoneNumber($phoneMemberUnformatted);
+      if ($phoneMemberUnformatted && !$phoneMember)
+        $errorMessage .= "Le numéro de GSM du scout \"$phoneMemberUnformatted\" n'est pas correct. ";
+      
+      if (!$phone1Unformatted && !$phone2Unformatted && !$phone3Unformatted && !$phoneMemberUnformatted)
+        $errorMessage .= "Il est nécessaire d'indiquer au moins un numéro de téléphone. ";
+      
+      if ($email1 && !filter_var($email1, FILTER_VALIDATE_EMAIL))
+        $errorMessage .= "L'adresse e-mail \"$email1\" n'est pas valide. ";
+      
+      if ($email2 && !filter_var($email2, FILTER_VALIDATE_EMAIL))
+        $errorMessage .= "L'adresse e-mail \"$email2\" n'est pas valide. ";
+      
+      if ($email3 && !filter_var($email3, FILTER_VALIDATE_EMAIL))
+        $errorMessage .= "L'adresse e-mail \"$email3\" n'est pas valide. ";
+      
+      if ($emailMember && !filter_var($emailMember, FILTER_VALIDATE_EMAIL))
+        $errorMessage .= "L'adresse e-mail du scout \"$emailMember\" n'est pas valide. ";
+    }
     
-    if (!$hasHandicap && trim($handicapDetails))
-      $errorMessage .= "Vous devez cocher la case handicap, ou supprimer les détails du handicap. ";
+    if ($canEditTotem) {
+      if ($totem && !Helper::hasCorrectCapitals($totem))
+        $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
+    }
+    
+    if ($canEditLeader) {
+      if ($isLeader) {
+        if (!$leaderName)
+          $errorMessage .= "Il manque le nom d'animateur. ";
+        elseif (!Helper::hasCorrectCapitals ($leaderName, true))
+          $errorMessage .= "L'usage des majuscule dans le nom d'animateur n'est pas correct. ";
+      }
+    }
+    
+    if ($canEditIdentity) {
+      if ($hasHandicap && !$handicapDetails)
+        $errorMessage .= "Merci de préciser la nature du handicap. ";
+      
+      if (!$hasHandicap && trim($handicapDetails))
+        $errorMessage .= "Vous devez cocher la case handicap, ou supprimer les détails du handicap. ";
+    }
     
     if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
       $familyMembers = 0;

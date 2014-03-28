@@ -4,6 +4,10 @@ $().ready(function() {
     event.preventDefault();
     editSection($(this).closest("[data-section-id]").data('section-id'));
   });
+  $(".edit-limited-button").click(function(event) {
+    event.preventDefault();
+    editSectionLimited($(this).closest("[data-section-id]").data('section-id'));
+  });
   // Details button
   $(".details-button").click(function(event) {
     event.preventDefault();
@@ -17,6 +21,7 @@ $().ready(function() {
   // Dismiss form button
   $(".dismiss-form").click(function(event) {
     $(this).closest("#section_form").slideUp();
+    $(this).closest("#section-form-limited").slideUp();
   });
   // Delete button
   $("#section_form #delete_button").click(function(event) {
@@ -83,6 +88,16 @@ function editSection(sectionId) {
   $("#section_form #delete_button").show();
   $("#section_form #delete_button").attr('href', sections[sectionId].delete_url);
   $("#section_form").slideDown();
+  $("#section-form-limited").slideUp();
+}
+
+function editSectionLimited(sectionId) {
+  $("#section-form-limited legend").text("Modifier la section " + sections[sectionId].name);
+  $("#section-form-limited [name='section_id']").val(sectionId);
+  $("#section-form-limited [name='section_email']").val(sections[sectionId].email);
+  $("#section-form-limited [name='section_subgroup_name']").val(sections[sectionId].subgroup_name);
+  $("#section-form-limited").slideDown();
+  $("#section_form").slideUp();
 }
 
 function showSectionDetails(sectionId) {

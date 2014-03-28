@@ -21,13 +21,6 @@ class Privilege extends Eloquent {
       'predefined' => "ARSU"
   );
   
-  public static $VIEW_PRIVATE_SUGGESTIONS = array(
-      'id' => 'View private suggestions',
-      'text' => 'Voir les suggestions privées',
-      'section' => false,
-      'predefined' => "ARSU"
-  );
-  
   public static $EDIT_PAGES = array(
       'id' => 'Edit pages',
       'text' => 'Modifier les pages #delasection',
@@ -35,8 +28,8 @@ class Privilege extends Eloquent {
       'predefined' => "RSU"
   );
   
-  public static $EDIT_SECTION_EMAIL_ADDRESS = array(
-      'id' => "Edit section e-mail address",
+  public static $EDIT_SECTION_EMAIL_AND_SUBGROUP = array(
+      'id' => "Edit section e-mail address and subgroup name",
       'text' => "Changer l'adresse e-mail #delasection",
       'section' => true,
       'predefined' => "RSU"
@@ -82,6 +75,13 @@ class Privilege extends Eloquent {
       'text' => 'Gérer les comptes #delasection',
       'section' => true,
       'predefined' => "RSU"
+  );
+  
+  public static $SECTION_TRANSFER = array(
+      'id' => "Section transfer",
+      'text' => "Changer les scouts de section",
+      'section' => false,
+      'predefined' => "SU",
   );
   
   public static $EDIT_LISTING_LIMITED = array(
@@ -167,14 +167,14 @@ class Privilege extends Eloquent {
         self::$EDIT_CALENDAR,
         self::$POST_PHOTOS,
         self::$VIEW_HEALTH_CARDS,
-        self::$VIEW_PRIVATE_SUGGESTIONS,
         
         self::$EDIT_PAGES,
         self::$EDIT_DOCUMENTS,
         self::$EDIT_NEWS,
         self::$SEND_EMAILS,
-        self::$EDIT_SECTION_EMAIL_ADDRESS,
+        self::$EDIT_SECTION_EMAIL_AND_SUBGROUP,
         self::$MANAGE_ACCOUNTS,
+        self::$SECTION_TRANSFER,
         self::$EDIT_LISTING_LIMITED,
         self::$EDIT_LEADER_PRIVILEGES,
         
@@ -199,56 +199,41 @@ class Privilege extends Eloquent {
     foreach (self::getPrivilegeList() as $privilege) {
       if (strpos($privilege['predefined'], "A") !== false) {
         if ($forSection) {
-          $basicPrivileges[] = $privilege;
-          if ($privilege['section']) $unitTeamPrivileges[] = $privilege;
+          if ($privilege['section']) {
+            $basicPrivileges[] = array('privilege' => $privilege, 'scope' => 'S');
+            $unitTeamPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
+          } else {
+            $basicPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
+          }
         } else {
           if ($privilege['section'])
-            $leaderInChargePrivileges[] = $privilege;
+            $leaderInChargePrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
           else
-            $basicPrivileges[] = $privilege;
+            $basicPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
         }
       } elseif (strpos($privilege['predefined'], "R") !== false) {
         if ($forSection) {
-          $leaderInChargePrivileges[] = $privilege;
-          if ($privilege['section']) $unitTeamPrivileges[] = $privilege;
+          if ($privilege['section']) {
+            $leaderInChargePrivileges[] = array('privilege' => $privilege, 'scope' => 'S');
+            $unitTeamPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
+          } else {
+            $leaderInChargePrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
+          }
         } else {
-          $leaderInChargePrivileges[] = $privilege;
+          $leaderInChargePrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
         }
       } elseif (strpos($privilege['predefined'], "S") !== false) {
-        if ($forSection) {
-          $unitTeamPrivileges[] = $privilege;
-          if ($privilege['section']) $basicPrivileges[] = $privilege;
-        } else {
-          $unitTeamPrivileges[] = $privilege;
-        }
+        $unitTeamPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
       } elseif (strpos($privilege['predefined'], "U") !== false) {
-        $unitLeaderPrivileges[] = $privilege;
-        if ($forSection && $privilege['section']) $leaderInChargePrivileges[] = $privilege;
+        $unitLeaderPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
       }
     }
-    if ($forSection) {
-      return array(
-          "S" => array(
-            "Gestion de base" => $basicPrivileges,
-            "Gestion avancée" => $leaderInChargePrivileges,
-          ),
-          "U" => array(
-            "Gestion de l'unité" => $unitTeamPrivileges,
-            "Gestion avancée de l'unité" => $unitLeaderPrivileges,
-          ),
-      );
-    } else {
-      return array(
-          "S" => array(
-            "Gestion de base" => $basicPrivileges,
-          ),
-          "U" => array(
-            "Gestion avancée" => $leaderInChargePrivileges,
-            "Gestion de l'unité" => $unitTeamPrivileges,
-            "Gestion avancée de l'unité" => $unitLeaderPrivileges,
-          ),
-      );
-    }
+    return array(
+        "Gestion de base" => $basicPrivileges,
+        "Gestion avancée" => $leaderInChargePrivileges,
+        "Gestion de l'unité" => $unitTeamPrivileges,
+        "Gestion avancée de l'unité" => $unitLeaderPrivileges,
+    );
   }
   
   public static function addBasePrivilegesForLeader($leader) {
@@ -281,23 +266,5 @@ class Privilege extends Eloquent {
       ));
     }
   }
-
-  /*
-        "U:Accéder au coin des animateurs", => everybody
-        "S:Voir le listing complet #delasection", => everybody
-        "S:Voir l'état des comptes #delasection", => everybody
-        "S:Voir les changements du site concernant #lasection"), => everybody
-        "S:Changer des scouts de ou vers #lasection", => listing_all
-        "S:Augmenter l'année des scouts #delasection", => listing_limited
-        "S:Valider les inscriptions #delasection", => listing_all
-        "S:Changer un scout en animateur #delasection") => listing_all
-        "U:Voir les documents partagés entre animateurs #delasection", => feature no longer supported
-        "U:Gérer le covoiturage #delasection"), => feature no longer supported
-        "U:Exporter le listing d'unité pour la fédération"), => feature maybe no longer supported
-        "U:Changer les codes des sections"), => manage sections
-        "U:Modifier les couleurs des sections", => manage sections
-        "U:Voir les logs") => feature no longer supported
-    );
-*/
   
 }
