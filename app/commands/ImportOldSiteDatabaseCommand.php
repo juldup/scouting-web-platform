@@ -45,7 +45,10 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
         // TODO
       }
       if ($parameter['param'] == 'docCategories') {
-        // TODO
+        Parameter::create(array(
+            'name' => Parameter::$DOCUMENT_CATEGORIES,
+            'value' => str_replace(",", ";", substr($parameter['value'], 0, strlen($parameter['value']) - 1)),
+        ));
       }
       if ($parameter['param'] == 'emailDefaultFromAddress') {
         Parameter::create(array(
@@ -130,7 +133,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
           'position' => $section['sectionId'] + 1,
           'section_type' => $section['symbolFede'],
           'section_type_number' => $section['numberFede'],
-          'color' => $section['couleur'],
+          'color' => "#" . $section['couleur'],
           'email' => $section['email'],
           'de_la_section' => $section['delasection'],
           'la_section' => $section['lasection'],
@@ -233,6 +236,59 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     }
     
     // TODO Privileges
+    $query = $pdo->prepare("SELECT * FROM privileges");
+    $query->execute();
+    foreach ($query->fetchAll() as $privilegeData) {
+      $memberId = $this->members[$privilegeData['listingId']];
+      $split = explode(":", $privilegeData['operation']);
+      $scope = $split[0];
+      $operationFR = $split[1];
+      if ($operationFR == "Ajouter/supprimer des photos pour #lasection") $privilege = Privilege::$POST_PHOTOS;
+      elseif ($operationFR == "Augmenter lannée des scouts #delasection") $privilege = Privilege::$EDIT_LISTING_LIMITED;
+      elseif ($operationFR == "Changer ladresse e-mail #delasection") $privilege = Privilege::$EDIT_SECTION_EMAIL_AND_SUBGROUP;
+      elseif ($operationFR == "Changer les privilèges des animateurs #delasection") $privilege = Privilege::$EDIT_LEADER_PRIVILEGES;
+      elseif ($operationFR == "Consulter les fiches santé #delasection") $privilege = Privilege::$VIEW_HEALTH_CARDS;
+      elseif ($operationFR == "Envoyer des e-mails aux membres #delasection") $privilege = Privilege::$SEND_EMAILS;
+      elseif ($operationFR == "Gérer le covoiturage #delasection") $privilege = null;
+      elseif ($operationFR == "Gérer les comptes #delasection") $privilege = Privilege::$MANAGE_ACCOUNTS;
+      elseif ($operationFR == "Modifier certaines données du listing #delasection") $privilege = Privilege::$EDIT_LISTING_LIMITED;
+      elseif ($operationFR == "Modifier les animateurs #delasection") $privilege = Privilege::$EDIT_LISTING_LIMITED;
+      elseif ($operationFR == "Modifier les documents #delasection") $privilege = Privilege::$EDIT_DOCUMENTS;
+      elseif ($operationFR == "Modifier les entrées du calendrier #delasection") $privilege = Privilege::$EDIT_CALENDAR;
+      elseif ($operationFR == "Modifier les pages #delasection") $privilege = Privilege::$EDIT_PAGES;
+      elseif ($operationFR == "Poster des nouvelles pour #lasection") $privilege = Privilege::$EDIT_NEWS;
+      elseif ($operationFR == "Supprimer des fiches santé #delasection") $privilege = null;
+      elseif ($operationFR == "Voir le listing complet #delasection") $privilege = null;
+      elseif ($operationFR == "Voir les changements du site concernant #lasection") $privilege = null;
+      elseif ($operationFR == "Voir létat des comptes #delasection") $privilege = null;
+      elseif ($operationFR == "Accéder au coin des animateurs") $privilege = null;
+      elseif ($operationFR == "Changer des scouts de ou vers #lasection") $privilege = Privilege::$SECTION_TRANSFER;
+      elseif ($operationFR == "Changer les codes des sections") $privilege = Privilege::$MANAGE_SECTIONS;
+      elseif ($operationFR == "Changer les paramètres du site") $privilege = Privilege::$EDIT_GLOBAL_PARAMETERS;
+      elseif ($operationFR == "Changer un scout en animateur #delasection") $privilege = null;
+      elseif ($operationFR == "Exporter le listing dunité pour la fédération") $privilege = null;
+      elseif ($operationFR == "Modifier le statut de paiement") $privilege = Privilege::$UPDATE_PAYMENT_STATUS;
+      elseif ($operationFR == "Modifier les données sensibles du listing #delasection") $privilege = Privilege::$EDIT_LISTING_ALL;
+      elseif ($operationFR == "Modifier ses données personnelles dans le listing") $privilege = Privilege::$UPDATE_OWN_LISTING_ENTRY;
+      elseif ($operationFR == "Supprimer des documents partagés entre animateurs #delasection") $privilege = null;
+      elseif ($operationFR == "Supprimer des suggestions") $privilege = Privilege::$MANAGE_SUGGESIONS;
+      elseif ($operationFR == "Valider les inscriptions #delasection") $privilege = Privilege::$EDIT_LISTING_ALL;
+      elseif ($operationFR == "Valider les inscriptions pour la fête dunité") $privilege = Privilege::$MANAGE_ANNUAL_FEAST_REGISTRATION;
+      elseif ($operationFR == "Voir la liste des membres") $privilege = null;
+      elseif ($operationFR == "Voir les documents partagés entre animateurs #delasection") $privilege = null;
+      elseif ($operationFR == "Modifier les couleurs des sections") $privilege = null;
+      elseif ($operationFR == "Supprimer des entrées du livre dor") $privilege = Privilege::$DELETE_GUEST_BOOK_ENTRIES;
+      elseif ($operationFR == "Supprimer des comptes dutilisateurs") $privilege = Privilege::$DELETE_USERS;
+      elseif ($operationFR == "Créer et renommer des sections") $privilege = Privilege::$MANAGE_SECTIONS;
+      elseif ($operationFR == "Voir les logs") $privilege = null;
+      elseif( $operationFR == "Répondre aux suggestions") $privilege = Privilege::$MANAGE_SUGGESIONS;
+      elseif( $operationFR == "Voir les suggestions privées") $privilege = null;
+      else echo "Warning: privilege \"$operationFR\" unknown.\n";
+      
+      if ($privilege) {
+        Privilege::set($privilege['id'], $scope, $memberId, true);
+      }
+    }
     
     // Calendar
     $query = $pdo->prepare("SELECT * FROM calendrier");

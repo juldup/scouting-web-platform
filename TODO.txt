@@ -1,8 +1,6 @@
 TODO list
 
-- Check privileges in all pages
 - Accounting
-- Import colors from previous data
 
 - Help for leaders + task list
 - Leader archives
@@ -33,4 +31,4 @@ TODO list
 - Escape all user data with {{{ }}}
 - Change 'manage' to 'edit' everywhere or the other way around
 
-- When importing old data, make sure that document categories are set
+- Solvo TODOs in import-old-data script

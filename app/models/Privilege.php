@@ -86,7 +86,7 @@ class Privilege extends Eloquent {
   
   public static $EDIT_LISTING_LIMITED = array(
       'id' => "Edit listing limited",
-      'text' => 'Modifier certaines données du listing #delasection',
+      'text' => 'Modifier les données non sensibles du listing #delasection',
       'section' => true,
       'predefined' => "RSU"
   );
