@@ -15,6 +15,9 @@
   <div class="row">
     <div class="col-lg-12">
       <h1>Nouvelles {{ $user->currentSection->de_la_section }}</h1>
+      @if (count($news) == 0)
+        <p>Aucune nouvelle.</p>
+      @endif
     </div>
   </div>
   
