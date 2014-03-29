@@ -45,6 +45,7 @@ $().ready(function() {
     // Disable pointer events on children to avoid interferences
     $(this).children().css('pointer-events', 'none');
   });
+  initRotateButtons($("body"));
 });
 
 function draggingOverPhotoDropArea(event) {
@@ -117,7 +118,6 @@ function uploadNextPicture() {
       processData: false, // Don't process the files
       contentType: false // Set content type to false as jQuery will tell the server its a query string request
     }).done(function(json) {
-      console.log("data: " + json);
       data = JSON.parse(json);
       if (data.result === "Success") {
         // Create new row for this photo
@@ -127,11 +127,13 @@ function uploadNextPicture() {
         newRow.addClass('draggable-row');
         newRow.attr('id', "photo-" + data.photo_id);
         newRow.data('draggable-id', data.photo_id);
+        newRow.data('photo-id', data.photo_id);
         newRow.initDraggableRow();
         newRow.find('.editable-text').data('editable-id', data.photo_id);
         newRow.find('.editable-text').initEditableText();
         newRow.show();
         $("#photo_row_new_" + data.id).before(newRow);
+        initRotateButtons(newRow);
       } else {
         // Display error message to user
         alert("Une erreur est survenue lors du transfert d'image");
@@ -143,4 +145,38 @@ function uploadNextPicture() {
       uploadNextPicture();
     });
   }
+}
+
+function initRotateButtons($container) {
+  $container.find(".rotate-clockwise-button").click(function() {
+    var photoId = $(this).closest(".photo-row").data("photo-id");
+    rotatePicture(photoId, true);
+  });
+  $container.find(".rotate-anticlockwise-button").click(function() {
+    var photoId = $(this).closest(".photo-row").data("photo-id");
+    rotatePicture(photoId, false);
+  });
+}
+
+function rotatePicture(photoId, clockwise) {
+  $.ajax({
+      url: rotatePhotoURL,
+      type: "GET",
+      data: { photo_id: photoId, clockwise: clockwise}
+    }).done(function(json) {
+      data = JSON.parse(json);
+      if (data.result === "Success") {
+        // Refresh preview
+        var img = $("#photo-" + photoId + " .photo-thumbnail img");
+        var src = img.attr('src');
+        if (src) {
+          if (src.indexOf("?") !== -1) src = src.substring(0, src.indexOf("?"));
+          src = src + "?" + new Date().getTime();
+          img.attr('src', src);
+        }
+      } else {
+        // Display error message to user
+        alert("Une erreur est survenue. L'image n'a pas été tournée.");
+      }
+    });
 }

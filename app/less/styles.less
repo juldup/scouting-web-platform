@@ -251,11 +251,12 @@ select {
 }
 
 @carousel-height: 400px;
+@carousel-wrapper-height: 402px;
 
 #photo-carousel {
     margin-left: 10%;
     width:80%;
-    height: @carousel-height;
+    height: @carousel-wrapper-height;
     border: 1px @gray solid;
 }
 
@@ -570,4 +571,10 @@ form .color-sample {
 .table tbody > tr.privilege-category th {
   padding-top: 30px;
   background: white;
+}
+
+.rotate-icon {
+  cursor: pointer;
+  height: 1.8em;
+  width: 1.8em;
 }

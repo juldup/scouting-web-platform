@@ -54,7 +54,11 @@ Modified from : http://www.iconarchive.com/show/farm-fresh-icons-by-fatcow/whist
 
 Licence : [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 
+#### Photo rotate icons
 
+Sources:
+- http://www.iconarchive.com/show/farm-fresh-icons-by-fatcow/arrow-rotate-anticlockwise-icon.html
+- http://www.iconarchive.com/show/farm-fresh-icons-by-fatcow/arrow-rotate-clockwise-icon.html
 
-
+Licence : [CC Attribution 3.0](http://creativecommons.org/licenses/by/3.0/)
 

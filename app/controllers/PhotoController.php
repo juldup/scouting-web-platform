@@ -423,4 +423,23 @@ class PhotoController extends BaseController {
     return json_encode(array('result' => "Success"));
   }
   
+  public function rotatePhoto() {
+    $errorResponse = json_encode(array("result" => "Failure"));
+    $photoId = Input::get('photo_id');
+    $clockwise = Input::get('clockwise') == "true" ? true : false;
+    $photo = Photo::find($photoId);
+    $albumId = $photo ? $photo->album_id : null;
+    $album = PhotoAlbum::find($albumId);
+    $sectionId = $album ? $album->section_id : null;
+    if (!$sectionId || !$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return $errorResponse;
+    }
+    try {
+      $photo->rotate($clockwise);
+    } catch (Exception $e) {
+      return $errorResponse;
+    }
+    return json_encode(array("result" => "Success"));
+  }
+  
 }

@@ -13,6 +13,7 @@
     var deletePhotoURL = "{{ URL::route('ajax_delete_photo') }}";
     var uploadPhotoURL = "{{ URL::route('ajax_add_photo') }}";
     var currentAlbumId = "{{ $album->id }}";
+    var rotatePhotoURL = "{{ URL::route('ajax_rotate_photo') }}"
   </script>
 @stop
 
@@ -38,23 +39,30 @@
       <table class="table table-striped table-hover draggable-table" id="photo-table">
         <tbody>
           @foreach($photos as $photo)
-            <tr class="photo-row draggable-row" id="photo-{{ $photo->id }}" data-draggable-id="{{ $photo->id }}">
+            <tr class="photo-row draggable-row" id="photo-{{ $photo->id }}" data-draggable-id="{{ $photo->id }}" data-photo-id="{{ $photo->id }}">
               <td class="photo-thumnail-column">
                 <div class="photo-thumbnail">
                   <img src='{{ $photo->getThumbnailURL() }}' />
                 </div>
               </td>
               <td class="photo-data-column">
-                <span class="editable-text"
-                      data-editable-input-type="textarea"
-                      data-editable-allow-empty="1"
-                      data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}"
-                      data-editable-id="{{ $photo->id }}">
-                  <strong>Description :</strong>
-                  <span class="editable-text-value">
-                    {{{ $photo->caption }}}
+                <div>
+                  <strong>Tourner: </strong>
+                  <img class="rotate-icon rotate-anticlockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-anticlockwise.png" />
+                  <img class="rotate-icon rotate-clockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-clockwise.png" />
+                </div>
+                <div>
+                  <span class="editable-text"
+                        data-editable-input-type="textarea"
+                        data-editable-allow-empty="1"
+                        data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}"
+                        data-editable-id="{{ $photo->id }}">
+                    <strong>Description :</strong>
+                    <span class="editable-text-value">
+                      {{{ $photo->caption }}}
+                    </span>
                   </span>
-                </span>
+                </div>
               </td>
               <td class="photo-actions-column">
                 <a class="btn-sm btn-default" onclick="deletePhoto(this)">
@@ -79,12 +87,19 @@
               </div>
             </td>
             <td class="photo-data-column">
-              <span class="editable-text"
-                    data-editable-input-type="textarea"
-                    data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}">
-                <strong>Description :</strong>
-                <span class="editable-text-value"></span>
-              </span>
+              <div>
+                <strong>Tourner: </strong>
+                <img class="rotate-icon rotate-anticlockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-anticlockwise.png" />
+                <img class="rotate-icon rotate-clockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-clockwise.png" />
+              </div>
+              <div>
+                <span class="editable-text"
+                      data-editable-input-type="textarea"
+                      data-editable-submit-url="{{ URL::route('ajax_change_photo_caption') }}">
+                  <strong>Description :</strong>
+                  <span class="editable-text-value"></span>
+                </span>
+              </div>
             </td>
             <td class="photo-actions-column">
               <a class="btn-sm btn-default" onclick="deletePhoto(this)">

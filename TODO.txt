@@ -14,7 +14,6 @@ TODO list
 
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
 - Birthdays in calendar
-- Rotate pictures
 - What's new + flag new items (news, documents, e-mails, photos)
 - Export listing (?)
 - List recent changes (optional)
@@ -30,5 +29,7 @@ TODO list
 - Check how the site behave on tablets (col-sm instead of col-md)
 - Escape all user data with {{{ }}}
 - Change 'manage' to 'edit' everywhere or the other way around
+
+- Rename js files with - instead of _ or caps
 
 - Solvo TODOs in import-old-data script

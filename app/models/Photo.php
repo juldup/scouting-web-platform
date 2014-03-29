@@ -56,4 +56,29 @@ class Photo extends Eloquent {
     $preview->saveImage($this->getPhotoPath(Photo::$FORMAT_PREVIEW));
   }
   
+  // Rotates the photo 90° clockwise or counterclockwise
+  public function rotate($clockwise) {
+    $degrees = $clockwise ? 270 : 90;
+    $filename = $this->getPhotoPath("original");
+    $isJpeg = true;
+    try {
+      $source = imagecreatefromjpeg($filename);
+    } catch (ErrorException $e) {
+      // Not jpeg ? Try png
+      $isJpeg = false;
+      $source = imagecreatefrompng($filename);
+      // If not png, let the error run, the image cannot be rotated
+    }
+    $rotate = imagerotate($source, $degrees, 0);
+    if ($isJpeg) {
+      imagejpeg($rotate, $filename);
+    } else {
+      imagepng($rotate, $filename);
+    }
+    imagedestroy($source);
+    imagedestroy($rotate);
+    $this->createPreviewPicture();
+    $this->createThumbnailPicture();
+  }
+  
 }
