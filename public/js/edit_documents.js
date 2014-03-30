@@ -1,3 +1,9 @@
+$().ready(function() {
+  $(".archive-document-button").click(function() {
+    return confirm("Archiver ce document ?");
+  });
+});
+
 function addDocument() {
   $("#document_form legend:first").html("Nouveau document");
   $("#document_form [name='doc_id']").val("");

@@ -135,6 +135,9 @@
             <a class="btn btn-primary" href="javascript:editDocument({{ $doc->id }})">
               Modifier
             </a>
+            <a class="btn btn-default archive-document-button" href="{{ URL::route('manage_documents_archive', array('section_slug' => $user->currentSection->slug, 'document_id' => $doc->id)) }}">
+              Archiver
+            </a>
             @if ($doc->public)
               <p>
                 <span class="label label-warning">

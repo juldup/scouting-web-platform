@@ -8,6 +8,16 @@
   <meta name="robots" content="noindex">
 @stop
 
+@section('back_links')
+  @if ($showing_archives)
+    <p>
+      <a href='{{ URL::route('documents', array('section_slug' => $user->currentSection->slug)) }}'>
+        Retour aux documents de cette année
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('forward_links')
   @if ($can_edit)
     <p>
@@ -40,6 +50,9 @@
             <legend>
               <div class="row">
                 <div class="col-md-10">
+                  @if ($showing_archives)
+                    {{ Helper::dateToHuman($doc->doc_date) }} :
+                  @endif
                   <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
                     {{ $doc->title }}
                   </a>
@@ -92,6 +105,23 @@
         {{ Form::close() }}
       </div>
     </div>
+  @endif
+  
+  @if ($has_archives)
+    <div class="vertical-divider"></div>
+    @if ($showing_archives)
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn-sm btn-default" href="{{ URL::route('document_archives', array('section_slug' => $user->currentSection->slug, 'page' => $next_page)) }}">Voir les documents plus anciens</a>
+        </div>
+      </div>
+    @else
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn-sm btn-default" href="{{ URL::route('document_archives', array('section_slug' => $user->currentSection->slug)) }}">Voir les documents archivés</a>
+        </div>
+      </div>
+    @endif
   @endif
   
 @stop

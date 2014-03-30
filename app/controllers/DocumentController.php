@@ -2,30 +2,70 @@
 
 class DocumentController extends BaseController {
   
-  public function showPage($year = null, $month = null) {
+  public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_DOCUMENTS)) {
       return App::abort(404);
     }
-    
-    $documents = Document::where('archived', '=', false)
-            ->where('section_id', '=', $this->section->id)->get();
-    
+    // Get documents
+    if ($showArchives) {
+      // Archived documents
+      $pageSize = 30;
+      $documents = Document::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('doc_date', '<', Helper::oneYearAgo());
+              })
+                      ->where('section_id', '=', $this->section->id)
+                      ->orderBy('doc_date', 'desc')
+                      ->skip($page * $pageSize)
+                      ->take($pageSize)
+                      ->get();
+      // Determine whether there are more archives
+      $hasArchives = Document::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('doc_date', '<', Helper::oneYearAgo());
+              })
+                      ->where('section_id', '=', $this->section->id)
+                      ->count() > ($page + 1) * $pageSize;
+      // Generate category list
+      $documentsInCategories = array(
+          "Documents archivés" => $documents,
+      );
+    } else {
+      // Current documents
+      $documents = Document::where('archived', '=', false)
+              ->where('doc_date', '>=', Helper::oneYearAgo())
+              ->where('section_id', '=', $this->section->id)->get();
+      // Get archives
+      $hasArchives = Document::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('doc_date', '<', Helper::oneYearAgo());
+              })
+                      ->where('section_id', '=', $this->section->id)
+                      ->count();
+      // Generate category list
+      $documentsInCategories = $this->generateCategoryList($documents);
+    }
     // Generate document selector
     $documentSelectList = array();
     foreach ($documents as $document) {
       $documentSelectList[$document->id] = $document->title;
     }
-    
-    // Generate category list
-    $documentsInCategories = $this->generateCategoryList($documents);
-    
     return View::make('pages.documents.documents', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section),
         'edit_url' => URL::route('manage_documents', array('section_slug' => $this->section->slug)),
         'documents' => $documentsInCategories,
         'documentSelectList' => $documentSelectList,
+        'has_archives' => $hasArchives,
+        'showing_archives' => $showArchives,
+        'next_page' => $page + 1,
     ));
+  }
+  
+  public function showArchives($section_slug = null) {
+    $page = Input::get('page');
+    if (!$page) $page = 0;
+    return $this->showPage($section_slug, true, $page);
   }
   
   public function updateCategoryName($category) {
@@ -43,10 +83,8 @@ class DocumentController extends BaseController {
       $documentsInCategories[$this->updateCategoryName($category)] = array();
     }
     $documentsInCategories["Divers"] = array();
-    // Put documents in categories and generate document selector
-    $documentSelectList = array();
+    // Put documents in categories
     foreach ($documents as $document) {
-      $documentSelectList[$document->id] = $document->title;
       $category = $this->updateCategoryName($document->category);
       if (array_key_exists($category, $documentsInCategories)) {
         $documentsInCategories[$category][] = $document;
@@ -67,6 +105,7 @@ class DocumentController extends BaseController {
     }
     // Get documents
     $documents = Document::where('archived', '=', false)
+            ->where('doc_date', '>=', Helper::oneYearAgo())
             ->where('section_id', '=', $this->section->id)->get();
     // Sort documents per category
     $documentsInCategories = $this->generateCategoryList($documents);
@@ -234,17 +273,13 @@ class DocumentController extends BaseController {
   }
   
   public function deleteDocument($document_id) {
-    
     $document = Document::find($document_id);
-    
     if (!$document) {
       App::abort(404, "Ce document n'existe pas.");
     }
-    
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
       return Helper::forbiddenResponse();
     }
-    
     try {
       unlink($document->getPath());
       $document->delete();
@@ -254,7 +289,28 @@ class DocumentController extends BaseController {
       $success = false;
       $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
     }
-    
+    return Redirect::route('manage_documents', array(
+        "section_slug" => $document->getSection()->slug,
+    ))->with($success ? "success_message" : "error_message", $message);
+  }
+  
+  public function archiveDocument($section_slug, $document_id) {
+    $document = Document::find($document_id);
+    if (!$document) {
+      App::abort(404, "Ce document n'existe pas.");
+    }
+    if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
+      return Helper::forbiddenResponse();
+    }
+    try {
+      $document->archived = true;
+      $document->save();
+      $success = true;
+      $message = "Le document a été archivé.";
+    } catch (Exception $e) {
+      $success = false;
+      $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
+    }
     return Redirect::route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
