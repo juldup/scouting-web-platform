@@ -109,15 +109,31 @@ class DocumentController extends BaseController {
   }
   
   public function sendByEmail() {
-    $email = strtolower(Input::get('email'));
+    $emailAddress = strtolower(Input::get('email'));
     $documentId = Input::get('document_id');
-    if ($email == "") {
+    if ($emailAddress == "") {
       return Redirect::to(URL::previous())->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")->withInput();
-    } if (Member::existWithEmail($email)) {
+    } if (Member::existWithEmail($emailAddress)) {
       // Send document by e-mail
-      return Redirect::to(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$email</strong>.");
+      $document = Document::find($documentId);
+      if (!$document) return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe pas.")->withInput();
+      $body = View::make('emails.sendDocument', array(
+          'document' => $document,
+          'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+      ))->render();
+      $email = PendingEmail::create(array(
+          'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Document " . $document->title,
+          'raw_body' => $body,
+          'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+          'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+          'recipient' => $emailAddress,
+          'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+          'attached_document_id' => $documentId,
+      ));
+      $email->send();
+      return Redirect::to(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$emailAddress</strong>.");
     } else {
-      return Redirect::to(URL::previous())->with('error_message', "Désolés, l'adresse <strong>$email</strong> ne fait pas partie de notre listing.")->withInput();
+      return Redirect::to(URL::previous())->with('error_message', "Désolés, l'adresse <strong>$emailAddress</strong> ne fait pas partie de notre listing.")->withInput();
     }
   }
   

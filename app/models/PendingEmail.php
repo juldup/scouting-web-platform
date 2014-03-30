@@ -23,8 +23,17 @@ class PendingEmail extends Eloquent {
         $message->attach(Swift_Attachment::newInstance(file_get_contents($attachment->getPath()), $attachment->filename));
       }
       $message->setBody($email->body_html, 'text/html', 'utf-8');
+    } elseif ($this->html_body) {
+      $message->setBody($this->html_body, 'text/html', 'utf-8');
     } else {
       $message->setBody($this->raw_body);
+    }
+    
+    if ($this->attached_document_id) {
+      $document = Document::find($this->attached_document_id);
+      if ($document) {
+        $message->attach(Swift_Attachment::newInstance(file_get_contents($document->getPath()), $document->filename));
+      }
     }
     
     try {

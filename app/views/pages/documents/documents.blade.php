@@ -84,10 +84,11 @@
         </p>
         {{ Form::open(array('route' => 'send_document_by_email')) }}
           M'envoyer le document
-          {{ Form::select('document_id', $documentSelectList) }}
+          {{ Form::select('document_id', $documentSelectList, null, array('class' => 'form-control large')) }}
           à l'adresse
-          {{ Form::text('email', '', array('size' => 35)) }}.
-          {{ Form::submit('Envoyer') }}
+          {{ Form::text('email', '', array('size' => 35, 'class' => 'form-control large')) }}
+          <span class="horiz-divider"></span>
+          {{ Form::submit('Envoyer', array('class' => 'btn btn-primary')) }}
         {{ Form::close() }}
       </div>
     </div>
