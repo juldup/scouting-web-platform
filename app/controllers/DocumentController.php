@@ -309,7 +309,7 @@ class DocumentController extends BaseController {
       $message = "Le document a été archivé.";
     } catch (Exception $e) {
       $success = false;
-      $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
+      $message = "Une erreur s'est produite. Le document n'a pas été archivé.";
     }
     return Redirect::route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,

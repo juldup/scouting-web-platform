@@ -31,4 +31,8 @@ class Email extends Eloquent {
     return count($this->getAttachments()) != 0;
   }
   
+  public function getSection() {
+    return Section::find($this->section_id);
+  }
+  
 }

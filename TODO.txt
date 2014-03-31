@@ -5,7 +5,7 @@ TODO list
 - Help for leaders + task list
 - Leader archives
 - Send e-mail: include archived leaders (+ old members ?)
-- Archives (news, documents, e-mails, photos, leaders, listing?)
+- Archives (photos, leaders, listing?)
 - Export leaders' e-mail addresses
 - Access control for each page
 - Manage last visit
@@ -23,6 +23,7 @@ TODO list
 
 - New website configuration helper
 
+- Sending e-mails : use default address if sender address not in safe list
 
 - Make sure all forms are closed
 - Comment code

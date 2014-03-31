@@ -2,20 +2,62 @@
 
 class EmailController extends BaseController {
   
-  public function showPage() {
+  public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_EMAILS)) {
       return App::abort(404);
     }
-    $emails = Email::where('archived', '=', false)
-            ->where('deleted', '=', false)
-            ->where('section_id', '=', $this->section->id)
-            ->orderBy('id', 'DESC')
-            ->get();
+    if ($showArchives) {
+      $pageSize = 20;
+      $emails = Email::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('deleted', '=', false)
+              ->where('section_id', '=', $this->section->id)
+              ->orderBy('id', 'DESC')
+              ->skip($page * $pageSize)
+              ->take($pageSize)
+              ->get();
+      $hasArchives = Email::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('deleted', '=', false)
+              ->where('section_id', '=', $this->section->id)
+              ->orderBy('id', 'DESC')
+              ->skip(($page + 1) * $pageSize)
+              ->take(1)
+              ->count();
+    } else {
+      $emails = Email::where('archived', '=', false)
+              ->where('date', '>=', Helper::oneYearAgo())
+              ->where('deleted', '=', false)
+              ->where('section_id', '=', $this->section->id)
+              ->orderBy('id', 'DESC')
+              ->get();
+      $hasArchives = Email::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('deleted', '=', false)
+              ->where('section_id', '=', $this->section->id)
+              ->orderBy('id', 'DESC')
+              ->count();
+    }
     return View::make('pages.emails.emails', array(
         'emails' => $emails,
-        'can_send_emails' => $this->user->can(Privilege::$SEND_EMAILS, $this->section)
+        'can_send_emails' => $this->user->can(Privilege::$SEND_EMAILS, $this->section),
+        'showing_archives' => $showArchives,
+        'has_archives' => $hasArchives,
+        'next_page' => $page + 1,
     ));
+  }
+  
+  public function showArchives($section_slug = null) {
+    $page = Input::get('page');
+    if (!$page) $page = 0;
+    return $this->showPage($section_slug, true, $page);
   }
   
   public function downloadAttachment($attachment_id) {
@@ -48,6 +90,7 @@ class EmailController extends BaseController {
       return Helper::forbiddenResponse();
     }
     $emails = Email::where('archived', '=', false)
+            ->where('date', '>=', Helper::oneYearAgo())
             ->where('deleted', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('id', 'DESC')
@@ -251,6 +294,28 @@ class EmailController extends BaseController {
       return Redirect::route('manage_emails')
               ->with('error_message', "Cet e-mail est trop vieux. Il ne peut plus être supprimé mais peut être archivé.");
     }
+  }
+  
+  public function archiveEmail($section_slug, $email_id) {
+    $email = Email::find($email_id);
+    if (!$email) {
+      App::abort(404, "Cet e-mail n'existe pas.");
+    }
+    if (!$this->user->can(Privilege::$SEND_EMAILS, $email->section_id)) {
+      return Helper::forbiddenResponse();
+    }
+    try {
+      $email->archived = true;
+      $email->save();
+      $success = true;
+      $message = "L'e-mail a été archivé.";
+    } catch (Exception $e) {
+      $success = false;
+      $message = "Une erreur s'est produite. L'e-mail n'a pas été archivé.";
+    }
+    return Redirect::route('manage_emails', array(
+        "section_slug" => $email->getSection()->slug,
+    ))->with($success ? "success_message" : "error_message", $message);
   }
   
 }

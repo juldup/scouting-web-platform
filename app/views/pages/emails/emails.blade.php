@@ -1,5 +1,15 @@
 @extends('base')
 
+@section('back_links')
+  @if ($showing_archives)
+    <p>
+      <a href='{{ URL::route('emails', array('section_slug' => $user->currentSection->slug)) }}'>
+        Retour aux e-mails de cette année
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('forward_links')
   @if ($can_send_emails)
     <p>
@@ -19,9 +29,17 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>E-mails {{ $user->currentSection->de_la_section }}</h1>
+      <h1>E-mails {{ $user->currentSection->de_la_section }} @if ($showing_archives) (archives) @endif</h1>
     </div>
   </div>
+  
+  @if (count($emails) == 0)
+    <div class="row">
+      <div class="col-lg-12">
+        <p>Il n'y a aucun e-mail.</p>
+      </div>
+    </div>
+  @endif
   
   @if ($user->isMember())
     
@@ -56,6 +74,23 @@
     @endforeach
   @else
     @include('subviews.limitedAccess')
+  @endif
+  
+  @if ($has_archives)
+    <div class="vertical-divider"></div>
+    @if ($showing_archives)
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn-sm btn-default" href="{{ URL::route('email_archives', array('section_slug' => $user->currentSection->slug, 'page' => $next_page)) }}">Voir les e-mails plus anciens</a>
+        </div>
+      </div>
+    @else
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn-sm btn-default" href="{{ URL::route('email_archives', array('section_slug' => $user->currentSection->slug)) }}">Voir les e-mails archivés</a>
+        </div>
+      </div>
+    @endif
   @endif
   
 @stop

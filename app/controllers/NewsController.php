@@ -2,7 +2,7 @@
 
 class NewsController extends BaseController {
   
-  public function showPage($year = null, $month = null) {
+  public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
       return App::abort(404);
@@ -10,23 +10,50 @@ class NewsController extends BaseController {
     
     $oneYearAgo = Helper::oneYearAgo();
     
-    if ($this->section->id == 1) {
-      $news = News::where('news_date', '>=', $oneYearAgo)
-              ->orderBy('id', 'DESC')
-              ->get();
-    } else {
-      $news = News::where('news_date', '>=', $oneYearAgo)
-              ->where('section_id', '=', $this->section->id)
-              ->orderBy('id', 'DESC')
-              ->get();
+    // Build query
+    $query = News::orderBy('id', 'DESC');
+    if ($this->section->id != 1) {
+      $query->where('section_id', '=', $this->section->id);
     }
+    if ($showArchives) {
+      // Show archived news
+      $pageSize = 30;
+      $query->where('news_date', '<', $oneYearAgo);
+      $archiveQuery = clone $query->getQuery();
+      $query->skip($page * $pageSize)
+              ->take($pageSize);
+      $hasArchives = count($archiveQuery
+              ->skip(($page + 1) * $pageSize)
+              ->take(1)
+              ->get());
+      echo $archiveQuery
+              ->skip(($page + 1) * $pageSize)
+              ->take(1)->toSQL();
+    } else {
+      // Show recent news
+      $archiveQuery = clone $query->getQuery();
+      $query->where('news_date', '>=', $oneYearAgo);
+      $hasArchives = $archiveQuery->where('news_date', '<', $oneYearAgo)
+              ->take(1)
+              ->count();
+    }
+    $news = $query->get();
     
     return View::make('pages.news.news', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_NEWS, $this->section),
         'edit_url' => URL::route('manage_news', array('section_slug' => $this->section->slug)),
         'page_url' => URL::route('news', array('section_slug' => $this->section->slug)),
         'news' => $news,
+        'has_archives' => $hasArchives,
+        'showing_archives' => $showArchives,
+        'next_page' => $page + 1,
     ));
+  }
+  
+  public function showArchives($section_slug = null) {
+    $page = Input::get('page');
+    if (!$page) $page = 0;
+    return $this->showPage($section_slug, true, $page);
   }
   
   public function showEdit() {

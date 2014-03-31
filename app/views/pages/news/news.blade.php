@@ -1,5 +1,15 @@
 @extends('base')
 
+@section('back_links')
+  @if ($showing_archives)
+    <p>
+      <a href='{{ URL::route('news', array('section_slug' => $user->currentSection->slug)) }}'>
+        Retour aux nouvelles de cette année
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('forward_links')
   @if ($can_edit)
     <p>
@@ -36,5 +46,22 @@
       </div>
     </div>
   @endforeach
+  
+  @if ($has_archives)
+    <div class="vertical-divider"></div>
+    @if ($showing_archives)
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn-sm btn-default" href="{{ URL::route('news_archives', array('section_slug' => $user->currentSection->slug, 'page' => $next_page)) }}">Voir les nouvelles plus anciennes</a>
+        </div>
+      </div>
+    @else
+      <div class="row">
+        <div class="col-md-12">
+          <a class="btn-sm btn-default" href="{{ URL::route('news_archives', array('section_slug' => $user->currentSection->slug)) }}">Voir les nouvelles archivées</a>
+        </div>
+      </div>
+    @endif
+  @endif
   
 @stop

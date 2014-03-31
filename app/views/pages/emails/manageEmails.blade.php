@@ -16,6 +16,10 @@
   </p>
 @stop
 
+@section('additional_javascript')
+  <script src="{{ URL::to('/') }}/js/edit_emails.js"></script>
+@stop
+
 @section('content')
   
   @include('subviews.contextualHelp', array('help' => 'edit-emails'))
@@ -42,7 +46,9 @@
                     Supprimer
                   </a>&nbsp;
                 @endif
-                <a class="btn-sm btn-default" href="#">Archiver</a>
+                <a class="btn-sm btn-default archive-email-button" href="{{ URL::route('manage_emails_archive', array('section_slug' => $user->currentSection->slug, 'email_id' => $email->id)) }}">
+                  Archiver
+                </a>
               </div>
             </div>
           </legend>
@@ -66,8 +72,13 @@
             </p>
           @endif
           <p class="email-recipient-list">
-            <strong>Destinataires :</strong>
-            {{ $email->recipient_list }}
+            <span class="email-recipient-list-content">
+              <strong>Voir les destinataires</strong>
+            </span>
+            <span class="email-recipient-list-content" style="display: none;">
+              <strong>Destinataires :</strong>
+              {{ $email->recipient_list }}
+            </span>
           </p>
         </div>
       </div>
