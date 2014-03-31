@@ -2,7 +2,7 @@
 
 class PhotoController extends BaseController {
   
-  public function showPage() {
+  public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_PHOTOS)) {
       return App::abort(404);
@@ -14,17 +14,48 @@ class PhotoController extends BaseController {
     
     $albumId = Route::input('album_id');
     
-    $albums = PhotoAlbum::where('archived', '=', false)
-            ->where('section_id', '=', $this->section->id)
-            ->where('photo_count', '!=', 0)
-            ->orderBy('position')
-            ->get();
+    if ($showArchives) {
+      $pageSize = 15;
+      $albums = PhotoAlbum::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->orderBy('date', 'desc')
+              ->skip($page * $pageSize)
+              ->take($pageSize)
+              ->get();
+      $hasArchives = count(PhotoAlbum::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->skip(($page + 1) * $pageSize)
+              ->take(1)
+              ->get());
+    } else {
+      $albums = PhotoAlbum::where('archived', '=', false)
+              ->where('date', '>=', Helper::oneYearAgo())
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->orderBy('position')
+              ->get();
+      $hasArchives = PhotoAlbum::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->take(1)
+              ->count();
+    }
     
     $currentAlbum = null;
     $photos = null;
     if ($albumId) {
       $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
-              ->where('archived', '=', false)
               ->where('section_id', '=', $this->section->id)
               ->where('photo_count', '!=', 0)
               ->first();
@@ -44,7 +75,16 @@ class PhotoController extends BaseController {
         'current_album' => $currentAlbum,
         'photos' => $photos,
         'can_manage' => $this->user->can(Privilege::$POST_PHOTOS, $this->section),
+        'showing_archives' => $showArchives,
+        'has_archives' => $hasArchives,
+        'next_page' => $page + 1,
     ));
+  }
+  
+  public function showArchives($section_slug = null) {
+    $page = Input::get('page');
+    if (!$page) $page = 0;
+    return $this->showPage($section_slug, true, $page);
   }
   
   public function getPhoto($format, $photo_id) {
@@ -110,6 +150,7 @@ class PhotoController extends BaseController {
     }
     
     $albums = PhotoAlbum::where('archived', '=', false)
+            ->where('date', '>=', Helper::oneYearAgo())
             ->where('section_id', '=', $this->section->id)
             ->orderBy('position')
             ->get();
@@ -131,6 +172,7 @@ class PhotoController extends BaseController {
       $album = PhotoAlbum::create(array(
           'section_id' => $this->section->id,
           'name' => "Album du " . Helper::dateToHuman(date('Y-m-d')),
+          'date' => date('Y-m-d'),
       ));
       $album->position = $album->id;
       $album->save();
@@ -214,11 +256,29 @@ class PhotoController extends BaseController {
     try {
       $album->delete();
     } catch (Exception $ex) {
-      return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+      return Redirect::route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
               ->with('error_message', "Une erreur est survenue. L'album n'as pas été supprimé.");
     }
     return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
               ->with('success_message', "L'album a été supprimé.");
+  }
+  
+  public function archivePhotoAlbum($album_id) {
+    $album = PhotoAlbum::find($album_id);
+    if (!$album) App::abort(404, "Cet album n'existe pas.");
+    $sectionId = $album->section_id;
+    if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return Helper::forbiddenResponse();
+    }
+    try {
+      $album->archived = true;
+      $album->save();
+    } catch (Exception $ex) {
+      return Redirect::route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
+              ->with('error_message', "Une erreur est survenue. L'album n'as pas été archivé.");
+    }
+    return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+              ->with('success_message', "L'album a été archivé.");
   }
   
   public function changeAlbumName() {

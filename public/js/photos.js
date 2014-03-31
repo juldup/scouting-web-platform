@@ -38,6 +38,11 @@ $().ready(function() {
     var next = $(event.relatedTarget);
     next.loadImagesAround();
   });
+  
+  $(".photo-album-row").click(function() {
+    var url = $(this).find("a.photo-album-link").attr('href');
+    if (url) window.location = url;
+  });
 });
 
 function startCarousel() {

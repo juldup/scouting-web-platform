@@ -67,6 +67,10 @@
                     &nbsp;<a class="btn-sm btn-default" href="{{ URL::route('delete_photo_album', array('album_id' => $album->id)) }}">
                       Supprimer
                     </a>
+                  @else
+                    &nbsp;<a class="btn-sm btn-default archive-photo-album-button" href="{{ URL::route('archive_photo_album', array('album_id' => $album->id)) }}">
+                      Archiver
+                    </a>
                   @endif
                 </td>
               </tr>

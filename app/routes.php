@@ -146,6 +146,7 @@ Route::get('gestion/e-mails/supprimer/{email_id}', array("as" => "manage_emails_
 Route::get('gestion/e-mails/archiver/{section_slug}/{email_id}', array("as" => "manage_emails_archive", "uses" => "EmailController@archiveEmail"));
 
 // Photos
+Route::get('photos/archives/{section_slug?}', array("as" => "photo_archives", "uses" => "PhotoController@showArchives"));
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
 Route::get('photos-{album_id}/{section_slug?}', array("as" => "photo_album", "uses" => "PhotoController@showPage"));
 Route::get('photo/{format}/{photo_id}/{filename?}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
@@ -153,6 +154,7 @@ Route::get('photos/telecharger-album/{album_id}', array("as" => "download_photo_
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
 Route::get('gestion/photos/supprimer-album/{album_id}/{section_slug?}', array("as" => "delete_photo_album", "uses" => "PhotoController@deletePhotoAlbum"));
+Route::get('gestion/photos/archiver-album/{album_id}/{section_slug?}', array("as" => "archive_photo_album", "uses" => "PhotoController@archivePhotoAlbum"));
 Route::get('gestion/photos/album/{album_id}/{section_slug?}', array("as" => "edit_photo_album", "uses" => "PhotoController@showEditAlbum"));
 Route::post('ajax/gestion/photos/changer-ordre-albums', array("as" => "ajax_change_album_order", "uses" => "PhotoController@changeAlbumOrder"));
 Route::post('ajax/gestion/photos/changer-ordre-photos', array("as" => "ajax_change_photo_order", "uses" => "PhotoController@changePhotoOrder"));

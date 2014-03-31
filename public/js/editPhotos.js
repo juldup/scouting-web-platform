@@ -1,3 +1,9 @@
+$().ready(function() {
+  $(".archive-photo-album-button").click(function() {
+    return confirm("Archiver cet album ?");
+  });
+});
+
 function saveAlbumOrder(table, albumOrder) {
   $.ajax({
     type: "POST",
