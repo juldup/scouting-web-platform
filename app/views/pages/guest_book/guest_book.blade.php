@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/guest_book.js"></script>
+  <script src="{{ URL::to('/') }}/js/guest-book.js"></script>
 @stop
 
 @section('back_links')

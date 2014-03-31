@@ -2,7 +2,7 @@
 
 @section('additional_javascript')
   @if ($managing)
-    <script src="{{ URL::to('/') }}/js/edit_suggestions.js"></script>
+    <script src="{{ URL::to('/') }}/js/edit-suggestions.js"></script>
   @endif
 @stop
 

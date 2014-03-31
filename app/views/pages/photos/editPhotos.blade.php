@@ -5,9 +5,9 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/editPhotos.js"></script>
-  <script src="{{ URL::to('/') }}/js/reorderList.js"></script>
-  <script src="{{ URL::to('/') }}/js/editableText.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-photos.js"></script>
+  <script src="{{ URL::to('/') }}/js/reorder-list.js"></script>
+  <script src="{{ URL::to('/') }}/js/editable-text.js"></script>
   <script>
     var saveAlbumOrderURL = "{{ URL::route('ajax_change_album_order') }}";
     @if ($selected_album_id)

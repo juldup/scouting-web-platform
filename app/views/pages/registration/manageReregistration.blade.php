@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/manage_reregistration.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-reregistration.js"></script>
   <script>
     var reregisterMemberURL = "{{ URL::route('ajax_reregister') }}";
     var unreregisterMemberURL = "{{ URL::route('ajax_cancel_reregistration') }}";

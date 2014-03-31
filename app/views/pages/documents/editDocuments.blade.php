@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit_documents.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-documents.js"></script>
   <script>
     var currentSection = {{ $user->currentSection->id }};
     var documents = new Array();

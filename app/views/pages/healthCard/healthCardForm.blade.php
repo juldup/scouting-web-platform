@@ -9,7 +9,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/health_card.js"></script>
+  <script src="{{ URL::to('/') }}/js/health-card.js"></script>
 @stop
 
 @section('back_links')

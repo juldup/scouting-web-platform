@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit_users.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-users.js"></script>
 @stop
 
 @section('content')

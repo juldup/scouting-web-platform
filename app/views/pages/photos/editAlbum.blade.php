@@ -5,9 +5,9 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/reorderList.js"></script>
-  <script src="{{ URL::to('/') }}/js/editAlbum.js"></script>
-  <script src="{{ URL::to('/') }}/js/editableText.js"></script>
+  <script src="{{ URL::to('/') }}/js/reorder-list.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-album.js"></script>
+  <script src="{{ URL::to('/') }}/js/editable-text.js"></script>
   <script>
     var savePhotoOrderURL = "{{ URL::route('ajax_change_photo_order') }}";
     var deletePhotoURL = "{{ URL::route('ajax_delete_photo') }}";

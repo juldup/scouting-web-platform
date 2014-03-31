@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit_privileges.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-privileges.js"></script>
   <script>
     var currentSection = {{ $user->currentSection->id }};
     var commitPrivilegeChangesURL = "{{ URL::route('ajax_change_privileges') }}";
