@@ -148,7 +148,7 @@ Route::get('gestion/e-mails/archiver/{section_slug}/{email_id}', array("as" => "
 // Photos
 Route::get('photos/archives/{section_slug?}', array("as" => "photo_archives", "uses" => "PhotoController@showArchives"));
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
-Route::get('photos-{album_id}/{section_slug?}', array("as" => "photo_album", "uses" => "PhotoController@showPage"));
+Route::get('photos-{album_id}/{section_slug?}', array("as" => "photo_album", "uses" => "PhotoController@showAlbum"));
 Route::get('photo/{format}/{photo_id}/{filename?}', array("as" => "get_photo", "uses" => "PhotoController@getPhoto"));
 Route::get('photos/telecharger-album/{album_id}', array("as" => "download_photo_album", "uses" => "PhotoController@downloadAlbum"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
@@ -226,7 +226,8 @@ Route::get('gestion/parametres/{section_slug?}', array("as" => "edit_parameters"
 Route::post('gestion/parametres/submit', array("as" => "edit_parameters_submit", "uses" => "ParameterController@submitParameters"));
 
 // View recent changes
-Route::get('gestion/changements-recents/{section_slug?}', array("as" => "view_recent_changes", "uses" => "RecentChangesController@showPage"));
+Route::get('changements-recents/{section_slug?}', array("as" => "view_recent_changes", "uses" => "RecentChangesController@showPage"));
+Route::get('gestion/changements-recents/{section_slug?}', array("as" => "view_private_recent_changes", "uses" => "RecentChangesController@showPrivateChanges"));
 
 // Personal e-mails
 Route::get('/email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));

@@ -10,4 +10,8 @@ class PhotoAlbum extends Eloquent {
     $this->save();
   }
   
+  public function getSection() {
+    return Section::find($this->section_id);
+  }
+  
 }

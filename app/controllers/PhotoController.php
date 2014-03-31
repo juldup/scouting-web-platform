@@ -14,8 +14,44 @@ class PhotoController extends BaseController {
     
     $albumId = Route::input('album_id');
     
+    $pageSize = 2;
+    
+    $currentAlbum = null;
+    if ($albumId) {
+      $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->first();
+      if (!$currentAlbum) {
+        return Redirect::route('photos', array('section_slug' => $this->section->slug));
+      }
+      if ($currentAlbum->archived || $currentAlbum->date < Helper::oneYearAgo()) {
+        // Showing an archived album
+        $showArchives = true;
+        // Determine current page, by counting albums before it in the list
+        $index = count(PhotoAlbum::where(function($query) {
+                  $query->where('archived', '=', true);
+                  $query->orWhere('date', '<', Helper::oneYearAgo());
+              })
+              ->where('section_id', '=', $this->section->id)
+              ->where('photo_count', '!=', 0)
+              ->where(function($query) use ($currentAlbum) {
+                  // Counting albums later than current
+                  $query->where('date', '>', $currentAlbum->date);
+                  // Or with same date, but with a smaller id
+                  $query->orWhere(function($query) use ($currentAlbum) {
+                      $query->where('date', '=', $currentAlbum->date);
+                      $query->where('id', '<', $currentAlbum->id);
+                  });
+              })
+              ->orderBy('date', 'desc')
+              ->get());
+        // Deduce the page from the index
+        $page = (int)($index / $pageSize);
+      }
+    }
+    
     if ($showArchives) {
-      $pageSize = 15;
       $albums = PhotoAlbum::where(function($query) {
                   $query->where('archived', '=', true);
                   $query->orWhere('date', '<', Helper::oneYearAgo());
@@ -23,6 +59,7 @@ class PhotoController extends BaseController {
               ->where('section_id', '=', $this->section->id)
               ->where('photo_count', '!=', 0)
               ->orderBy('date', 'desc')
+              ->orderBy('id')
               ->skip($page * $pageSize)
               ->take($pageSize)
               ->get();
@@ -52,17 +89,7 @@ class PhotoController extends BaseController {
               ->count();
     }
     
-    $currentAlbum = null;
     $photos = null;
-    if ($albumId) {
-      $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
-              ->where('section_id', '=', $this->section->id)
-              ->where('photo_count', '!=', 0)
-              ->first();
-      if (!$currentAlbum) {
-        return Redirect::route('photos', array('section_slug' => $this->section->slug));
-      }
-    }
     if (count($albums)) {
       if (!$currentAlbum) $currentAlbum = $albums[0];
       $photos = Photo::where('album_id', '=', $currentAlbum->id)
@@ -79,6 +106,10 @@ class PhotoController extends BaseController {
         'has_archives' => $hasArchives,
         'next_page' => $page + 1,
     ));
+  }
+  
+  public function showAlbum() {
+    return $this->showPage();
   }
   
   public function showArchives($section_slug = null) {

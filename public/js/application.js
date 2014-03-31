@@ -113,3 +113,10 @@ $().ready(function() {
     return false;
   });
 });
+
+$().ready(function() {
+  $(".big-target").click(function() {
+    var href = $(this).find("a[href]").attr('href');
+    window.location = href;
+  });
+});

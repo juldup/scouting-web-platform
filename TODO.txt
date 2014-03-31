@@ -14,7 +14,7 @@ TODO list
 
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
 - Birthdays in calendar
-- What's new + flag new items (news, documents, e-mails, photos)
+- Flag new items (news, documents, e-mails, photos)
 - Export listing (?)
 - List recent changes (optional)
 - Section icons
@@ -35,3 +35,5 @@ TODO list
 
 - Solvo TODOs in import-old-data script
 - Reorganize styles.less
+- Add session keepalive
+- Layout for smartphones

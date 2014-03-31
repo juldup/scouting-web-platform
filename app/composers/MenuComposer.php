@@ -51,6 +51,8 @@ class MenuComposer {
       $animationCategory["Les animateurs"] = 'leaders';
     if (Parameter::get(Parameter::$SHOW_LISTING))
       $animationCategory["Listing des scouts"] = 'listing';
+    $animationCategory["divider_1"] = 'divider';
+    $animationCategory["Nouveau sur le site"] = 'view_recent_changes';
     if (count($animationCategory)) {
       $menuItems['Animation'] = $animationCategory;
     }
@@ -97,7 +99,7 @@ class MenuComposer {
       $leaderCategory["Paramètres du site"] = 'edit_parameters';
       
       $leaderCategory['Supervision'] = 'title';
-      $leaderCategory['Changements récents'] = 'view_recent_changes';
+      $leaderCategory['Changements récents'] = 'view_private_recent_changes';
       $leaderCategory['Liste des utilisateurs du site'] = 'user_list';
       
       if (count($leaderCategory)) {
