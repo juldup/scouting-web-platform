@@ -109,10 +109,10 @@ class LeaderCornerController extends BaseController {
         ),
         "Supervision" => array(
             "Changements récents" => array(
-                'url' => "",
+                'url' => "view_recent_changes",
                 'help' => 'changements-recents',
             ),
-            "Liste des membres" => array(
+            "Liste des utilisateurs" => array(
                 'url' => URL::route('user_list'),
                 'help' => 'liste-membres',
             )

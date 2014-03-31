@@ -5,7 +5,7 @@ TODO list
 - Help for leaders + task list
 - Leader archives
 - Send e-mail: include archived leaders (+ old members ?)
-- Archives (photos, leaders, listing?)
+- Archives (leaders, listing?)
 - Export leaders' e-mail addresses
 - Access control for each page
 - Manage last visit
@@ -34,3 +34,4 @@ TODO list
 - Rename js files with - instead of _ or caps
 
 - Solvo TODOs in import-old-data script
+- Reorganize styles.less

@@ -225,11 +225,14 @@ Route::post('ajax/gestion/donnees-section/changer-ordre-sections', array("as" =>
 Route::get('gestion/parametres/{section_slug?}', array("as" => "edit_parameters", "uses" => "ParameterController@showEdit"));
 Route::post('gestion/parametres/submit', array("as" => "edit_parameters_submit", "uses" => "ParameterController@submitParameters"));
 
-// Home
-Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
-Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));
-Route::post('gestion/accueil/{section_slug?}', array("as" => "edit_home_page_submit", "uses" => "HomePageController@savePage"));
+// View recent changes
+Route::get('gestion/changements-recents/{section_slug?}', array("as" => "view_recent_changes", "uses" => "RecentChangesController@showPage"));
 
 // Personal e-mails
 Route::get('/email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));
 Route::post('/email-personnel/soumettre/{contact_type}/{member_id}', array("as" => "personal_email_submit", "uses" => "PersonalEmailController@submit"));
+
+// Home
+Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
+Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));
+Route::post('gestion/accueil/{section_slug?}', array("as" => "edit_home_page_submit", "uses" => "HomePageController@savePage"));
