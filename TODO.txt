@@ -1,8 +1,6 @@
 TODO list
 
 BIG TASKS:
-- New website configuration helper
-- List recent changes
 - Help for leaders + task list
 - Accounting
 - Leader archives (+ access for former leaders)
@@ -13,6 +11,7 @@ SMALL TASKS:
 - Change 'manage' to 'edit' everywhere or the other way around
 - Sending e-mails : use default address if sender address not in safe list
 - Solvo TODOs in import-old-data script
+- Fix page min-height
 
 AT THE END:
 - Layout for smartphones and tablets
@@ -23,6 +22,8 @@ AT THE END:
 - Check access control for each page
 
 OPTIONAL/LATER:
+- New website configuration helper
+- List recent changes
 - Send e-mail: include archived leaders (+ old members ?)
 - Logs
 - Section icons

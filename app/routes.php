@@ -212,8 +212,8 @@ Route::get('gestion/coin-des-animateurs/{section_slug?}', array("as" => "leader_
 Route::get('gestion/utilisateurs/{section_slug?}', array("as" => "user_list", "uses" => "UserController@showUserList"));
 Route::get('gestion/utilisateurs/supprimer/{user_id}', array("as" => "delete_user", "uses" => "UserController@deleteUser"));
 
-// Accounts
-Route::get('gestion/tresorerie/{section_slug?}', array("as" => "accounts", "uses" => "AccountController@showPage"));
+// Accounting
+Route::get('gestion/tresorerie/{section_slug?}', array("as" => "accounting", "uses" => "AccountingController@showPage"));
 
 // Section data
 Route::get('gestion/donnees-section/{section_slug?}', array("as" => "section_data", "uses" => "SectionDataController@showPage"));

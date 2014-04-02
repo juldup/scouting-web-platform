@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" @yield('html_parameters')>
 <head>
   <meta charset="UTF-8">
 	<title>

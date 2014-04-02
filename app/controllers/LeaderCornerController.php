@@ -35,7 +35,7 @@ class LeaderCornerController extends BaseController {
                 'help' => 'emails',
             ),
             "Trésorerie" => array(
-                'url' => URL::route('accounts'),
+                'url' => URL::route('accounting'),
                 'help' => 'tresorerie',
             )
         ),

@@ -588,3 +588,122 @@ form .color-sample {
 .big-target {
   cursor: pointer;
 }
+
+
+
+
+
+
+/* Accounting */
+
+.accounting table, .accounting th, .accounting td {
+  border-collapse: collapse;
+  border: none;
+}
+
+.accounting .table-header th, .accounting .transaction-row td {
+  border: 1px @text-color solid;
+  padding: 3px;
+  background: @gray-lighter;
+}
+
+.accounting .transaction-row input {
+  background: @gray-lighter;
+  font-size: .85em;
+  padding-left: 4px;
+  width: 100%;
+}
+
+.accounting .positive {
+  color: green;
+}
+
+.accounting .negative {
+  color: red;
+}
+
+.accounting th {
+  text-align: center;
+}
+
+.accounting td.category-name input {
+  padding-top: 15px;
+  padding-bottom: 4px;
+  font-size: 1.3em;
+  width: 100%;
+}
+
+.accounting .categoryName {
+  border: none;
+  background: #ffe089;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.accounting input {
+  border: none;
+  outline: none;
+}
+
+.accounting td.move-handle {
+  width: 2em;
+  border: none;
+  background: none;
+}
+
+.accounting .cell-date, .accounting .cell-receipt {
+  width: 84px;
+}
+
+.accounting input.input-date, .accounting input.input-receipt {
+  width: 77px;
+}
+
+.accounting .cell-description {
+  width: 280px;
+}
+
+.accounting input.input-description {
+  width: 273px;
+}
+
+.accounting .cell-amount {
+  width: 68px;
+}
+
+.accounting input.input-amount {
+  width: 48px;
+  text-align: right;
+}
+
+.accounting td.delete-cell {
+  border: none;
+  background: none;
+}
+
+.accounting td.delete-cell a .glyphicon {
+  color: red;
+}
+
+.accounting .input-amount-symbol {
+  font-size: .85em;
+}
+
+.accounting td.category-subtotal {
+  text-align: center;
+  border: 1px solid @text-color;
+  background: @gray-lighter;
+  font-weight: 500;
+}
+
+.accounting .add-category-row td {
+  padding-top: 2em;
+}
+
+.accounting th.cellout, .accounting td.cellout, .accounting .cellout input {
+  background: #ffad54;
+}
+
+.accounting th.cellin, .accounting td.cellin, .accounting .cellin input  {
+  background: #d4c854;
+}

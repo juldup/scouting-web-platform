@@ -70,8 +70,8 @@ class Privilege extends Eloquent {
       'predefined' => "ARSU"
   );
   
-  public static $MANAGE_ACCOUNTS = array(
-      'id' => "Manage accounts",
+  public static $MANAGE_ACCOUNTING = array(
+      'id' => "Manage accounting",
       'text' => 'Gérer les comptes #delasection',
       'section' => true,
       'predefined' => "RSU"
@@ -173,7 +173,7 @@ class Privilege extends Eloquent {
         self::$EDIT_NEWS,
         self::$SEND_EMAILS,
         self::$EDIT_SECTION_EMAIL_AND_SUBGROUP,
-        self::$MANAGE_ACCOUNTS,
+        self::$MANAGE_ACCOUNTING,
         self::$SECTION_TRANSFER,
         self::$EDIT_LISTING_LIMITED,
         self::$EDIT_LEADER_PRIVILEGES,

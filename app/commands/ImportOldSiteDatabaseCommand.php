@@ -250,7 +250,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       elseif ($operationFR == "Consulter les fiches santé #delasection") $privilege = Privilege::$VIEW_HEALTH_CARDS;
       elseif ($operationFR == "Envoyer des e-mails aux membres #delasection") $privilege = Privilege::$SEND_EMAILS;
       elseif ($operationFR == "Gérer le covoiturage #delasection") $privilege = null;
-      elseif ($operationFR == "Gérer les comptes #delasection") $privilege = Privilege::$MANAGE_ACCOUNTS;
+      elseif ($operationFR == "Gérer les comptes #delasection") $privilege = Privilege::$MANAGE_ACCOUNTING;
       elseif ($operationFR == "Modifier certaines données du listing #delasection") $privilege = Privilege::$EDIT_LISTING_LIMITED;
       elseif ($operationFR == "Modifier les animateurs #delasection") $privilege = Privilege::$EDIT_LISTING_LIMITED;
       elseif ($operationFR == "Modifier les documents #delasection") $privilege = Privilege::$EDIT_DOCUMENTS;

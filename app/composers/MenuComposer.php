@@ -86,7 +86,7 @@ class MenuComposer {
       $leaderCategory['Gérer les nouvelles'] = 'manage_news';
       $leaderCategory['Gérer les e-mails'] = 'manage_emails';
       $leaderCategory['Envoyer un e-mail'] = 'send_section_email';
-      $leaderCategory['Trésorerie'] = 'accounts';
+      $leaderCategory['Trésorerie'] = 'accounting';
       
       $leaderCategory['Opérations annuelles'] = 'title';
       $leaderCategory['Gérer les inscriptions'] = 'manage_registration';
