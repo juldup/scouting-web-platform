@@ -608,7 +608,7 @@ form .color-sample {
 }
 
 .accounting .transaction-row input {
-  background: @gray-lighter;
+  background: transparent;
   font-size: .85em;
   padding-left: 4px;
   width: 100%;
@@ -651,6 +651,10 @@ form .color-sample {
   background: none;
 }
 
+.accounting td.move-handle .glyphicon-move {
+  cursor: move;
+}
+
 .accounting .cell-date, .accounting .cell-receipt {
   width: 84px;
 }
@@ -668,7 +672,7 @@ form .color-sample {
 }
 
 .accounting .cell-amount {
-  width: 68px;
+  width: 75px;
 }
 
 .accounting input.input-amount {
@@ -700,10 +704,10 @@ form .color-sample {
   padding-top: 2em;
 }
 
-.accounting th.cellout, .accounting td.cellout, .accounting .cellout input {
+.accounting th.cellout, .accounting td.cellout {
   background: #ffad54;
 }
 
-.accounting th.cellin, .accounting td.cellin, .accounting .cellin input  {
+.accounting th.cellin, .accounting td.cellin {
   background: #d4c854;
 }

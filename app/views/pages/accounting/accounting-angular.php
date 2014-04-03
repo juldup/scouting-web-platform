@@ -4,30 +4,30 @@
 
 <div ng-controller="AccountingController" class="accounting">
   <div class="row">
-    <div class="col-sm-6 text-right">
+    <div class="col-sm-6 col-xs-8 text-right">
       <label>Total à l'actif :</label>
     </div>
-    <div class="col-sm-4">
+    <div class="col-xs-4">
       <span ng-class="{true:'positive', false:'negative'}[bigTotal('cash') + bigTotal('bank') >= 0]">
         <strong>{{formatCurrency(bigTotal('cash') + bigTotal('bank'))}}</strong>
       </span>
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6 text-right">
+    <div class="col-sm-6 col-xs-8 text-right">
       <label>Total liquide :</label>
     </div>
-    <div class="col-sm-4">
+    <div class="col-xs-4">
       <span ng-class="{true:'positive', false:'negative'}[bigTotal('cash') >= 0]">
         <strong>{{formatCurrency(bigTotal('cash'))}}</strong>
       </span>
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6 text-right">
+    <div class="col-sm-6 col-xs-8 text-right">
       <label>Total compte bancaire :</label>
     </div>
-    <div class="col-sm-4">
+    <div class="col-xs-4">
       <span ng-class="{true:'positive', false:'negative'}[bigTotal('bank') >= 0]">
         <strong>{{formatCurrency(bigTotal('bank'))}}</strong>
       </span>
@@ -53,66 +53,68 @@
             <th></th>
             <th></th>
             <th class='cellin cell-amount'>Rentrées</th>
-            <th class='cellout'>Dépenses</th>
-            <th class='cellin'>Rentrées</th>
-            <th class='cellout'>Dépenses</th>
+            <th class='cellout cell-amount'>Dépenses</th>
+            <th class='cellin cell-amount'>Rentrées</th>
+            <th class='cellout cell-amount'>Dépenses</th>
             <th></th>
             <th></th>
             <td></td>
           </tr>
         </thead>
-        <tbody>
-          <tr ng-repeat-start="category in categories">
+        <tbody ng-repeat-start="category in categories" data-category-id="{{ category.id }}" ui-sortable="sortableOptions">
+          <tr>
             <td class="move-handle">
             </td>
             <td colspan="8" class="category-name">
               <input type="text" ng-model="category.name" />
             </td>
           </tr>
-          <tr ng-repeat="trans in category.transactions" class="transaction-row">
+          <tr ng-repeat="trans in category.transactions" class="transaction-row" data-transaction-id="{{ trans.id }}">
             <td class="move-handle">
               <span class="glyphicon glyphicon-move"></span>
             </td>
-            <td>
+            <td class="cell-date">
               <input type='text' ng-model="trans.date" class="input-date">
             </td>
-            <td class="input-wrapper-cell">
+            <td class="input-wrapper-cell cell-description">
               <input type="text" ng-model="trans.object" class="input-description">
             </td>
-            <td class="cellin">
+            <td class="cellin cell-amount">
               <input type="text" ng-model="trans.cashin" class="input-amount">
               <span class="input-amount-symbol">
                 {{ trans.cashin != 0 ? "€" : "" }}
               </span>
             </td>
-            <td class="cellout">
+            <td class="cellout cell-amount">
               <input type="text" ng-model="trans.cashout" class="input-amount">
               <span class="input-amount-symbol">
                 {{ trans.cashout != 0 ? "€" : "" }}
               </span>
             </td>
-            <td class="cellin">
+            <td class="cellin cell-amount">
               <input type="text" ng-model="trans.bankin" class="input-amount">
               <span class="input-amount-symbol">
                 {{ trans.bankin != 0 ? "€" : "" }}
               </span>
             </td>
-            <td class="cellout">
+            <td class="cellout cell-amount">
               <input type="text" ng-model="trans.bankout" class="input-amount">
               <span class="input-amount-symbol">
                 {{ trans.bankout != 0 ? "€" : "" }}
               </span>
             </td>
-            <td>
+            <td class="cell-description">
               <input type="text" ng-model="trans.comment" class="input-description">
             </td>
-            <td>
+            <td class="cell-receipt">
               <input type="text" ng-model="trans.receipt" class="input-receipt">
             </td>
             <td class="delete-cell">
               <a href='' ng-click='remove()'><span class="glyphicon glyphicon-remove"></span></a>
             </td>
           </tr>
+        </tbody>
+        <tbody ng-repeat-end>
           <tr>
             <td></td>
             <td colspan="2">
@@ -132,7 +134,7 @@
             </td>
             <td colspan="2"></td>
           </tr>
-          <tr ng-repeat-end>
+          <tr>
             <td></td>
             <td colspan="2">
               <a href='' ng-click='sortList($index)' title='Trier par date'>
@@ -141,6 +143,8 @@
             </td>
             <td colspan="2"></td>
           </tr>
+        </tbody>
+        <tbody>
           <tr class="add-category-row">
             <td></td>
             <td colspan="2">

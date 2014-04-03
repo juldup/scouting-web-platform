@@ -25,7 +25,7 @@
       @endforeach
     ];
   </script>
-  <script src="{{ URL::to('/') }}/js/upclick.js"></script>
+  <script src="{{ URL::to('/') }}/js/libs/upclick.js"></script>
 @stop
 
 @section('content')

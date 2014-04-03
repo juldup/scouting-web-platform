@@ -10,7 +10,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/bootstrap-colorpicker.min.js"></script>
+  <script src="{{ URL::to('/') }}/js/libs/bootstrap-colorpicker.min.js"></script>
   <script src="{{ URL::to('/') }}/js/edit-sections.js"></script>
   @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
     <script src="{{ URL::to('/') }}/js/reorder-list.js"></script>

@@ -57,12 +57,15 @@ function compareDates(trans1, trans2) {
 	return 0;
 }
 
+var myapp = angular.module('myapp', ['ui']);
+
 // Angular controller
-function AccountingController($scope) {
+myapp.controller('AccountingController', function ($scope) {
 	
 	// Example data
 	$scope.categories = [ {
 		name : "Initial state",
+    id: 1,
 		transactions : [ {
 			date : '01/01/2013',
 			object : 'Inheritance from last year',
@@ -71,10 +74,12 @@ function AccountingController($scope) {
 			bankin : 175,
 			bankout : "",
 			comment : "",
-      receipt : ""
+      receipt : "",
+      id: 1
 		} ]
 	}, {
 		name : "Bank transactions",
+    id: 2,
 		transactions : [ {
 			date : '01/03/2013',
 			object : 'Withdrawal',
@@ -84,6 +89,7 @@ function AccountingController($scope) {
 			bankout : 20,
 			comment : "Withdrawal is free",
       receipt : "1",
+      id: 2
 		}, {
 			date : '01/01/2013',
 			object : 'Deposit',
@@ -93,6 +99,7 @@ function AccountingController($scope) {
 			bankout : 5,
 			comment : "Deposit costs 5$",
       receipt : "2",
+      id: 3
 		} ]
 	} ];
 	
@@ -177,4 +184,63 @@ function AccountingController($scope) {
 		return currencyFormatter.replace("%", value);
 	};
 	
-}
+  // Make the transactions movable within the categories and from one category to another
+  $scope.sortableOptions = {
+    connectWith: 'tbody',
+    dropOnEmpty: true,
+    items: "tr:not(:first)",
+    placeholder: "ui-state-highlight",
+    start: function(event, ui) {
+      // Save predecessor to reset position in DOM
+      prev = ui.item.prev();
+      // Save category and position
+      var categoryElement = ui.item.closest("[data-category-id]");
+      categoryIndex = $("[data-category-id").index(categoryElement);
+      transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item); // TODO use something else than data-draggable-id
+      $scope.sortableData = {
+        prev: prev,
+        categoryIndex: categoryIndex,
+        transactionIndex: transactionIndex,
+      };
+    },
+    stop: function(event, ui) {
+      // Get new category and position
+      var categoryElement = ui.item.closest("[data-category-id]");
+      var categoryIndex = $("[data-category-id").index(categoryElement);
+      var transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item); // TODO use something else than data-draggable-id
+      // Move item
+      transaction = ui.item.scope().trans;
+      if (categoryIndex !== $scope.sortableData.categoryIndex) {
+        // Remove old
+        $scope.categories[$scope.sortableData.categoryIndex].transactions.splice($scope.sortableData.transactionIndex, 1);
+        // Add new
+        $scope.categories[categoryIndex].transactions.splice(transactionIndex, 0, transaction);
+        // Remove old category if empty
+        if ($scope.categories[$scope.sortableData.categoryIndex].transactions.length === 0) {
+          $scope.categories.splice($scope.sortableData.categoryIndex, 1);
+        }
+      } else {
+        // Remove old
+        $scope.categories[categoryIndex].transactions.splice($scope.sortableData.transactionIndex, 1);
+        // Add new
+        $scope.categories[categoryIndex].transactions.splice(transactionIndex, 0, transaction);
+      }
+      $scope.resetCategories();
+      // Reset DOM
+      // Save scrolling position
+      var scroll = $(window).scrollTop();
+      // DOM might have been messed up by moving the items, so reset it to an empty state
+      var categories = $scope.categories;
+      $scope.categories = [];
+      $scope.$apply();
+      // Then reapply the changes
+      $scope.categories = categories;
+      $scope.$apply();
+      // Then reset the scroll position of the page
+      $("html").scrollTop(scroll);
+    }
+  };
+    
+});
+
+angular.bootstrap(document, ['myapp']);
