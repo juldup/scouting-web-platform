@@ -2,7 +2,6 @@ TODO list
 
 BIG TASKS:
 - Help for leaders + task list
-- Accounting
 - Leader archives (+ access for former leaders)
 - Edit advanced parameters (webmaster e-mail, etc.)
 
@@ -12,10 +11,11 @@ SMALL TASKS:
 - Sending e-mails : use default address if sender address not in safe list
 - Solvo TODOs in import-old-data script
 - Fix page min-height
+- Health card auto-deletion + reminder e-mail
 
 AT THE END:
 - Layout for smartphones and tablets
-- Reorganize styles.less
+- Reorganize javascript files
 - Make sure all forms are closed
 - Comment code
 - Escape all user data with {{{ }}}
@@ -34,5 +34,3 @@ OPTIONAL/LATER:
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
 - Export leaders' e-mail addresses
 - Manage last visit and show 'new since last visit'
-
-

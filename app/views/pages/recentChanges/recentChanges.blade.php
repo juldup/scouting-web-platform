@@ -14,7 +14,7 @@
         @if ($change['date'] != $currentDate && $change != $recent_changes[0])
         <tr><td colspan="4">&nbsp;</td></tr>
         @endif
-        <tr class="big-target">
+        <tr class="clickable-no-default">
           <td>
             @if ($change['date'] != $currentDate)
               <strong>{{ Helper::dateToHuman($change['date']) }}</strong>
@@ -33,6 +33,9 @@
         <?php $currentDate = $change['date']; ?>
       @endforeach
       </table>
+      @if (!count($recent_changes))
+        <p>Rien de neuf&nbsp;&nbsp;:-(</p>
+      @endif
     </div>
   </div>
 @stop

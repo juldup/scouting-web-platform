@@ -84,7 +84,7 @@
             <div class="col-md-5">
               {{ Form::hidden('section_color', '') }}
               <p class="form-side-note">
-                <span class="color-sample"></span>
+                <a class="color-sample"></a>
               </p>
             </div>
           </div>

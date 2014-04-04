@@ -226,7 +226,7 @@
   @if (!$editing && Parameter::get(Parameter::$CALENDAR_DOWNLOADABLE) == "true")
     <div class="row">
       <div class="col-md-12">
-        <a id="download-calendar-button" class="btn btn-default">Télécharger les éphémérides</a>
+        <a id="download-calendar-button" class="btn-sm btn-default">Télécharger les éphémérides</a>
         <div class="form-horizontal" id="download-calendar-form" style="display: none;">
           <h3>Télécharger les éphémérides</h3>
           {{ Form::open(array('url' => URL::route('download_calendar'))) }}

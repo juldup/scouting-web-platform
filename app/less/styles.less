@@ -2,31 +2,39 @@
 @import "bootswatch";
 @import "bootstrap-switch";
 
+/**************************************************
+ * PAGE LAYOUT
+ **************************************************/
+
 html,
 body {
   height: 100%;
   /* The html and body elements cannot have any padding or margin. */
 }
 
- /* Wrapper for page content to push down footer */
+// Force scrollbar to appear
+html {
+    overflow-y: scroll;
+}
+
+/* Wrapper for page content to push down footer */
 #wrap {
   min-height: 100%;
   height: auto;
   /* Negative indent footer by its height */
   margin: 0 auto -30px;
-  /* Pad bottom by footer height */
-  padding: 0 0 30px;
+  /* Pad bottom by footer height plus a 50px margin */
+  padding: 0 0 80px 0;
 }
 
-/* Set the fixed height of the footer here */
+/* Footer with a fixed height */
 #footer {
   height: 30px;
   background-color: #f5f5f5;
-  margin-top: 50px;
 }
 
 #wrap > .container {
-  padding: 60px 15px 0;
+  padding: 60px 15px 0 15px;
 }
 .container .text-muted {
   margin: 5px 0;
@@ -37,117 +45,13 @@ body {
   padding-right: 15px;
 }
 
-code {
-  font-size: 80%;
-}
+/**************************************************
+ * GENERAL STYLE
+ **************************************************/
 
-// Textarea in page edition
-textarea.expand {
-  width: 100%;
-  height: 300px;
-}
-
-// Image preview in page editon
-img.image_preview_edit_page {
-  height: 50px;
-}
-
-.page_content img {
-  max-width: 80%;
-}
-
-html {
-    overflow-y: scroll;
-}
-
-#calendar, #calendar td, #calendar th {
-    border-collapse: collapse;
-    border: 1px black solid;
-}
-
-// Center section tabs vertically
-.nav-pills li {
-    padding-top: 5px;
-}
-
-.table-based-form input[type=text] {
-    width: 250px;
-}
-
-.table-based-form input[type=text].small {
-    width: 45px;
-}
-
-.table-based-form input[type=text].medium {
-    width: 125px;
-}
-
-.table-based-form textarea {
-    width: 300px;
-    height: 60px;
-}
-
-.table-based-form th {
-    text-align: right;
-    vertical-align: top;
-    padding-right: 10px;
-}
-
-img.leader_picture_mini {
-   width: 50px;
-   height: 50px;
-}
-
-img.leader_picture {
-   width: 196px;
-   height: 196px;
-}
-
-.leader-card .leader-name {
-    font-size: 1.3em;
-    font-weight: bold;
-}
-
-.leader-card .leader-real-name {
-    margin-top: -5px;
-    margin-bottom: 20px;
-}
-
-.div-based-form textarea {
-    width: 500px;
-    height:60px;
-}
-
-.div-based-form input[type=text] {
-    width: 300px;
-}
-
-input[type=text].small, select.small, .small {
-    width: 70px;
-    display: inline-block;
-}
-
-input[type=text].medium, select.medium, .medium {
-    width: 150px;
-    display: inline-block;
-}
-
-input[type=text].large, select.large, .large {
-    width: 250px;
-    display: inline-block;
-}
-
-input[type=text].very-large, select.very-large, .very-large {
-    width: 350px;
-    display: inline-block;
-}
-
-.div-based-form .form-label {
-    text-align: right;
-}
-
-.form-horizontal .form-side-note {
-    padding-top: (@padding-base-vertical + 1); // Default padding plus a border
+// Make the remove icon red everywhere
+.glyphicon-remove {
+  color: red;
 }
 
 .horiz-divider {
@@ -160,17 +64,129 @@ input[type=text].very-large, select.very-large, .very-large {
     height: 50px;
 }
 
-.checkbox {
-    padding: 0px;
-    padding-bottom: 1px;
-}
-
-select {
-    margin-bottom: 1px;
-}
-
 .float-left {
     float: left;
+}
+
+.clickable, .clickable-no-default, a {
+    cursor: pointer;
+}
+
+.danger {
+    color: @brand-danger;
+    font-weight: bold;
+}
+
+.table-striped {
+    tbody {
+        .dragged-row:nth-child(odd) td, .dragged-row:nth-child(even) td {
+            background: @gray-lighter;
+        }
+    }
+}
+
+.well {
+    min-height: 0px; // Cancel minimum height of wells to avoid glitches when they are slided
+}
+
+.wide-table {
+    width: auto;
+    margin: auto;
+}
+
+.wide-table tbody > tr > th, .wide-table td:first-child {
+    .text-right;
+    min-width: 400px;
+}
+
+.wide-table td:last-child {
+    min-width: 400px;
+}
+
+.wide-table tbody > tr > .space-on-right, table thead > tr > .space-on-right {
+    padding-right: 50px;
+}
+
+.wide-table tbody > tr > .space-on-left, table thead > tr > .space-on-left {
+    padding-left: 50px;
+}
+
+.btn-sm {
+    margin-right: 3px;
+    margin-left: 3px;
+}
+
+// Disable underlining on buttons
+.btn:hover, .btn-sm:hover, .nav-link a:hover {
+  text-decoration: none;
+}
+
+/**************************************************
+ * NAVIGATION BAR
+ **************************************************/
+
+@navbar-col1: #ffffff;
+@navbar-col2: #ececec;
+@navbar-col3: #e8e8e8;
+@navbar-col4: #e0e0e0;
+@navbar-col5: #d8d8d8;
+
+.first-nav-bar {
+    margin-bottom: 0px;
+    border-bottom: none;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col1), color-stop(100%, @navbar-col2), to(@navbar-col3));
+    background-image: -webkit-linear-gradient(@navbar-col1, @navbar-col2, @navbar-col3);
+    background-image: -moz-linear-gradient(top, @navbar-col1, @navbar-col2, @navbar-col3);
+    background-image: linear-gradient(@navbar-col1, @navbar-col2, @navbar-col3);
+    z-index: 20;
+}
+
+.first-nav-bar .dropdown-menu {
+    border-top: none;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
+    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+}
+
+.second-nav-bar {
+    border-top: 1px solid @navbar-col4;
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
+    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
+    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+    z-index: 15;
+}
+
+.dropdown-menu .divider {
+  background-color: #cccccc;
+}
+
+/**************************************************
+ * NAVIGATION LINKS IN THE PAGE
+ **************************************************/
+
+.nav-link a {
+    .btn-sm;
+    .btn-default;
+}
+
+/**************************************************
+ * PAGE EDITION
+ **************************************************/
+
+// Image preview in page editon
+img.image_preview_edit_page {
+  height: 50px;
+}
+
+/**************************************************
+ * CALENDAR
+ **************************************************/
+
+.calendar, .calendar td, .calendar th {
+    border-collapse: collapse;
+    border: 1px black solid;
 }
 
 .calendar > div {
@@ -199,7 +215,7 @@ select {
     font-weight: bold;
 }
 
-.day-number {
+.calendar .day-number {
     background-color: #eee;
     color: @text-color;
     display: inline-block;
@@ -216,24 +232,104 @@ select {
     padding-left: 2px;
 }
 
-.clickable {
-    cursor: pointer;
+#download-calendar-button {
+    margin-top: 15px;
+    display: inline-block;
 }
+
+/**************************************************
+ * FORMS
+ **************************************************/
+
+input[type=text].small, select.small, .small {
+    width: 70px;
+    display: inline-block;
+}
+
+input[type=text].medium, select.medium, .medium {
+    width: 150px;
+    display: inline-block;
+}
+
+input[type=text].large, select.large, .large {
+    width: 250px;
+    display: inline-block;
+}
+
+input[type=text].very-large, select.very-large, .very-large {
+    width: 350px;
+    display: inline-block;
+}
+
+.form-horizontal .form-side-note {
+    padding-top: (@padding-base-vertical + 1); // Default padding plus a border
+}
+
+.checkbox {
+    padding: 0px;
+    padding-bottom: 1px;
+}
+
+select {
+    margin-bottom: 1px;
+}
+
+// Buttons alongside a form's legend
+.well legend .btn-sm {
+    position: relative;
+    bottom: 5px;
+}
+
+/**************************************************
+ * EDITABLE TEXT
+ **************************************************/
+
+.editable-text-input {
+    .form-control;
+    width: 300px;
+    display: inline-block;
+}
+
+/**************************************************
+ * EDIT LEADERS
+ **************************************************/
+
+img.leader_picture_mini {
+   width: 50px;
+   height: 50px;
+}
+
+/**************************************************
+ * LEADER PAGE
+ **************************************************/
+
+img.leader_picture {
+   width: 196px;
+   height: 196px;
+}
+
+.leader-card .leader-name {
+    font-size: 1.3em;
+    font-weight: bold;
+}
+
+.leader-card .leader-real-name {
+    margin-top: -5px;
+    margin-bottom: 20px;
+}
+
+/**************************************************
+ * LISTING
+ **************************************************/
 
 .member-detail-label {
     text-align: right;
     font-weight: bold;
 }
 
-.danger {
-    color: @brand-danger;
-    font-weight: bold;
-}
-
-.nav-link a {
-    .btn-sm;
-    .btn-default;
-}
+/**************************************************
+ * PHOTOS
+ **************************************************/
 
 .photo-thumbnail-wrapper {
     margin-top: 20px;
@@ -317,13 +413,9 @@ select {
     //border-radius: 50%;
 }
 
-.table-striped {
-    tbody {
-        .dragged-row:nth-child(odd) td, .dragged-row:nth-child(even) td {
-            background: @gray-lighter;
-        }
-    }
-}
+/**************************************************
+ * EDIT PHOTO ALBUMS
+ **************************************************/
 
 #photo-drop-area {
     border: 1px black dashed;
@@ -340,12 +432,6 @@ select {
     margin: 0px;
     padding: 0px;
     border: none;
-}
-
-.editable-text-input {
-    .form-control;
-    width: 300px;
-    display: inline-block;
 }
 
 td.photo-album-name-column {
@@ -373,91 +459,63 @@ td.photo-actions-column {
     width: 25%;
 }
 
-.well legend .btn-sm {
-    position: relative;
-    bottom: 5px;
+.rotate-icon {
+  cursor: pointer;
+  height: 1.8em;
+  width: 1.8em;
 }
 
+/**************************************************
+ * SEND E-MAIL TO SECTION
+ **************************************************/
+
+// Make the attachment file selector and its delete link be on the same line
 .attachment-input-wrapper input {
     display: inline;
 }
+
+.attachment-input-wrapper {
+  margin-top: 5px;
+}
+
+#add-attachment-button {
+  margin-top: 5px;
+  display: inline-block;
+}
+
+/**************************************************
+ * E-MAILS
+ **************************************************/
 
 .email-attachment-list, .email-recipient-list {
     position: relative;
     top: 15px;
 }
 
+/**************************************************
+ * SUGGESTIONS
+ **************************************************/
+
 .suggestion-response, .suggestion-edit-response {
     margin-top: 12px;
 }
 
-@navbar-col1: #ffffff;
-@navbar-col2: #ececec;
-@navbar-col3: #e8e8e8;
-@navbar-col4: #e0e0e0;
-@navbar-col5: #d8d8d8;
-
-.first-nav-bar {
-    margin-bottom: 0px;
-    border-bottom: none;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col1), color-stop(100%, @navbar-col2), to(@navbar-col3));
-    background-image: -webkit-linear-gradient(@navbar-col1, @navbar-col2, @navbar-col3);
-    background-image: -moz-linear-gradient(top, @navbar-col1, @navbar-col2, @navbar-col3);
-    background-image: linear-gradient(@navbar-col1, @navbar-col2, @navbar-col3);
-    z-index: 20;
-}
-
-.first-nav-bar .dropdown-menu {
-    border-top: none;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
-    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
-    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
-    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
-}
-
-.second-nav-bar {
-    border-top: 1px solid @navbar-col4;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
-    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
-    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
-    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
-    z-index: 15;
-}
-
-#download-calendar-button {
-    margin-top: 15px;
-}
-
-.wide-table {
-    width: auto;
-    margin: auto;
-}
-
-.wide-table tbody > tr > th, .wide-table td:first-child {
-    .text-right;
-    min-width: 400px;
-}
-
-.wide-table td:last-child {
-    min-width: 400px;
-}
-
-table tbody > tr > .space-on-right, table thead > tr > .space-on-right {
-    padding-right: 50px;
-}
-
-table tbody > tr > .space-on-left, table thead > tr > .space-on-left {
-    padding-left: 50px;
-}
+/**************************************************
+ * MANAGE REGISTRATION
+ **************************************************/
 
 .registration-tabs {
     margin-top: 50px;
 }
 
-.label a {
+.label-warning a {
     color: rgb(255,255,150);
     text-decoration: underline;
 }
+
+/**************************************************
+ * HELP
+ **************************************************/
 
 .help-badge {
     .glyphicon;
@@ -490,6 +548,20 @@ table tbody > tr > .space-on-left, table thead > tr > .space-on-left {
     text-align: right;
 }
 
+.help-content h3 {
+    .p;
+    font-size: 1.15em;
+    font-weight: bold;
+}
+
+.help-content p {
+    margin-bottom: 3px;
+}
+
+/**************************************************
+ * LEADERS' CORNER
+ **************************************************/
+
 .clickable-list-group .list-group-item.clickable {
     color: @link-color;
 }
@@ -504,24 +576,9 @@ table tbody > tr > .space-on-left, table thead > tr > .space-on-left {
     .glyphicon-hand-up;
 }
 
-.help-content h3 {
-    .p;
-    font-size: 1.15em;
-    font-weight: bold;
-}
-
-.help-content p {
-    margin-bottom: 3px;
-}
-
-.well {
-    min-height: 0px; // Cancel minimum height of wells to avoid glitch when they are slided
-}
-
-.btn-sm {
-    margin-right: 3px;
-    margin-left: 3px;
-}
+/**************************************************
+ * MANAGE SECTIONS
+ **************************************************/
 
 // Color sample in section table
 .color-sample {
@@ -533,9 +590,9 @@ table tbody > tr > .space-on-left, table thead > tr > .space-on-left {
   margin-bottom: -5px;
 }
 
-form .color-sample {
-  cursor: pointer;
-}
+/**************************************************
+ * PENDING COMMIT ANIMATION
+ **************************************************/
 
 #pending-commit {
   display: block;
@@ -570,31 +627,18 @@ form .color-sample {
     to {transform:rotate(360deg);}
 }
 
+/**************************************************
+ * EDIT LEADERS' PRIVILEGES
+ **************************************************/
+
 .table tbody > tr.privilege-category th {
   padding-top: 30px;
   background: white;
 }
 
-.rotate-icon {
-  cursor: pointer;
-  height: 1.8em;
-  width: 1.8em;
-}
-
-.dropdown-menu .divider {
-  background-color: #cccccc;
-}
-
-.big-target {
-  cursor: pointer;
-}
-
-
-
-
-
-
-/* Accounting */
+/**************************************************
+ * ACCOUNTING
+ **************************************************/
 
 .accounting table, .accounting th, .accounting td {
   border-collapse: collapse;
@@ -698,10 +742,6 @@ form .color-sample {
   background: none;
 }
 
-.accounting td.delete-cell a .glyphicon {
-  color: red;
-}
-
 .accounting .input-amount-symbol {
   font-size: .85em;
 }
@@ -723,8 +763,4 @@ form .color-sample {
 
 .accounting th.cellin, .accounting td.cellin {
   background: #d4c854;
-}
-
-.btn:hover, .btn-sm:hover, .nav-link a:hover {
-  text-decoration: none;
 }

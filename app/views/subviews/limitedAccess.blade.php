@@ -20,7 +20,7 @@
     <p>
       Si vous êtes membre de l'unité, pour accéder à cette page, vous pouvez :
       <ul>
-        <li><a href="{{ URL::route('edit_user_email') }}">Changer l'adresse e-mail de votre compte d'utilisateur</a> et utiliser un adresse e-mail que nous connaissons.</li>
+        <li><a href="{{ URL::route('edit_user_email') }}">Changer l'adresse e-mail de votre compte d'utilisateur</a> et utiliser une adresse e-mail que nous connaissons.</li>
         <li><a href="{{ URL::route('login') . "#nouvel-utilisateur" }}">Créer un nouveau compte d'utilisateur</a> avec une adresse e-mail que nous connaissons.</li>
       </ul>
     </p>

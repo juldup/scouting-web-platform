@@ -42,6 +42,7 @@
         <label class="control-label col-md-2">Images</label>
         <div class="col-md-10">
           <input type="button" id="uploader" value="Ajouter" class="btn btn-default" />
+          <span class="horiz-divider"></span>
           <span id="image_list"></span>
         </div>
       </div>

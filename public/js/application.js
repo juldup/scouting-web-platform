@@ -61,7 +61,7 @@ function addImageToList(data) {
           "<span id='image_" + data.image_id + "'>" +
           " <a href=\"javascript:editPageInsertImage('" + data.url + "');\">" +
           "<img src='" + data.url + "' class='image_preview_edit_page'/></a>" +
-          " <input type='button' onclick='removeImage(" + data.image_id + ")' value='-' />" +
+          " <a href='' onclick='return removeImage(" + data.image_id + ")'><span class='glyphicon glyphicon-remove'></span></a>" +
           " <span class='horiz-divider'></span>");
 }
 
@@ -80,10 +80,10 @@ function removeImage(image_id) {
     if (data.result == "OK") {
       $("#image_" + data.image_id).remove();
     }
-    convertText(true);
   }).fail(function(jqXHR, textStatus) {
     console.log(textStatus);
   });
+  return false;
 }
 
 // Convert all checkboxes to switches
@@ -97,12 +97,12 @@ $().ready(function() {
   $(".clickable").bind("click", function(event) {
     // Check if the clicked element is not a child
     if ($(event.target)[0] == $(this)[0]) {
-      window.location = $(this).find('a').attr('href');
+      window.location = $(this).find('a[href]').attr('href');
       return false;
     }
   });
   $(".clickable-no-default").bind("click", function(event) {
-    window.location = $(this).find('a').attr('href');
+    window.location = $(this).find('a[href]').attr('href');
     return false;
   });
 });
@@ -111,12 +111,5 @@ $().ready(function() {
   $(".help-toggle-button .help-badge").click(function() {
     $(this).closest(".help-wrapper").find(".help-content").slideToggle();
     return false;
-  });
-});
-
-$().ready(function() {
-  $(".big-target").click(function() {
-    var href = $(this).find("a[href]").attr('href');
-    window.location = href;
   });
 });

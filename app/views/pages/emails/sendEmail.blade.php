@@ -64,10 +64,10 @@
           {{ Form::label('attachments', "Pièces jointes", array('class' => 'col-md-2 control-label')) }}
           <div class="col-md-5">
             <div class="attachment-input-wrapper" style='display: none;'>
-              {{ Form::file('attachments[0]', array('class' => 'btn btn-default')) }}
-              <a class="remove-attachment btn btn-default">Supprimer</a>
+              {{ Form::file('attachments[0]', array('class' => 'btn-sm btn-default')) }}
+              <a class="remove-attachment"><span class="glyphicon glyphicon-remove"></span></a>
             </div>
-            <a id="add-attachment-button" class="btn btn-default">Ajouter</a>
+            <a id="add-attachment-button" class="btn-sm btn-default">Ajouter</a>
           </div>
         </div>
         
