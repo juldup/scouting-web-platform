@@ -92,5 +92,5 @@
     </div>
   </div>
   
-  <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"</div>
+  <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
 @stop

@@ -444,9 +444,26 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     
     // TODO E-mails (+ attachments)
     
+    // Accounting
+    $query = $pdo->prepare("SELECT * FROM comptes ORDER BY categoryOrder");
+    $query->execute();
+    foreach ($query->fetchAll() as $accountingItem) {
+      AccountingItem::create(array(
+          'year' => $accountingItem['annee'],
+          'section_id' => $this->sectionToId($accountingItem['section']),
+          'category_name' => $accountingItem['motif'] == "INHERIT" ? AccountingItem::$INHERIT : $accountingItem['categorie'],
+          'date' => $accountingItem['date'],
+          'object' => $accountingItem['motif'] == "INHERIT" ? AccountingItem::$INHERIT : $accountingItem['motif'],
+          'cashin_cents' => $accountingItem['cashin'],
+          'cashout_cents' => $accountingItem['cashout'],
+          'bankin_cents' => $accountingItem['bankin'],
+          'bankout_cents' => $accountingItem['bankout'],
+          'comment' => $accountingItem['commentaire'],
+          'receipt' => $accountingItem['recu'],
+      ));
+    }
     
-    
-    // TODO Archived leaders, accounts, annual feast, listing snapshots, guest book, suggestions, userLog
+    // TODO Archived leaders, annual feast, listing snapshots, guest book, suggestions, userLog
     
   }
   

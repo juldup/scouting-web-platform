@@ -607,6 +607,10 @@ form .color-sample {
   background: @gray-lighter;
 }
 
+.accounting input {
+  background: transparent;
+}
+
 .accounting .transaction-row input {
   background: transparent;
   font-size: .85em;
@@ -663,6 +667,11 @@ form .color-sample {
   width: 77px;
 }
 
+.accounting input.input-date {
+  text-align: right;
+  padding-right: 8px;
+}
+
 .accounting .cell-description {
   width: 280px;
 }
@@ -673,6 +682,10 @@ form .color-sample {
 
 .accounting .cell-amount {
   width: 75px;
+}
+
+.accounting .cell-inheritance {
+  text-align: center;
 }
 
 .accounting input.input-amount {
@@ -710,4 +723,8 @@ form .color-sample {
 
 .accounting th.cellin, .accounting td.cellin {
   background: #d4c854;
+}
+
+.btn:hover, .btn-sm:hover, .nav-link a:hover {
+  text-decoration: none;
 }

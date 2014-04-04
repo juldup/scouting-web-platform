@@ -57,51 +57,31 @@ function compareDates(trans1, trans2) {
 	return 0;
 }
 
-var myapp = angular.module('myapp', ['ui']);
+var angularAccounting = angular.module('accounting', ['ui']);
+
+var newTransactionCounter = 0;
 
 // Angular controller
-myapp.controller('AccountingController', function ($scope) {
+angularAccounting.controller('AccountingController', function ($scope) {
 	
-	// Example data
-	$scope.categories = [ {
-		name : "Initial state",
-    id: 1,
-		transactions : [ {
-			date : '01/01/2013',
-			object : 'Inheritance from last year',
-			cashin : 500,
-			cashout : "",
-			bankin : 175,
-			bankout : "",
-			comment : "",
-      receipt : "",
-      id: 1
-		} ]
-	}, {
-		name : "Bank transactions",
-    id: 2,
-		transactions : [ {
-			date : '01/03/2013',
-			object : 'Withdrawal',
-			cashin : 20,
-			cashout : "",
-			bankin : "",
-			bankout : 20,
-			comment : "Withdrawal is free",
-      receipt : "1",
-      id: 2
-		}, {
-			date : '01/01/2013',
-			object : 'Deposit',
-			cashin : "",
-			cashout : 300,
-			bankin : 300,
-			bankout : 5,
-			comment : "Deposit costs 5$",
-      receipt : "2",
-      id: 3
-		} ]
-	} ];
+	$scope.formatCurrency = function(value) {
+    var sign = value >= 0 ? "" : "-"
+    var ints = Math.floor(Math.abs(value));
+    var cents = Math.round(Math.abs(value) * 100) % 100;
+    var valueString = sign + ints + (cents === 0 ? "" : "," + (cents < 10 ? "0" : "") + cents);
+		return currencyFormatter.replace("%", valueString);
+	};
+  
+	// Data
+	$scope.categories = categories;
+  $scope.previousYear = previousYear;
+  $scope.inheritance = {
+    cashin: inheritanceCash > 0 ? $scope.formatCurrency(inheritanceCash) : "",
+    cashout: inheritanceCash < 0 ? $scope.formatCurrency(-inheritanceCash) : "",
+    bankin: inheritanceBank > 0 ? $scope.formatCurrency(inheritanceBank) : "",
+    bankout: inheritanceBank < 0 ? $scope.formatCurrency(-inheritanceBank) : "",
+  }
+  $scope.canEdit = canEdit;
 	
   // Sets or resets the category index of each transaction
   $scope.resetCategories = function() {
@@ -125,8 +105,10 @@ myapp.controller('AccountingController', function ($scope) {
 			bankout : '',
 			comment : '',
       receipt : '',
-			category : category
+			category : category,
+      id: 'new-' + newTransactionCounter++
 		});
+    $scope.uploadChanges();
 	};
 	
   // Adds a category at the end of the list
@@ -138,29 +120,8 @@ myapp.controller('AccountingController', function ($scope) {
     $scope.categories.push(newCategory);
     index = $scope.categories.indexOf(newCategory);
     $scope.addTransaction(index);
+    $scope.uploadChanges();
   }
-  
-	// Computes the cash or bank total for a category
-	$scope.total = function(bankOrCash, category) {
-		var total = 0;
-		angular.forEach($scope.categories[category].transactions, function(
-				trans) {
-			if (bankOrCash == 'cash')
-				total += trans.cashin - trans.cashout;
-			else
-				total += trans.bankin - trans.bankout;
-		});
-		return total;
-	};
-	
-	// Computes the cash/bank total for all categories
-	$scope.bigTotal = function(bankOrCash) {
-		var total = 0;
-		for (var i = 0; i < $scope.categories.length; i++) {
-			total += $scope.total(bankOrCash, i);
-		}
-		return total;
-	};
 	
 	// Removes a transaction from the list
 	$scope.remove = function() {
@@ -173,41 +134,76 @@ myapp.controller('AccountingController', function ($scope) {
         $scope.resetCategories();
       }
     }
+    $scope.uploadChanges();
+	};
+  
+  // Changes the id of a transaction
+  $scope.replaceTransactionId = function(oldId, newId) {
+    // Find transaction
+    $scope.categories.forEach(function(category) {
+      category.transactions.forEach(function(transaction) {
+        if (transaction.id === oldId) transaction.id = newId;
+      });
+    });
+    $scope.$apply();
+  }
+  
+	// Computes the cash or bank total for a category
+	$scope.total = function(bankOrCashOrBoth, category) {
+		var total = 0;
+		angular.forEach($scope.categories[category].transactions, function(trans) {
+			if (bankOrCashOrBoth === 'cash' || bankOrCashOrBoth === 'both')
+				total += trans.cashin.replace(",", ".") - trans.cashout.replace(",", ".");
+			if (bankOrCashOrBoth === 'bank' || bankOrCashOrBoth === 'both')
+				total += trans.bankin.replace(",", ".") - trans.bankout.replace(",", ".");
+		});
+		return total;
+	};
+	
+	// Computes the cash/bank total for all categories
+	$scope.bigTotal = function(bankOrCash) {
+		var total = 0;
+    if (bankOrCash === 'bank') total = inheritanceBank;
+    if (bankOrCash === 'cash') total = inheritanceCash;
+		for (var i = 0; i < $scope.categories.length; i++) {
+			total += $scope.total(bankOrCash, i);
+		}
+		return total;
 	};
 	
 	// Sorts the list according to date
 	$scope.sortList = function(category) {
 		$scope.categories[category].transactions.sort(compareDates);
-	};
-	
-	$scope.formatCurrency = function(value) {
-		return currencyFormatter.replace("%", value);
+    $scope.uploadChanges();
 	};
 	
   // Make the transactions movable within the categories and from one category to another
   $scope.sortableOptions = {
     connectWith: 'tbody',
     dropOnEmpty: true,
-    items: "tr:not(:first)",
+    items: canEdit ? "tr:not(:first)" : "",
     placeholder: "ui-state-highlight",
     start: function(event, ui) {
       // Save predecessor to reset position in DOM
       prev = ui.item.prev();
       // Save category and position
-      var categoryElement = ui.item.closest("[data-category-id]");
-      categoryIndex = $("[data-category-id").index(categoryElement);
-      transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item); // TODO use something else than data-draggable-id
+      var categoryElement = ui.item.closest("[data-category-index]");
+      console.log(categoryElement);
+      categoryIndex = categoryElement.data('category-index');
+      transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item);
       $scope.sortableData = {
         prev: prev,
         categoryIndex: categoryIndex,
         transactionIndex: transactionIndex,
       };
+      console.log("from category " + categoryIndex);
     },
     stop: function(event, ui) {
       // Get new category and position
-      var categoryElement = ui.item.closest("[data-category-id]");
-      var categoryIndex = $("[data-category-id").index(categoryElement);
-      var transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item); // TODO use something else than data-draggable-id
+      var categoryElement = ui.item.closest("[data-category-index]");
+      var categoryIndex = categoryElement.data("category-index");
+      console.log("to category " + categoryIndex);
+      var transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item);
       // Move item
       transaction = ui.item.scope().trans;
       if (categoryIndex !== $scope.sortableData.categoryIndex) {
@@ -240,7 +236,62 @@ myapp.controller('AccountingController', function ($scope) {
       $("html").scrollTop(scroll);
     }
   };
-    
+  
+  // Watch changes in categories (avoiding initialisation)
+  setTimeout(function() {
+    $scope.$watch('categories', function() {
+      $scope.uploadChanges();
+    }, true);
+  }, 0);
+  
+  $scope.uploading = false;
+  $scope.uploadId = 0;
+  $scope.uploadChanges = function() {
+    if (!$scope.canEdit) return;
+    $scope.uploadId++;
+    $("#pending-commit").show();
+    if ($scope.uploading) {
+      return;
+    }
+    var uploadId = $scope.uploadId;
+    setTimeout(function() {
+      if (uploadId !== $scope.uploadId) {
+        // There are more recent changes, don't upload now
+      } else {
+        // Upload now
+        $scope.uploading = true;
+        $.ajax({
+          type: "POST",
+          url: commitAccountingChangesURL,
+          data: {'data': JSON.stringify($scope.categories)}
+        }).done(function(json) {
+          try {
+            data = JSON.parse(json);
+            if (data.result === "Success") {
+              var newTransactions = data.new_transactions;
+              for (var oldId in newTransactions) {
+                $scope.replaceTransactionId(oldId, newTransactions[oldId]);
+              }
+              $scope.uploading = false;
+              if (uploadId !== $scope.uploadId) {
+                $scope.uploadChanges();
+              } else {
+                $("#pending-commit").hide();
+              }
+            } else {
+              console.error(data.message);
+              throw "error";
+            }
+          } catch (err) {
+            alert("Une erreur est survenue lors de l'enregistrement des comptes.");
+            // Reload page
+            window.location = window.location;
+          }
+        });
+      }
+    }, 100); // Upload in 1 second // TODO 1000
+  }
+  
 });
 
-angular.bootstrap(document, ['myapp']);
+angular.bootstrap(document, ['accounting']);

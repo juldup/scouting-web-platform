@@ -436,6 +436,29 @@ class CreateDatabase extends Migration {
       $table->timestamps();
     });
     
+    // Accounting
+    Schema::create('accounting_items', function($table) {
+      $table->increments('id');
+      $table->string('year');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->string('category_name');
+      $table->date('date');
+      $table->string('object');
+      $table->integer('cashin_cents');
+      $table->integer('cashout_cents');
+      $table->integer('bankin_cents');
+      $table->integer('bankout_cents');
+      $table->string('comment');
+      $table->string('receipt');
+      $table->integer('position')->default(10000);
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('year');
+      $table->index('position');
+    });
+    
     // Test data
     DB::table('users')->insert(array(
         'id' => 1,
@@ -474,6 +497,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('accounting_items');
     Schema::drop('guest_book_entries');
     Schema::drop('suggestions');
     Schema::drop('pending_emails');
