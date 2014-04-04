@@ -4,6 +4,8 @@ class Parameter extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
+  public static $LOGO_IMAGE_FOLDER = "site_data/website_logo/";
+  
   public static $CALENDAR_DOWNLOADABLE = "Calendar downloadable";
   public static $SHOW_SECTIONS = "Show sections";
   public static $SHOW_ADDRESSES = "Show addresses";
@@ -32,6 +34,7 @@ class Parameter extends Eloquent {
   public static $DOCUMENT_CATEGORIES = "Document categories";
   public static $WEBMASTER_EMAIL = "Webmaster e-mail address";
   public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
+  public static $LOGO_IMAGE = "Logo image";
   
   public static $PRICE_1_CHILD = "Price for one child";
   public static $PRICE_2_CHILDREN = "Price for two children";

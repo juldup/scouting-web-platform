@@ -141,14 +141,6 @@ html {
     z-index: 20;
 }
 
-.first-nav-bar .dropdown-menu {
-    border-top: none;
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
-    background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
-    background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
-    background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
-}
-
 .second-nav-bar {
     border-top: 1px solid @navbar-col4;
     background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
@@ -156,10 +148,44 @@ html {
     background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
     background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
     z-index: 15;
+    max-height: none;
+}
+
+@media(min-width: @screen-tablet) {
+  .first-nav-bar .dropdown-menu {
+      border-top: none;
+      background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@navbar-col3), color-stop(100%, @navbar-col4), to(@navbar-col5));
+      background-image: -webkit-linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+      background-image: -moz-linear-gradient(top, @navbar-col3, @navbar-col4, @navbar-col5);
+      background-image: linear-gradient(@navbar-col3, @navbar-col4, @navbar-col5);
+  }
+}
+
+.second-nav-bar .dropdown-menu {
+    border-top: none;
+    background: @navbar-col5;
 }
 
 .dropdown-menu .divider {
-  background-color: #cccccc;
+  background-color: #c0c0c0;
+}
+
+.navbar-section-hint {
+  margin-left: 9px;
+}
+
+@media(min-width: @screen-tablet) {
+  .navbar-section-hint {
+    font-size: .9em;
+    margin-left: 0;
+  }
+}
+
+.website-logo {
+  margin-top: -12px;
+  margin-bottom: -12px;
+  max-height: 44px;
+  margin-left: -15px;
 }
 
 /**************************************************
