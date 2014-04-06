@@ -14,7 +14,7 @@
   <script>
     CKEDITOR.replace('body', {
       language: 'fr',
-      extraAllowedContent: 'img[!src,width,height]',
+      extraAllowedContent: 'img[!src,width,height]{max-width}',
       extraPlugins: 'divarea',
       height: '250px'
     });

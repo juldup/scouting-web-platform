@@ -6,13 +6,11 @@ BIG TASKS:
 - Edit advanced parameters (webmaster e-mail, etc.)
 
 SMALL TASKS:
-- Add session keepalive
 - Change 'manage' to 'edit' everywhere or the other way around
 - Sending e-mails : use default address if sender address not in safe list
 - Solvo TODOs in import-old-data script
 - Fix page min-height
 - Health card auto-deletion + reminder e-mail
-- Bug: editing page, image loses max-width property on reload
 
 AT THE END:
 - Layout for smartphones and tablets
