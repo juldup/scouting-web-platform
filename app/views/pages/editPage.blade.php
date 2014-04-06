@@ -9,6 +9,7 @@
 @stop
 
 @section('additional_javascript')
+  <script src="{{ URL::to('/') }}/js/edit-page.js"></script>
   <script src="{{ URL::to('/') }}/ckeditor/ckeditor.js"></script>
   <script>
     CKEDITOR.replace('page_body', {

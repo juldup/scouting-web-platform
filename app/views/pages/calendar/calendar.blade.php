@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/calendar.js"></script>
+  <script src="{{ URL::to('/') }}/js/edit-calendar.js"></script>
   <script>
     var currentMonth = {{ $month }};
     var currentYear = {{ $year }};
@@ -67,7 +67,7 @@
   <div class="row">
     <div class='col-md-10 col-md-offset-1'>
       @if ($editing)
-      <div id="calendar_event_form" class="form-horizontal well"
+        <div id="calendar_event_form" class="form-horizontal well"
              @if (!Session::has('_old_input')) style="display: none;" @endif
              >
           {{ Form::open(array('url' => URL::route('manage_calendar_submit', array('year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)))) }}

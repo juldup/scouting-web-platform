@@ -1,11 +1,3 @@
-$().ready(function() {
-  $("#download-calendar-button").click(function(event) {
-    $("#download-calendar-button").hide();
-    $("#download-calendar-form").show();
-    return false;
-  });
-});
-
 function addEvent(day) {
   $("#calendar_event_form legend:first").html("Ajouter un événement");
   $("#calendar_event_form [name='start_date_day']").val(day);

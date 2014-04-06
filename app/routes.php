@@ -26,6 +26,10 @@ Route::get('/envoi-automatique-emails', array("as" => "send_emails_automatically
   ScoutMailer::sendPendingEmails();
 }));
 
+// General
+Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));
+Route::get('session/keepalive', array("as" => "session_keepalive", "uses" => function() {}));
+
 // Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
 Route::post('login/{section_slug?}', array("as" => "login_submit", "uses" => "UserController@submitLogin"));
@@ -45,7 +49,6 @@ Route::get('renvoyer-lien-validation', array("as" => "user_resend_validation_lin
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
 Route::post('ajax/images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
 Route::get('ajax/images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
-Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));
 
 // Section pages
 Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionPageController@showPage"));

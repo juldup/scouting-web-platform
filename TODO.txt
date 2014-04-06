@@ -12,6 +12,7 @@ SMALL TASKS:
 - Solvo TODOs in import-old-data script
 - Fix page min-height
 - Health card auto-deletion + reminder e-mail
+- Bug: editing page, image loses max-width property on reload
 
 AT THE END:
 - Layout for smartphones and tablets
