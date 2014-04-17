@@ -8,9 +8,11 @@ BIG TASKS:
 SMALL TASKS:
 - Change 'manage' to 'edit' everywhere or the other way around
 - Sending e-mails : use default address if sender address not in safe list
-- Solvo TODOs in import-old-data script
+- Solve TODOs in import-old-data script
+- Check for TODOs
 - Fix page min-height
 - Health card auto-deletion + reminder e-mail
+- Switch to European aws ses server
 
 AT THE END:
 - Layout for smartphones and tablets

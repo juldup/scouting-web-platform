@@ -45,6 +45,10 @@ Route::get('verifier-utilisateur/{code}', array("as" => "verify_user", "uses" =>
 Route::get('annuler-utilisateur/{code}', array("as" => "cancel_user", "uses" => "UserController@cancelVerification"));
 Route::get('renvoyer-lien-validation', array("as" => "user_resend_validation_link", "uses" => "UserController@resendValidationLink"));
 
+// Ban e-mail address
+Route::get('desinscrire-addresse-email/{ban_code}', array("as" => "ban_email", "uses" => "BanEmailAddressController@banEmailAddress"));
+Route::get('desinscrire-addresse-email/confirmer/{ban_code}', array("as" => "confirm_ban_email", "uses" => "BanEmailAddressController@confirmBanEmailAddress"));
+
 // Images
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
 Route::post('ajax/images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));

@@ -459,6 +459,15 @@ class CreateDatabase extends Migration {
       $table->index('position');
     });
     
+    // Banned e-mails
+    Schema::create('banned_emails', function($table) {
+      $table->increments('id');
+      $table->string('email');
+      $table->string('ban_code');
+      $table->boolean('banned')->default(false);
+      $table->timestamps();
+    });
+    
     // Test data
     DB::table('users')->insert(array(
         'id' => 1,
@@ -497,6 +506,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('banned_emails');
     Schema::drop('accounting_items');
     Schema::drop('guest_book_entries');
     Schema::drop('suggestions');

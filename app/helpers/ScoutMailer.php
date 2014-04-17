@@ -5,6 +5,10 @@ class ScoutMailer {
   protected static $mailer;
   
   public static function send(Swift_Message $message) {
+    $to = $message->getTo();
+    foreach ($to as $email=>$null) {
+      if (BannedEmail::isBanned($email)) return false;
+    }
     $mailer = self::getMailer();
     return $mailer->send($message);
   }

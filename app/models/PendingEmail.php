@@ -39,7 +39,6 @@ class PendingEmail extends Eloquent {
     try {
       $result = ScoutMailer::send($message);
     } catch (Exception $ex) {
-      echo $ex;
       $result = false;
     }
     if ($result) {

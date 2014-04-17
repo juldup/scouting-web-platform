@@ -87,7 +87,22 @@ class UserController extends BaseController {
     
     // Validation passed, create user
     $user = User::createWith($username, $email, $password);
-    // TODO send verification e-mail
+    
+    // Send verification e-mail
+    $emailContent = View::make('emails.createUser', array(
+        'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+        'verification_code' => $user->verification_code,
+        'ban_email_code' => BannedEmail::getCodeForEmail($email),
+    ))->render();
+    $pendingEmail = PendingEmail::create(array(
+        'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Validez votre compte d'utilisateur",
+        'raw_body' => $emailContent,
+        'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+        'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+        'recipient' => $email,
+        'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+    ));
+    $pendingEmail->send();
     
     // Log user in
     Session::put('user_id', $user->id);
@@ -172,7 +187,21 @@ class UserController extends BaseController {
                     ->withErrors($validator);
           } else {
             $this->user->changeEmail($email);
-            // TODO send verification e-mail
+            // Send validation link by e-mail
+            $emailContent = View::make('emails.changeUserEmailAddress', array(
+                'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+                'verification_code' => $this->user->verification_code,
+                'ban_email_code' => BannedEmail::getCodeForEmail($this->user->email),
+            ))->render();
+            $pendingEmail = PendingEmail::create(array(
+                'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Activer votre compte d'utilisateur",
+                'raw_body' => $emailContent,
+                'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+                'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+                'recipient' => $this->user->email,
+                'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+            ));
+            $pendingEmail->send();
             return Redirect::route('edit_user')->with('success_message', 'Votre adresse e-mail a été modifiée avec succès. Un lien de validation vous a été envoyé par e-mail.');
           }
         } elseif ($action == 'password') {
@@ -244,7 +273,21 @@ class UserController extends BaseController {
   }
   
   public function resendValidationLink() {
-    // TODO send validation link by e-mail
+    // Send validation link by e-mail
+    $emailContent = View::make('emails.resendValitationLink', array(
+        'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+        'verification_code' => $this->user->verification_code,
+        'ban_email_code' => BannedEmail::getCodeForEmail($this->user->email),
+    ))->render();
+    $pendingEmail = PendingEmail::create(array(
+        'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Activer votre compte d'utilisateur",
+        'raw_body' => $emailContent,
+        'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+        'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+        'recipient' => $this->user->email,
+        'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+    ));
+    $pendingEmail->send();
     return Redirect::to(URL::previous())->with('success_message', 'Un e-mail avec le lien de validation vous a été envoyé.');
   }
   
