@@ -150,7 +150,7 @@
             {{ Form::label('is_leader', "Animateur", array('class' => 'control-label col-md-4')) }}
             <div class='col-md-8'>
               <div class="checkbox">
-                {{ Form::checkbox('is_leader') }}
+                {{ Form::checkbox('is_leader', 1, '', array($edit_leader ? "enabled" : "disabled")) }}
               </div>
             </div>
           </div>

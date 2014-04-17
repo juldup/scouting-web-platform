@@ -68,7 +68,7 @@ html {
     float: left;
 }
 
-.clickable, .clickable-no-default, a {
+.clickable, .clickable-no-default, a, input[type='file'] {
     cursor: pointer;
 }
 
@@ -181,10 +181,13 @@ html {
   }
 }
 
+.website-logo, .website-logo-preview {
+  max-height: 44px;
+}
+
 .website-logo {
   margin-top: -12px;
   margin-bottom: -12px;
-  max-height: 44px;
   margin-left: -15px;
 }
 
@@ -660,6 +663,40 @@ td.photo-actions-column {
 .table tbody > tr.privilege-category th {
   padding-top: 30px;
   background: white;
+}
+
+/**************************************************
+ * EDIT PARAMETERS
+ **************************************************/
+
+#website-parameters-form legend {
+  margin-top: 45px;
+}
+
+#website-parameters-form > form > .row input[type='submit'] {
+  margin-top: 20px;
+}
+
+#website-parameters-form legend:nth-child(2) {
+  margin-top: 15px;
+}
+
+input[type="file"].website-logo-file-selector {
+  display: inline-block;
+  margin-left: 15px;
+}
+
+input[type="text"].document-category {
+  display: inline-block;
+}
+
+.document-category-remove {
+  cursor: pointer;
+}
+
+.document-category-add {
+  color: green;
+  cursor: pointer;
 }
 
 /**************************************************

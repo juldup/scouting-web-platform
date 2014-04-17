@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('additional_javascript')
+  <script src="{{ URL::to('/') }}/js/edit-parameters.js"></script>
+@stop
+
 @section('content')
   @include('subviews.contextualHelp', array('help' => 'parameters'))
   
@@ -12,14 +16,18 @@
   
   <div class="row">
     <div class='col-md-12'>
-      <div id="section_form" class="form-horizontal well">
-        {{ Form::open(array('url' => URL::route('edit_parameters_submit', array('section_slug' => $user->currentSection->slug)))) }}
-          <div class="form-group">
-            <div class="col-md-12 text-right">
-              <input type="submit" class="btn btn-primary" value="Enregistrer les changements"/>
+      <div id="website-parameters-form" class="form-horizontal well">
+        {{ Form::open(array('files' => true, 'url' => URL::route('edit_parameters_submit', array('section_slug' => $user->currentSection->slug)))) }}
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
+                Prix des cotisations
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
             </div>
-          </div>
-          <legend>Prix des cotisations</legend>
+          </legend>
           <div class="form-group">
             <div class="col-sm-3 col-lg-2 col-sm-offset-6 col-md-offset-4"><label class="control-label">Scout</label></div>
             <div class="col-sm-3"><label class="control-label">Animateur</label></div>
@@ -39,7 +47,17 @@
             <div class="col-sm-3 col-lg-2">{{ Form::text('price_3_children', $prices['3 children'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
             <div class="col-sm-3">{{ Form::text('price_3_leaders', $prices['3 leaders'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
           </div>
-          <legend>Inscriptions</legend>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
+                Inscriptions
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
           <div class="form-group">
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
               {{ Form::label("registration_active", "Activer les inscriptions") }}
@@ -47,7 +65,17 @@
               {{ Form::checkbox("registration_active", 1, $registration_active) }}
             </div>
           </div>
-          <legend>Pages du site</legend>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
+                Pages du site
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
           <div class="form-group">
             @foreach ($pages as $page=>$pageData)
               <div class="col-lg-5 col-md-6 col-sm-9 control-label">
@@ -57,6 +85,189 @@
               </div>
               <div class="col-lg-1"></div>
             @endforeach
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
+                Catégories de documents
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('document_categories', "Catégories") }}
+              <p>
+                NOTE : La catégorie ayant pour nom "Pour&nbsp;les&nbsp;scouts" sera déclinée en "Pour&nbsp;les&nbsp;baladins",
+                "Pour&nbsp;les&nbsp;louveteaux", "Pour&nbsp;les&nbsp;éclaireurs", etc. suivant la section.
+              </p>
+            </div>
+            <div class="col-sm-5">
+              @foreach ($document_categories as $category)
+                @if ($category)
+                  <div class="row document-category-row">
+                    <div class="col-sm-10">
+                      {{ Form::text('document_categories[]', $category, array("class" => "form-control document-category")) }}
+                    </div>
+                    <div class="col-sm-2">
+                      <p class="form-side-note">
+                        <span class="glyphicon glyphicon-remove document-category-remove"></span>
+                      </p>
+                    </div>
+                  </div>
+                @endif
+              @endforeach
+              <div class="row document-category-row document-category-prototype" style="display: none;">
+                <div class="col-sm-10">
+                  {{ Form::text('document_categories[]', "", array("class" => "form-control document-category")) }}
+                </div>
+                <div class="col-sm-2">
+                  <p class="form-side-note">
+                    <span class="glyphicon glyphicon-remove document-category-remove"></span>
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-10">
+                  {{ Form::text('', 'Divers', array("class" => "form-control", "disabled")) }}
+                </div>
+                <div class="col-sm-2">
+                  <p class="form-side-note">
+                    <span class="glyphicon glyphicon-plus document-category-add"></span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
+                Paramètres de l'unité
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('unit_long_name', "Nom de l'unité") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('unit_long_name', Parameter::get(Parameter::$UNIT_LONG_NAME), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('unit_short_name', "Sigle de l'unité") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('unit_short_name', Parameter::get(Parameter::$UNIT_SHORT_NAME), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('unit_bank_account', "N° de compte en banque de l'unité") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('unit_bank_account', Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('logo', "Logo du site") }}
+            </div>
+            <div class="col-md-8">
+              <img src="{{ URL::route('website_logo') }}" class="website-logo-preview" />
+              {{ Form::file('logo', array('class' => 'btn btn-default website-logo-file-selector')) }}
+            </div>
+            <div class="col-lg-1"></div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
+                Paramètres avancés des e-mails
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-sm-12">
+              <div class="alert alert-danger">
+                <p>
+                  Attention&nbsp;! Si les paramètres suivants sont mal configurés, les e-mails ne partiront plus du site. Ne change ces valeurs que si tu es sûr de ce que tu fais.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('webmaster_email', "Adresse e-mail du webmaster") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('webmaster_email', Parameter::get(Parameter::$WEBMASTER_EMAIL), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('default_email_from_address', "Adresse e-mail d'envoi par défaut") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('default_email_from_address', Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('smtp_host', "Hôte SMTP pour l'envoi des e-mails") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('smtp_host', Parameter::get(Parameter::$SMTP_HOST), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('smtp_port', "Port SMTP pour l'envoi des e-mails") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('smtp_port', Parameter::get(Parameter::$SMTP_PORT), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('smtp_username', "Login SMTP pour l'envoi des e-mails") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('smtp_username', Parameter::get(Parameter::$SMTP_USERNAME), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('smtp_password', "Mot de passe SMTP pour l'envoi des e-mails") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('smtp_password', Parameter::get(Parameter::$SMTP_PASSWORD), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('smtp_security', "Sécurité SMTP pour l'envoi des e-mails") }}
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('smtp_security', Parameter::get(Parameter::$SMTP_SECURITY), array("class" => "form-control")) }}
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-12 text-right">
+              <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+            </div>
           </div>
         {{ Form::close() }}
       </div>

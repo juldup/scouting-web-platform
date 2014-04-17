@@ -11,8 +11,7 @@
     </p>
     <p>
       Je voudrais <a href="{{ URL::route('user_resend_validation_link') }}"
-         >recevoir à nouveau lien de validation par e-mail
-      </a>
+         >recevoir à nouveau lien de validation par e-mail</a>
       ({{ $user->email }}).
     </p>
     @else {{-- User is not member --}}

@@ -19,6 +19,7 @@ class ParameterController extends BaseController {
         'pages' => $this->getPageList(),
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
         'prices' => $prices,
+        'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
     ));
   }
   
@@ -55,6 +56,51 @@ class ParameterController extends BaseController {
       } catch (Exception $e) {
         $error = true;
       }
+    }
+    // Save document categories
+    $documentCategoryArray = Input::get('document_categories');
+    $documentCategories = "";
+    foreach ($documentCategoryArray as $categoryName) {
+      if ($categoryName) {
+        if ($documentCategories) $documentCategories .= ";";
+        $documentCategories .= str_replace(";", ",", $categoryName);
+      }
+    }
+    try {
+      Parameter::set(Parameter::$DOCUMENT_CATEGORIES, $documentCategories);
+    } catch (Exception $e) {
+      $error = true;
+    }
+    // Save the unit parameters
+    try {
+      Parameter::set(Parameter::$UNIT_LONG_NAME, Input::get('unit_long_name'));
+      Parameter::set(Parameter::$UNIT_SHORT_NAME, Input::get('unit_short_name'));
+      Parameter::set(Parameter::$UNIT_BANK_ACCOUNT, Input::get('unit_bank_account'));
+    } catch (Exception $e) {
+      $error = true;
+    }
+    // Save the logo
+    $logoFile = Input::file('logo');
+    try {
+      if ($logoFile) {
+        $filename = $logoFile->getClientOriginalName();
+        $logoFile->move(storage_path() . "/" . Parameter::$LOGO_IMAGE_FOLDER, $filename);
+        Parameter::set(Parameter::$LOGO_IMAGE, $filename);
+      }
+    } catch (Exception $e) {
+      $error = true;
+    }
+    // Save the advanced parameters
+    try {
+      Parameter::set(Parameter::$WEBMASTER_EMAIL, Input::get('webmaster_email'));
+      Parameter::set(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, Input::get('default_email_from_address'));
+      Parameter::set(Parameter::$SMTP_HOST, Input::get('smtp_host'));
+      Parameter::set(Parameter::$SMTP_PORT, Input::get('smtp_port'));
+      Parameter::set(Parameter::$SMTP_USERNAME, Input::get('smtp_username'));
+      Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
+      Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
+    } catch (Exception $e) {
+      $error = true;
     }
     // Return to parameter page
     if (!$error) {
@@ -114,6 +160,10 @@ class ParameterController extends BaseController {
         'page_calendar' => array(
             'description' => 'Afficher la page "calendrier"',
             'parameter_name' => Parameter::$SHOW_CALENDAR
+        ),
+        'download_calendar' => array(
+            'description' => 'Calendrier téléchargeable en pdf',
+            'parameter_name' => Parameter::$CALENDAR_DOWNLOADABLE
         ),
         'page_documents' => array(
             'description' => 'Afficher la page "télécharger"',

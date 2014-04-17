@@ -3,14 +3,12 @@ TODO list
 BIG TASKS:
 - Help for leaders + task list
 - Leader archives (+ access for former leaders)
-- Edit advanced parameters (webmaster e-mail, etc.)
 
 SMALL TASKS:
 - Change 'manage' to 'edit' everywhere or the other way around
 - Sending e-mails : use default address if sender address not in safe list
 - Solve TODOs in import-old-data script
-- Check for TODOs
-- Fix page min-height
+- Check TODOs
 - Health card auto-deletion + reminder e-mail
 - Switch to European aws ses server
 

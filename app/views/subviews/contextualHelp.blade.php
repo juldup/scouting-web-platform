@@ -349,12 +349,14 @@
 @endif
 
 @if ($help == 'parameters')
-  <legend>Paramètres du site @yield('back_to_top')</legend>
-  <p>Sur cette page, tu peux:
+  <p>Cette page permet de paramètriser le site. Tu peux&nbsp;:
     <ul>
-      <li>Modifier le prix des cotisations (désactives-en l'affichage pour les cacher des parents)</li>
+      <li>Modifier le prix des cotisations</li>
       <li>Désactiver les inscriptions pour l'année suivante (n'oublie pas de les réactiver au moment opportun)</li>
       <li>Décider, pour chaque page du site, si elle est accessible ou non (si non, elle disparaitra du menu)</li>
+      <li>Modifier la liste des catégories de documents à télécharger. Il y a toujours une catégorie "Divers".</li>
+      <li>Modifier le nom, le sigle, le numéro de compte et le logo de l'unité</li>
+      <li>Modifier l'adresse e-mail du webmaster et la configuration de l'envoi d'e-mails</li>
     </ul>
   </p>
 @endif
