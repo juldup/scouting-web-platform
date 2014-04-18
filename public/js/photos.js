@@ -46,7 +46,6 @@ $().ready(function() {
 });
 
 function startCarousel() {
-  console.log("start carousel");
   $('#photo-carousel').carousel('cycle');
   $('#photo-carousel').carousel('next');
   $('#carousel-controls #carousel-start').hide();

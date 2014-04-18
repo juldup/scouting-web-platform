@@ -174,6 +174,7 @@ Route::post('ajax/gestion/photos/changer-description-photo', array("as" => "ajax
 Route::get('ajax/gestion/photos/tourner', array("as" => "ajax_rotate_photo", "uses" => "PhotoController@rotatePhoto"));
 
 // Leaders
+Route::get('animateurs/archives/{year}/{section_slug?}', array("as" => "archived_leaders", "uses" => "LeaderController@showArchivedLeaders"));
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
 Route::get('animateur/photo/{leader_id}', array("as" => "get_leader_picture", "uses" => "LeaderController@getLeaderPicture"));
 Route::get('gestion/animateurs/{section_slug?}', array("as" => "edit_leaders", "uses" => "LeaderController@showEdit"));

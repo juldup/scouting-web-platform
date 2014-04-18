@@ -188,7 +188,6 @@ angularAccounting.controller('AccountingController', function ($scope) {
       prev = ui.item.prev();
       // Save category and position
       var categoryElement = ui.item.closest("[data-category-index]");
-      console.log(categoryElement);
       categoryIndex = categoryElement.data('category-index');
       transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item);
       $scope.sortableData = {
@@ -196,13 +195,11 @@ angularAccounting.controller('AccountingController', function ($scope) {
         categoryIndex: categoryIndex,
         transactionIndex: transactionIndex,
       };
-      console.log("from category " + categoryIndex);
     },
     stop: function(event, ui) {
       // Get new category and position
       var categoryElement = ui.item.closest("[data-category-index]");
       var categoryIndex = categoryElement.data("category-index");
-      console.log("to category " + categoryIndex);
       var transactionIndex = ui.item.parent().find("[data-transaction-id]").index(ui.item);
       // Move item
       transaction = ui.item.scope().trans;

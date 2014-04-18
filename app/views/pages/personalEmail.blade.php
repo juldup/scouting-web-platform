@@ -21,6 +21,8 @@
                 <h2>Envoyer un e-mail aux parents de {{{ $member->first_name }}} {{{ $member->last_name }}}</h2>
               @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_PERSONAL)
                 <h2>Envoyer un e-mail à {{{ $member->first_name }}} {{{ $member->last_name }}} ({{{ $member->leader_name }}})</h2>
+              @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_ARCHIVED_LEADER)
+                <h2>Envoyer un e-mail à {{{ $member->first_name }}} {{{ $member->last_name }}} ({{{ $member->leader_name }}} en {{{ $member->year }}})</h2>
               @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_WEBMASTER)
                 <h2>Envoyer un e-mail au webmaster</h2>
               @endif

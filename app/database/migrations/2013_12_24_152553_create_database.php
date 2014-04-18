@@ -466,17 +466,44 @@ class CreateDatabase extends Migration {
       $table->string('ban_code');
       $table->boolean('banned')->default(false);
       $table->timestamps();
+      
+      $table->index('email');
+      $table->index('banned');
+    });
+    
+    // Archived leaders
+    Schema::create('archived_leaders', function($table) {
+      $table->increments('id');
+      // Archive information
+      $table->integer('member_id')->unsigned()->nullable();
+      $table->foreign('member_id')->references('id')->on('members')->onDelete('set null');
+      $table->string('year');
+      // Identity
+      $table->string('first_name');
+      $table->string('last_name');
+      $table->string('gender');
+      // Scout-related details
+      $table->string('totem')->nullable();
+      $table->string('quali')->nullable();
+      $table->integer('section_id')->unsigned()->nullable();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('set null');
+      // Contact
+      $table->string('phone_member')->nullable();
+      $table->boolean('phone_member_private')->nullable();
+      $table->string('email_member')->nullable();
+      // Leader stuff
+      $table->boolean('leader_in_charge')->default(false);
+      $table->string('leader_name')->nullable();
+      $table->text('leader_description')->nullable();
+      $table->string('leader_role')->nullable();
+      $table->boolean('has_picture')->nullable();
+      $table->timestamps();
+      
+      $table->index('section_id');
+      $table->index('year');
     });
     
     // Test data
-    DB::table('users')->insert(array(
-        'id' => 1,
-        'password' => '963f0ec339ffa5b7dbe86993f3b2f7b3296ab046663724b30cf77964b4338102895297f5b4b',
-        'username' => 'Julien',
-        'email' => 'julien.dupuis@gmail.com',
-        'is_webmaster' => true,
-        'verified' => true,
-    ));
     DB::table('parameters')->insert(array(
         'name' => Parameter::$SMTP_HOST,
         'value' => 'email-smtp.us-east-1.amazonaws.com'
@@ -506,6 +533,7 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
+    Schema::drop('archived_leaders');
     Schema::drop('banned_emails');
     Schema::drop('accounting_items');
     Schema::drop('guest_book_entries');

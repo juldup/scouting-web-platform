@@ -55,7 +55,6 @@ function removeImage(image_id) {
       $("#image_" + data.image_id).remove();
     }
   }).fail(function(jqXHR, textStatus) {
-    console.log(textStatus);
   });
   return false;
 }

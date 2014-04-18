@@ -2,19 +2,28 @@
 
 class LeaderController extends BaseController {
   
-  public function showPage($archive = null) {
+  public function showPage($section_slug = null, $archive = null) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_LEADERS)) {
       return App::abort(404);
     }
     
-    $leaders = Member::where('is_leader', '=', true)
-            ->where('section_id', '=', $this->section->id)
-            ->where('validated', '=', true)
-            ->orderBy('leader_in_charge', 'DESC')
-            ->orderBy('leader_name', 'ASC')
-            ->get();
-    
+    if ($archive == null) {
+      // Showing current year
+      $leaders = Member::where('is_leader', '=', true)
+              ->where('section_id', '=', $this->section->id)
+              ->where('validated', '=', true)
+              ->orderBy('leader_in_charge', 'DESC')
+              ->orderBy('leader_name', 'ASC')
+              ->get();
+    } else {
+      // Showing archive
+      $leaders = ArchivedLeader::where('section_id', '=', $this->section->id)
+              ->where('year', '=', $archive)
+              ->orderBy('leader_in_charge', 'DESC')
+              ->orderBy('leader_name', 'ASC')
+              ->get();
+    }
     $countInCharge = 0;
     $countOthers = 0;
     $menInCharge = false; // Whether there is at least one male in charge
@@ -29,6 +38,20 @@ class LeaderController extends BaseController {
       }
     }
     
+    // Archives
+    $archives = ArchivedLeader::select('year')
+            ->distinct()
+            ->where('section_id', '=', $this->section->id)
+            ->get();
+    $archiveYears = array();
+    foreach ($archives as $year) {
+      if ($year->year != $archive) {
+        $archiveYears[] = $year->year;
+      }
+    }
+    
+    sort($archiveYears);
+    
     return View::make('pages.leader.leaders', array(
         'is_leader' => $this->user->isLeader(),
         'leaders' => $leaders,
@@ -36,7 +59,13 @@ class LeaderController extends BaseController {
         'count_others' => $countOthers,
         'men_in_charge' => $menInCharge,
         'men_in_others' => $menInOthers,
+        'archives' => $archiveYears,
+        'archive_year' => $archive,
     ));
+  }
+  
+  public function showArchivedLeaders($year) {
+    return $this->showPage($this->section->slug, $year);
   }
   
   public function showEdit($section_slug = null, $memberId = false) {
@@ -126,7 +155,7 @@ class LeaderController extends BaseController {
       $leader = Member::find($memberId);
       $wasLeaderBefore = $leader->is_leader;
       if ($leader) {
-        $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true); 
+        $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true);
         if ($result === true) {
           if (!$wasLeaderBefore) Privilege::addBasePrivilegesForLeader($leader);
           $success = true;
@@ -224,7 +253,6 @@ class LeaderController extends BaseController {
       // None of the above apply
       return false;
     }
-    
     
   }
   

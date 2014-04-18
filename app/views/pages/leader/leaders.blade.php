@@ -8,6 +8,16 @@
   <meta name="robots" content="noindex">
 @stop
 
+@section('back_links')
+  @if ($archive_year)
+    <p>
+      <a href='{{ URL::route('leaders', array('section_slug' => $user->currentSection->slug)) }}'>
+        Retour aux animateurs de cette année
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('forward_links')
   @if ($is_leader)
     <p>
@@ -27,7 +37,12 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Animateurs {{{ $user->currentSection->de_la_section }}}</h1>
+      <h1>
+        Animateurs {{{ $user->currentSection->de_la_section }}}
+        @if ($archive_year)
+          en {{{ $archive_year }}}
+        @endif
+      </h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -99,9 +114,15 @@
               @if ($leader->email_member)
                 <p>
                   <strong>E-mail :</strong>
-                  <a class="btn-sm btn-primary" href="{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_PERSONAL, 'member_id' => $leader->id)) }}">
-                    Envoyer un e-mail
-                  </a>
+                  @if ($archive_year)
+                    <a class="btn-sm btn-primary" href="{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_ARCHIVED_LEADER, 'member_id' => $leader->id)) }}">
+                      Envoyer un e-mail
+                    </a>
+                  @else
+                    <a class="btn-sm btn-primary" href="{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_PERSONAL, 'member_id' => $leader->id)) }}">
+                      Envoyer un e-mail
+                    </a>
+                  @endif
                 </p>
               @endif
             </div>
@@ -111,4 +132,34 @@
     @endforeach
   </div>
   
+  @if (count($archives) || $archive_year)
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Animateurs des années précédentes</h2>
+      </div>
+    </div>
+    @foreach ($archives as $archive)
+      <div class="row">
+        <div class="col-md-12">
+          <p>
+            <a href="{{ URL::route('archived_leaders', array('section_slug' => $user->currentSection->slug, 'year' => $archive)) }}" class="btn-sm btn-default">
+              Voir les animateurs de l'année {{{ $archive }}}
+            </a>
+          </p>
+        </div>
+      </div>
+    @endforeach
+    @if ($archive_year)
+      <div class="row">
+        <div class="col-md-12">
+          <p></p>
+          <p>
+            <a class="btn-sm btn-default" href='{{ URL::route('leaders', array('section_slug' => $user->currentSection->slug)) }}'>
+                Retour aux animateurs de cette année
+            </a>
+          </p>
+        </div>
+      </div>
+    @endif
+  @endif
 @stop

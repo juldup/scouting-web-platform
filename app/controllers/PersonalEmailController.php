@@ -4,6 +4,7 @@ class PersonalEmailController extends BaseController {
   
   public static $CONTACT_TYPE_PARENTS = "parents";
   public static $CONTACT_TYPE_PERSONAL = "personnel";
+  public static $CONTACT_TYPE_ARCHIVED_LEADER = "archive-animateur";
   public static $CONTACT_TYPE_WEBMASTER = "webmaster";
   
   public function sendEmail($contact_type, $member_id) {
@@ -13,7 +14,11 @@ class PersonalEmailController extends BaseController {
     }
     if ($contact_type != self::$CONTACT_TYPE_WEBMASTER) {
       // Get recipient member
-      $member = Member::find($member_id);
+      if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
+        $member = ArchivedLeader::find($member_id);
+      } else {
+        $member = Member::find($member_id);
+      }
       if (!$member) App::abort(404, "Impossible d'envoyer un message personnel : ce membre n'existe pas ou plus.");
       // Not members cannot contact non-leader members
       if (!$member->is_leader && !$this->user->isMember()) {
@@ -96,31 +101,38 @@ class PersonalEmailController extends BaseController {
   protected function getEmailAddressesFor($contact_type, $member_id) {
     if ($contact_type != self::$CONTACT_TYPE_WEBMASTER) {
       // Get recipient member
-      $member = Member::find($member_id);
+      if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
+        $member = ArchivedLeader::find($member_id);
+      } else {
+        $member = Member::find($member_id);
+      }
       if (!$member) App::abort(404, "Impossible d'envoyer un message personnel : ce membre n'existe plus.");
       // Not members cannot contact non-leader members
-      if (!$member->is_leader && !$this->user->isMember()) {
+      if ($contact_type != self::$CONTACT_TYPE_ARCHIVED_LEADER && !$member->is_leader && !$this->user->isMember()) {
         App::abort(\Illuminate\Http\Response::HTTP_FORBIDDEN);
       }
       // Nobody can contact non-leader members personnally
-      if (!$member->is_leader && $contact_type == self::$CONTACT_TYPE_PERSONAL) {
+      if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->is_leader) {
         App::abort(\Illuminate\Http\Response::HTTP_FORBIDDEN);
       }
       // Nobody can contact a leader's parents
-      if ($member->is_leader && $contact_type == self::$CONTACT_TYPE_PARENTS) {
+      if ($contact_type == self::$CONTACT_TYPE_PARENTS && $member->is_leader) {
         App::abort(\Illuminate\Http\Response::HTTP_FORBIDDEN);
       }
       // Check that there is a parent's e-mail address to write to
-      if (($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress())) {
+      if ($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress()) {
         App::abort(404, "Impossible de contacter les parents de " . $member->first_name . " " . $member->last_name . ". Leur adresse e-mail est inconnue.");
       }
       // Check that there is a personnal e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->email_member) {
         App::abort(404, "Impossible de contacter " . $member->first_name . " " . $member->last_name . ". Son adresse e-mail est inconnue.");
       }
+      if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER && !$member->email_member) {
+        App::abort(404, "Impossible de contacter " . $member->first_name . " " . $member->last_name . ". Son adresse e-mail est inconnue.");
+      }
       if ($contact_type == self::$CONTACT_TYPE_PARENTS) {
         return $member->getParentsEmailAddresses();
-      } elseif ($contact_type == self::$CONTACT_TYPE_PERSONAL) {
+      } elseif ($contact_type == self::$CONTACT_TYPE_PERSONAL || $contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
         return array($member->email_member);
       }
     } else {

@@ -108,6 +108,9 @@ class Member extends Eloquent {
   // If input data is correct, updates this and returns true.
   // If input data is incorrect, returns false or an error message.
   public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader) {
+    // Archive leaders
+    ArchivedLeader::archiveLeadersIfNeeded();
+    
     $data = self::checkInputData($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
     if (is_string($data)) {
       // An error has occured
@@ -180,7 +183,9 @@ class Member extends Eloquent {
   // If input data is correct, creates and returns a new user.
   // If input data is incorrect, returns false or an error message.
   public static function createFromInput($validate = false) {
-    
+    // Archive leaders
+    ArchivedLeader::archiveLeadersIfNeeded();
+        
     $data = self::checkInputData();
     if (is_string($data)) {
       // An error has occured
@@ -396,5 +401,5 @@ class Member extends Eloquent {
     return true;
     
   }
-    
+  
 }

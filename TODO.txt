@@ -16,8 +16,8 @@ AT THE END:
 - Layout for smartphones and tablets
 - Reorganize javascript files
 - Comment code
-- Escape all user data with {{{ }}}
 - Check access control for each page
+- Remove test data from migration
 
 OPTIONAL/LATER:
 - Leader todo list
@@ -36,3 +36,4 @@ OPTIONAL/LATER:
 - Manage last visit and show 'new since last visit'
 - Changer le look and feel du site
 - Forum ?
+- Fix issue: on the first year, archiving first created leader
