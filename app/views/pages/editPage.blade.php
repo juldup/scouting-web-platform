@@ -33,7 +33,7 @@
   
   <div class="row page_body form-horizontal">
     <form name="edit_page" method="post" action="" id="edit_page_form">
-      <h1>{{ $page_title }}</h1>
+      <h1>{{{ $page_title }}}</h1>
       <div class="form-group">
         <div class="col-md-12">
           <textarea cols="80" id="page_body" name="page_body" rows="10">{{ $page_body }}</textarea>

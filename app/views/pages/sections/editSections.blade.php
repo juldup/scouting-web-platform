@@ -185,9 +185,9 @@
                       Détails
                     </a>
                   </div>
-                  <div class="col-md-3">{{ $section->name }}</div>
-                  <div class="col-md-3">{{ $section->email }}</div>
-                  <div class="col-md-1">{{ $section->section_type }}{{ $section->section_type_number }}</div>
+                  <div class="col-md-3">{{{ $section->name }}}</div>
+                  <div class="col-md-3">{{{ $section->email }}}</div>
+                  <div class="col-md-1">{{{ $section->section_type }}}{{{ $section->section_type_number }}}</div>
                   <div class="col-md-1"><span style="background-color: {{ $section->color }}" class="color-sample"></span></div>
                 </div>
                 <div class="details_section" data-section-id="{{ $section->id}}" style="display: none;">
@@ -196,7 +196,7 @@
                       "De la section" :
                     </div>
                     <div class="col-md-9">
-                       "Voici les e-mails <strong>{{ $section->de_la_section }}</strong>."
+                       "Voici les e-mails <strong>{{{ $section->de_la_section }}}</strong>."
                     </div>
                   </div>
                   <div class="row">
@@ -204,7 +204,7 @@
                       "La section" :
                     </div>
                     <div class="col-md-9">
-                      "Inscriptions pour <strong>{{ $section->la_section }}</strong>."
+                      "Inscriptions pour <strong>{{{ $section->la_section }}}</strong>."
                     </div>
                   </div>
                   <div class="row">
@@ -212,7 +212,7 @@
                       Nom des sous-groupes :
                     </div>
                     <div class="col-md-9">
-                      {{ $section->subgroup_name }}
+                      {{{ $section->subgroup_name }}}
                     </div>
                   </div>
                 </div>

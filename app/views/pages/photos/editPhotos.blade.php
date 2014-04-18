@@ -30,7 +30,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Gestion des photos {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Gestion des photos {{{ $user->currentSection->de_la_section }}}</h1>
       @include ('subviews.flashMessages')
     </div>
   </div>
@@ -48,13 +48,13 @@
                         data-editable-submit-url="{{ URL::route('ajax_change_album_name') }}"
                         data-editable-id="{{ $album->id }}">
                     <span class="editable-text-value">
-                      {{ $album->name }}
+                      {{{ $album->name }}}
                     </span>
                   </span>
                 </td>
                 <td class="photo-album-count-column">
                   @if ($album->photo_count)
-                    {{ $album->photo_count }} {{ $album->photo_count > 1 ? "photos" : "photo" }}
+                    {{ $album->photo_count }} {{{ $album->photo_count > 1 ? "photos" : "photo" }}}
                   @else
                     L'album est vide
                   @endif

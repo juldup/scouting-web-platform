@@ -5,7 +5,7 @@
         <img class="website-logo" src='{{ URL::route('website_logo') }}'/>
         <span class="horiz-divider"></span>
         <span class="website-title">
-          {{ Parameter::get(Parameter::$UNIT_LONG_NAME) }}
+          {{{ Parameter::get(Parameter::$UNIT_LONG_NAME) }}}
         </span>
       </a>
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">

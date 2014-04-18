@@ -36,7 +36,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Documents {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Documents {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -115,12 +115,12 @@
   </div>
   
   @foreach ($documents_in_categories as $category=>$docs)
-    <h3>{{ $category }}</h3>
+    <h3>{{{ $category }}}</h3>
     @foreach ($docs as $doc)
       <div class="row">
         <div class="col-md-6">
           <div class="well">
-            <legend>{{ $doc->title }}</legend>
+            <legend>{{{ $doc->title }}}</legend>
             <p>
               {{ Helper::rawToHTML($doc->description) }}
             </p>
@@ -146,7 +146,7 @@
               </p>
             @endif
             <p>
-              <strong>Fichier :</strong> {{ $doc->filename }}
+              <strong>Fichier :</strong> {{{ $doc->filename }}}
             </p>
           </p>
         </div>

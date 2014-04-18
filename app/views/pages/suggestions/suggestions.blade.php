@@ -79,7 +79,7 @@
             <legend>
               <div class="row">
                 <div class="col-md-10">
-                  {{ Helper::dateToHuman($suggestion->created_at) }}
+                  {{{ Helper::dateToHuman($suggestion->created_at) }}}
                 </div>
                 @if ($managing)
                   <div class="col-md-2 text-right">
@@ -102,7 +102,7 @@
                 <p>
                   <strong>Auteur : </strong>
                   @if ($suggestion->user_id)
-                    {{ User::find($suggestion->user_id)->email }}
+                    {{{ User::find($suggestion->user_id)->email }}}
                   @else
                     anonyme
                   @endif

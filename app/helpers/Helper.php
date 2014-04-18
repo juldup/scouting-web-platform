@@ -37,6 +37,13 @@ class Helper {
     $string = str_replace("\r\n", "\\n", $string);
     $string = str_replace("\n", "\\n", $string);
     $string = str_replace("\r", "\\n", $string);
+    $string = str_replace("/", "\\/", $string);
+    return $string;
+  }
+  
+  public static function sanitizeForHTML($string) {
+    $string = str_replace("<", "&lt;", $string);
+    $string = str_replace(">", "&gt;", $string);
     return $string;
   }
   

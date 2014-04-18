@@ -30,7 +30,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Photos {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Photos {{{ $user->currentSection->de_la_section }}}</h1>
     </div>
   </div>
   
@@ -44,15 +44,15 @@
               <tr class="photo-album-row">
                 <td>
                   @if ($showing_archives)
-                    <strong>{{ Helper::dateToHuman($album->date) }} :</strong>
+                    <strong>{{{ Helper::dateToHuman($album->date) }}} :</strong>
                   @endif
                   @if ($album == $current_album)
-                    <strong>{{ $album->name }}</strong>
+                    <strong>{{{ $album->name }}}</strong>
                   @else
                   <a class="photo-album-link" href='{{ URL::route('photo_album', array('album_id' => $album->id, 'section_slug' => $user->currentSection->slug)) }}'>{{ $album->name }}</a>
                   @endif
                 </td>
-                <td>{{ $album->photo_count }} {{ $album->photo_count > 1 ? "photos" : "photo" }}</td>
+                <td>{{ $album->photo_count }} {{{ $album->photo_count > 1 ? "photos" : "photo" }}}</td>
                 <td>
                   <a class="btn-sm btn-default" href="{{ URL::route('download_photo_album', array('album_id' => $album->id)) }}">
                     <span class="glyphicon glyphicon-download-alt"></span> Télécharger l'album
@@ -96,7 +96,7 @@
   @if (count($photos))  
     <div class="row">
       <div class="col-md-12">
-        <h2>{{ $current_album->name }}</h2>
+        <h2>{{{ $current_album->name }}}</h2>
         <div id="photo-carousel" class="carousel slide">
           @if (count($photos) > 1)
             <div id="carousel-controls">

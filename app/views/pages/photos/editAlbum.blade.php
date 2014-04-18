@@ -29,7 +29,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Album "{{ $album->name }}"</h1>
+      <h1>Album "{{{ $album->name }}}"</h1>
       @include ('subviews.flashMessages')
     </div>
   </div>

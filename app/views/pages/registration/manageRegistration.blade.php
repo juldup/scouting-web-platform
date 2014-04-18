@@ -15,8 +15,8 @@
         'birth_date_day': "{{ Helper::getDateDay($member->birth_date) }}",
         'birth_date_month': "{{ Helper::getDateMonth($member->birth_date) }}",
         'birth_date_year': "{{ Helper::getDateYear($member->birth_date) }}",
-        'gender': "{{ $member->gender }}",
-        'nationality': "{{ $member->nationality }}",
+        'gender': "{{{ $member->gender }}}",
+        'nationality': "{{{ $member->nationality }}}",
         'address': "{{ Helper::sanitizeForJavascript($member->address) }}",
         'postcode': "{{ Helper::sanitizeForJavascript($member->postcode) }}",
         'city': "{{ Helper::sanitizeForJavascript($member->city) }}",
@@ -40,13 +40,13 @@
         'phone3_private': {{ $member->phone3_private ? "true" : "false" }},
         'phone_member': "{{ Helper::sanitizeForJavascript($member->phone_member) }}",
         'phone_member_private': {{ $member->phone_member_private ? "true" : "false" }},
-        'email1': "{{ $member->email1 }}",
-        'email2': "{{ $member->email2 }}",
-        'email3': "{{ $member->email3 }}",
-        'email_member': "{{ $member->email_member }}",
+        'email1': "{{ Helper::sanitizeForJavascript($member->email1) }}",
+        'email2': "{{ Helper::sanitizeForJavascript($member->email2) }}",
+        'email3': "{{ Helper::sanitizeForJavascript($member->email3) }}",
+        'email_member': "{{ Helper::sanitizeForJavascript($member->email_member) }}",
         'totem': "{{ Helper::sanitizeForJavascript($member->totem) }}",
         'quali': "{{ Helper::sanitizeForJavascript($member->quali) }}",
-        'family_in_other_units': {{ $member->family_in_other_units }},
+        'family_in_other_units': {{{ $member->family_in_other_units }}},
         'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($member->family_in_other_units_details) }}",
       };
     @endforeach
@@ -80,7 +80,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Nouvelles inscriptions en attente pour {{ $user->currentSection->la_section }}</h1>
+      <h1>Nouvelles inscriptions en attente pour {{{ $user->currentSection->la_section }}}</h1>
       @include('subviews.flashMessages')
       @if (count($registrations))
       <table class="table table-striped table-hover wide-table">
@@ -104,16 +104,16 @@
                     Supprimer
                   </a>
                 </td>
-                <td class="space-on-right">{{ $member->first_name }}</td>
-                <td class="space-on-right">{{ $member->last_name }}</td>
-                <td>{{ $member->is_leader ? "Oui" : "Non" }}</td>
+                <td class="space-on-right">{{{ $member->first_name }}}</td>
+                <td class="space-on-right">{{{ $member->last_name }}}</td>
+                <td>{{{ $member->is_leader ? "Oui" : "Non" }}}</td>
               </tr>
             @endforeach
           </tbody>
         </table>
       @else
         @if (count($other_sections))
-          <p>Il n'y a pas de demande d'inscription pour {{ $user->currentSection->la_section }}.</p>
+          <p>Il n'y a pas de demande d'inscription pour {{{ $user->currentSection->la_section }}}.</p>
         @else
           <p>Il n'y a aucune demande d'inscription en attente.</p>
         @endif  
@@ -127,7 +127,7 @@
             @else –
             @endif
             <a href='{{ URL::route('manage_registration', array('section_slug' => $other_section->slug)) }}'>
-              {{ $other_section->name}}
+              {{{ $other_section->name}}}
             </a>
           @endforeach
         </p>

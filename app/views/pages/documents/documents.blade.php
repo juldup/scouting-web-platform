@@ -32,7 +32,7 @@
   
   <div class="row">
     <div class="col-lg-12">
-      <h1>Documents {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Documents {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -40,7 +40,7 @@
   @foreach ($documents as $category=>$docs)
     <div class="row">
       <div class="col-lg-12">
-        <h3>{{ $category }}</h3>
+        <h3>{{{ $category }}}</h3>
       </div>
     </div>
     @foreach ($docs as $doc)
@@ -54,7 +54,7 @@
                     {{ Helper::dateToHuman($doc->doc_date) }} :
                   @endif
                   <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
-                    {{ $doc->title }}
+                    {{{ $doc->title }}}
                   </a>
                 </div>
                 <div class="col-md-2 text-right">
@@ -69,7 +69,7 @@
             <legend>
               <div class="row">
                 <div class="col-md-10">
-                  {{ $doc->title }}
+                  {{{ $doc->title }}}
                 </div>
               </div>
             </legend>
@@ -85,7 +85,7 @@
   @if (count($documents) == 0)
     <div class="row">
       <div class="col-lg-12">
-        <p>Il n'y a aucun document {{ $user->currentSection->de_la_section }} à télécharger.</p>
+        <p>Il n'y a aucun document {{{ $user->currentSection->de_la_section }}} à télécharger.</p>
       </div>
     </div>
   @elseif (!$user->isMember())

@@ -26,7 +26,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Gestion des e-mails {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Gestion des e-mails {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -38,7 +38,7 @@
           <legend>
             <div class="row">
               <div class="col-md-9">
-                {{ $email->subject }} – {{ Helper::dateToHuman($email->date) }}
+                {{{ $email->subject }}} – {{ Helper::dateToHuman($email->date) }} à {{ Helper::timeToHuman($email->time) }}
               </div>
               <div class="col-md-3 text-right">
                 @if ($email->canBeDeleted())
@@ -65,7 +65,7 @@
               @endif
               @foreach ($email->getAttachments() as $attachment)
                 <a href="{{ URL::route('download_attachment', array('attachment_id' => $attachment->id)) }}">
-                  {{ $attachment->filename }}
+                  {{{ $attachment->filename }}}
                 </a>
                 <span class="horiz-divider"></span>
               @endforeach
@@ -77,7 +77,7 @@
             </span>
             <span class="email-recipient-list-content" style="display: none;">
               <strong>Destinataires :</strong>
-              {{ $email->recipient_list }}
+              {{{ $email->recipient_list }}}
             </span>
           </p>
         </div>

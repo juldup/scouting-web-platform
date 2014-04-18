@@ -31,7 +31,7 @@
   <div class="row">
     <div class="col-lg-12">
   
-      <h1>Nouvelles {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Nouvelles {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -88,7 +88,7 @@
         <legend>
           <div class="row">
             <div class="col-md-10">
-              {{ $newsItem->title }} – {{ $newsItem->getHumanDate() }}
+              {{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
             </div>
             <div class="col-md-2 text-right">
               <a class="btn-sm btn-default" href="javascript:editNews({{ $newsItem->id }})">Modifier</a>

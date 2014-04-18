@@ -14,12 +14,12 @@
       <div class="col-lg-3 col-md-4">
         <div class="list-group clickable-list-group">
           <div class="list-group-item active">
-            {{ $operationCategory }}
+            {{{ $operationCategory }}}
           </div>
           @foreach ($ops as $operationName=>$operationData)
             <div class="list-group-item clickable leader-help-item" data-leader-help="{{ $operationData['help'] }}">
               <a href="{{ $operationData['url'] }}"></a>
-              {{ $operationName }}
+              {{{ $operationName }}}
               <a href="#{{ $operationData['help'] }}" class="help-badge"></a>
             </div>
           @endforeach

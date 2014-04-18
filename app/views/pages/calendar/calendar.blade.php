@@ -7,8 +7,8 @@
 @section('additional_javascript')
   <script src="{{ URL::to('/') }}/js/edit-calendar.js"></script>
   <script>
-    var currentMonth = {{ $month }};
-    var currentYear = {{ $year }};
+    var currentMonth = {{{ $month }}};
+    var currentYear = {{{ $year }}};
     var currentSection = {{ $user->currentSection->id }};
     var events = new Array();
     @foreach ($calendar_items as $item)
@@ -56,9 +56,9 @@
   <div class="row">
     <div class="col-md-12">
       @if ($editing)
-        <h1>Modification du calendrier {{ $user->currentSection->de_la_section }}</h1>
+        <h1>Modification du calendrier {{{ $user->currentSection->de_la_section }}}</h1>
       @else
-        <h1>Calendrier {{ $user->currentSection->de_la_section }}</h1>
+        <h1>Calendrier {{{ $user->currentSection->de_la_section }}}</h1>
       @endif
       @include('subviews.flashMessages')
     </div>
@@ -151,18 +151,18 @@
             @for ($i = 6; $i >= 1; $i--)
               <span class='otherMonth'>
                 <a href="{{ URL::route($route_month, array('month' => (($month - $i + 11) % 12 + 1), 'year' => ($month - $i <= 0 ? $year - 1 : $year))) }}">
-                  {{ $months_short[($month - $i + 11) % 12] }} &leftarrow; <span class='horiz-divider'></span>
+                  {{{ $months_short[($month - $i + 11) % 12] }}} &leftarrow; <span class='horiz-divider'></span>
                 </a>
               </span>
             @endfor
 
-            <span class='month-name'>{{ $months[$month-1] }} {{ $year }}</span>
+            <span class='month-name'>{{{ $months[$month-1] }}} {{{ $year }}}</span>
 
             {{-- Links to the 4 next months --}}
             @for ($i = 1; $i <= 6; $i++)
               <span class='otherMonth'>
                 <a href="{{ URL::route($route_month, array('month' => (($month + $i + 11) % 12 + 1), 'year' => ($month + $i >= 13 ? $year + 1 : $year))) }}">
-                  <span class='horiz-divider'></span> &rightarrow; {{ $months_short[($month + $i - 1) % 12] }}
+                  <span class='horiz-divider'></span> &rightarrow; {{{ $months_short[($month + $i - 1) % 12] }}}
                 </a>
               </span>
             @endfor
@@ -171,7 +171,7 @@
         <div>
           {{-- Names of the days --}}
           @for ($x = 0; $x <= 6; $x++)
-          <div class="day-name">{{ $days[$x] }}</div>
+          <div class="day-name">{{{ $days[$x] }}}</div>
           @endfor
         </div>
         <div class="week">
@@ -195,9 +195,9 @@
 
               {{-- Number of the day --}}
               @if ($editing)
-                <a class="day-number" href='javascript:addEvent({{ $day }})'>{{ $day }}</a>
+                <a class="day-number" href='javascript:addEvent({{{ $day }}})'>{{{ $day }}}</a>
               @else
-                <p class="day-number">{{ $day }}</p>
+                <p class="day-number">{{{ $day }}}</p>
               @endif
 
               {{-- Events of the day --}}
@@ -205,7 +205,7 @@
               @if ($editing) <a href="javascript:editEvent({{ $event->id }})"> @endif
               <p title="{{{ $event->description }}}" style="color: {{$event->getSection()->color}};">
                 <img src="{{ $event->getIcon() }}" class='calendar-event-icon' />
-                {{ $event->event }}
+                {{{ $event->event }}}
               </p>
               @if ($editing) </a> @endif
               @endforeach

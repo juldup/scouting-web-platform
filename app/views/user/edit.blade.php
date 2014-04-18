@@ -16,14 +16,14 @@
     <div class="row">
       <label class='col-md-2 text-right'>Nom d'utilisateur</label>
       <div class='col-md-3'>
-        <p>{{ $user->username }}</p>
+        <p>{{{ $user->username }}}</p>
       </div>
     </div>
 
     <div class="row">
       <label class='col-md-2 text-right'>Adresse e-mail</label>
       <div class='col-md-3'>
-        <p>{{ $user->email }}</p>
+        <p>{{{ $user->email }}}</p>
       </div>
       <div class="col-md-7">
         <p>
@@ -52,7 +52,7 @@
     <div class="row">
       <label class='col-md-2 text-right'>Section par défaut</label>
       <div class='col-md-3'>
-        <p>{{ $user->getDefaultSection()->name }}</p>
+        <p>{{{ $user->getDefaultSection()->name }}}</p>
       </div>
       <div class="col-md-7">
         <p>

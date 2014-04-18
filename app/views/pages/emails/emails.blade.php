@@ -29,7 +29,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>E-mails {{ $user->currentSection->de_la_section }} @if ($showing_archives) (archives) @endif</h1>
+      <h1>E-mails {{{ $user->currentSection->de_la_section }}} @if ($showing_archives) (archives) @endif</h1>
     </div>
   </div>
   
@@ -48,7 +48,7 @@
         <div class="col-md-12">
           <div class="well">
             <legend>
-              {{ $email->subject }} – {{ Helper::dateToHuman($email->date) }} à {{ Helper::timeToHuman($email->time) }}
+              {{{ $email->subject }}} – {{ Helper::dateToHuman($email->date) }} à {{ Helper::timeToHuman($email->time) }}
             </legend>
             <p>
               {{ $email->body_html }}
@@ -62,7 +62,7 @@
                 @endif
                 @foreach ($email->getAttachments() as $attachment)
                   <a href="{{ URL::route('download_attachment', array('attachment_id' => $attachment->id)) }}">
-                    {{ $attachment->filename }}
+                    {{{ $attachment->filename }}}
                   </a>
                   <span class="horiz-divider"></span>
                 @endforeach

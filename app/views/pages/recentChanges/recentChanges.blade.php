@@ -17,17 +17,17 @@
         <tr class="clickable-no-default">
           <td>
             @if ($change['date'] != $currentDate)
-              <strong>{{ Helper::dateToHuman($change['date']) }}</strong>
+              <strong>{{{ Helper::dateToHuman($change['date']) }}}</strong>
             @endif
           </td>
           <td>
-            {{ $change['section']->name }}
+            {{{ $change['section']->name }}}
           </td>
           <td>
-            {{ $change['type'] }}
+            {{{ $change['type'] }}}
           </td>
           <td>
-            <a href="{{ $change['url'] }}">{{ $change['item'] }}</a>
+            <a href="{{ $change['url'] }}">{{{ $change['item'] }}}</a>
           </td>
         </tr>
         <?php $currentDate = $change['date']; ?>

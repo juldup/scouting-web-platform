@@ -42,7 +42,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Animateurs {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Animateurs {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -52,7 +52,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h2>Liste des animateurs actuels {{ $user->currentSection->de_la_section }}</h2>
+      <h2>Liste des animateurs actuels {{{ $user->currentSection->de_la_section }}}</h2>
       <table class="table table-striped table-hover">
         <thead>
           <tr>
@@ -94,18 +94,18 @@
                     </a>
                   @endif
                 </td>
-                <td>{{ $leader->leader_name }} @if ($leader->leader_in_charge) (responsable) @endif</td>
-                <td>{{ $leader->first_name }}</td>
-                <td>{{ $leader->last_name }}</td>
+                <td>{{{ $leader->leader_name }}} @if ($leader->leader_in_charge) (responsable) @endif</td>
+                <td>{{{ $leader->first_name }}}</td>
+                <td>{{{ $leader->last_name }}}</td>
                 <td>
                   @if ($leader->has_picture)
-                    <img class="leader_picture_mini" alt="Photo de {{ $leader->leader_name }}" src="{{ $leader->getPictureURL() }}" />
+                    <img class="leader_picture_mini" alt="Photo de {{{ $leader->leader_name }}}" src="{{ $leader->getPictureURL() }}" />
                   @else
                     Pas de photo
                   @endif
                 </td>
-                <td>{{ $leader->phone_member }}</td>
-                <td>{{ $leader->email_member }}</td>
+                <td>{{{ $leader->phone_member }}}</td>
+                <td>{{{ $leader->email_member }}}</td>
               </tr>
             @endif
           @endforeach

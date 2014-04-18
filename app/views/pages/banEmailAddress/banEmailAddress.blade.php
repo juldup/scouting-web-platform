@@ -6,7 +6,7 @@
       <h1>Désinscrire votre adresse e-mail</h1>
       <div class="alert alert-danger">
         <p>
-          Souhaitez-vous supprimer l'adresse <strong>{{ $email }}</strong> de notre liste de destinataires&nbsp;?
+          Souhaitez-vous supprimer l'adresse <strong>{{{ $email }}}</strong> de notre liste de destinataires&nbsp;?
         </p>
         <p>
           Vous ne recevrez plus aucun e-mail envoyé depuis ce site web.

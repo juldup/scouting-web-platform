@@ -24,7 +24,7 @@
   
   <div class="row">
     <div class="col-lg-12">
-      <h1>Nouvelles {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Nouvelles {{{ $user->currentSection->de_la_section }}}</h1>
       @if (count($news) == 0)
         <p>Aucune nouvelle.</p>
       @endif
@@ -36,9 +36,9 @@
       <div class="col-lg-12">
         <legend>
           @if ($user->currentSection->id == 1)
-            {{ Section::find($newsItem->section_id)->name }} :
+            {{{ Section::find($newsItem->section_id)->name }}} :
           @endif
-          {{ $newsItem->title }} – {{ $newsItem->getHumanDate() }}
+          {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
         </legend>
         <div>
           {{ Helper::rawToHTML($newsItem->body) }}

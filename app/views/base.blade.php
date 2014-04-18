@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 	<title>
-    {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} - @yield('title')
+    {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}} - @yield('title')
   </title>
   {{ Less::to('styles') }}
   @yield('head')

@@ -22,7 +22,7 @@
     <div class="row well clickable clickable-no-default">
       <div class="col-lg-12">
         <legend>
-          <a href="{{ $link->url }}">{{ $link->title }}</a>
+          <a href="{{{ $link->url }}}" target="_blank">{{{ $link->title }}}</a>
         </legend>
         <div>
           {{ Helper::rawToHTML($link->description) }}

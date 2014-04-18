@@ -84,7 +84,7 @@
         <legend>
           <div class="row">
             <div class="col-md-10">
-              {{ $link->title }} : {{ $link->url }}
+              {{{ $link->title }}} : {{{ $link->url }}}
             </div>
             <div class="col-md-2 text-right">
               <a class="btn-sm btn-default" href="javascript:editLink({{ $link->id }})">Modifier</a></p>

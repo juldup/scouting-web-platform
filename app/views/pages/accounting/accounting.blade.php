@@ -13,13 +13,13 @@
     @if ($this_year < $year)
       <a href='{{ URL::route('accounting_by_year', array('section_slug' => $user->currentSection->slug, 'year' => $this_year)) }}'>
         &nbsp;<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;
-        Année {{ $this_year }}
+        Année {{{ $this_year }}}
       </a>
     @endif
     @if ($this_year != $previous_year)
       <a href='{{ URL::route('accounting_by_year', array('section_slug' => $user->currentSection->slug, 'year' => $previous_year)) }}'>
         &nbsp;<span class="glyphicon glyphicon-arrow-left"></span>&nbsp;
-        Année {{ $previous_year }}
+        Année {{{ $previous_year }}}
       </a>
     @endif
   </p>
@@ -29,13 +29,13 @@
   <p>
     @if ($this_year > $year)
       <a href='{{ URL::route('accounting_by_year', array('section_slug' => $user->currentSection->slug, 'year' => $this_year)) }}'>
-        Année {{ $this_year }}
+        Année {{{ $this_year }}}
         &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;
       </a>
     @endif
     @if ($this_year != $next_year)
       <a href='{{ URL::route('accounting_by_year', array('section_slug' => $user->currentSection->slug, 'year' => $next_year)) }}'>
-        Année {{ $next_year }}
+        Année {{{ $next_year }}}
         &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;
       </a>
     @endif
@@ -50,7 +50,7 @@
     var commitAccountingChangesURL = "{{ URL::route('ajax-accounting-commit-changes', array('section_slug' => $user->currentSection->slug, 'year' => $year))}}";
     var inheritanceCash = {{ $inherit_cash }};
     var inheritanceBank = {{ $inherit_bank }};
-    var previousYear = "{{ $previous_year }}";
+    var previousYear = "{{{ $previous_year }}}";
     var canEdit = {{ $can_edit ? "true" : "false" }};
     var categories = [
     @foreach ($categories as $category_name => $category)
@@ -79,7 +79,7 @@
 @stop
 
 @section('content')
-  <h1>Trésorie {{ $user->currentSection->de_la_section }}&nbsp;: année {{ $year }}</h1>
+  <h1>Trésorie {{{ $user->currentSection->de_la_section }}}&nbsp;: année {{{ $year }}}</h1>
   @include('pages.accounting.accounting-angular')
   <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
 @stop

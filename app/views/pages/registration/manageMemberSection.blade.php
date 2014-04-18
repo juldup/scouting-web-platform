@@ -24,7 +24,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Faire passer des scouts {{ $user->currentSection->de_la_section }} vers d'autres sections</h1>
+      <h1>Faire passer des scouts {{{ $user->currentSection->de_la_section }}} vers d'autres sections</h1>
     </div>
   </div>
   
@@ -53,7 +53,7 @@
             </div>
             <div class="form-group">
               <div class="col-md-5 text-right">
-                <span class="form-control large text-left">{{ $user->currentSection->name }}</span>
+                <span class="form-control large text-left">{{{ $user->currentSection->name }}}</span>
               </div>
               <div class="col-md-2 text-center">
                 <label class="form-side-note">Vers</label>
@@ -69,10 +69,10 @@
                 </div>
                 <div class="col-md-5 text-right">
                   <span class="untransfered">
-                    <label>{{ $member->first_name }} {{ $member->last_name }}</label>
+                    <label>{{{ $member->first_name }}} {{{ $member->last_name }}}</label>
                     <span class="horiz-divider"></span>
                   </span>
-                  {{ $member->year_in_section }}e année
+                  {{{ $member->year_in_section }}}e année
                 </div>
                 <div class="col-md-2 text-center">
                   <a class='btn-sm btn-primary untransfered transfer-button' href="">
@@ -84,7 +84,7 @@
                 </div>
                 <div class="col-md-5">
                   <div class="transfered" style="display: none;">
-                    <label>{{ $member->first_name }} {{ $member->last_name }}</label>
+                    <label>{{{ $member->first_name }}} {{{ $member->last_name }}}</label>
                     &rightarrow;
                     <span class="destination-section"></span>
                   </div>

@@ -20,7 +20,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <h1>Gestion des fiche santé {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Gestion des fiche santé {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -41,7 +41,7 @@
             @foreach($members as $member)
             <tr>
               <td>
-                {{ $member['member']->first_name }} {{ $member['member']->last_name }}
+                {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
               </td>
               <td>
                 @if (array_key_exists('health_card', $member))

@@ -18,7 +18,7 @@
       <div class='row'>
         <div class="col-md-3">
           <p>
-            <strong>{{ $leader->leader_name }}</strong>
+            <strong>{{{ $leader->leader_name }}}</strong>
             @if ($leader->leader_in_charge)
               @if ($leader->gender == "F") (animatrice d'unité) @else (animateur d'unité) @endif
             @else
@@ -27,16 +27,16 @@
           </p>
         </div>
         <div class="col-md-3">
-          <p>{{ $leader->first_name }} {{ $leader->last_name }}</p>
+          <p>{{{ $leader->first_name }}} {{{ $leader->last_name }}}</p>
         </div>
         <div class="col-md-2">
           <p>
-            @if ($leader->phone_member && !$leader->phone_member_private) {{ $leader->phone_member }} @endif
+            @if ($leader->phone_member && !$leader->phone_member_private) {{{ $leader->phone_member }}} @endif
           </p>
         </div>
         <div class="col-md-4">
           <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PERSONAL, "member_id" => $leader->id)) }}'>
-            Contacter {{ $leader->leader_name }} par e-mail
+            Contacter {{{ $leader->leader_name }}} par e-mail
           </a>
         </div>
       </div>
@@ -48,19 +48,19 @@
     @foreach ($sectionLeaders as $leader)
       <div class='row'>
         <div class="col-md-3">
-          <p><strong>{{ $leader->getSection()->name }}</strong></p>
+          <p><strong>{{{ $leader->getSection()->name }}}</strong></p>
         </div>
         <div class="col-md-3">
-          <p>{{ $leader->first_name }} {{ $leader->last_name }} ({{ $leader->leader_name }})</p>
+          <p>{{{ $leader->first_name }}} {{{ $leader->last_name }}} ({{{ $leader->leader_name }}})</p>
         </div>
         <div class="col-md-2">
           <p>
-            @if ($leader->phone_member && !$leader->phone_member_private) {{ $leader->phone_member }} @endif
+            @if ($leader->phone_member && !$leader->phone_member_private) {{{ $leader->phone_member }}} @endif
           </p>
         </div>
         <div class="col-md-3">
           <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_PERSONAL, 'member_id' => $leader->id)) }}'>
-            Contacter {{ $leader->leader_name }} par e-mail
+            Contacter {{{ $leader->leader_name }}} par e-mail
           </a>
         </div>
       </div>
@@ -74,10 +74,10 @@
         <p><strong>Webmaster</strong></p>
       </div>
       <div class="col-md-3">
-        <p>{{ $webmaster['name'] }}</p>
+        <p>{{{ $webmaster['name'] }}}</p>
       </div>
       <div class="col-md-2">
-        <p>{{ $webmaster['phone'] }}</p>
+        <p>{{{ $webmaster['phone'] }}}</p>
       </div>
       <div class="col-md-4">
         <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_WEBMASTER, 'member_id' => 0)) }}'>Contacter {{ $webmaster['name'] }} par e-mail</a>

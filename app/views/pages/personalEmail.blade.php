@@ -18,9 +18,9 @@
           {{ Form::open(array('url' => URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : 0)))) }}
             <legend>
               @if ($contact_type == PersonalEmailController::$CONTACT_TYPE_PARENTS)
-                <h2>Envoyer un e-mail aux parents de {{ $member->first_name }} {{ $member->last_name }}</h2>
+                <h2>Envoyer un e-mail aux parents de {{{ $member->first_name }}} {{{ $member->last_name }}}</h2>
               @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_PERSONAL)
-                <h2>Envoyer un e-mail à {{ $member->first_name }} {{ $member->last_name }} ({{ $member->leader_name }})</h2>
+                <h2>Envoyer un e-mail à {{{ $member->first_name }}} {{{ $member->last_name }}} ({{{ $member->leader_name }}})</h2>
               @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_WEBMASTER)
                 <h2>Envoyer un e-mail au webmaster</h2>
               @endif

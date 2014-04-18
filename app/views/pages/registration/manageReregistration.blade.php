@@ -29,7 +29,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Réinscription des membres actifs {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Réinscription des membres actifs {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -43,7 +43,7 @@
             <tr class="member-row" data-member-id="{{ $member->id }}">
               <th class="space-on-right">
                 <span class="member-name">
-                  {{ $member->first_name }} {{ $member->last_name }}
+                  {{{ $member->first_name }}} {{{ $member->last_name }}}
                 </span>
                 <span class="reregistered" {{ $reregistered }}>
                   est réinscrit

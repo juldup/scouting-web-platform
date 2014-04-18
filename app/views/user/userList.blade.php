@@ -27,8 +27,8 @@
         <tbody>
           @foreach ($users as $userInstance)
             <tr>
-              <td>{{ $userInstance->username }}</td>
-              <td>{{ $userInstance->email }}</td>
+              <td>{{{ $userInstance->username }}}</td>
+              <td>{{{ $userInstance->email }}}</td>
               <td>{{ date('d/m/Y', $userInstance->last_visit) }}</td>
               @if ($can_delete)
                 <td>

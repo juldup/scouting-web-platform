@@ -46,7 +46,7 @@
     <div class="row">
       <div class="col-md-12">
         <h1>
-          Listing {{ $user->currentSection->de_la_section }}
+          Listing {{{ $user->currentSection->de_la_section }}}
         </h1>
       </div>
     </div>
@@ -66,7 +66,7 @@
     <div class="row">
       <div class="col-md-12">
         <h2>
-          Listing {{ $sct['section_data']->de_la_section }}
+          Listing {{{ $sct['section_data']->de_la_section }}}
         </h2>
       </div>
     </div>
@@ -74,7 +74,7 @@
       <div class="col-md-12 text-right">
         <p>
           <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $sct['section_data']->slug)) }}">
-            Télécharger le listing {{ $sct['section_data']->de_la_section }}
+            Télécharger le listing {{{ $sct['section_data']->de_la_section }}}
           </a>
         </p>
       </div>
@@ -93,7 +93,7 @@
                 <th>Totem</th>
               @endif
               @if ($sct['show_subgroup'])
-                <th>{{ $sct['section_data']->subgroup_name }}</th>
+                <th>{{{ $sct['section_data']->subgroup_name }}}</th>
               @endif
               <th>Téléphone</th>
               <th>E-mail</th>
@@ -107,15 +107,15 @@
                       <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">Modifier</a>
                     @endif
                   </td>
-                  <td>{{ $member->last_name }}</td>
-                  <td>{{ $member->first_name }}</td>
+                  <td>{{{ $member->last_name }}}</td>
+                  <td>{{{ $member->first_name }}}</td>
                     @if ($sct['show_totem'])
-                      <td>{{ $member->totem }}</td>
+                      <td>{{{ $member->totem }}}</td>
                     @endif
                     @if ($sct['show_subgroup'])
-                      <td>{{ $member->subgroup }}</td>
+                      <td>{{{ $member->subgroup }}}</td>
                     @endif
-                  <td>{{ $member->getPublicPhone() }}</td>
+                  <td>{{{ $member->getPublicPhone() }}}</td>
                   <td>
                     <a class="btn-sm btn-default" href="{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PARENTS, "member_id" => $member->id)) }}">
                       Envoyer un e-mail
@@ -129,7 +129,7 @@
                         Adresse :
                       </div>
                       <div class="col-md-9">
-                        {{ $member->address}} <br /> {{ $member->postcode }} {{ $member->city }}
+                        {{{ $member->address}}} <br /> {{{ $member->postcode }}} {{{ $member->city }}}
                       </div>
                     </div>
                     <div class="row">
@@ -145,7 +145,7 @@
                         Sexe :
                       </div>
                       <div class="col-md-9">
-                        {{ $member->gender == 'M' ? "Garçon" : "Fille" }}
+                        {{{ $member->gender == 'M' ? "Garçon" : "Fille" }}}
                       </div>
                     </div>
                     <div class="row">
@@ -153,7 +153,7 @@
                         Date de naissance :
                       </div>
                       <div class="col-md-9">
-                        {{ $member->getHumanBirthDate() }}
+                        {{{ $member->getHumanBirthDate() }}}
                       </div>
                     </div>
                     @if ($member->quali)
@@ -162,7 +162,7 @@
                           Totem et quali :
                         </div>
                         <div class="col-md-9">
-                          {{ $member->totem }} {{ $member->quali }}
+                          {{{ $member->totem }}} {{{ $member->quali }}}
                         </div>
                       </div>
                     @endif

@@ -12,10 +12,10 @@
     <p>
       Je voudrais <a href="{{ URL::route('user_resend_validation_link') }}"
          >recevoir à nouveau lien de validation par e-mail</a>
-      ({{ $user->email }}).
+      ({{{ $user->email }}}).
     </p>
     @else {{-- User is not member --}}
-    <p>Votre adresse e-mail ({{ $user->email }}) ne fait pas partie de notre listing.</p>
+    <p>Votre adresse e-mail ({{{ $user->email }}}) ne fait pas partie de notre listing.</p>
     <p>
       Si vous êtes membre de l'unité, pour accéder à cette page, vous pouvez :
       <ul>

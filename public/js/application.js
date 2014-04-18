@@ -69,14 +69,25 @@ $().ready(function() {
   $(".clickable").bind("click", function(event) {
     // Check if the clicked element is not a child
     if ($(event.target)[0] == $(this)[0]) {
-      window.location = $(this).find('a[href]').attr('href');
+      var a = $(this).find('a[href]');
+      var inNewWindow = a.attr('target') === "_blank";
+      if (inNewWindow) {
+        window.open(a.attr('href'));
+      } else {
+        window.location = a.attr('href');
+      }
       return false;
     }
   });
   // Clickable-no-default elements trigger big target (when clicked or when a child is clicked)
   $(".clickable-no-default").bind("click", function(event) {
-    window.location = $(this).find('a[href]').attr('href');
-    return false;
+    var a = $(this).find('a[href]');
+    var inNewWindow = a.attr('target') === "_blank";
+    if (inNewWindow) {
+      window.open(a.attr('href'));
+    } else {
+      window.location = a.attr('href');
+    }
   });
 });
 

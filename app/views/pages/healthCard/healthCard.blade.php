@@ -66,7 +66,7 @@
                 @endif
               </td>
               <td>
-                {{ $member['member']->first_name }} {{ $member['member']->last_name }}
+                {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
               </td>
               <td>
                 @if (array_key_exists('health_card', $member))

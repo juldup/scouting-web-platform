@@ -32,14 +32,14 @@
   
   <div class="row">
     <div class="col-lg-12">
-      <h1>Gestion du listing {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Gestion du listing {{{ $user->currentSection->de_la_section }}}</h1>
     </div>
   </div>
   
   <div class="row">
     <div class="col-md-12 text-right">
       <p>
-        <label>Télécharger le listing simple {{ $user->currentSection->de_la_section }} :</label>
+        <label>Télécharger le listing simple {{{ $user->currentSection->de_la_section }}} :</label>
         <a class="btn-sm btn-default" href="{{ URL::route('download_listing', array('section_slug' => $user->currentSection->slug)) }}">
           PDF
         </a>
@@ -51,7 +51,7 @@
         </a>
       </p>
       <p>
-        <label>Télécharger le listing complet {{ $user->currentSection->de_la_section }} :</label>
+        <label>Télécharger le listing complet {{{ $user->currentSection->de_la_section }}} :</label>
         <a class="btn-sm btn-default" href="{{ URL::route('download_full_listing', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
           Excel
         </a>
@@ -105,10 +105,10 @@
                     Supprimer
                   </a>
                 </td>
-                <td>{{ $member->last_name }}</td>
-                <td>{{ $member->first_name }}</td>
-                <td>{{ $member->getHumanBirthDate() }}</td>
-                <td>{{ $member->year_in_section }}</td>
+                <td>{{{ $member->last_name }}}</td>
+                <td>{{{ $member->first_name }}}</td>
+                <td>{{{ $member->getHumanBirthDate() }}}</td>
+                <td>{{{ $member->year_in_section }}}</td>
               </tr>
             @endforeach
           </tbody>

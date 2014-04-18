@@ -6,7 +6,7 @@
       <h1>Vous ne serez plus importuné</h1>
       <div class="alert alert-success">
         <p>
-          Vous ne recevrez plus d'e-mails envoyés depuis ce site à l'adresse <strong>{{ $email }}</strong>.
+          Vous ne recevrez plus d'e-mails envoyés depuis ce site à l'adresse <strong>{{{ $email }}}</strong>.
         </p>
       </div>
     </div>

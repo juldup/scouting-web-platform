@@ -12,7 +12,7 @@
 <div id="{{ $form_id }}" class='well member-form-wrapper'
      @if (!Session::has('_old_input')) style="display: none;" @endif
      >
-  <legend>{{ $form_legend }}</legend>
+  <legend>{{{ $form_legend }}}</legend>
   {{ Form::open(array('files' => true, 'url' => $submit_url)) }}
     <div class="form-group">
       <div class="col-md-12">

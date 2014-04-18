@@ -29,7 +29,7 @@
     ?>
     <div class="row">
       <div class="col-md-12">
-        <h1>Fiche santé de {{ $member->first_name }} {{ $member->last_name }}</h1>
+        <h1>Fiche santé de {{{ $member->first_name }}} {{{ $member->last_name }}}</h1>
         
         @include('subviews.flashMessages')
         
@@ -44,7 +44,7 @@
               {{ Form::label('', 'Nom', array('class' => 'col-md-4 control-label')) }}
               <div class="col-md-4">
                 <p class='form-side-note'>
-                  {{ $member->first_name }} {{ $member->last_name }}
+                  {{{ $member->first_name }}} {{{ $member->last_name }}}
                 </p>
               </div>
             </div>
@@ -53,8 +53,8 @@
               {{ Form::label('', 'Adresse', array('class' => 'col-md-4 control-label')) }}
               <div class="col-md-4">
                 <p class='form-side-note'>
-                  {{ $member->address }} <br />
-                  {{ $member->postode }} {{ $member->city }}
+                  {{{ $member->address }}} <br />
+                  {{{ $member->postode }}} {{{ $member->city }}}
                 </p>
               </div>
             </div>
@@ -75,7 +75,7 @@
               {{ Form::label('', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
               <div class="col-md-4">
                 <p class='form-side-note'>
-                  {{ $member->getPersonalPhone() }}
+                  {{{ $member->getPersonalPhone() }}}
                 </p>
               </div>
             </div>

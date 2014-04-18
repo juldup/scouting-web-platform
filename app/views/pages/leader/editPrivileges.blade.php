@@ -24,7 +24,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Privilèges des animateurs {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Privilèges des animateurs {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -37,21 +37,21 @@
             <th></th>
             @foreach ($leaders as $leader)
               <th>
-                {{ $leader->leader_name }}
+                {{{ $leader->leader_name }}}
               </th>
             @endforeach
           </tr>
           @foreach ($privilege_list as $category_name => $category_privileges)
             <tr class="privilege-category">
               <th>
-                {{ $category_name }}
+                {{{ $category_name }}}
               </th>
               @foreach ($leaders as $leader)
                 <th>
-                  <a class="btn-sm btn-default privileges-check-all" href="" data-category="{{ $category_name }}" data-leader-id="{{ $leader->id }}" >
+                  <a class="btn-sm btn-default privileges-check-all" href="" data-category="{{{ $category_name }}}" data-leader-id="{{ $leader->id }}" >
                     <span class="glyphicon glyphicon-check"></span>
                   </a>
-                  <a class="btn-sm btn-default privileges-uncheck-all" href="" data-category="{{ $category_name }}" data-leader-id="{{ $leader->id }}" >
+                  <a class="btn-sm btn-default privileges-uncheck-all" href="" data-category="{{{ $category_name }}}" data-leader-id="{{ $leader->id }}" >
                     <span class="glyphicon glyphicon-unchecked"></span>
                   </a>
                 </th>
@@ -71,7 +71,7 @@
               ?>
               <tr>
                 <td>
-                  {{ str_replace("#lasection", $lasection, str_replace("#delasection", $delasection, $privilege['text'])) }}
+                  {{{ str_replace("#lasection", $lasection, str_replace("#delasection", $delasection, $privilege['text'])) }}}
                 </td>
                 @foreach ($leaders as $leader)
                   <th>
@@ -79,7 +79,7 @@
                             || ($sOrU == "S" && $privilege_table[$privilege['id']][$leader->id]['S']['state']); ?>
                     <?php $disabled = !$privilege_table[$privilege['id']][$leader->id][$sOrU]['can_change'];?>
                       <input class="privilege-checkbox" type="checkbox" @if ($checked) checked @endif @if ($disabled) disabled @endif
-                             data-privilege-id="{{ $privilege['id'] }}" data-category="{{ $category_name }}" data-scope="{{ $sOrU }}" data-leader-id="{{ $leader->id }}" />
+                             data-privilege-id="{{ $privilege['id'] }}" data-category="{{{ $category_name }}}" data-scope="{{ $sOrU }}" data-leader-id="{{ $leader->id }}" />
                   </th>
                 @endforeach
               </tr>

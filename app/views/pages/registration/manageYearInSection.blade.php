@@ -28,7 +28,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Changer l'année des scouts {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Changer l'année des scouts {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -49,10 +49,10 @@
             @foreach ($active_members as $member)
               <tr class="member-row" data-member-id="{{ $member->id }}">
                 <th class="space-on-right">
-                  {{ $member->first_name }} {{ $member->last_name }}
+                  {{{ $member->first_name }}} {{{ $member->last_name }}}
                 </th>
                 <td class="space-on-right">
-                  {{ Helper::dateToHuman($member->birth_date) }}
+                  {{{ Helper::dateToHuman($member->birth_date) }}}
                 </td>
                 <td>
                   <a class='btn-sm btn-default decrease-year-button' href="">
@@ -60,7 +60,7 @@
                   </a>
                 </td>
                 <td>
-                  <span class='member-year'>{{ $member->year_in_section }}</span>
+                  <span class='member-year'>{{{ $member->year_in_section }}}</span>
                 </td>
                 <td>
                   <a class='btn-sm btn-default increase-year-button' href="">

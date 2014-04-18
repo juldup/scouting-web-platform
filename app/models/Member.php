@@ -95,13 +95,13 @@ class Member extends Eloquent {
   public function getAllEmailAddresses($separator = " - ", $includePersonal = true) {
     $emails = "";
     if ($this->email1)
-      $emails .= $this->email1;
+      $emails .= Helper::sanitizeForHTML($this->email1);
     if ($this->email2)
-      $emails .= ($emails ? $separator : "") . $this->email2;
+      $emails .= ($emails ? $separator : "") . Helper::sanitizeForHTML($this->email2);
     if ($this->email3)
-      $emails .= ($emails ? $separator : "") . $this->email3;
+      $emails .= ($emails ? $separator : "") . Helper::sanitizeForHTML($this->email3);
     if ($this->email_member && $includePersonal)
-      $emails .= ($emails ? $separator : "") . $this->email_member . " (personnel)";
+      $emails .= ($emails ? $separator : "") . Helper::sanitizeForHTML($this->email_member) . " (personnel)";
     return $emails;
   }
   

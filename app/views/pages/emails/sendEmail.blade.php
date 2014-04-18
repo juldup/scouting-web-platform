@@ -28,7 +28,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Envoi d'un e-mail aux parents {{ $user->currentSection->de_la_section }}</h1>
+      <h1>Envoi d'un e-mail aux parents {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -126,7 +126,7 @@
                                 <p>
                                   {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, true, array('class' => 'recipient-checkbox')) }}
                                   &nbsp;&nbsp;
-                                  {{ $member['member']->first_name }} {{ $member['member']->last_name }}
+                                  {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
                                 </p>
                               </div>
                             @endforeach
