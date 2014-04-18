@@ -349,14 +349,48 @@
 @endif
 
 @if ($help == 'parameters')
-  <p>Cette page permet de paramètriser le site. Tu peux&nbsp;:
+  <p>Cette page permet de paramétriser le site. Tu peux&nbsp;:
     <ul>
-      <li>Modifier le prix des cotisations</li>
-      <li>Désactiver les inscriptions pour l'année suivante (n'oublie pas de les réactiver au moment opportun)</li>
-      <li>Décider, pour chaque page du site, si elle est accessible ou non (si non, elle disparaitra du menu)</li>
-      <li>Modifier la liste des catégories de documents à télécharger. Il y a toujours une catégorie "Divers".</li>
-      <li>Modifier le nom, le sigle, le numéro de compte et le logo de l'unité</li>
-      <li>Modifier l'adresse e-mail du webmaster et la configuration de l'envoi d'e-mails</li>
+      <li>Modifier le prix des cotisations. Ces valeurs remplaceront automatiquement les occurences de
+        "(PRIX UN ENFANT)", "(PRIX UN ANIMATEUR)", "(PRIX DEUX ENFANTS)", "(PRIX DEUX ANIMATEURS)", "(PRIX TROIS ENFANTS)" et "(PRIX TROIS ANIMATEURS)" dans
+        le texte de la page d'inscription.
+      </li>
+      <li>
+        Désactiver les inscriptions dans l'unité (n'oublie pas de les réactiver au moment opportun).
+      </li>
+      <li>
+        Décider, pour chaque page du site, si elle est accessible ou non (si non, elle disparaitra du menu). <br />
+        Le fait que le calendrier soit téléchargeable en PDF est également une option.
+      </li>
+      <li>
+        Modifier la liste des catégories de documents à télécharger.
+        Il y a toujours une catégorie "Divers".
+        Si la catégorie s'appelle "Pour les scouts", le nom de la catégorie sera remplacée par "Pour les baladins",
+        "Pour les louveteaux", "Pour les éclaireurs" ou "Pour les pionniers" selon la section.
+      </li>
+      <li>
+        Modifier les données de l'unité&nbsp;:
+        <ul>
+          <li><strong>Nom de l'unité</strong>&nbsp;: Le nom complet de l'unité</li>
+          <li><strong>Sigle de l'unité</strong>&nbsp;: Le nom court de l'unité (p.ex. SV001)</li>
+          <li><strong>N° de compte</strong>&nbsp;: Le numéro de compte en banque de l'unité pour les paiements de cotisation</li>
+          <li><strong>Logo du site</strong>&nbsp;: Le logo qui apparaitra en haut du site</li>
+        </ul>
+      </li>
+      <li>
+        Modifier l'adresse e-mail du webmaster et la configuration de l'envoi d'e-mails&nbsp;:
+        <ul>
+          <li><strong>Adresse e-mail du webmaster</strong></li>
+          <li><strong>Adresse e-mail du site</strong>&nbsp;: Adresse e-mail depuis laquelle partiront les e-mails envoyés depuis le site
+            (à l'exception des adresses vérifiées (voir plus bas))</li>
+          <li><strong>Configuration SMTP</strong>&nbsp;: Paramètres SMTP de l'envoi des e-mails (compatible avec <a href="http://aws.amazon.com/fr/ses/">AWS SES</a>)</li>
+          <li>
+            <strong>Adresses e-mail vérifiées</strong>&nbsp;: Les e-mails envoyés depuis ces adresses garderont leur champ "from" original.
+            Les autres e-mails seront envoyés depuis l'adresse e-mail du site, et auront leur expéditeur original dans le champ "reply-to".
+            Il est conseillé de s'arranger pour que les adresses e-mail des sections et de l'unité soient vérifiées.
+          </li>
+        </ul>
+      </li>
     </ul>
   </p>
 @endif

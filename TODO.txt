@@ -1,16 +1,16 @@
 TODO list
 
 BIG TASKS:
-- Help for leaders + task list
+- Update leader help
 - Leader archives (+ access for former leaders)
 
 SMALL TASKS:
 - Change 'manage' to 'edit' everywhere or the other way around
-- Sending e-mails : use default address if sender address not in safe list
 - Solve TODOs in import-old-data script
 - Check TODOs
 - Health card auto-deletion + reminder e-mail
 - Switch to European aws ses server
+- Set page titles
 
 AT THE END:
 - Layout for smartphones and tablets
@@ -21,6 +21,7 @@ AT THE END:
 - Check access control for each page
 
 OPTIONAL/LATER:
+- Leader todo list
 - New website configuration helper
 - List recent changes
 - Send e-mail: include archived leaders (+ old members ?)
@@ -28,8 +29,11 @@ OPTIONAL/LATER:
 - Section icons
 - Forbidden screen custom messages
 - Export listing (?)
+- Listing snapshots (?)
 - Flag new items (news, documents, e-mails, photos)
 - Birthdays in calendar
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members
 - Export leaders' e-mail addresses
 - Manage last visit and show 'new since last visit'
+- Changer le look and feel du site
+- Forum ?

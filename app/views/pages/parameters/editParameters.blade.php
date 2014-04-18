@@ -217,7 +217,7 @@
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('default_email_from_address', "Adresse e-mail d'envoi par défaut") }}
+              {{ Form::label('default_email_from_address', "Adresse e-mail du site") }}
             </div>
             <div class="col-sm-5">
               {{ Form::text('default_email_from_address', Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), array("class" => "form-control")) }}
@@ -261,6 +261,42 @@
             </div>
             <div class="col-sm-5">
               {{ Form::text('smtp_security', Parameter::get(Parameter::$SMTP_SECURITY), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('email_safe_list[]', "Liste des adresses e-mail vérifiées") }}
+            </div>
+            <div class="col-sm-5">
+              @foreach ($safe_emails as $safe_email)
+                <div class="row safe-email-row">
+                  <div class="col-sm-10">
+                    {{ Form::text('email_safe_list[]', $safe_email, array("class" => "form-control safe-email")) }}
+                  </div>
+                  <div class="col-sm-2">
+                    <p class="form-side-note">
+                      <span class="glyphicon glyphicon-remove safe-email-remove"></span>
+                    </p>
+                  </div>
+                </div>
+              @endforeach
+              <div class="row safe-email-row safe-email-row-prototype" style="display: none;">
+                <div class="col-sm-10">
+                  {{ Form::text('email_safe_list[]', "", array("class" => "form-control safe-email")) }}
+                </div>
+                <div class="col-sm-2">
+                  <p class="form-side-note">
+                    <span class="glyphicon glyphicon-remove safe-email-remove"></span>
+                  </p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-sm-2 col-sm-offset-10">
+                  <p class="form-side-note">
+                    <span class="glyphicon glyphicon-plus safe-email-add"></span>
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           

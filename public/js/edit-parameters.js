@@ -22,4 +22,14 @@ $().ready(function() {
     newElement.removeClass('document-category-prototype');
     newElement.show();
   });
+  // Verified e-mail senders
+  $('.safe-email-remove').click(function() {
+    $(this).closest(".safe-email-row").remove();
+  })
+  $('.safe-email-add').click(function() {
+    var newElement = $('.safe-email-row-prototype').clone(true);
+    $(this).closest(".row").before(newElement);
+    newElement.removeClass('safe-email-row-prototype');
+    newElement.show();
+  });
 });

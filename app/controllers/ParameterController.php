@@ -20,6 +20,7 @@ class ParameterController extends BaseController {
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
         'prices' => $prices,
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
+        'safe_emails' => explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
     ));
   }
   
@@ -99,6 +100,20 @@ class ParameterController extends BaseController {
       Parameter::set(Parameter::$SMTP_USERNAME, Input::get('smtp_username'));
       Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
       Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
+    } catch (Exception $e) {
+      $error = true;
+    }
+    // Save verified e-mail sender list
+    $verifiedSendersArray = Input::get('email_safe_list');
+    $verifiedSenders = "";
+    foreach ($verifiedSendersArray as $verifiedSender) {
+      if ($verifiedSender && strpos($verifiedSenders, ";") === false) {
+        if ($verifiedSenders) $verifiedSenders .= ";";
+        $verifiedSenders .= strtolower($verifiedSender);
+      }
+    }
+    try {
+      Parameter::set(Parameter::$VERIFIED_EMAIL_SENDERS, $verifiedSenders);
     } catch (Exception $e) {
       $error = true;
     }

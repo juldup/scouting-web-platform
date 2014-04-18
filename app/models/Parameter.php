@@ -48,8 +48,10 @@ class Parameter extends Eloquent {
   public static $SMTP_USERNAME = "Smtp username";
   public static $SMTP_PASSWORD = "Smtp password";
   public static $SMTP_SECURITY  = "Smtp security";
+  public static $VERIFIED_EMAIL_SENDERS = "Verified e-mail senders";
   
   private static $parameters = null;
+  private static $verifiedEmailSenders = null;
   
   private static function fetchParameters() {
     $parameters = self::all();
@@ -87,6 +89,13 @@ class Parameter extends Eloquent {
     if (self::$parameters != null) {
       self::$parameters[$parameterName] = $value;
     }
+  }
+  
+  public static function isVerifiedSender($emailAddress) {
+    if (!self::$verifiedEmailSenders) {
+      self::$verifiedEmailSenders = explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS));
+    }
+    return $emailAddress && in_array(strtolower($emailAddress), self::$verifiedEmailSenders);
   }
   
 }

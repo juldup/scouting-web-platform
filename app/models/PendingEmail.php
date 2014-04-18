@@ -14,7 +14,12 @@ class PendingEmail extends Eloquent {
   public function send() {
     $message = Swift_Message::newInstance();
     $message->setSubject($this->subject);
-    $message->setFrom($this->sender_email, $this->sender_name ? $this->sender_name : null);
+    if (Parameter::isVerifiedSender($this->sender_email)) {
+      $message->setFrom($this->sender_email, $this->sender_name ? $this->sender_name : null);
+    } else {
+      $message->setFrom(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), $this->sender_name ? $this->sender_name : null);
+      $message->setReplyTo($this->sender_email, $this->sender_name ? $this->sender_name : null);
+    }
     $message->setTo($this->recipient);
     if ($this->section_email_id) {
       $email = Email::find($this->section_email_id);

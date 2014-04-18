@@ -52,7 +52,7 @@ class MenuComposer {
     if (Parameter::get(Parameter::$SHOW_LISTING))
       $animationCategory["Listing des scouts"] = 'listing';
     $animationCategory["divider_1"] = 'divider';
-    $animationCategory["Nouveau sur le site"] = 'view_recent_changes';
+    $animationCategory["Changements sur le site"] = 'view_recent_changes';
     if (count($animationCategory)) {
       $menuItems['Animation'] = $animationCategory;
     }
