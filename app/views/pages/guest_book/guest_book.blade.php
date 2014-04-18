@@ -46,29 +46,29 @@
              @if (!Session::has('_old_input')) style="display: none;" @endif
              >
           {{ Form::open(array('url' => URL::route('guest_book_submit'))) }}
-          <legend>
-            Nouveau message pour le livre d'or
-          </legend>
-          <div class="form-group">
-            {{ Form::label('author', 'Qui êtes-vous ?', array('class' => 'control-label col-md-2')) }}
-            <div class="col-md-8">
-              {{ Form::text('author', null, array('class' => 'form-control', 'placeholder' => "Votre nom, qui vous êtes par rapport à l'unité")) }}
+            <legend>
+              Nouveau message pour le livre d'or
+            </legend>
+            <div class="form-group">
+              {{ Form::label('author', 'Qui êtes-vous ?', array('class' => 'control-label col-md-2')) }}
+              <div class="col-md-8">
+                {{ Form::text('author', null, array('class' => 'form-control', 'placeholder' => "Votre nom, qui vous êtes par rapport à l'unité")) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            {{ Form::label('body', 'Message', array('class' => 'control-label col-md-2')) }}
-            <div class="col-md-8">
-              {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre message")) }}
+            <div class="form-group">
+              {{ Form::label('body', 'Message', array('class' => 'control-label col-md-2')) }}
+              <div class="col-md-8">
+                {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre message")) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-8 col-md-offset-2">
-              {{ Form::submit('Soumettre', array('class' => 'btn btn-primary')) }}
-              <a href="" class="btn btn-default guest-book-cancel">
-                Annuler
-              </a>
+            <div class="form-group">
+              <div class="col-md-8 col-md-offset-2">
+                {{ Form::submit('Soumettre', array('class' => 'btn btn-primary')) }}
+                <a href="" class="btn btn-default guest-book-cancel">
+                  Annuler
+                </a>
+              </div>
             </div>
-          </div>
           {{ Form::close() }}
         </div>
       </div>

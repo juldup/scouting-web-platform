@@ -46,23 +46,23 @@
       <div class="col-md-12">
         <div class="form-horizontal well">
           {{ Form::open(array('url' => URL::route('suggestions_submit'))) }}
-          <legend>
-            Nouvelle suggestion
-          </legend>
-          <div class="form-group">
-            <div class="col-md-10 col-md-offset-1">
-              {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre suggestion")) }}
+            <legend>
+              Nouvelle suggestion
+            </legend>
+            <div class="form-group">
+              <div class="col-md-10 col-md-offset-1">
+                {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre suggestion")) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-10 col-md-offset-1">
-              <p>
-                Attention ! Votre suggestion sera visible publiquement. Pour envoyer un message privé, visitez
-                la <a href="{{ URL::route('contacts') }}">page de contacts</a>.
-              </p>
-              {{ Form::submit('Soumettre', array('class' => "btn btn-primary")) }}
+            <div class="form-group">
+              <div class="col-md-10 col-md-offset-1">
+                <p>
+                  Attention ! Votre suggestion sera visible publiquement. Pour envoyer un message privé, visitez
+                  la <a href="{{ URL::route('contacts') }}">page de contacts</a>.
+                </p>
+                {{ Form::submit('Soumettre', array('class' => "btn btn-primary")) }}
+              </div>
             </div>
-          </div>
           {{ Form::close() }}
         </div>
       </div>
@@ -119,11 +119,11 @@
                 <div class="form-horizontal suggestion-edit-response" style="display:none;">
                   {{ Form::open(array('url' => URL::route('edit_suggestions_submit_response', array('suggestion_id' => $suggestion->id)))) }}
                     <div class="form-group">
-                    {{ Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) }}
+                      {{ Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) }}
                     </div>
-                  <div class="form-group">
-                    {{ Form::submit('Enregistrer', array('class' => "btn btn-primary")) }}
-                  </div>
+                    <div class="form-group">
+                      {{ Form::submit('Enregistrer', array('class' => "btn btn-primary")) }}
+                    </div>
                   {{ Form::close() }}
                 </div>
               @endif

@@ -13,19 +13,23 @@
   </div>
   
   @if ($status == 'normal')
-    <div class="row">
-      <div class='col-lg-12'>
-        <p>Entrez votre nouveau mot de passe.</p>
-        {{ Form::open() }}
+    {{ Form::open() }}
+      <div class="form-group">
+        <div class='col-lg-12'>
+          <p>Entrez votre nouveau mot de passe.</p>
           {{ Form::label('email', 'Mot de passe :') }}
-          {{ Form::password('password', '', array('size' => 35)) }}
-          {{ Form::submit('Envoyer') }}
-        {{ Form::close() }}
-        @if ($errors->first('password'))
-          <p class='alert alert-danger'>{{ $errors->first('password') }}</p>
-        @endif
+          {{ Form::password('password', array('class' => 'form-control large')) }}
+          {{ Form::submit('Changer', array('class' => 'btn btn-primary')) }}
+        </div>
       </div>
-    </div>
+      <div class="form-group">
+        <div class='col-lg-12'>
+          @if ($errors->first('password'))
+            <p class='alert alert-danger'>{{ $errors->first('password') }}</p>
+          @endif
+        </div>
+      </div>
+          {{ Form::close() }}
   @elseif ($status == 'unknown')
     <div class="row">
       <div class='col-lg-12'>

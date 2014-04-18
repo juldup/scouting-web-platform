@@ -15,7 +15,6 @@ SMALL TASKS:
 AT THE END:
 - Layout for smartphones and tablets
 - Reorganize javascript files
-- Make sure all forms are closed
 - Comment code
 - Escape all user data with {{{ }}}
 - Check access control for each page

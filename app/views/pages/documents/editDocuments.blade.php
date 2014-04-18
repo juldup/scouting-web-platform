@@ -98,10 +98,6 @@
               <a class='btn btn-default' href="javascript:dismissDocumentForm()">Fermer</a>
             </div>
           </div>
-          <p>
-            
-          </p>
-
         {{ Form::close() }}
       </div>
       
