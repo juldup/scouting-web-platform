@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Page inexistante
+@stop
+
 @section('content')
   <div class="row">
     <div class="col-md-12">

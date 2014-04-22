@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Livre d'or
+@stop
+
 @section('additional_javascript')
   <script src="{{ asset('js/guest-book.js') }}"></script>
 @stop

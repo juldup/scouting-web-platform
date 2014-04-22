@@ -34,6 +34,10 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('send_section_email'),
                 'help' => 'emails',
             ),
+            "Fiches santé" => array(
+                'url' => URL::route('manage_health_cards'),
+                'help' => 'fiches-sante',
+            ),
             "Trésorerie" => array(
                 'url' => URL::route('accounting'),
                 'help' => 'tresorerie',

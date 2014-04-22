@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Nouvelles {{{ $user->currentSection->de_la_section }}}
+@stop
+
 @section('back_links')
   @if ($showing_archives)
     <p>

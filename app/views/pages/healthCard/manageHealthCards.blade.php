@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-  Fiche santé
+  Gestion des fiches santé
 @stop
 
 @section('head')

@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Liens utiles
+@stop
+
 @section('forward_links')
   @if ($can_edit)
     <p>

@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  E-mails {{{ $user->currentSection->de_la_section }}}
+@stop
+
 @section('back_links')
   @if ($showing_archives)
     <p>

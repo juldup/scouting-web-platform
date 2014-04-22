@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-  Gestion des photos
+  Gestion de l'album "{{{ $album->name }}}"
 @stop
 
 @section('additional_javascript')

@@ -10,7 +10,6 @@ SMALL TASKS:
 - Check TODOs
 - Health card auto-deletion + reminder e-mail
 - Switch to European aws ses server
-- Set page titles
 
 AT THE END:
 - Layout for smartphones and tablets

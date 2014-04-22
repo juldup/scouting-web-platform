@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Paramètres du site
+@stop
+
 @section('additional_javascript')
   <script src="{{ asset('js/edit-parameters.js') }}"></script>
 @stop

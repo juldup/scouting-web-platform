@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Envoi d'un e-mail
+@stop
+
 @section('back_links')
 <p>
   <a href="{{ Session::get('personal_email_referrer') }}">

@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Connexion au site
+@stop
+
 @section('head')
   <meta name="robots" content="noindex">
 @stop

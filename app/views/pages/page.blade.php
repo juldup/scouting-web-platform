@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  {{{ $page_title ? $page_title : Parameter::get(Parameter::$UNIT_LONG_NAME) }}}
+@stop
+
 @section('forward_links')
   {{-- Link to management --}}
   @if ($can_edit)

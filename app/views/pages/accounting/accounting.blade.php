@@ -1,7 +1,7 @@
 @extends('base')
 
-@section('html_parameters')
-  
+@section('title')
+  Trésorerie
 @stop
 
 @section('head')

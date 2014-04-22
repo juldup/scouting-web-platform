@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-  Photos
+  Photos {{{ $user->currentSection->de_la_section }}}
 @stop
 
 @section('additional_javascript')

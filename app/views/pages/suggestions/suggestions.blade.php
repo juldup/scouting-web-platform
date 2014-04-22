@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Suggestions
+@stop
+
 @section('additional_javascript')
   @if ($managing)
     <script src="{{ asset('js/edit-suggestions.js') }}"></script>

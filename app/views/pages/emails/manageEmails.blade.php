@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Gestion des e-mails
+@stop
+
 @section('back_links')
   <p>
     <a href="{{ URL::route('emails') }}">

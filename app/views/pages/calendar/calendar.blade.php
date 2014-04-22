@@ -1,7 +1,11 @@
 @extends('base')
 
 @section('title')
-  Calendrier
+  @if ($editing)
+    Gestion du calendrier
+  @else
+    Calendrier {{{ $user->currentSection->de_la_section }}}
+  @endif
 @stop
 
 @section('additional_javascript')
@@ -56,7 +60,7 @@
   <div class="row">
     <div class="col-md-12">
       @if ($editing)
-        <h1>Modification du calendrier {{{ $user->currentSection->de_la_section }}}</h1>
+        <h1>Gestion du calendrier {{{ $user->currentSection->de_la_section }}}</h1>
       @else
         <h1>Calendrier {{{ $user->currentSection->de_la_section }}}</h1>
       @endif

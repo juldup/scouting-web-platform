@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-  Listing
+  Listing {{{ $user->currentSection->de_la_section }}}
 @stop
 
 @section('head')

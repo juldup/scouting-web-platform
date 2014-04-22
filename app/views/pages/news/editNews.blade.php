@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Gestion des nouvelles
+@stop
+
 @section('additional_javascript')
   <script src="{{ asset('js/edit-news.js') }}"></script>
   <script>

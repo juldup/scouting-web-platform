@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Utilisateurs du site
+@stop
+
 @section('additional_javascript')
   <script src="{{ asset('js/edit-users.js') }}"></script>
 @stop

@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Gestion des liens utiles
+@stop
+
 @section('additional_javascript')
   <script src="{{ asset('js/edit-links.js') }}"></script>
   <script>

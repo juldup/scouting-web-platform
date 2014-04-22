@@ -1,5 +1,9 @@
 @extends("base")
 
+@section('title')
+  Accès privé
+@stop
+
 @section('head')
   <meta name="robots" content="noindex">
 @stop

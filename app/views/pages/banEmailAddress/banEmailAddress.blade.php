@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Désinscrire votre adresse e-mail
+@stop
+
 @section('content')
   <div class="row">
     <div class="col-md-12">

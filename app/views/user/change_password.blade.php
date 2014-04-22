@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Changer mon mot de passe
+@stop
+
 @section('head')
   <meta name="robots" content="noindex">
 @stop

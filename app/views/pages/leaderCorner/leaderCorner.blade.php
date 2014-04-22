@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Coin des animateurs
+@stop
+
 @section('additional_javascript')
   <script src="{{ asset('js/leader-corner.js') }}"></script>
 @stop

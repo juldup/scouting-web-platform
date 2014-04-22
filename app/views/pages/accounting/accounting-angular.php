@@ -1,7 +1,3 @@
-
-
-
-
 <div ng-controller="AccountingController" class="accounting">
   <div class="row">
     <div class="col-sm-6 col-xs-8 text-right">

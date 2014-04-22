@@ -1,5 +1,17 @@
 @extends('base')
 
+@section('title')
+  @if ($action == 'email')
+    Changer mon adresse e-mail
+  @elseif ($action == 'password')
+    Changer mon mot de passe
+  @elseif ($action == 'section')
+    Changer ma section par défaut
+  @else
+    Mon compte d'utilisateur
+  @endif
+@stop
+
 @section('head')
   <meta name="robots" content="noindex">
 @stop

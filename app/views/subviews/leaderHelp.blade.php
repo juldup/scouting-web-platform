@@ -22,6 +22,11 @@
   <p>Chaque section possède un onglet (voir en haut de la page).  Changer d'onglet adapte le site à la section, tant pour les visiteurs que pour les animateurs.  En particulier, les données modifiables sont limitées à celles de ta section, à moins que tu n'aies des privilèges spéciaux.</p>
 @endif
 
+@if ($help == 'fiches-sante')
+  <legend>Fiches santé @yield('back_to_top')</legend>
+  {{-- TODO --}}
+@endif
+
 @if ($help == 'calendrier')
   <legend>Calendrier @yield('back_to_top')</legend>
   <p>Cette page permet d'ajouter/modifier/supprimer des événements dans le calendrier.  Pour modifier le calendrier d'une section, il faut sélectionner l'onglet de la section.</p>

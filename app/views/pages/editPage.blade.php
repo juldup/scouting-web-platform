@@ -1,5 +1,9 @@
 @extends('base')
 
+@section('title')
+  Modifier la page "{{{ $page_title }}}"
+@stop
+
 @section('back_links')
   <p>
     <a href='{{ $original_page_url }}'>

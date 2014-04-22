@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('title')
-  Télécharger
+  Documents {{{ $user->currentSection->de_la_section }}}
 @stop
 
 @section('head')
