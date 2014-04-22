@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-change-section.js"></script>
+  <script src="{{ asset('js/edit-change-section.js') }}"></script>
 @stop
 
 @section('back_links')

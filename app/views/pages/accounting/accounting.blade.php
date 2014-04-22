@@ -43,9 +43,9 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/libs/jquery-ui-1.10.4.js"></script>
-  <script src="{{ URL::to('/') }}/js/libs/angular-1.2.15.min.js"></script>
-  <script src="{{ URL::to('/') }}/js/libs/angular-ui-0.4.0.js"></script>
+  <script src="{{ asset('js/libs/jquery-ui-1.10.4.js') }}"></script>
+  <script src="{{ asset('js/libs/angular-1.2.15.min.js') }}"></script>
+  <script src="{{ asset('js/libs/angular-ui-0.4.0.js') }}"></script>
   <script>
     var commitAccountingChangesURL = "{{ URL::route('ajax-accounting-commit-changes', array('section_slug' => $user->currentSection->slug, 'year' => $year))}}";
     var inheritanceCash = {{ $inherit_cash }};
@@ -75,7 +75,7 @@
     @endforeach
     ];
   </script>
-  <script src="{{ URL::to('/') }}/js/accounting-angular.js"></script>
+  <script src="{{ asset('js/accounting-angular.js') }}"></script>
 @stop
 
 @section('content')

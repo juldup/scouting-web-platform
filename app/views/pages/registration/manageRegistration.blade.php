@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-registration.js"></script>
+  <script src="{{ asset('js/edit-registration.js') }}"></script>
   <script>
     var registrations = new Array();
     @foreach ($registrations as $member)

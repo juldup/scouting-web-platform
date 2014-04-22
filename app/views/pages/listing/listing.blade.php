@@ -9,7 +9,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-members.js"></script>
+  <script src="{{ asset('js/edit-members.js') }}"></script>
   <script>
     var members = new Array();
     @foreach ($editable_members as $member)

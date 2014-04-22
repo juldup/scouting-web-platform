@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/photos.js"></script>
+  <script src="{{ asset('js/photos.js') }}"></script>
 @stop
 
 @section('back_links')

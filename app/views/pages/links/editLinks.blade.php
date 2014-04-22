@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-links.js"></script>
+  <script src="{{ asset('js/edit-links.js') }}"></script>
   <script>
     var links = new Array();
     @foreach ($links as $link)

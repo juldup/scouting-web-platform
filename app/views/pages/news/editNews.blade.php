@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-news.js"></script>
+  <script src="{{ asset('js/edit-news.js') }}"></script>
   <script>
     var currentSection = {{ $user->currentSection->id }};
     var news = new Array();

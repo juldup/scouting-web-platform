@@ -9,8 +9,8 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-page.js"></script>
-  <script src="{{ URL::to('/') }}/ckeditor/ckeditor.js"></script>
+  <script src="{{ asset('js/edit-page.js') }}"></script>
+  <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
   <script>
     CKEDITOR.replace('page_body', {
       language: 'fr',
@@ -26,7 +26,7 @@
       @endforeach
     ];
   </script>
-  <script src="{{ URL::to('/') }}/js/libs/upclick.js"></script>
+  <script src="{{ asset('js/libs/upclick.js') }}"></script>
 @stop
 
 @section('content')

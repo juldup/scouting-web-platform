@@ -9,8 +9,8 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/send-section-email.js"></script>
-  <script src="{{ URL::to('/') }}/ckeditor/ckeditor.js"></script>
+  <script src="{{ asset('js/send-section-email.js') }}"></script>
+  <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
   <script>
     CKEDITOR.replace('body', {
       language: 'fr',

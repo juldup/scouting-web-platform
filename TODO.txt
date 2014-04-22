@@ -2,9 +2,9 @@ TODO list
 
 BIG TASKS:
 - Update leader help
-- Leader archives (+ access for former leaders)
 
 SMALL TASKS:
+- Leader archives: access for former leaders
 - Change 'manage' to 'edit' everywhere or the other way around
 - Solve TODOs in import-old-data script
 - Check TODOs
@@ -14,12 +14,12 @@ SMALL TASKS:
 
 AT THE END:
 - Layout for smartphones and tablets
-- Reorganize javascript files
 - Comment code
 - Check access control for each page
 - Remove test data from migration
 
 OPTIONAL/LATER:
+- Reorganize javascript files
 - Leader todo list
 - New website configuration helper
 - List recent changes

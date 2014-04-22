@@ -5,9 +5,9 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/reorder-list.js"></script>
-  <script src="{{ URL::to('/') }}/js/edit-album.js"></script>
-  <script src="{{ URL::to('/') }}/js/editable-text.js"></script>
+  <script src="{{ asset('js/reorder-list.js') }}"></script>
+  <script src="{{ asset('js/edit-album.js') }}"></script>
+  <script src="{{ asset('js/editable-text.js') }}"></script>
   <script>
     var savePhotoOrderURL = "{{ URL::route('ajax_change_photo_order') }}";
     var deletePhotoURL = "{{ URL::route('ajax_delete_photo') }}";
@@ -48,8 +48,8 @@
               <td class="photo-data-column">
                 <div>
                   <strong>Tourner: </strong>
-                  <img class="rotate-icon rotate-anticlockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-anticlockwise.png" />
-                  <img class="rotate-icon rotate-clockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-clockwise.png" />
+                  <img class="rotate-icon rotate-anticlockwise-button" src="{{ asset('images/photos/rotate-anticlockwise.png') }}" />
+                  <img class="rotate-icon rotate-clockwise-button" src="{{ asset('images/photos/rotate-clockwise.png') }}" />
                 </div>
                 <div>
                   <span class="editable-text"
@@ -74,7 +74,7 @@
           <tr style="display: none;" id="upload-row-prototype" class="photo-row">
             <td class="photo-thumnail-column">
               <div class="photo-thumbnail">
-                <img src="{{ URL::to('/') }}/images/loading.gif" />
+                <img src="{{ asset('images/loading.gif') }}" />
               </div>
             </td>
             <td></td>
@@ -89,8 +89,8 @@
             <td class="photo-data-column">
               <div>
                 <strong>Tourner: </strong>
-                <img class="rotate-icon rotate-anticlockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-anticlockwise.png" />
-                <img class="rotate-icon rotate-clockwise-button" src="{{ URL::to('/') }}/images/photos/rotate-clockwise.png" />
+                <img class="rotate-icon rotate-anticlockwise-button" src="{{ asset('images/photos/rotate-anticlockwise.png') }}" />
+                <img class="rotate-icon rotate-clockwise-button" src="{{ asset('images/photos/rotate-clockwise.png') }}" />
               </div>
               <div>
                 <span class="editable-text"

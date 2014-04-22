@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/registration-form.js"></script>
+  <script src="{{ asset('js/registration-form.js') }}"></script>
 @stop
 
 @section('forward_links')

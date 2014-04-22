@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-leaders.js"></script>
+  <script src="{{ asset('js/edit-leaders.js') }}"></script>
   <script>
     var currentSection = {{ $user->currentSection->id }};
     var leaders = new Array();

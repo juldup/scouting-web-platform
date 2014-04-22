@@ -17,7 +17,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-emails.js"></script>
+  <script src="{{ asset('js/edit-emails.js') }}"></script>
 @stop
 
 @section('content')

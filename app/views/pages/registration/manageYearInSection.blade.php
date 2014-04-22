@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-year-in-section.js"></script>
+  <script src="{{ asset('js/edit-year-in-section.js') }}"></script>
   <script>
     var changeYearURL = "{{ URL::route('ajax_update_year_in_section') }}";
     var currentSectionId = {{ $user->currentSection->id }};

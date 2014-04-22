@@ -1,7 +1,7 @@
 @extends('base')
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/leader-corner.js"></script>
+  <script src="{{ asset('js/leader-corner.js') }}"></script>
 @stop
 
 @section('content')

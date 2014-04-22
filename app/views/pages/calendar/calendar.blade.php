@@ -5,7 +5,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/edit-calendar.js"></script>
+  <script src="{{ asset('js/edit-calendar.js') }}"></script>
   <script>
     var currentMonth = {{{ $month }}};
     var currentYear = {{{ $year }}};

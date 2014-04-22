@@ -6,14 +6,14 @@
 
 @section('head')
   <meta name="robots" content="noindex">
-  <link media="all" type="text/css" rel='stylesheet' href="{{ URL::to('/') }}/css/bootstrap-colorpicker.min.css"></link>
+  <link media="all" type="text/css" rel='stylesheet' href="{{ asset('css/bootstrap-colorpicker.min.css') }}"></link>
 @stop
 
 @section('additional_javascript')
-  <script src="{{ URL::to('/') }}/js/libs/bootstrap-colorpicker.min.js"></script>
-  <script src="{{ URL::to('/') }}/js/edit-sections.js"></script>
+  <script src="{{ asset('js/libs/bootstrap-colorpicker.min.js') }}"></script>
+  <script src="{{ asset('js/edit-sections.js') }}"></script>
   @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
-    <script src="{{ URL::to('/') }}/js/reorder-list.js"></script>
+    <script src="{{ asset('js/reorder-list.js') }}"></script>
     <script>
       var saveSectionOrderURL = "{{ URL::route('ajax_change_section_order') }}";
     </script>
