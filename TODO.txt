@@ -6,7 +6,6 @@ BIG TASKS:
 SMALL TASKS:
 - Leader archives: access for former leaders
 - Change 'manage' to 'edit' everywhere or the other way around
-- Solve TODOs in import-old-data script
 - Check TODOs
 - Health card auto-deletion + reminder e-mail
 - Switch to European aws ses server
@@ -21,13 +20,13 @@ OPTIONAL/LATER:
 - Reorganize javascript files
 - Leader todo list
 - New website configuration helper
-- List recent changes
+- List recent changes for leaders + import old userLogs
 - Send e-mail: include archived leaders (+ old members ?)
 - Logs
 - Section icons
 - Forbidden screen custom messages
 - Export listing (?)
-- Listing snapshots (?)
+- Listing snapshots (?) + import old listing snapshots
 - Flag new items (news, documents, e-mails, photos)
 - Birthdays in calendar
 - Registration: pre-fill address, tel, e-mail with previous data or with data from user's associated members

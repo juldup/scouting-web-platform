@@ -317,12 +317,14 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     $query = $pdo->prepare("SELECT * FROM news WHERE deleted='0'");
     $query->execute();
     foreach ($query->fetchAll() as $news) {
-      News::create(array(
+      $newPieceOfNews = News::create(array(
           'news_date' => substr($news['date'], 0, 10),
           'section_id' => $this->sectionToId($news['section']),
           'title' => $news['titre'],
           'body' => $news['text'],
       ));
+      $newPieceOfNews->created_at = $news['date'];
+      $newPieceOfNews->save();
     }
     
     // Documents
@@ -340,6 +342,8 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
             'category' => $document['categorie'],
             'section_id' => $this->sectionToId($document['section']),
         ));
+        $newDocument->created_at = $document['date'];
+        $newDocument->save();
         copy($path, $newDocument->getPath());
       } else {
         echo "Warning: document file $path does not exist.\n";
@@ -466,8 +470,9 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
           'sender_email' => str_contains($emailItem['sender'], '<') ? trim(substr($emailItem['sender'], strpos($emailItem['sender'], '<') + 1, strpos($emailItem['sender'], '>') - strpos($emailItem['sender'], '<') - 1)) : $emailItem['sender'],
           'archived' => $emailItem['archive'] ? true : false,
           'deleted' => false,
-          'created_at' => $emailItem['date'],
       ));
+      $newEmail->created_at = $emailItem['date'];
+      $newEmail->save();
       $subquery = $pdo->prepare($q = "SELECT * FROM attachments WHERE emailDate='" . $emailItem['date'] . "'");
       $subquery->execute();
       foreach ($subquery->fetchAll() as $attachment) {
@@ -530,7 +535,39 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       }
     }
     
-    // TODO listing snapshots, guest book, suggestions, userLog
+    $query = $pdo->prepare("SELECT * FROM livreDor WHERE display=1");
+    $query->execute();
+    foreach ($query->fetchAll() as $entry) {
+      $newEntry = GuestBookEntry::create(array(
+          'body' => $entry['text'],
+          'author' => $entry['auteur'],
+      ));
+      $newEntry->created_at = $entry['date'];
+      $newEntry->save();
+    }
+    
+    $query = $pdo->prepare("SELECT * FROM suggestions WHERE public=1 ORDER BY date");
+    $query->execute();
+    foreach ($query->fetchAll() as $suggestion) {
+      if ($suggestion['parent']) {
+        // This is a reply
+        $parentSuggestion = Suggestion::where('created_at', '=', $suggestion['parent'])->first();
+        if ($parentSuggestion) {
+          $parentSuggestion->response = $suggestion['suggestion'];
+          $parentSuggestion->save();
+        }
+      } else {
+        // This is a suggestion
+        $user = User::where('username', '=', $suggestion['auteurPseudo'])->first();
+        $newSuggestion = Suggestion::create(array(
+            'body' => $suggestion['suggestion'] . ($suggestion['auteur'] ? "\n" . "\n" . $suggestion['auteur'] : ""),
+            'response' => null,
+            'user_id' => $user ? $user->id : null,
+        ));
+        $newSuggestion->created_at = $suggestion['date'];
+        $newSuggestion->save();
+      }
+    }
     
   }
   
