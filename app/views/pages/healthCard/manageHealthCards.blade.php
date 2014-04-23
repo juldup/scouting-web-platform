@@ -17,7 +17,9 @@
 @stop
 
 @section('content')
-
+  
+  @include('subviews.contextualHelp', array('help' => 'edit-health-cards'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Gestion des fiche santé {{{ $user->currentSection->de_la_section }}}</h1>
@@ -30,11 +32,26 @@
       <div class="col-md-10 col-md-offset-1">
         <table class="table table-striped table-hover ">
           <thead>
+            
             <tr>
               <th>Nom</th>
               <th>Dernière signature</th>
               <th>Destruction automatique dans...</th>
-              <th></th>
+              @if ($download_all)
+                <td class="text-right">
+                  <p>
+                    <a class="btn-sm btn-primary" href="{{ URL::route("manage_health_cards_download_all", array('section_slug' => $user->currentSection->slug)) }}">
+                      Télécharger tout
+                    </a>
+
+                    <a class="btn-sm btn-primary" href="{{ URL::route("manage_health_cards_download_summary", array('section_slug' => $user->currentSection->slug)) }}">
+                      Télécharger le résumé
+                    </a>
+                  </p>
+                </td>
+              @else
+                <th></th>
+              @endif
             </tr>
           </thead>
           <tbody>
@@ -63,7 +80,7 @@
                   -
                 @endif
               </td>
-              <td>
+              <td class="text-right">
                 @if (array_key_exists('health_card', $member))
                   <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download", $member['member']->id) }}">
                     Télécharger
@@ -76,13 +93,12 @@
             @if ($download_all)
               <tr>
                 <td colspan="3"></td>
-                <td>
+                <td class="text-right">
                   <p>
                     <a class="btn-sm btn-primary" href="{{ URL::route("manage_health_cards_download_all", array('section_slug' => $user->currentSection->slug)) }}">
                       Télécharger tout
                     </a>
-                  </p>
-                  <p>
+                    &nbsp;
                     <a class="btn-sm btn-primary" href="{{ URL::route("manage_health_cards_download_summary", array('section_slug' => $user->currentSection->slug)) }}">
                       Télécharger le résumé
                     </a>

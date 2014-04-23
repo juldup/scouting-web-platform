@@ -34,10 +34,10 @@ class HealthCardPDF {
         $nothingSpecial .= ($nothingSpecial ? ", " : "") . $healthCard->getMember()->first_name
                 . " " . $healthCard->getMember()->last_name;
       }
+      $pdf->pdf->Ln(self::$INTERLINE);
     }
     // Print 'nothing special' section
     if ($nothingSpecial) {
-      $pdf->pdf->Ln(self::$INTERLINE);
       $pdf->pdf->SetFont("Helvetica","B",11);
       $pdf->pdf->Cell(185, 5, "Rien à signaler pour :");
       $pdf->pdf->Ln(self::$INTERLINE);
@@ -263,7 +263,7 @@ class HealthCardPDF {
             " s'il s'agit d'une intervention chirurgicale à défaut de pouvoir être contacté" . 
             " personnellement. »");
     $this->pdf->Ln();
-    $this->entry("Date", 50, Helper::dateToHuman($healthCard->signature_date));
+    $this->entry("Date :", 50, Helper::dateToHuman($healthCard->signature_date));
     $this->entry("Signature électronique : ", 60, "\"" . $healthCard->signatory_email . "\"");
     
   }

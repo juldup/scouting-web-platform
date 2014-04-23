@@ -25,7 +25,7 @@ class BannedEmail extends Eloquent {
   }
   
   private static function generateVerificationCode($email) {
-    return hash('sha256', rand() . $email) . time(); // TODO Change to base64 for shorter validation link
+    return hash('sha256', rand() . $email) . time();
   }
   
 }

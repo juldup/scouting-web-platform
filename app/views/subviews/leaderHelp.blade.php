@@ -24,7 +24,19 @@
 
 @if ($help == 'fiches-sante')
   <legend>Fiches santé @yield('back_to_top')</legend>
-  {{-- TODO --}}
+  <p>
+    Sur cette page, tu peux accéder aux fiches santé de ta section.
+    Tu peux rapidement voir quelles sont les fiches manquantes et les fiches expirant prochainement.
+  </p>
+  <p>
+    Tu peux&nbsp;:
+    <ul>
+      <li>Télécharger chaque fiche individuellement</li>
+      <li>Télécharger toutes les fiches d'un seul coup</li>
+      <li>Télécharger le résumé des fiches. Ce résumé t'indique de claire ce qu'il faut savoir pour chaque scout de ta section.</li>
+    </ul>
+  </p>
+
 @endif
 
 @if ($help == 'calendrier')

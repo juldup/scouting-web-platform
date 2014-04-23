@@ -86,7 +86,7 @@ class User extends Eloquent {
   }
   
   private static function generateVerificationCode() {
-    return hash('sha256', rand()) . time(); // TODO Change to base64 for shorter validation link
+    return hash('sha256', rand()) . time();
   }
 
   public static function encodePassword($password) {

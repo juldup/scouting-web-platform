@@ -11,15 +11,6 @@ class Email extends Eloquent {
     return strtotime($this->created_at) >= $oneWeekAgo;
   }
   
-  public function deleteWithAttachments() {
-    $this->delete();
-    try {
-      // TODO delete attachments
-    } catch (Exception $ex) {
-      
-    }
-  }
-  
   public function getAttachments() {
     if (!$this->cachedAttachments) {
       $this->cachedAttachments = EmailAttachment::where('email_id', '=', $this->id)->get();

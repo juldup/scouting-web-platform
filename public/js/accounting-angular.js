@@ -286,7 +286,7 @@ angularAccounting.controller('AccountingController', function ($scope) {
           }
         });
       }
-    }, 100); // Upload in 1 second // TODO 1000
+    }, 1000); // Upload in 1 second
   }
   
 });

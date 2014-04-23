@@ -7,6 +7,21 @@
 
 <legend>Aide</legend>
 
+@if ($help == 'edit-health-cards')
+  <p>
+    Sur cette page, tu peux accéder aux fiches santé de ta section.
+    Tu peux rapidement voir quelles sont les fiches manquantes et les fiches expirant prochainement.
+  </p>
+  <p>
+    Tu peux&nbsp;:
+    <ul>
+      <li>Télécharger chaque fiche individuellement</li>
+      <li>Télécharger toutes les fiches d'un seul coup</li>
+      <li>Télécharger le résumé des fiches. Ce résumé t'indique de claire ce qu'il faut savoir pour chaque scout de ta section.</li>
+    </ul>
+  </p>
+@endif
+
 @if ($help == 'edit-calendar')
   <p>Cette page permet d'ajouter/modifier/supprimer des événements dans le calendrier.
     Pour modifier le calendrier d'une section, il faut sélectionner cette section dans le menu.</p>

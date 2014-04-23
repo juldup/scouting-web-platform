@@ -5,8 +5,8 @@
       <p>Pour pouvoir y accéder, vous devez <a href="{{ URL::route('login') }}">vous connecter</a>.</p>
     @elseif (!$user->verified)
     <p>
-      Votre compte d'utilisateur n'a pas été vérifié.
-      Pour le vérifier, cliquez sur le lien de validation dans l'e-mail reçu
+      Votre compte d'utilisateur n'a pas été activé.
+      Pour l'activer, cliquez sur le lien d'activation dans l'e-mail reçu
       lors de la création de votre compte d'utilisateur.
     </p>
     <p>
