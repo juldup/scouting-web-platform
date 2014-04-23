@@ -387,6 +387,10 @@
         </ul>
       </li>
       <li>
+        Pour les utilisateurs avertis, il est possible de rajouter du contenu html sur toutes les pages du sites, avant la fermeture de la balise &lt;head&gt;.
+        Cela permet par exemple d'insérer le code de google analytics.
+      </li>
+      <li>
         Modifier l'adresse e-mail du webmaster et la configuration de l'envoi d'e-mails&nbsp;:
         <ul>
           <li><strong>Adresse e-mail du webmaster</strong></li>

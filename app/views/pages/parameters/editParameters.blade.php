@@ -222,6 +222,26 @@
           <legend>
             <div class="row">
               <div class="col-md-9">
+                Paramètres avancés du site
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('additional_head_html', "Contenu additionnel du champ &lt;head&gt;") }}
+              <p>Ce champ permet par exemple d'insérer les tags de google analytics dans toutes les pages du site.</p>
+            </div>
+            <div class="col-sm-7">
+              {{ Form::textarea('additional_head_html', Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML), array("class" => "form-control", "rows" => 3)) }}
+            </div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
                 Paramètres avancés des e-mails
               </div>
               <div class="col-md-3 text-right">

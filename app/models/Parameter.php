@@ -38,6 +38,7 @@ class Parameter extends Eloquent {
   
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
   public static $WEBSITE_META_KEYWORDS = "Website meta keywords";
+  public static $ADDITIONAL_HEAD_HTML = "Additional head html";
   
   public static $PRICE_1_CHILD = "Price for one child";
   public static $PRICE_2_CHILDREN = "Price for two children";

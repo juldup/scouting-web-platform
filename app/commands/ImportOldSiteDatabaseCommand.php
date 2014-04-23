@@ -64,10 +64,13 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
                 ->update(array('email' => $parameter['value']));
       }
       if ($parameter['param'] == 'headerSpecialContent') {
-        // TODO
+        Parameter::create(array(
+            'name' => Parameter::$ADDITIONAL_HEAD_HTML,
+            'value' => $parameter['value'],
+        ));
       }
       if ($parameter['param'] == 'lunite') {
-        // TODO
+        // This paramater is unused
       }
       if ($parameter['param'] == 'motsCles') {
         Parameter::create(array(

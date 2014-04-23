@@ -98,7 +98,13 @@ class ParameterController extends BaseController {
     } catch (Exception $ex) {
       $error = true;
     }
-    // Save the advanced parameters
+    // Save the advanced site parameters
+    try {
+      Parameter::set(Parameter::$ADDITIONAL_HEAD_HTML, Input::get('additional_head_html'));
+    } catch (Exception $e) {
+      $error = true;
+    }
+    // Save the advanced e-mail parameters
     try {
       Parameter::set(Parameter::$WEBMASTER_EMAIL, Input::get('webmaster_email'));
       Parameter::set(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, Input::get('default_email_from_address'));

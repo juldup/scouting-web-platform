@@ -7,6 +7,7 @@
   </title>
   {{ Less::to('styles') }}
   @yield('head')
+  {{ Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) }}
 </head>
 <body>
   <div id="wrap">
