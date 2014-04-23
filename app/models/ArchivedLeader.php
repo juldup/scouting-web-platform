@@ -36,6 +36,7 @@ class ArchivedLeader extends Eloquent {
           'leader_description' => $leader->leader_description,
           'leader_role' => $leader->leader_role,
           'has_picture' => $leader->has_picture,
+          'picture_filename' => $leader->getPicturePathFilename(),
       ));
     }
   }
@@ -45,6 +46,14 @@ class ArchivedLeader extends Eloquent {
     $startYear = date('Y') - 1;
     if ($month <= 8) $startYear--;
     return $startYear . "-" . ($startYear + 1);
+  }
+  
+  public function getPictureURL() {
+    return URL::route('get_archived_leader_picture', array('archived_leader_id' => $this->id));
+  }
+  
+  public function getPicturePath() {
+    return storage_path(Member::$PICTURE_FOLDER_PATH) . $this->picture_filename;
   }
   
 }

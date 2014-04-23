@@ -176,7 +176,8 @@ Route::get('ajax/gestion/photos/tourner', array("as" => "ajax_rotate_photo", "us
 // Leaders
 Route::get('animateurs/archives/{year}/{section_slug?}', array("as" => "archived_leaders", "uses" => "LeaderController@showArchivedLeaders"));
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
-Route::get('animateur/photo/{leader_id}', array("as" => "get_leader_picture", "uses" => "LeaderController@getLeaderPicture"));
+Route::get('animateurs/photo/{leader_id}', array("as" => "get_leader_picture", "uses" => "LeaderController@getLeaderPicture"));
+Route::get('archive-animateurs/photo/{archived_leader_id}', array("as" => "get_archived_leader_picture", "uses" => "LeaderController@getArchivedLeaderPicture"));
 Route::get('gestion/animateurs/{section_slug?}', array("as" => "edit_leaders", "uses" => "LeaderController@showEdit"));
 Route::get('gestion/animateurs/scout-en-animateur/{member_id}/{section_slug}', array("as" => "edit_leaders_member_to_leader", "uses" => "LeaderController@showMemberToLeader"));
 Route::post('gestion/animateurs/scout-en-animateur/{section_slug}', array("as" => "edit_leaders_member_to_leader_post", "uses" => "LeaderController@postMemberToLeader"));

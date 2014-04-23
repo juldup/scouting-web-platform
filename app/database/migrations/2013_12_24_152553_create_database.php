@@ -497,6 +497,7 @@ class CreateDatabase extends Migration {
       $table->text('leader_description')->nullable();
       $table->string('leader_role')->nullable();
       $table->boolean('has_picture')->nullable();
+      $table->string('picture_filename')->nullable();
       $table->timestamps();
       
       $table->index('section_id');

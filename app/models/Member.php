@@ -4,7 +4,7 @@ class Member extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
-  protected static $PICTURE_FOLDER_PATH = "site_data/leader_pictures/";
+  public static $PICTURE_FOLDER_PATH = "site_data/leader_pictures/";
   
   public function getSection() {
     return Section::find($this->section_id);

@@ -244,7 +244,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       }
     }
     
-    // TODO Privileges
+    // Privileges
     $query = $pdo->prepare("SELECT * FROM privileges");
     $query->execute();
     foreach ($query->fetchAll() as $privilegeData) {
@@ -451,7 +451,34 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       }
     }
     
-    // TODO E-mails (+ attachments)
+    // E-mails (+ attachments)
+    $query = $pdo->prepare("SELECT * FROM emails");
+    $query->execute();
+    foreach ($query->fetchAll() as $emailItem) {
+      $newEmail = Email::create(array(
+          'section_id' => $this->sectionToId($emailItem['section']),
+          'date' => date("Y-m-d", strtotime($emailItem['date'])),
+          'time' => date("H:i:s", strtotime($emailItem['date'])),
+          'subject' => $emailItem['sujet'],
+          'body_html' => $emailItem['contenu'],
+          'recipient_list' => $emailItem['destinataires'],
+          'sender_name' => str_contains($emailItem['sender'], '<') ? trim(substr($emailItem['sender'], 0, strpos($emailItem['sender'], '<'))) : "",
+          'sender_email' => str_contains($emailItem['sender'], '<') ? trim(substr($emailItem['sender'], strpos($emailItem['sender'], '<') + 1, strpos($emailItem['sender'], '>') - strpos($emailItem['sender'], '<') - 1)) : $emailItem['sender'],
+          'archived' => $emailItem['archive'] ? true : false,
+          'deleted' => false,
+          'created_at' => $emailItem['date'],
+      ));
+      $subquery = $pdo->prepare($q = "SELECT * FROM attachments WHERE emailDate='" . $emailItem['date'] . "'");
+      $subquery->execute();
+      foreach ($subquery->fetchAll() as $attachment) {
+        $newAttachment = EmailAttachment::create(array(
+            'email_id' => $newEmail->id,
+            'filename' => $attachment['name'],
+        ));
+        $path = $this->rootFolder . "/" . $attachment['file'];
+        copy($path, $newAttachment->getPath());
+      }
+    }
     
     // Accounting
     $query = $pdo->prepare("SELECT * FROM comptes ORDER BY categoryOrder");
@@ -472,7 +499,38 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
       ));
     }
     
-    // TODO Archived leaders, annual feast, listing snapshots, guest book, suggestions, userLog
+    // Archived leaders
+    $query = $pdo->prepare("SELECT * FROM archivesAnimateurs");
+    $query->execute();
+    foreach ($query->fetchAll() as $archivedLeader) {
+      $newArchivedLeader = ArchivedLeader::create(array(
+          'member_id' => null,
+          'year' => $archivedLeader['archive'],
+          'first_name' => $archivedLeader['prenom'],
+          'last_name' => $archivedLeader['nom'],
+          'gender' => 'M',
+          'totem' => "",
+          'quali' => "",
+          'section_id' => $this->sectionToId($archivedLeader['section']),
+          'phone_member' => $archivedLeader['gsm'],
+          'phone_member_private' => false,
+          'email_member' => $archivedLeader['email'],
+          'leader_in_charge' => $archivedLeader['responsable'],
+          'leader_name' => $archivedLeader['totem'],
+          'leader_description' => $archivedLeader['description'],
+          'leader_role' => $archivedLeader['role'],
+          'has_picture' => $archivedLeader['pathPhoto'] ? true : false,
+      ));
+      if ($archivedLeader['pathPhoto']) {
+        $path = $this->rootFolder . "/" . $archivedLeader['pathPhoto'];
+        $newArchivedLeader->picture_filename = "archive-" . $newArchivedLeader->id . ".picture";
+        $newPath = $newArchivedLeader->getPicturePath();
+        copy($path, $newPath);
+        $newArchivedLeader->save();
+      }
+    }
+    
+    // TODO listing snapshots, guest book, suggestions, userLog
     
   }
   
