@@ -22,6 +22,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-privileges'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Privilèges des animateurs {{{ $user->currentSection->de_la_section }}}</h1>

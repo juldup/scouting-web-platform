@@ -24,7 +24,7 @@
             <div class="list-group-item clickable leader-help-item" data-leader-help="{{ $operationData['help'] }}">
               <a href="{{ $operationData['url'] }}"></a>
               {{{ $operationName }}}
-              <a href="#{{ $operationData['help'] }}" class="help-badge"></a>
+              <a href="#{{ $operationData['help-anchor'] }}" class="help-badge"></a>
             </div>
           @endforeach
         </div>
@@ -32,9 +32,27 @@
     @endforeach
   </div>
   
-  @foreach ($help_sections as $help)
+  <div class="well help-content leader-help-general">
+    <legend>Informations générales sur la structure du site</legend>
+    <p>Ce site a été conçu pour être modulable.  Toutes les informations annuelles (listing, photos, calendrier, documents, etc.) sont changeables.<p>
+    <p>Il y a deux manières de visiter le site : en tant que visiteur, parent, scout, ou bien en tant qu'animateur.  Les animateurs ont le droit de modifier toutes les informations se trouvant sur le site.  Sois donc prudent avec ce que tu fais, car certaines opérations ne peuvent être annulées.</p>
+    <h3>Les droits d'accès</h3>
+    <p>Les accès aux pages et informations du site dépendent du statut du visiteur :</p>
+    <table style='margin-left: 50px'>
+      <tr><td style='vertical-align: top'><span class='important'>Non inscrit</span>&nbsp;: <td>Accès limité aux pages publiques.</tr>
+      <tr><td style='vertical-align: top'><span class='important'>Visiteur</span>&nbsp;: <td>Il peut écrire dans le livre d'or, mais n'a accès à aucune information privée.</tr>
+      <tr><td style='vertical-align: top'><span class='important'>Membre</span>&nbsp;: <td>Un membre (scout ou parent) peut consulter les listings limités, télécharger les documents, voir les e-mail, les photos et créer des fiches santé pour sa famille.  Un compte d'utilisateur est automatiquement membre si son adresse e-mail a été validée et fait partie de nos listings.</tr>
+      <tr><td style='vertical-align: top'><span class='important'>Animateur</span>&nbsp;: <td>Un animateur peut accéder au coin des animateurs. Certains droits lui sont attribués par l'animateur d'unité.</tr>
+      <tr><td style='vertical-align: top'><span class='important'>Webmaster</span>&nbsp;: <td>Il n'a aucune limitation.</tr>
+    </table>
+    <h3>Les onglets</h3>
+    <p>Chaque section possède un onglet (voir en haut de la page).  Changer d'onglet adapte le site à la section, tant pour les visiteurs que pour les animateurs.  En particulier, les données modifiables sont limitées à celles de ta section, à moins que tu n'aies des privilèges spéciaux.</p>
+  </div>
+  
+  @foreach ($help_sections as $help_anchor => $help)
     <div class="leader-corner-help" data-leader-help="{{ $help }}" style="display: none;">
-      @include('subviews.leaderHelp', array('help' => $help, 'show_title' => true))
+      <a name='{{ $help_anchor }}'>&nbsp;</a>
+      @include('subviews.leaderHelp', array('help' => $help))
     </div>
   @endforeach
   

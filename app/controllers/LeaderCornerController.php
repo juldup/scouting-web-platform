@@ -12,113 +12,136 @@ class LeaderCornerController extends BaseController {
         "Opérations courantes" => array(
             "Calendrier" => array(
                 'url' => URL::route('manage_calendar'),
-                'help' => 'calendrier',
+                'help-anchor' => 'calendrier',
+                'help' => 'edit-calendar',
                 'condition' => Parameter::$SHOW_CALENDAR,
             ),
             "Photos" => array(
                 'url' => URL::route('edit_photos'),
-                'help' => 'photos',
+                'help-anchor' => 'photos',
+                'help' => 'edit-photos',
                 'condition' => Parameter::$SHOW_PHOTOS,
             ),
             "Documents à télécharger" => array(
                 'url' => URL::route('manage_documents'),
-                'help' => 'documents',
+                'help-anchor' => 'documents',
+                'help' => 'edit-documents',
                 'condition' => Parameter::$SHOW_DOCUMENTS,
             ),
             "Nouvelles" => array(
                 'url' => URL::route('manage_news'),
-                'help' => 'nouvelles',
+                'help-anchor' => 'nouvelles',
+                'help' => 'edit-news',
                 'condition' => Parameter::$SHOW_NEWS,
             ),
             "E-mail aux parents" => array(
                 'url' => URL::route('send_section_email'),
-                'help' => 'emails',
+                'help-anchor' => 'emails',
+                'help' => 'email-section',
             ),
             "Fiches santé" => array(
                 'url' => URL::route('manage_health_cards'),
-                'help' => 'fiches-sante',
+                'help-anchor' => 'fiches-sante',
+                'help' => 'edit-health-cards',
             ),
             "Trésorerie" => array(
                 'url' => URL::route('accounting'),
-                'help' => 'tresorerie',
+                'help-anchor' => 'tresorerie',
+                'help' => 'accounting',
             )
         ),
         "Opérations annuelles" => array(
             "Inscriptions" => array(
                 'url' => URL::route('manage_registration'),
-                'help' => 'inscriptions',
+                'help-anchor' => 'inscriptions',
+                'help' => 'manage-registration',
             ),
             "Listing" => array(
                 'url' => URL::route('manage_listing'),
-                'help' => 'listing',
+                'help-anchor' => 'listing',
+                'help' => 'edit-listing',
             ),
             "Les animateurs" => array(
                 'url' => URL::route('edit_leaders'),
-                'help' => 'animateurs',
+                'help-anchor' => 'animateurs',
+                'help' => 'edit-leaders',
             ),
             "Gérer les sections" => array(
                 'url' => URL::route('section_data'),
-                'help' => 'sections',
+                'help-anchor' => 'sections',
+                'help' => 'manage-sections',
             )
         ),
         "Contenu du site" => array(
             "Page d'accueil" => array(
                 'url' => URL::route('edit_home_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
             ),
             "Page d'accueil de la section" => array(
                 'url' => URL::route('edit_section_page', array('section_slug' => $this->user->currentSection->slug)),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_SECTIONS,
             ),
             "Page d'adresses utiles" => array(
                 'url' => URL::route('edit_address_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_ADDRESSES,
             ),
             "Page de la fête d'unité" => array(
                 'url' => URL::route('edit_annual_feast_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_ANNUAL_FEAST,
             ),
             "Page d'inscription" => array(
                 'url' => URL::route('edit_registration_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_REGISTRATION,
             ),
             "Page de la charte d'unité" => array(
                 'url' => URL::route('edit_unit_policy_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_UNIT_POLICY,
             ),
             "Page d'uniforme" => array(
                 'url' => URL::route('edit_uniform_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_UNIFORMS,
-            ),
-            "Liens utiles" => array(
-                'url' => URL::route('edit_links'),
-                'help' => 'liens',
-                'condition' => Parameter::$SHOW_LINKS,
             ),
             "Page d'aide" => array(
                 'url' => URL::route('edit_help_page'),
-                'help' => 'pages',
+                'help-anchor' => 'pages',
+                'help' => 'edit-pages',
                 'condition' => Parameter::$SHOW_HELP,
+            ),
+            "Liens utiles" => array(
+                'url' => URL::route('edit_links'),
+                'help-anchor' => 'liens',
+                'help' => 'edit-links',
+                'condition' => Parameter::$SHOW_LINKS,
             ),
             "Paramètres du site" => array(
                 'url' => URL::route('edit_parameters'),
-                'help' => 'parametres',
+                'help-anchor' => 'parametres',
+                'help' => 'edit-parameters',
             )
         ),
         "Supervision" => array(
             "Changements récents" => array(
-                'url' => "view_recent_changes",
-                'help' => 'changements-recents',
+                'url' => URL::route('view_private_recent_changes'),
+                'help-anchor' => 'changements-recents',
+                'help' => 'recent-changes',
             ),
             "Liste des utilisateurs" => array(
                 'url' => URL::route('user_list'),
-                'help' => 'liste-membres',
+                'help-anchor' => 'liste-membres',
+                'help' => 'user-list',
             )
         )
     );
@@ -138,7 +161,7 @@ class LeaderCornerController extends BaseController {
     foreach ($operations as $ops) {
       foreach ($ops as $operationData) {
         if (!in_array($operationData['help'], $helpSections)) {
-          $helpSections[] = $operationData['help'];
+          $helpSections[$operationData['help-anchor']] = $operationData['help'];
         }
       }
     }

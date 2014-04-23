@@ -15,6 +15,7 @@ class SectionPageController extends GenericPageController {
     return true;
   }
   protected function getPageTitle() {
+    if ($this->section->id == 1) return "Présentation de l'unité";
     return $this->section->name;
   }
   protected function canDisplayPage() {

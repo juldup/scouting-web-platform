@@ -1,11 +1,12 @@
+<?php if (!isset($leader_corner_page)) $leader_corner_page = false; ?>
 
 <div class="help-wrapper">
   <div class="help-toggle-button">
     <a class="help-badge" href=""></a>
   </div>
-<div class="well help-content" style="display: none;">
+  <div class="well help-content" style="display: none;">
 
-<legend>Aide</legend>
+    <legend>Aide</legend>
 
 @if ($help == 'edit-health-cards')
   <p>
@@ -31,7 +32,7 @@
     <li>Une fenêtre apparait pour l'ajout d'événement</li>
     <li>Choisis le nombre de jours (en comptant le premier et le dernier jour de l'activité, ex: vendredi à dimanche = 3 jours).</li>
     <li>Activité = nom de l'activité (telle qu'elle apparaitra dans le calendrier)</li>
-    <li>Description = détails de l'activité, Indique-y toutes les infos pratiques</li>
+    <li>Description = détails de l'activité, indiques-y toutes les infos pratiques</li>
     <li>Le type d'événement déterminera l'icône ; les types <em>Animateurs</em> et <em>Nettoyage</em> ne seront visibles que par les animateurs</li>
     <li>Vérifie que la bonne section est sélectionnée</li>
     <li><span class='important'>Enregistrer</span> ajoute immédiatement l'événement dans le calendrier
@@ -238,8 +239,7 @@
   </p>
 @endif
 
-@if ($help == 'pages')
-  <legend>Modifier les pages du site @yield('back_to_top')</legend>
+@if ($help == 'edit-page')
   <p>Cet outil te permet de modifier la page d'accueil et d'uniforme des sections, et de la page d'accueil du site, de la présentation de l'unité et de la charte.
   <p>Pour modifier les pages de ta section, sélectionne tout d'abord le bon onglet.
   <h3>Modification de la page</h3>
@@ -288,7 +288,7 @@
   </p>
 @endif
 
-@if ($help == 'animateurs')
+@if ($help == 'edit-leaders')
   <legend>Les animateurs @yield('back_to_top')</legend>
   <p>Le listing des animateurs sert à deux choses&nbsp;:
     <ul>
@@ -319,13 +319,16 @@
   <h3>Supprimer un animateur</h3>
   <p>Pour supprimer un animateur qui n'anime plus dans l'unité, il suffit de cliquer sur le bouton <span class='important'>Modifier</span>, et d'ensuite cliquer sur <span class='important'>Supprimer</span>.
      L'animateur supprimé restera dans les archives (sauf s'il a été ajouté et supprimé au cours d'une même année).
+@endif
+
+@if ($help == 'edit-privileges')
   <h3>Privilèges des animateurs</h3>
   <p>Chaque animateur a un certains nombre d'actions qu'il peut faire et qu'il ne peut pas faire sur le site.
      Il est possible d'octroyer ces privilèges un à un pour chacun des animateurs.</p>
   <p>Pour simplifier la gestion, il est possible d'appliquer un ensemble de privilèges prédéfinis via le menu déroulant au-dessus de l'animateur concerné.</p>
 @endif
 
-@if ($help == 'liens')
+@if ($help == 'edit-links')
   <legend>Les liens @yield('back_to_top')</legend>
   <p>Il y a moyen de modifier la liste des liens hypertextes qui se trouvent à la page <a href='liens.php'>Liens utiles</a>.
      La liste de liens est commune à toute l'unité.
@@ -339,8 +342,7 @@
   </p>
 @endif
 
-@if ($help == 'tresorerie')
-  <legend>Trésorerie @yield('back_to_top')</legend>
+@if ($help == 'accounting')
   Cet outil te permet de consulter et modifier les comptes financiers de ta section ou de l'unité.
   <p>Les comptes sont divisés en catégories, qui correspondent aux diverses activités de l'année (journée spéciale, camp, vente de calendriers, achat de matériel, etc.).  Pour chaque catégorie, un bilan total est calculé.</p>
   <p>Pour ajouter une ligne, clique sur le petit <span class='important'>"+"</span> à la fin de la catégorie ciblée, ou entre le nom d'une nouvelle catégorie.  Une nouvelle ligne vide, à la date d'aujourd'hui, apparait.  Tu peux la compléter :
@@ -423,15 +425,9 @@
   </p>
 @endif
 
-@if ($help == 'liste-membres')
-<legend>Liste des membres @yield('back_to_top')</legend>
-<p>Cette page affiche tous les membres inscrits sur le site, avec leur statut et leur dernière date de visite.
-<p>Il est possible de supprimer un membre, mais pas d'en modifier les paramètres.
-@endif
-
-@if ($help == 'changements-recents')
-  <legend>Changements récents @yield('back_to_top')</legend>
-  <p>Cette page t'offre un aperçu des changements récemment effectués sur le site.
+@if ($help == 'user-list')
+  <p>Cette page affiche tous les membres inscrits sur le site, avec leur statut et leur dernière date de visite.
+  <p>Il est possible de supprimer un membre, mais pas d'en modifier les paramètres.
 @endif
 
 </div>

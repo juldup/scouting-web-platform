@@ -1,7 +1,7 @@
 TODO list
 
 BIG TASKS:
-- Update leader help
+- Review contextual leader help
 
 SMALL TASKS:
 - Leader archives: access for former leaders
@@ -9,6 +9,8 @@ SMALL TASKS:
 - Check TODOs
 - Health card auto-deletion + reminder e-mail
 - Switch to European aws ses server
+- Subscription paid tool
+- List recent changes for leaders + import old userLogs, or disable feature
 
 AT THE END:
 - Layout for smartphones and tablets
@@ -20,7 +22,6 @@ OPTIONAL/LATER:
 - Reorganize javascript files
 - Leader todo list
 - New website configuration helper
-- List recent changes for leaders + import old userLogs
 - Send e-mail: include archived leaders (+ old members ?)
 - Logs
 - Section icons

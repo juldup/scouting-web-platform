@@ -40,6 +40,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-leaders'))
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Animateurs {{{ $user->currentSection->de_la_section }}}</h1>

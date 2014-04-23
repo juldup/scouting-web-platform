@@ -35,6 +35,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-page'))
+  
   <div class="row page_body form-horizontal">
     <form name="edit_page" method="post" action="" id="edit_page_form">
       <h1>{{{ $page_title }}}</h1>

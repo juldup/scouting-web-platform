@@ -9,6 +9,7 @@
 @stop
 
 @section('back_links')
+  
   <p>
     @if ($this_year < $year)
       <a href='{{ URL::route('accounting_by_year', array('section_slug' => $user->currentSection->slug, 'year' => $this_year)) }}'>
@@ -79,6 +80,9 @@
 @stop
 
 @section('content')
+  
+  @include('subviews.contextualHelp', array('help' => 'accounting'))
+  
   <h1>Trésorie {{{ $user->currentSection->de_la_section }}}&nbsp;: année {{{ $year }}}</h1>
   @include('pages.accounting.accounting-angular')
   <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
