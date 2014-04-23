@@ -91,6 +91,13 @@ class ParameterController extends BaseController {
     } catch (Exception $e) {
       $error = true;
     }
+    // Save the search engine parameters
+    try {
+      Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, Input::get('website_meta_description'));
+      Parameter::set(Parameter::$WEBSITE_META_KEYWORDS, Input::get('website_meta_keywords'));
+    } catch (Exception $ex) {
+      $error = true;
+    }
     // Save the advanced parameters
     try {
       Parameter::set(Parameter::$WEBMASTER_EMAIL, Input::get('webmaster_email'));

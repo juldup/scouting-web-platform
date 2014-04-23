@@ -36,6 +36,9 @@ class Parameter extends Eloquent {
   public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
   public static $LOGO_IMAGE = "Logo image";
   
+  public static $WEBSITE_META_DESCRIPTION = "Website meta description";
+  public static $WEBSITE_META_KEYWORDS = "Website meta keywords";
+  
   public static $PRICE_1_CHILD = "Price for one child";
   public static $PRICE_2_CHILDREN = "Price for two children";
   public static $PRICE_3_CHILDREN = "Price for three children";

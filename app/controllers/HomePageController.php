@@ -21,6 +21,8 @@ class HomePageController extends GenericPageController {
     return true;
   }
   
+  protected $isHomePage = true;
+  
   public function showPage() {
     $routeParameters = Route::current()->parameters();
     if (array_key_exists("section_slug", $routeParameters)) {

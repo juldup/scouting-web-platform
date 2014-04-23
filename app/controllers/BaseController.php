@@ -81,8 +81,4 @@ abstract class BaseController extends Controller {
     Session::put('currentSection', $section->id);
   }
   
-  protected function checkAccessToGestion() {
-    return true; // TODO Check if user is a leader
-  }
-  
 }

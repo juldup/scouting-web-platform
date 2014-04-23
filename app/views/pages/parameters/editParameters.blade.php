@@ -195,6 +195,33 @@
           <legend>
             <div class="row">
               <div class="col-md-9">
+                Moteurs de recherche
+              </div>
+              <div class="col-md-3 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('website_meta_description', "Description du site") }}
+            </div>
+            <div class="col-sm-7">
+              {{ Form::textarea('website_meta_description', Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION), array("class" => "form-control", "rows" => 3, "placeholder" => "Cette description apparaitra dans les résultats des moteurs de recherche")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('website_meta_keywords', "Mots-clés de recherche") }}
+            </div>
+            <div class="col-sm-7">
+              {{ Form::textarea('website_meta_keywords', Parameter::get(Parameter::$WEBSITE_META_KEYWORDS), array("class" => "form-control", "rows" => 3, "placeholder" => "Séparés par des virgules, ils permettent aux moteurs de recherche de favoriser ce site dans les résultats quand ces mots-clés sont recherchés")) }}
+            </div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-md-9">
                 Paramètres avancés des e-mails
               </div>
               <div class="col-md-3 text-right">

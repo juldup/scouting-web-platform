@@ -12,8 +12,6 @@ class CalendarController extends BaseController {
       return App::abort(404);
     }
     
-    // TODO Display birthdays
-    
     if ($year == null || $month == null) {
       $year = date('Y');
       $month = date('m');

@@ -378,6 +378,15 @@
         </ul>
       </li>
       <li>
+        Modifier les paramètres des moteurs de recherche. Ces paramètres permettent d'optimiser l'apparition du site dans les résultats des moteurs de recherche&nbsp;:
+        <ul>
+          <li><strong>Description</strong>&nbsp;: Cette description apparait directement dans les résultats des moteurs de recherche</li>
+          <li><strong>Mots-clés</strong>&nbsp;: Si ces mots-clés sont recherchés via un moteur de recherche, la chance que ce site apparaisse haut dans les résultats est plus élevée.
+            Tu peux y mettre le nom de l'unité, les noms des groupes, le nom de la commune, du village et du quartier où es situe l'unité, les mots-clés propres au scoutisme, etc.
+          </li>
+        </ul>
+      </li>
+      <li>
         Modifier l'adresse e-mail du webmaster et la configuration de l'envoi d'e-mails&nbsp;:
         <ul>
           <li><strong>Adresse e-mail du webmaster</strong></li>

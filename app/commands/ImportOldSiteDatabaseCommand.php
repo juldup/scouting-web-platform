@@ -42,7 +42,10 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
         $this->createPage('unit_policy', 1, $parameter['value']);
       }
       if ($parameter['param'] == 'descriptionSite') {
-        // TODO
+        Parameter::create(array(
+            'name' => Parameter::$WEBSITE_META_DESCRIPTION,
+            'value' => $parameter['value'],
+        ));
       }
       if ($parameter['param'] == 'docCategories') {
         Parameter::create(array(
@@ -67,7 +70,10 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
         // TODO
       }
       if ($parameter['param'] == 'motsCles') {
-        // TODO
+        Parameter::create(array(
+            'name' => Parameter::$WEBSITE_META_KEYWORDS,
+            'value' => $parameter['value'],
+        ));
       }
       if ($parameter['param'] == 'nomUniteTitre') {
         Parameter::create(array(

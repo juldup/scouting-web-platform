@@ -8,6 +8,7 @@ abstract class GenericPageController extends BaseController {
   protected abstract function getPageType();
   protected abstract function getPageTitle();
   protected abstract function canDisplayPage();
+  protected $isHomePage = false;
   
   public function showPage() {
     // Make sure this page can be displayed
@@ -21,11 +22,13 @@ abstract class GenericPageController extends BaseController {
       $sectionSlugArray = array("section_slug" => $this->user->currentSection->slug);
     }
     $editURL = URL::route($this->getEditRouteName(), $sectionSlugArray);
-    return View::make('pages.page')
-            ->with('page_body', $page->body_html)
-            ->with('page_title', $this->getPageTitle())
-            ->with('edit_url', $editURL)
-            ->with('can_edit', $this->canEdit());
+    return View::make('pages.page', array(
+        'page_body' => $page->body_html,
+        'page_title' => $this->getPageTitle(),
+        'edit_url' => $editURL,
+        'can_edit' => $this->canEdit(),
+        'is_home_page' => $this->isHomePage,
+    ));
   }
   
   public function showEdit() {

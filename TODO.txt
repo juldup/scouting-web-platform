@@ -36,3 +36,4 @@ OPTIONAL/LATER:
 - Changer le look and feel du site
 - Forum ?
 - Fix issue: on the first year, archiving first created leader
+- HTML version of e-mails
