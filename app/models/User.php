@@ -182,6 +182,11 @@ class User extends Eloquent {
     return $this->isLeader;
   }
   
+  public function isFormerLeader() {
+    if (!$this->isConnected) return false;
+    return ArchivedLeader::where('email_member', '=', $this->email)->first() != null;
+  }
+  
   public function getDefaultSection() {
     if ($this->default_section) {
       return Section::find($this->default_section);

@@ -8,7 +8,7 @@ class PhotoController extends BaseController {
       return App::abort(404);
     }
     
-    if (!$this->user->isMember()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
       return Helper::forbiddenNotMemberResponse();
     }
     
@@ -119,7 +119,7 @@ class PhotoController extends BaseController {
   }
   
   public function getPhoto($format, $photo_id) {
-    if (!$this->user->isMember()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
       return Helper::forbiddenResponse();
     }
     $photo = Photo::find($photo_id);
@@ -137,7 +137,7 @@ class PhotoController extends BaseController {
   
   public function downloadAlbum($album_id) {
     // Check that the user is allowed to download photos
-    if (!$this->user->isMember()) {
+    if (!$this->user->isMember() && !$this->isFormerLeader()) {
       return Helper::forbiddenResponse();
     }
     // Gather photos

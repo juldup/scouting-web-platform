@@ -4,7 +4,7 @@
   <div class="help-toggle-button">
     <a class="help-badge" href=""></a>
   </div>
-  <div class="well help-content" style="displayx: none;">
+  <div class="well help-content" style="display: none;">
 
     <legend>Aide</legend>
 
