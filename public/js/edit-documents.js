@@ -34,6 +34,9 @@ function editDocument(docId) {
   $("#document_form [name='filename']").val("");
   $("#document_form [name='file']").val("");
   $("#document_form #delete_link").attr('href', documents[docId].delete_url);
-  $("#document_form #delete_link").show();
+  if (documents[docId].delete_url === "")
+    $("#document_form #delete_link").hide();
+  else
+    $("#document_form #delete_link").show();
   $("#document_form").slideDown();
 }

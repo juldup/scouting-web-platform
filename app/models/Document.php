@@ -39,4 +39,8 @@ class Document extends Eloquent {
     $this->filename = $base . $extension;
   }
   
+  public function canBeDeleted() {
+    return time() - strtotime($this->created_at) < 7 * 24 * 3600;
+  }
+  
 }

@@ -16,7 +16,7 @@
         'category': "{{ Helper::sanitizeForJavascript($doc->category) }}",
         'public': {{ $doc->public ? "true" : "false" }},
         'filename': "{{ Helper::sanitizeForJavascript($doc->filename) }}",
-        'delete_url': "{{ URL::route('manage_documents_delete', array('document_id' => $doc->id)) }}"
+        'delete_url': "{{ $doc->canBeDeleted() ? URL::route('manage_documents_delete', array('document_id' => $doc->id)) : "" }}"
       };
     @endforeach
   </script>

@@ -32,6 +32,9 @@
     <div class="col-md-12">
       <h1>Gestion des e-mails {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
+      @if (!count($emails))
+        <p>Il n'y a aucun e-mail.</p>
+      @endif
     </div>
   </div>
   

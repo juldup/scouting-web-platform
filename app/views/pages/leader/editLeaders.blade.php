@@ -97,8 +97,8 @@
                   @endif
                 </td>
                 <td>{{{ $leader->leader_name }}} @if ($leader->leader_in_charge) (responsable) @endif</td>
-                <td>{{{ $leader->first_name }}}</td>
                 <td>{{{ $leader->last_name }}}</td>
+                <td>{{{ $leader->first_name }}}</td>
                 <td>
                   @if ($leader->has_picture)
                     <img class="leader_picture_mini" alt="Photo de {{{ $leader->leader_name }}}" src="{{ $leader->getPictureURL() }}" />

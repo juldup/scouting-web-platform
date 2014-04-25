@@ -280,14 +280,19 @@ class DocumentController extends BaseController {
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
       return Helper::forbiddenResponse();
     }
-    try {
-      unlink($document->getPath());
-      $document->delete();
-      $success = true;
-      $message = "Le document a été supprimé.";
-    } catch (Exception $e) {
+    if (!$document->canBeDeleted()) {
       $success = false;
-      $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
+      $message = "Ce document est vieux de plus d'une semaine. Il ne peut pas être supprimé, mais peut être archivé.";
+    } else {
+      try {
+        unlink($document->getPath());
+        $document->delete();
+        $success = true;
+        $message = "Le document a été supprimé.";
+      } catch (Exception $e) {
+        $success = false;
+        $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
+      }
     }
     return Redirect::route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,

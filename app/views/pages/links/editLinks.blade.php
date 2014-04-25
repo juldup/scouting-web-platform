@@ -29,6 +29,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'edit-links'))
+  
   <div class="row">
     <div class="col-lg-12">
       <h1>Liens utiles</h1>
@@ -58,8 +60,8 @@
           </div>
           <div class="form-group">
             {{ Form::label('link_description', "Description", array('class' => "col-md-2 control-label")) }}
-            <div class="col-md-5">
-              {{ Form::textarea('link_description', null, array('class' => 'form-control')) }}
+            <div class="col-md-8">
+              {{ Form::textarea('link_description', null, array('class' => 'form-control', 'rows' => 3)) }}
             </div>
           </div>
           <div class="form-group">

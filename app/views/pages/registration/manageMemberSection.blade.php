@@ -32,7 +32,7 @@
     <div class="row">
       <div class="col-md-12">
         <p class="label-warning label">
-          Pense à <a href="{{ URL::route('manage_year_in_section') }}">changer l'année</a> AVANT d'opérer les transferts de sections, car l'année des scouts transférés est mise à 1.
+          Pense à <a href="{{ URL::route('manage_year_in_section') }}">changer l'année</a> de la section de destination AVANT d'opérer les transferts de sections, car l'année des scouts transférés est mise à 1.
         </p>
       </div>
     </div>

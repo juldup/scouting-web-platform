@@ -1,7 +1,6 @@
 TODO list
 
 BIG TASKS:
-- Review contextual leader help
 
 SMALL TASKS:
 - Leader archives: access for former leaders
@@ -37,3 +36,4 @@ OPTIONAL/LATER:
 - Forum ?
 - Fix issue: on the first year, archiving first created leader
 - HTML version of e-mails
+- Investigate errors (Error in exception handler: Undefined variable: user) for invalid routes (eg: gestionx/liens)

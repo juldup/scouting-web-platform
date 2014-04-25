@@ -22,7 +22,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Gestion des fiche santé {{{ $user->currentSection->de_la_section }}}</h1>
+      <h1>Gestion des fiches santé {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>

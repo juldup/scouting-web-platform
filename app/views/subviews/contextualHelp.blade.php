@@ -4,7 +4,7 @@
   <div class="help-toggle-button">
     <a class="help-badge" href=""></a>
   </div>
-  <div class="well help-content" style="display: none;">
+  <div class="well help-content" style="displayx: none;">
 
     <legend>Aide</legend>
 
@@ -16,9 +16,9 @@
   <p>
     Tu peux&nbsp;:
     <ul>
-      <li>Télécharger chaque fiche individuellement</li>
-      <li>Télécharger toutes les fiches d'un seul coup</li>
-      <li>Télécharger le résumé des fiches. Ce résumé t'indique de claire ce qu'il faut savoir pour chaque scout de ta section.</li>
+      <li>Télécharger <strong>chaque fiche individuellement</strong></li>
+      <li>Télécharger <strong>toutes les fiches</strong> d'un seul coup</li>
+      <li>Télécharger le <strong>résumé des fiches</strong>. Ce résumé t'indique de manière claire ce qu'il faut savoir pour chaque scout de ta section.</li>
     </ul>
   </p>
 @endif
@@ -29,13 +29,17 @@
   <h3>Ajouter un événement</h3>
   <ol>
     <li>Sélectionne dans le calendrier la date de début de l'événement</li>
-    <li>Une fenêtre apparait pour l'ajout d'événement</li>
-    <li>Choisis le nombre de jours (en comptant le premier et le dernier jour de l'activité, ex: vendredi à dimanche = 3 jours).</li>
-    <li>Activité = nom de l'activité (telle qu'elle apparaitra dans le calendrier)</li>
-    <li>Description = détails de l'activité, indiques-y toutes les infos pratiques</li>
-    <li>Le type d'événement déterminera l'icône ; les types <em>Animateurs</em> et <em>Nettoyage</em> ne seront visibles que par les animateurs</li>
-    <li>Vérifie que la bonne section est sélectionnée</li>
-    <li><span class='important'>Enregistrer</span> ajoute immédiatement l'événement dans le calendrier
+    <li>
+      Une fenêtre apparait pour l'ajout d'événement, complète les informations de l'événement&nbsp;:
+      <ul>
+        <li><strong>Durée</strong>&nbsp;: nombre de jours en comptant le premier et le dernier jour de l'activité (ex: vendredi à dimanche = 3 jours).</li>
+        <li><strong>Activité</strong>&nbsp;: nom de l'activité, telle qu'elle apparaitra dans le calendrier</li>
+        <li><strong>Description</strong>&nbsp;: détails de l'activité, indiques-y toutes les infos pratiques</li>
+        <li>Le <strong>type d'événement</strong> déterminera l'icône ; les types <em>Animateurs</em> et <em>Nettoyage</em> ne seront visibles que par les animateurs</li>
+        <li><strong>Section</strong>&nbsp;: vérifie que la bonne section est sélectionnée</li>
+      </ul>
+    </li>
+    <li>Enregistre pour ajouter l'événement dans le calendrier
   </ol>
   <h3>Modifier un événement</h3>
   <p>Il suffit de cliquer sur l'événement dans le calendrier pour le modifier.</p>
@@ -47,40 +51,39 @@
 @if ($help == 'edit-photos')
   <h3>Créer un album</h3>
   <p>Tu peux créer un album via le bouton <strong><em>Créer un nouvel album</em></strong>. L'idéal est de créer un album par réunion ou activité.</p>
-  <p>Une fois l'album créé, commence par lui donner un titre.</p>
+  <p>Une fois l'album créé, commence par lui donner un titre en cliquant sur <span class="glyphicon glyphicon-edit"></span>.</p>
   <p>Clique ensuite sur <strong><em>Modifier l'album</em></strong> pour lui ajouter des photos.</p>
   <h3>Opérations sur les répertoires</h3>
   <p>Tu peux <strong>réordonner</strong> les répertoires en les glissant.</p>
   <p>Tu peux <strong>supprimer</strong> un répertoire à condition qu'il soit vide.
     Pour le vider, clique sur <strong><em>Modifier l'album</em></strong> et supprime les photos qu'il contient.</p>
+  <h3>Archiver</h3>
+  <p>Tu peux <strong>archiver</strong> un album pour qu'il n'apparaisse plus dans les photos de l'année courante.</p>
+  <p>Les albums sont automatiquement archivés après un an.</p>
 @endif
 
 @if ($help == 'edit-album')
+  <h3>Ajouter des photos</h3>
   <p>Glisse des photos depuis ton ordinateur vers la zone appropriée ou clique sur cette zone pour
     sélectionner une ou plusieurs photos.</p>
   <p>Les photos au format <strong>jpeg</strong> et <strong>png</strong> sont acceptées.</p>
+  <h3>Opérations sur les photos</h3>
   <p>Tu peux <strong>réordonner</strong> les photos en les glissant-déplaçant.</p>
-  <p>Tu peux faire <strong>tourner</strong> une photo mal orientée.
+  <p>Tu peux faire <strong>tourner</strong> une photo mal orientée.</p>
+  <p>
     Tu peux également lui adjoindre une <strong>description</strong> qui apparaitra sous la photo.</p>
-  <p>Supprimer une photo l'enlève définitivement de l'album.</p>
+  <p><strong>Supprimer</strong> une photo l'enlève définitivement de l'album.</p>
 @endif
 
 @if ($help == 'edit-documents')
   <p>Cette page te permet d'ajouter, modifier et archiver des documents. Place ici tous les documents destinés aux parents ou aux scouts, en particulier les convocations envoyées aux parents.</p>
+  <h3>Ajouter un document</h3>
   <p>
     Pour ajouter un document, il suffit de cliquer sur <strong><em>Ajouter un nouveau document</em></strong>.
-    Un formulaire apparait. Indique le titre du document et la description, choisis le fichier, sélectionne la catégorie appropriée et enregistre-le.
   </p>
   <p>
-    Il est conseillé de garder les documents <strong>privés</strong>.
-    En effet, ils contiennent souvent des informations qui ne devraient pas tomber dans n'importe quelles mains.
+    Un formulaire apparait. Remplis-le avant de l'enregistrer&nbsp;:
   </p>
-  <p>Un document peut également être modifié, remplacé ou supprimé. Pour remplacer un document, modifie-le et sélectionne un nouveau fichier.</p>
-  <p>
-    Il n'est pas possible se supprimer des documents qui sont en ligne depuis plus d'une semaine.
-    Les documents obsolètes peuvent être archivés, et seront donc toujours disponibles.
-     Si un document doit absolument être supprimé car son contenu n'est pas adéquat, contacte le <a href="{{ URL::route('personal_email', array('type' => 'webmaster', 'member_id' => 0)) }}">webmaster du site</a>.
-  <h3>Les différents champs à compléter</h3>
   <div class="row">
     <div class="col-md-2 text-right"><strong>Titre</strong> </div>
     <div class="col-md-10">C'est le nom qui sera affiché dans la liste</div>
@@ -103,8 +106,37 @@
   </div>
   <div class="row">
     <div class="col-md-2 text-right"><strong>Public</strong> </div>
-    <div class="col-md-10">Si cette case est cochée, le document est public, donc visible par tous les internautes et pas juste les membres</div>
+    <div class="col-md-10">
+      <p>
+        Si cette case est cochée, le document est public, donc visible par tous les internautes et pas juste les membres
+      </p>
+      <div class="alert alert-danger">
+        <div>
+          Il est conseillé de garder les documents <strong>privés</strong>.
+        </div>
+        <div>
+          En effet, ils contiennent souvent des informations qui ne devraient pas tomber dans n'importe quelles mains.
+        </div>
+      </div>
+    </div>
   </div>
+  <h3>Modifier un document</h3>
+  <p>
+    Un document peut également être modifié ou remplacé.
+    Pour remplacer un document, modifie-le et sélectionne un nouveau fichier.</p>
+  <p>
+  <h3>Supprimer et archiver</h3>
+  <p>
+    Pour supprimer un document de moins d'une semaine, clique sur <strong><em>Modifier</em></strong> puis <strong><em>Supprimer</em></strong>.
+    Il n'est pas possible se supprimer des documents qui sont en ligne depuis plus d'une semaine.
+  </p>
+  <p>
+    Les documents obsolètes peuvent être archivés, et seront donc toujours disponibles. Les documents sont automatiquement archivés après un an.
+  </p>
+  <p>
+     Si un document doit absolument être supprimé car son contenu n'est pas adéquat,
+     contacte le <a href="{{ URL::route('personal_email', array('type' => 'webmaster', 'member_id' => 0)) }}">webmaster du site</a>.
+  </p>
 @endif
 
 @if ($help == 'edit-news')
@@ -112,22 +144,26 @@
     Indique dans les nouvelles tout ce que tu veux communiquer
     (réunion spéciale qui s'est bien déroulée, produit en vente par la section, etc.)
   </p>
+  <h3>Ajouter une nouvelle</h3>
   <p>
     Pour créer une nouvelle nouvelle, clique sur <strong><em>Ajouter une nouvelle</em></strong>.
-    Choisis le titre, et n'oublie pas la section.
+  </p>
+  <p>
+    Dans les nouvelles de l'unité apparaitront également les nouvelles de toutes les sections.
   </p>
   <p>
     La date d'une nouvelle est la date à laquelle la nouvelle est écrite.
     Cette date figurera dans la liste des nouvelles.
     Les nouvelles de plus d'un an ne sont plus affichées.
   </p>
+  <h3>Modifier et supprimer</h3>
   <p>
     Il est également possible de <strong>modifier</strong> une nouvelle.
     La date de la nouvelle restera la date à laquelle elle a été créée.
   </p>
   <p>
     Pour <strong>supprimer</strong> une nouvelle, clique sur <strong><em>Modifier</em></strong> puis
-    sur <strong><em>Supprimer</em></strong>.
+    sur <strong><em>Supprimer</em></strong>. Il est préférable de ne jamais supprimer les nouvelles.
   </p>
 @endif
 
@@ -145,15 +181,22 @@
       Tu peux également ajouter des destinataires supplémentaires. Encode-les séparés par des virgules.</li>
   </ol>
   <p>
-    Note l'e-mail sera pas envoyé instantanément, l'envoi sera réparti dans les minutes suivantes.
-    Il sera envoyé a l'adresse d'expéditeur en dernier. À ce moment, tu sauras que tout le monde l'a reçu.
+    Note&nbsp;: l'e-mail sera pas envoyé instantanément, l'envoi sera réparti dans les minutes ou les heures suivantes.
+    Il sera envoyé a l'adresse de l'expéditeur en dernier. À ce moment, tu sauras que tout le monde l'a reçu.
   </p>
+  <p>&nbsp;</p>
+  <div class="alert alert-danger">
+    <div>Les e-mails envoyés depuis cette page seront répertoriés sur le site et seront visibles par tous les membres de l'unité.</div>
+    <div><strong>N'utilise pas cet outil pour envoyer des e-mails personnels.</strong></div>
+  </div>
 @endif
 
 @if ($help == 'edit-emails')
   <p>
-    Sur cette page, tu peux voir tous les e-mails envoyés aux sections depuis le site.
-    En particulier, tu peux voir la liste d'adresses e-mail auxquelles chaque e-mail a été envoyé.
+    Sur cette page, tu peux voir tous les e-mails envoyés aux parents depuis le site.
+  </p>
+  <p>
+    Tu peux voir la liste d'adresses e-mail auxquelles chaque e-mail a été envoyé.
   </p>
   <p>
     Tu peux <strong>supprimer</strong> un e-mail dans un délai de 7 jours après l'envoi.
@@ -163,7 +206,7 @@
 @endif
 
 @if ($help == 'edit-new-registrations')
-  <p>Cette page permet d'inscrire des nouveaux scouts ou animateurs ayant rempli le formulaire d'inscription.</p>
+  <p>Cet outil permet d'inscrire des nouveaux scouts ou animateurs ayant rempli le formulaire d'inscription. <em>Utilise les onglets pour voir les autres fonctionnalités.</em></p>
   <h3>Validation d'une nouvelle inscription</h3>
   <p>Dans la liste, clique sur <strong><em>Inscrire</em></strong> à côté du nom du scout à inscrire.
      Un formulaire apparaît, avec les informations entrées par les parents pré-encodées.
@@ -173,19 +216,21 @@
 @endif
 
 @if ($help == 'edit-reregistrations')
-  <h3>Réinscription</h3>
-  <p>Cette page permet de gérer les réinscriptions. Utiliser cette page n'est pas indispensable pour
+  <p>Cet outil permet de gérer les réinscriptions. <em>Utilise les onglets pour voir les autres fonctionnalités.</em></p>
+  <h3>Réinscriptions</h3>
+  <p> Utiliser cette page n'est pas indispensable pour
     le bon déroulement des réinscriptions, mais elle permet d'avoir une vue sur les scouts qui se réinscrivent
     et ceux qui n'ont pas encore décidé ou quittent l'unité.
   </p>
-  <p>Les parents peuvent eux-même marquer leurs enfants comme réinscrit. Cela peut être une manière de gérer les réinscriptions.</p>
+  <p>Les parents peuvent eux-même réinscrire leurs enfants via la page d'inscription s'ils sont connectés sur le site. Cela peut être une manière de gérer les réinscriptions de l'unité.</p>
   <p>Sur cette page, tu peux le marquer les scouts comme réinscrits, les désinscrire <strong>(attention&nbsp;: effet immédiat)</strong>, ou annuler
   leur réinscription.</p>  
 @endif
 
 @if ($help == 'edit-year-in-section')
+  <p>Cet outil permet d'augmenter d'une année une liste de scouts. <em>Utilise les onglets pour voir les autres fonctionnalités.</em></p>
   <h3>Augmentation de l'année des scouts</h3>
-  <p>Cet outil permet d'augmenter d'une année une liste de scouts.
+  <p>
      Tu peux augmenter l'année de tous les scouts d'un coup, ou régler l'année de chacun indépendemment.
      Les scouts apparaissent par ordre inverse d'année.
   </p>
@@ -195,32 +240,34 @@
 @endif
 
 @if ($help == 'edit-member-section')
-  <h3>Passage d'une section à une autre</h3>
   <p>
     Cet outil te permet de faire évoluer des scouts d'une section à une autre.
+    <em>Utilise les onglets pour voir les autres fonctionnalités.</em>
   </p>
+  <h3>Passage d'une section à une autre</h3>
   <p>
     Premièrement, sélectionne la section de destination.
   </p>
   <p>
-    Sélectionne les scouts que tu veux faire passer en cliquent sur <strong><em>Faire passer</em></strong> (ils sont classés par année, les scouts devant monter
+    Sélectionne les scouts que tu veux faire passer en cliquant sur <strong><em>Faire passer</em></strong> (ils sont classés par année, les scouts devant monter
     d'une section sont donc normalement en haut de la liste).
     Le passage n'est fait que lorsque tu cliques sur <strong><em>Enregistrer les transferts</em></strong>.
     Cela change les scouts sélectionnés de section, met leur année à 1 et supprime leur nom de patrouille/sizaine/hutte.
   </p>
   <p>
-    Si une fausse manœuvre a été effectuée, tu peux refaire l'opération dans l'autre sens, ou directement faire le changement dans le listing.
+    Si une fausse manœuvre a été effectuée, tu peux refaire l'opération dans l'autre sens (l'année restera cependant à 1), ou directement faire le changement dans le listing.
   </p>
 @endif
 
 @if ($help == 'edit-listing')
   <p>
     Le listing du site web est le listing officiel de l'unité.
-    Il est disponible en ligne à tous les membres, et est utilisé pour mettre
+    Il est disponible en ligne à tous les membres <em>(*)</em>, et est utilisé pour mettre
     à jour le listing de la fédération.
     <strong>Il est donc primordial qu'il soit bien entretenu.</strong>
   </p>
   <p>Cette page permet de modifier le listing et de l'exporter.</p>
+  <p><em>(*) Seuls les animateurs ont accès aux données confidentielles.</em></p>
   <h3>Modifier</h3>
   <p>Pour modifier une ligne du listing, il suffit de cliquer sur le bouton <strong><em>Modifier</em></strong> en face d'un membre.
      Un formulaire avec les données du scout apparait. Fais les modifications nécessaires et enregistre les changements.
@@ -240,23 +287,27 @@
 @endif
 
 @if ($help == 'edit-page')
-  <p>Cet outil te permet de modifier la page d'accueil et d'uniforme des sections, et de la page d'accueil du site, de la présentation de l'unité et de la charte.
-  <p>Pour modifier les pages de ta section, sélectionne tout d'abord le bon onglet.
+  <p>
+    Cet outil te permet de modifier la page {{ $page_title ? "<strong>" . $page_title . "</strong>" : " d'accueil" }}.
+  </p>
   <h3>Modification de la page</h3>
-  <p>Pour modifier la page, il suffit de cliquer sur le bouton <span class='important'>Modifier</span>.
-     Il est ensuite possible de modifier le code <span class='important'>html</span> de la page (il faut évidemment s'y connaître un peu, ou demander un coup de main).
-     Pour enregistrer, clique sur le bouton d'enregistrement.
-  <p>Dès l'enregistrement, la page est directement accessible aux visiteurs.
-  <h3>Photos dans la page</h3>
-  <p>Il est possible d'ajouter des photos dans la page.
-     Chacune des photos doit être ajoutée via le champ d'ajout de photo.
-     Le bouton <span class='important'>+</span> permet d'ajouter plusieurs photos.
-  <p>Dans le code, il suffit de mettre une balise image classique (<span class='important'>&lt;img src="taPhoto.jpg" alt="texte" /&gt;</span>).
-     Le nom de l'image doit correspondre au nom du fichier chargé.
-  <p>Lorsque la page est enregistrée, le chemin d'accès de la photo sera automatiquement changé (par exemple en <span class='important'>images/taSection/taPhoto.jpg</span>).
-     Ne t'inquiète pas de cela.
-  <h3>Aperçu de la page</h3>
-  <p>En-dessous du bloc d'édition se trouve un aperçu de la page. Note que dans l'aperçu, les nouvelles photos ne seront pas encore présentes.
+  <p>
+    Pour modifier la page, il suffit de remplacer son contenu dans la zone d'édition. Tu peux utiliser les outils d'édition pour mettre en page ton texte.
+  </p>
+  <p>
+    Termine en cliquant sur <strong><em>Enregistrer</em></strong>, les changements seront directement appliqués.
+  </p>
+  <h3>Images dans la page</h3>
+  <p>
+    Il est possible d'ajouter des photos ou des images dans la page.
+  </p>
+  <p>
+    Cliquer sur <strong><em>Ajouter</em></strong> pour ajouter une image à la librairie d'images.<p>
+  <p>
+    Positionne ton curseur dans le texte à l'endroit où tu veux insérer l'image, puis clique sur l'icône de l'image pour l'insérer.
+  </p>
+  <h3>Pour les experts</h3>
+  <p>Il est possible de modifier le code html de la page en cliquant sur <strong><em>source</em></strong>. L'ensemble des balises permises est cependant limité.</p>
 @endif
 
 @if ($help == 'sections')
@@ -289,80 +340,87 @@
 @endif
 
 @if ($help == 'edit-leaders')
-  <legend>Les animateurs @yield('back_to_top')</legend>
   <p>Le listing des animateurs sert à deux choses&nbsp;:
     <ul>
       <li>Mettre des informations publiques sur la page dédiée aux animateurs.</li>
-      <li>Il sert de listing officiel pour la fédé.</li>
+      <li>Il sert de listing officiel pour la fédération.</li>
     </ul>
   Il est donc important que les informations qui s'y trouvent soient correctes et complètes.
   <h3>Inscrire un nouvel animateur</h3>
   <p>Lorsqu'un nouvel animateur entre dans l'unité, il faut procéder aux étapes suivantes&nbsp;:
     <ol>
-      <li>Le nouvel animateur doit s'inscrire dans l'unité via le <a href='inscription.php'>formulaire d'inscription</a>.</li>
-      <li>Le webmaster doit <a href='gestion.php?page=listing#nouvelles_inscriptions'>valider son inscription</a>.</li>
+      <li>Le nouvel animateur doit s'inscrire dans l'unité via le <a href="{{ URL::route('registration_form') }}">formulaire d'inscription</a>.</li>
+      <li>L'animateur d'unité ou le responsable des inscriptions doit <a href='{{ URL::route('manage_registration') }}'>valider son inscription</a>.</li>
     </ol>
   </p>
-  <h3>Modifier le listing des animateurs</h3>
-  <p>Cette page présente un listing simplifié de tous les animateurs.
-     Clique sur le bouton en vis-à-vis d'un animateur pour voir toutes ses données.
-     Il y a également un lien pour voir le listing complet.</p>
-  <p>Le bouton <span class='important'>Modifier</span> permet de modifier les données d'un animateur.</p>
-  <p><span class='important'>Ce listing est très important et doit être complété entièrement</span>, car il sert pour le listing fédé.
-     Les données (nom d'animateur, responsable, section, description, rôle, photo, GSM 1 et e-mail) servent aussi à compléter la page de présentation des animateurs.
-     Complète donc <span class='important'>tous les champs</span>.
+  <h3>Voir ou modifier les données d'un animateur</h3>
+  <p>Clique sur le bouton en vis-à-vis d'un animateur pour voir toutes ses données, et éventuellement les modifier si tu en as le droit.</p>
   <p>Pour ajouter ou modifier la photo de l'animateur, utilise le champ approprié.
-  <h3>Changer un animé en animateur</h3>
-  <p>Sélectionne un animé dans la liste, et encode son nouveau nom d'animateur (avec une majuscule).</p>
-  <p>Ensuite, il faut <span class='important'>mettre à jour</span> ses données (adresse e-mail, description, photo, etc.), et lui octroyer des privilèges.</p>
+  <h3>Changer un scout en animateur</h3>
+  <p>Sélectionne un scout dans la liste, le formulaire pour l'inscrire en tant qu'animateur apparaitra. Complète-le et termine en cliquant sur <strong><em>Enregistrer</em></strong></p>
   <p>Attention, cette opération ne peut pas être défaite.</p>
   <h3>Supprimer un animateur</h3>
-  <p>Pour supprimer un animateur qui n'anime plus dans l'unité, il suffit de cliquer sur le bouton <span class='important'>Modifier</span>, et d'ensuite cliquer sur <span class='important'>Supprimer</span>.
-     L'animateur supprimé restera dans les archives (sauf s'il a été ajouté et supprimé au cours d'une même année).
+  <p>Pour supprimer un animateur qui n'anime plus dans l'unité, il suffit de cliquer sur le bouton <strong><em>Supprimer</em></strong> devant son nom.
+     L'animateur supprimé restera dans les archives (sauf s'il a été ajouté puis supprimé au cours d'une même année).
 @endif
 
 @if ($help == 'edit-privileges')
   <h3>Privilèges des animateurs</h3>
   <p>Chaque animateur a un certains nombre d'actions qu'il peut faire et qu'il ne peut pas faire sur le site.
      Il est possible d'octroyer ces privilèges un à un pour chacun des animateurs.</p>
-  <p>Pour simplifier la gestion, il est possible d'appliquer un ensemble de privilèges prédéfinis via le menu déroulant au-dessus de l'animateur concerné.</p>
+  <p>
+    Il est conseillé de donner les privilèges suivants aux animateurs&nbsp;:
+    <ul>
+      <li><strong>Animateur</strong>&nbsp;: Gestion de base + privilèges en fonction des besoins spécifique (photos, documents, comptes, etc.)</li>
+      <li><strong>Animateur responsable ou webmaster de section</strong>&nbsp;: Gestion de base + Gestion avancée</li>
+      <li><strong>Équipier d'unité</strong>&nbsp;: Gestion de base + Gestion avancée (+ Gestion de l'unité)</li>
+      <li><strong>Animateur d'unité</strong>&nbsp;: Tous les privilèges</li>
+    </ul>
+  </p>
 @endif
 
 @if ($help == 'edit-links')
-  <legend>Les liens @yield('back_to_top')</legend>
-  <p>Il y a moyen de modifier la liste des liens hypertextes qui se trouvent à la page <a href='liens.php'>Liens utiles</a>.
+  <p>Tu peux modifier la liste des liens qui se trouvent à la page <a href="{{ URL::route('links') }}">Liens utiles</a>.
      La liste de liens est commune à toute l'unité.
-     Il est facilement possible d'ajouter, modifier et supprimer un lien.
+  </p>
+  <p>Tu peux <strong>ajouter</strong> un nouveau lien, <strong>modifier</strong> un lien existant ou <strong>supprimer</strong> un lien.
   <p>Les champs à compléter sont:
      <ul>
-       <li><span class='important'>Titre</span> : le nom du lien</li>
-       <li><span class='important'>Adresse</span> : l'URL du site</li>
-       <li><span class='important'>Description</span> : une description plus longue que le titre</li>
+       <li><strong>Nom du lien</strong>&nbsp;: titre du lien</li>
+       <li><strong>URL de la page</strong>&nbsp;: l'adresse du site pointé par le lien</li>
+       <li><strong>Description</strong>&nbsp;: une description plus longue que le titre</li>
      </ul>
   </p>
 @endif
 
 @if ($help == 'accounting')
-  Cet outil te permet de consulter et modifier les comptes financiers de ta section ou de l'unité.
-  <p>Les comptes sont divisés en catégories, qui correspondent aux diverses activités de l'année (journée spéciale, camp, vente de calendriers, achat de matériel, etc.).  Pour chaque catégorie, un bilan total est calculé.</p>
-  <p>Pour ajouter une ligne, clique sur le petit <span class='important'>"+"</span> à la fin de la catégorie ciblée, ou entre le nom d'une nouvelle catégorie.  Une nouvelle ligne vide, à la date d'aujourd'hui, apparait.  Tu peux la compléter :
-    <ul>
-      <li><span class='important'>Date</span> : la date de référence.
-      <li><span class='important'>Motif</span> : la raison du flux d'argent.
-      <li><span class='important'>Liquide et compte en banque</span> : la valeur (en euros) du flux.
-      <li><span class='important'>Commentaire</span> : pour s'il y a des choses à préciser.
-      <li><span class='important'>Reçus</span> : si tu utilises une numérotation des tickets de caisse, cette colonne est prévue pour l'y mettre.
-    </ul>
-  Clique ensuite sur <span class='important'>Enregistrer</span> pour enregistrer d'un coup toutes les modifications apportées aux différentes lignes.
+  <p>
+    Cet outil te permet de consulter et modifier les comptes financiers de ta section ou de l'unité.
   </p>
-  <p>Tu peux supprimer une ligne en utilisant le petit <span class='important'>"-"</span> à la fin.</p>
-  <p>Note que la première entrée de la trésorerie est remplie automatiquement : il s'agit de l'héritage de l'année précédente, calculé automatiquement (et mise à jour si des modifications sont apportées aux comptes de l'année précédente).</p>
-  <p><span class='important'>Tout afficher</span> et <span class='important'>Tout cacher</span> te permettent de montrer ou cacher les catégorie pour y voir plus clair.  Chaque catégorie peut être cachée ou montrée individuellement.</p>
-  <h3>Paiement des cotisations</h3>
-  <p>Cet outil permet au trésorier d'unité de valider les paiements des cosations.
-     La liste de gauche permet de valider les paiements, et la liste de droite permet d'annuler un paiement pour corriger une erreur.
-     N'oublie pas d'enregistrer les modifications après avoir coché les cases.</p>
-  <p>Tu peux réinitialiser la liste, par exemple au début d'une nouvelle année.</p>
+  <h3>Catégories</h3>
+  <p>
+    Les comptes sont divisés en catégories, qui correspondent aux diverses activités de l'année (journée spéciale, camp, vente de calendriers, achat de matériel, etc.).
+    Pour chaque catégorie, un bilan total est calculé.
+  </p>
+  <p>
+    Clique sur <strong><em>Ajouter une catégorie</em></strong> en bas de la page pour créer une nouvelle catégorie. Tu peux éditer le title de la catogérie en cliquant dessus.
+  </p>
+  <h3>Transactions</h3>
+  <p>Chaque transaction correspond à un paiement ou un montant reçu.</p>
+  <p>Pour ajouter une transaction, clique sur <strong><em>Ajouter une transaction</em></strong> sous la catégorie correspondante.</p>
+  <p>Pour chaque transaction, voici les données à compléter</p>
+    <ul>
+      <li><strong>Date</strong> : la date de référence (au format JJ/MM/AAAA)</li>
+      <li><strong>Motif</strong> : la raison de la transaction (ex.: achat nourriture camp)</li>
+      <li><strong>Liquide et compte en banque</strong> : la valeur en euros de l'argent payé ou reçu. Veille à utiliser la bonne colonne, selon qu'il s'agit d'un paiement en liquide ou sur compte.</li>
+      <li><strong>Commentaire</strong> : ajoute des informations supplémentaires si nécessaire
+      <li><strong>Reçus</strong> : si tu utilises une numérotation des tickets de caisse, mets le(s) numéro(s) ici
+    </ul>
+  </p>
+  <p>Tu peux supprimer une ligne en cliquant sur la <span class="glyphicon glyphicon-remove"></span>.</p>
+  <h3>Complément d'information</h3>
+  <p>Les changements sont enregistrés en temps réel. Attention, si deux personnes modifient les comptes en même temps, les changements de l'une d'entre elles ne seront pas enregistrés.</p>
+  <p>La première entrée de la trésorerie est remplie automatiquement&nbsp;: il s'agit de l'héritage de l'année précédente, calculé automatiquement (et mis à jour si des modifications sont apportées aux comptes de l'année précédente). Il n'est pas possible de la modifier manuellement.</p>
 @endif
 
 @if ($help == 'parameters')

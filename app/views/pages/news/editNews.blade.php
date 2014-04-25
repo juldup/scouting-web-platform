@@ -92,7 +92,7 @@
         <legend>
           <div class="row">
             <div class="col-md-10">
-              {{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
+              {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
             </div>
             <div class="col-md-2 text-right">
               <a class="btn-sm btn-default" href="javascript:editNews({{ $newsItem->id }})">Modifier</a>
