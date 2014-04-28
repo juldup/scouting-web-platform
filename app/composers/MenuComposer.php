@@ -6,8 +6,9 @@ class MenuComposer {
     
     $menuItems = array();
     
-    $currentRouteAction = Route::current()->getAction();
-    $currentRouteName = $currentRouteAction['as'];
+    $currentRoute = Route::current();
+    $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
+    $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
     
     $homeCategory = array();
     if (Parameter::get(Parameter::$SHOW_SECTIONS))

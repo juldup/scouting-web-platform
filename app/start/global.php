@@ -53,6 +53,8 @@ App::error(function(Exception $exception, $code)
 
 // Register 404 response
 App::missing(function(Exception $exception) {
+  $user = BaseController::getUser();
+  $user->currentSection = Section::find(1);
   return Response::view('errors.404', array("message" => $exception->getMessage()), 404);
 });
 

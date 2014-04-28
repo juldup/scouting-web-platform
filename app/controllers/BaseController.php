@@ -8,7 +8,6 @@ abstract class BaseController extends Controller {
   // The current section
   protected $section;
   
-
   /**
    * Setup the layout used by the controller.
    *
@@ -21,6 +20,18 @@ abstract class BaseController extends Controller {
   }
   
   public function __construct() {
+    $this->user = self::getUser();
+    // Retrieve section slug in route parameters
+    $routeParameters = Route::current()->parameters();
+    $sectionSlug = "";
+    if (array_key_exists("section_slug", $routeParameters)) {
+      $sectionSlug = $routeParameters['section_slug'];
+    }
+    // Select current tab
+    $this->selectSection($sectionSlug);
+  }
+  
+  public static function getUser() {
     // Retrieve user id from session
     $userId = Session::get('user_id', null);
     // Retrieve user id from cookies
@@ -36,21 +47,14 @@ abstract class BaseController extends Controller {
     }
     if ($userId) {
       // Find user
-      $this->user = User::find($userId);
+      $resultUser = User::find($userId);
     }
-    if ($this->user === null) {
+    if ($resultUser === null) {
       // Load dummy user
-      $this->user = User::disconnectedUser();
+      $resultUser = User::disconnectedUser();
     }
-    View::share('user', $this->user);
-    // Retrieve section slug in route parameters
-    $routeParameters = Route::current()->parameters();
-    $sectionSlug = "";
-    if (array_key_exists("section_slug", $routeParameters)) {
-      $sectionSlug = $routeParameters['section_slug'];
-    }
-    // Select current tab
-    $this->selectSection($sectionSlug);
+    View::share('user', $resultUser);
+    return $resultUser;
   }
   
   protected function selectSection($section_slug) {
