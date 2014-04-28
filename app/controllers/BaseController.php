@@ -49,6 +49,12 @@ abstract class BaseController extends Controller {
     if ($userId) {
       // Find user
       $resultUser = User::find($userId);
+      if ($resultUser) {
+        if ($resultUser->last_visit < time() - 3600) {
+          $resultUser->last_visit = time();
+          $resultUser->save();
+        }
+      }
     }
     if ($resultUser == null) {
       // Load dummy user
