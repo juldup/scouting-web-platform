@@ -45,11 +45,12 @@ abstract class BaseController extends Controller {
         }
       }
     }
+    $resultUser = null;
     if ($userId) {
       // Find user
       $resultUser = User::find($userId);
     }
-    if ($resultUser === null) {
+    if ($resultUser == null) {
       // Load dummy user
       $resultUser = User::disconnectedUser();
     }
