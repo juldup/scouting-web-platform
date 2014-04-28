@@ -1,12 +1,9 @@
 TODO list
 
 BIG TASKS:
-- Subscription paid tool
 
 SMALL TASKS:
-- Change 'manage' to 'edit' everywhere or the other way around
 - Health card auto-deletion + reminder e-mail
-- Remove "view recent changes" from leader menu and leader corner
 
 AT THE END:
 - Layout for smartphones and tablets

@@ -133,11 +133,11 @@ class LeaderCornerController extends BaseController {
             )
         ),
         "Supervision" => array(
-            "Changements récents" => array(
-                'url' => URL::route('view_private_recent_changes'),
-                'help-anchor' => 'changements-recents',
-                'help' => 'recent-changes',
-            ),
+//            "Changements récents" => array(
+//                'url' => URL::route('view_private_recent_changes'),
+//                'help-anchor' => 'changements-recents',
+//                'help' => 'recent-changes',
+//            ),
             "Liste des utilisateurs" => array(
                 'url' => URL::route('user_list'),
                 'help-anchor' => 'liste-membres',

@@ -78,7 +78,7 @@ class MenuComposer {
     if ($user->isLeader()) {
       $leaderCategory = array();
       $leaderCategory["Coin des animateurs"] = 'leader_corner';
-      $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
+//      $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
       
       $leaderCategory["Opérations courantes"] = 'title';
       $leaderCategory['Gérer le calendrier'] = 'manage_calendar';
@@ -101,7 +101,7 @@ class MenuComposer {
       $leaderCategory["Paramètres du site"] = 'edit_parameters';
       
       $leaderCategory['Supervision'] = 'title';
-      $leaderCategory['Changements récents'] = 'view_private_recent_changes';
+//      $leaderCategory['Changements récents'] = 'view_private_recent_changes';
       $leaderCategory['Liste des utilisateurs du site'] = 'user_list';
       
       if (count($leaderCategory)) {
