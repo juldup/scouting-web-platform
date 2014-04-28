@@ -20,5 +20,10 @@
         Changer de section
       </a>
     </li>
+    <li class="{{ $selected == 'subscription_fee' ? "active" : ($can_manage_subscription_fee ? "" : "disabled") }}">
+      <a href="{{ $can_manage_subscription_fee ? URL::route('manage_subscription_fee') : "" }}">
+        Cotisations
+      </a>
+    </li>
   </ul>
 </div>

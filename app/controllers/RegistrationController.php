@@ -141,6 +141,7 @@ class RegistrationController extends GenericPageController {
         'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
         'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
     ));
   }
   
@@ -223,6 +224,7 @@ class RegistrationController extends GenericPageController {
         'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
         'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
     ));
   }
   
@@ -301,6 +303,7 @@ class RegistrationController extends GenericPageController {
         'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
         'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
     ));
   }
   
@@ -358,10 +361,7 @@ class RegistrationController extends GenericPageController {
   public function manageMemberSection() {
     // Make sure the user is allowed to access this page
     if (!$this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
-      if ($this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section) || $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
-        return Redirect::route('manage_registration');
-      }
-      return Helper::forbiddenResponse();
+      return Redirect::route('manage_subscription_fee');
     }
     // List scouts
     $activeMembers = Member::where('validated', '=', true)
@@ -377,6 +377,7 @@ class RegistrationController extends GenericPageController {
         'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
         'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
     ));
   }
   
@@ -420,6 +421,59 @@ class RegistrationController extends GenericPageController {
               ->with('success_message', "Le transfert a été opéré avec succès.");
     }
     
+  }
+  
+  public function manageSubscriptionFee() {
+    // Make sure the user is allowed to access this page
+    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+      if ($this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)
+              || $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
+              || $this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
+        return Redirect::route('manage_registration');
+      }
+      return Helper::forbiddenResponse();
+    }
+    // List scouts
+    $members = Member::where('validated', '=', true)
+            ->orderBy('last_name', 'ASC')
+            ->orderBy('first_name', 'ASC')
+            ->get();
+    // Render view
+    return View::make('pages.registration.manageSubscriptionFee', array(
+        'members' => $members,
+        'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+        'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
+    ));
+  }
+  
+  public function updateSubscriptionFee() {
+    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+      return json_encode(array('result' => 'Failure'));
+    }
+    $changes = Input::all();
+    $error = false;
+    $message = "";
+    foreach ($changes as $memberId => $state) {
+      $memberId = substr($memberId, strlen('member-'));
+      $state = $state != "false" && $state;
+      $member = Member::find($memberId);
+      if ($member) {
+        try {
+          $member->subscription_paid = $state;
+          $member->save();
+        } catch (Exception $e) {
+          $error = true;
+          $message .= "$e ";
+        }
+      } else {
+        $error = true;
+        $message .= "Member $memberId does not exist. ";
+      }
+    }
+    return json_encode(array('result' => $error ? "Failure" : "Success", 'message' => $message));
   }
   
 }
