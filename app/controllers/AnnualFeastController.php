@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * The annual feast page is a simple page with content that can be edited by the leaders.
+ */
 class AnnualFeastController extends GenericPageController {
   
   protected function getEditRouteName() {

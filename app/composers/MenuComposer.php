@@ -1,15 +1,20 @@
 <?php
 
+/**
+ * This composer generates the navigation menu of the website
+ */
 class MenuComposer {
   
   public function compose($view) {
     
     $menuItems = array();
     
+    // Get current route to set current menu item as active
     $currentRoute = Route::current();
     $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
     $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
     
+    // Home category
     $homeCategory = array();
     if (Parameter::get(Parameter::$SHOW_SECTIONS))
       $homeCategory["Unité et sections"] = 'section';
@@ -20,6 +25,7 @@ class MenuComposer {
     if (count($homeCategory))
       $menuItems['Accueil'] = $homeCategory;
     
+    // General category
     $generalCategory = array();
     if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
       $generalCategory["Fête d'unité"] = 'annual_feast';
@@ -37,6 +43,7 @@ class MenuComposer {
       $menuItems['Général'] = $generalCategory;
     }
     
+    // Animation category
     $animationCategory = array();
     if (Parameter::get(Parameter::$SHOW_NEWS))
       $animationCategory["Nouvelles"] = 'news';
@@ -58,6 +65,7 @@ class MenuComposer {
       $menuItems['Animation'] = $animationCategory;
     }
     
+    // Opinion category
     $opinionCategory = array();
     if (Parameter::get(Parameter::$SHOW_SUGGESTIONS))
       $opinionCategory["Suggestions"] = 'suggestions';
@@ -67,6 +75,7 @@ class MenuComposer {
       $menuItems['Votre avis'] = $opinionCategory;
     }
     
+    // Help category
     $helpCategory = array();
     if (Parameter::get(Parameter::$SHOW_HELP))
       $helpCategory["Aide"] = 'help';
@@ -74,6 +83,7 @@ class MenuComposer {
       $menuItems['Aide'] = $helpCategory;
     }
     
+    // Leader corner category
     $user = View::shared('user');
     if ($user->isLeader()) {
       $leaderCategory = array();
@@ -109,6 +119,7 @@ class MenuComposer {
       }
     }
     
+    // Generate menu structure (with sub-category titles, dividers and items' route)
     $menuArray = array();
     foreach ($menuItems as $submenuName => $submenu) {
       $items = array();
@@ -130,6 +141,7 @@ class MenuComposer {
       );
     }
     
+    // Pass the menu array to the view
     $view->withMenuItems($menuArray);
     
   }

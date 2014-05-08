@@ -1,13 +1,27 @@
 <?php
 
+/**
+ * The ban e-mail address tool allows e-mail recipients to ban their e-mail address
+ * from our recipient list. If so, they will never receive any e-mail from this website.
+ * This is useful to prevent people from reporting our e-mail as spam.
+ * 
+ * Each e-mail address has an associated ban code in table 'banned_emails'. The ban code
+ * is only ever sent to the given e-mail address.
+ */
 class BanEmailAddressController extends BaseController {
   
+  /**
+   * Shows a view for the user to confirm banning their e-mail address.
+   * 
+   * @param string $ban_code  The code associated to the e-mail address to ban
+   */
   public function banEmailAddress($ban_code) {
     $banned = BannedEmail::where('ban_code', '=', $ban_code)->first();
     if (!$banned) {
       return App::abort(404);
     }
     if ($banned->banned) {
+      // The e-mail address is already banned, show confirmation page
       return $this->confirmBanEmailAddress($ban_code);
     }
     return View::make('pages.banEmailAddress.banEmailAddress', array(
@@ -16,13 +30,21 @@ class BanEmailAddressController extends BaseController {
     ));
   }
   
+  /**
+   * Called when the user confirm the ban of the e-mail address.
+   * Returns a confirmation page.
+   * 
+   * @param string $ban_code  The code associated to the e-mail address to ban
+   */
   public function confirmBanEmailAddress($ban_code) {
     $banned = BannedEmail::where('ban_code', '=', $ban_code)->first();
     if (!$banned) {
       return App::abort(404);
     }
+    // Mark e-mail address as banned
     $banned->banned = true;
     $banned->save();
+    // Return view
     return View::make('pages.banEmailAddress.confirmBan', array(
         'email' => $banned->email,
     ));

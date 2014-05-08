@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * This class is the parent of all controllers and offers some common
+ * functionalities: it logs in the user and set the selected section.
+ */
 abstract class BaseController extends Controller {
   
   // The current user
@@ -9,9 +13,7 @@ abstract class BaseController extends Controller {
   protected $section;
   
   /**
-   * Setup the layout used by the controller.
-   *
-   * @return void
+   * Creates layout used by the controller.
    */
   protected function setupLayout() {
     if (!is_null($this->layout)) {
@@ -19,6 +21,9 @@ abstract class BaseController extends Controller {
     }
   }
   
+  /**
+   * Constructor: logs in the user and retrieves the currently selected section
+   */
   public function __construct() {
     $this->user = self::getUser();
     // Retrieve section slug in route parameters
@@ -31,6 +36,10 @@ abstract class BaseController extends Controller {
     $this->selectSection($sectionSlug);
   }
   
+  /**
+   * Tries logging in the user and returns it. Returns a dummy user if
+   * the user is not logged in.
+   */
   public static function getUser() {
     // Retrieve user id from session
     $userId = Session::get('user_id', null);
@@ -64,6 +73,11 @@ abstract class BaseController extends Controller {
     return $resultUser;
   }
   
+  /**
+   * Sets the given section as selected
+   * 
+   * @param string/null $section_slug  The selected section's slug, or null
+   */
   protected function selectSection($section_slug) {
     // Determine currently selected section
     $section = null;

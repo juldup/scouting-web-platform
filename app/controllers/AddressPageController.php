@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * The address page is a simple page with content that can be edited by the leaders.
+ */
 class AddressPageController extends GenericPageController {
   
   protected function getEditRouteName() {

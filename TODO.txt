@@ -3,6 +3,7 @@ TODO list
 BIG TASKS:
 
 SMALL TASKS:
+- Select section hint under the section menu
 
 AT THE END:
 - Layout for smartphones and tablets
@@ -31,3 +32,5 @@ OPTIONAL/LATER:
 - Forum ?
 - Fix issue: on the first year, archiving first created leader
 - HTML version of e-mails
+- Tool to check that cron tasks are running correctly
+- Lock accounting to avoid loosing data with simultaneous changes
