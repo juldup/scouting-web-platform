@@ -40,24 +40,37 @@
 			private function openImage($file)
 			{
 				// *** Get image info
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $file);
+        if (function_exists("finfo_open")) {
+          $finfo = finfo_open(FILEINFO_MIME_TYPE);
+          $mimeType = finfo_file($finfo, $file);
 
-				switch($mimeType)
-				{
-					case 'image/jpeg':
-						$img = @imagecreatefromjpeg($file);
-						break;
-					case 'image/gif':
-						$img = @imagecreatefromgif($file);
-						break;
-					case 'image/png':
-						$img = @imagecreatefrompng($file);
-						break;
-					default:
-						$img = false;
-						break;
-				}
+          switch($mimeType)
+          {
+            case 'image/jpeg':
+              $img = @imagecreatefromjpeg($file);
+              break;
+            case 'image/gif':
+              $img = @imagecreatefromgif($file);
+              break;
+            case 'image/png':
+              $img = @imagecreatefrompng($file);
+              break;
+            default:
+              $img = false;
+              break;
+          }
+        } else {
+          $handle = fopen($file, 'r');
+          $bytes = fread($handle, 8);
+          $isPNG = substr($bytes, 1, 3) == "PNG";
+          fclose($handle);
+          if ($isPNG) {
+            $img = @imagecreatefrompng($file);
+          } else {
+            // Assume jpeg
+            $img = @imagecreatefromjpeg($file);
+          }
+        }
 				return $img;
 			}
 

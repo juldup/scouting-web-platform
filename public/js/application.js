@@ -88,6 +88,7 @@ $().ready(function() {
     } else {
       window.location = a.attr('href');
     }
+    event.preventDefault();
   });
 });
 

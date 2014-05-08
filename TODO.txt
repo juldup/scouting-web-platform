@@ -3,7 +3,6 @@ TODO list
 BIG TASKS:
 
 SMALL TASKS:
-- Health card auto-deletion + reminder e-mail
 
 AT THE END:
 - Layout for smartphones and tablets

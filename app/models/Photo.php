@@ -46,6 +46,12 @@ class Photo extends Eloquent {
   public function createThumbnailPicture() {
     $thumbnail = new Resizer($this->getPhotoPath(Photo::$FORMAT_ORIGINAL));
     $thumbnail->resizeImage(Photo::$THUMBNAIL_WIDTH, Photo::$THUMBNAIL_HEIGHT, "crop");
+    // Create directory
+    $folder = $this->getPhotoPathFolder(Photo::$FORMAT_THUMBNAIL);
+    if (!file_exists($folder)) {
+      mkdir($folder, 0777, true);
+    }
+    // Save image
     $thumbnail->saveImage($this->getPhotoPath(Photo::$FORMAT_THUMBNAIL));
   }
   
@@ -53,6 +59,12 @@ class Photo extends Eloquent {
   public function createPreviewPicture() {
     $preview = new Resizer($this->getPhotoPath(Photo::$FORMAT_ORIGINAL));
     $preview->resizeImage(Photo::$PREVIEW_WIDTH, Photo::$PREVIEW_HEIGHT, "portrait");
+    // Create directory
+    $folder = $this->getPhotoPathFolder(Photo::$FORMAT_PREVIEW);
+    if (!file_exists($folder)) {
+      mkdir($folder, 0777, true);
+    }
+    // Save image
     $preview->saveImage($this->getPhotoPath(Photo::$FORMAT_PREVIEW));
   }
   

@@ -22,8 +22,11 @@ View::composer('menu.tabs', "TabsComposer");
 // ROUTES
 
 // Cron tasks
-Route::get('/envoi-automatique-emails', array("as" => "send_emails_automatically", "uses" => function() {
+Route::get('cron/envoi-automatique-emails', array("as" => "cron_send_emails_automatically", "uses" => function() {
   ScoutMailer::sendPendingEmails();
+}));
+Route::get('cron/suppression-auto-fiches-sante', array("as" => "cron_auto_delete_health_cards", "uses" => function() {
+  HealthCard::autoReminderAndDelete();
 }));
 
 // General
