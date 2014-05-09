@@ -10,7 +10,7 @@
 class CalendarController extends BaseController {
   
   /**
-   * Shows the public calendar page
+   * [Route] Shows the public calendar page
    */
   public function showPage($year = null, $month = null) {
     return $this->showCalendar($year, $month, false);
@@ -121,7 +121,7 @@ class CalendarController extends BaseController {
   }
   
   /**
-   * Downloads the calendar in PDF format
+   * [Route] Downloads the calendar in PDF format
    */
   public function downloadCalendar() {
     // Get semester(s)
@@ -142,7 +142,7 @@ class CalendarController extends BaseController {
   }
   
   /**
-   * Shows the calendar edition page (leaders only)
+   * [Route] Shows the calendar edition page (leaders only)
    */
   public function showEdit($year = null, $month = null) {
     // Make sure this page can be displayed

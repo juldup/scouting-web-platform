@@ -7,7 +7,7 @@
 class ContactController extends BaseController {
   
   /**
-   * Shows the contact page
+   * [Route] Shows the contact page
    */
   public function showPage() {
     // Make sure this page can be displayed

@@ -9,7 +9,7 @@
 class AccountingController extends BaseController {
   
   /**
-   * Generate the page
+   * [Route] Generate the page
    * 
    * @param string $year  Used to view the accounting data of another year (default is the current scout year)
    */
@@ -65,7 +65,7 @@ class AccountingController extends BaseController {
   }
   
   /**
-   * Ajax call to update the changes to the accounting data
+   * [Route] Ajax call to update the changes to the accounting data
    * 
    * @param string $year  The scout year being modified
    */

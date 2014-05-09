@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * The help page is a simple page with content that can be edited by the leaders.
+ */
 class HelpPageController extends GenericPageController {
   
   protected function getEditRouteName() {

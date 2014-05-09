@@ -1,7 +1,21 @@
 <?php
 
+/**
+ * Leaders can share documents with the parents and scouts. Documents are filed
+ * by section, and sorted by category. They can be public (access for anybody) or
+ * private (access for members only).
+ * 
+ * There are two pages: the download page and the management page. The latter is
+ * only accessible to leaders.
+ */
 class DocumentController extends BaseController {
   
+  /**
+   * [Route] Shows the document page
+   * 
+   * @param boolean $showArchives  Whether archived documents are being shown
+   * @param integer $page  The archive page being shown (starts at 0)
+   */
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_DOCUMENTS)) {
@@ -51,6 +65,7 @@ class DocumentController extends BaseController {
     foreach ($documents as $document) {
       $documentSelectList[$document->id] = $document->title;
     }
+    // Make view
     return View::make('pages.documents.documents', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section),
         'edit_url' => URL::route('manage_documents', array('section_slug' => $this->section->slug)),
@@ -62,43 +77,18 @@ class DocumentController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Shows the archived documents page
+   */
   public function showArchives($section_slug = null) {
     $page = Input::get('page');
     if (!$page) $page = 0;
     return $this->showPage($section_slug, true, $page);
   }
   
-  public function updateCategoryName($category) {
-    if ($category == "Pour les scouts") {
-      $category = "Pour les " . $this->section->getScoutName();
-    }
-    return $category;
-  }
-  
-  public function generateCategoryList($documents) {
-    // Create an array per category
-    $documentsInCategories = array();
-    $categories = explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES));
-    foreach ($categories as $category) {
-      $documentsInCategories[$this->updateCategoryName($category)] = array();
-    }
-    $documentsInCategories["Divers"] = array();
-    // Put documents in categories
-    foreach ($documents as $document) {
-      $category = $this->updateCategoryName($document->category);
-      if (array_key_exists($category, $documentsInCategories)) {
-        $documentsInCategories[$category][] = $document;
-      } else {
-        $documentsInCategories["Divers"][] = $document;
-      }
-    }
-    // Remove empty categories
-    foreach ($documentsInCategories as $category=>$docs) {
-      if (count($docs) == 0) unset($documentsInCategories[$category]);
-    }
-    return $documentsInCategories;
-  }
-  
+  /**
+   * [Route] Shows the document management page
+   */
   public function showEdit() {
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->user->currentSection)) {
       return Helper::forbiddenResponse();
@@ -125,14 +115,59 @@ class DocumentController extends BaseController {
     ));
   }
   
+  /**
+   * Transforms the category name "Pour les scouts" to a category name
+   * depending on the current section (e.g. "Pour les baladins")
+   */
+  private function updateCategoryName($category) {
+    if ($category == "Pour les scouts") {
+      $category = "Pour les " . $this->section->getScoutName();
+    }
+    return $category;
+  }
+  
+  /**
+   * Sorts the documents by category and returns an array
+   * of {category name}=>{array of documents in this category}.
+   * All documents that don't belong to a predefined catogory
+   * are put in the "Divers" category.
+   */
+  private function generateCategoryList($documents) {
+    // Create an array per category
+    $documentsInCategories = array();
+    $categories = explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES));
+    foreach ($categories as $category) {
+      $documentsInCategories[$this->updateCategoryName($category)] = array();
+    }
+    $documentsInCategories["Divers"] = array();
+    // Put documents in categories
+    foreach ($documents as $document) {
+      $category = $this->updateCategoryName($document->category);
+      if (array_key_exists($category, $documentsInCategories)) {
+        $documentsInCategories[$category][] = $document;
+      } else {
+        $documentsInCategories["Divers"][] = $document;
+      }
+    }
+    // Remove empty categories
+    foreach ($documentsInCategories as $category=>$docs) {
+      if (count($docs) == 0) unset($documentsInCategories[$category]);
+    }
+    return $documentsInCategories;
+  }
+  
+  /**
+   * [Route] Outputs the selected document for download
+   */
   public function downloadDocument($document_id) {
+    // Get document
     $document = Document::find($document_id);
     if (!$document) App::abort("Ce document n'existe plus.");
-    
+    // Make sure the user has access to this document
     if (!$document->public && !$this->user->isMember()) {
       return Helper::forbiddenResponse();
     }
-    
+    // Output document
     $path = $document->getPath();
     $filename = str_replace("\"", "", $document->filename);
     if (file_exists($path)) {
@@ -143,16 +178,27 @@ class DocumentController extends BaseController {
           'Content-disposition' => "attachment; filename=\"$filename\"",
       ));
     } else {
+      // File does not exist, redirect to previous page with error message
       return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus.");
     }
   }
   
+  /**
+   * [Route] Sends the selected document by e-mail to the desired recipient
+   * if they are a member of the unit
+   */
   public function sendByEmail() {
+    // Get e-mail address and document id from input
     $emailAddress = strtolower(Input::get('email'));
     $documentId = Input::get('document_id');
+    // Make sure the e-mail address is non-empty
     if ($emailAddress == "") {
-      return Redirect::to(URL::previous())->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")->withInput();
-    } if (Member::existWithEmail($emailAddress)) {
+      return Redirect::to(URL::previous())
+              ->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")
+              ->withInput();
+    }
+    // Test if the given e-mail address belongs to a member
+    if (Member::existWithEmail($emailAddress)) {
       // Send document by e-mail
       $document = Document::find($documentId);
       if (!$document) return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe pas.")->withInput();
@@ -170,14 +216,21 @@ class DocumentController extends BaseController {
           'attached_document_id' => $documentId,
       ));
       $email->send();
+      // Redirect to previous page with success message
       return Redirect::to(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$emailAddress</strong>.");
     } else {
-      return Redirect::to(URL::previous())->with('error_message', "Désolés, l'adresse <strong>$emailAddress</strong> ne fait pas partie de notre listing.")->withInput();
+      // The e-mail address does not belong to a member, redirect to previous page with an error message
+      return Redirect::to(URL::previous())
+              ->with('error_message', "Désolés, l'adresse <strong>$emailAddress</strong> ne fait pas partie de notre listing.")
+              ->withInput();
     }
   }
   
+  /**
+   * [Route] Used to submit a new or modified document by a leader
+   */
   public function submitDocument($section_slug) {
-    
+    // Get input data
     $docId = Input::get('doc_id');
     $title = Input::get('doc_title');
     $description = Input::get('description');
@@ -186,22 +239,26 @@ class DocumentController extends BaseController {
     $file = Input::file('document');
     $filename = Input::get('filename');
     $actualFileName = ($file ? $file->getClientOriginalName() : null);
-    
+    // Make sure the user can edit documents
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section)) {
       return Helper::forbiddenResponse();
     }
-    
+    // Update or create document
     $success = false;
     if (!$title) {
+      // The title is empty
       $success = false;
       $message = "Tu dois entrer un titre.";
     } else {
       if ($docId) {
+        // The document already exists and is being updated
         $document = Document::find($docId);
         if ($document) {
+          // The document has been found, check that the user can modify documents of this section
           if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->getSection())) {
             return Helper::forbiddenResponse();
           }
+          // Update the document
           $document->title = $title;
           $document->description = $description;
           $document->public = $public;
@@ -210,12 +267,10 @@ class DocumentController extends BaseController {
           try {
             $document->save();
             $success = true;
-            
-            // Move file
+            // Move file if a new file was uploaded
             if ($file != null) {
               $file->move($document->getPathFolder(), $document->getPathFilename());
             }
-            
             $message = "Le document a été mis a jour.";
             $section_slug = $document->getSection()->slug;
           } catch (Exception $e) {
@@ -223,14 +278,18 @@ class DocumentController extends BaseController {
             $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
           }
         } else {
+          // The document has not been found
           $success = false;
           $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
         }
       } else {
+        // The document is a new one
         if ($file == null) {
+          // No file has been uploaded
           $success = false;
           $message = "Tu n'as pas joint de document.";
         } else {
+          // Create the document
           $document = null;
           try {
             // Create document
@@ -264,7 +323,7 @@ class DocumentController extends BaseController {
         }
       }
     }
-    
+    // Redirect with success or error message accordingly
     $response = Redirect::route('manage_documents', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
@@ -272,18 +331,27 @@ class DocumentController extends BaseController {
     else return $response->withInput();
   }
   
+  /**
+   * [Route] Deletes an existing document, if it not older than
+   * one week
+   */
   public function deleteDocument($document_id) {
+    // Get document
     $document = Document::find($document_id);
     if (!$document) {
       App::abort(404, "Ce document n'existe pas.");
     }
+    // Make sure the user can delete documents of this section
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
       return Helper::forbiddenResponse();
     }
+    // Make sure the document can still be deleted
     if (!$document->canBeDeleted()) {
+      // Document is too old and can no longer be deleted
       $success = false;
       $message = "Ce document est vieux de plus d'une semaine. Il ne peut pas être supprimé, mais peut être archivé.";
     } else {
+      // Delete document
       try {
         unlink($document->getPath());
         $document->delete();
@@ -294,19 +362,26 @@ class DocumentController extends BaseController {
         $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
       }
     }
+    // Redirect to previous page with success or error message
     return Redirect::route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
   }
   
+  /**
+   * [Route] Marks a document as archived
+   */
   public function archiveDocument($section_slug, $document_id) {
+    // Get the document
     $document = Document::find($document_id);
     if (!$document) {
       App::abort(404, "Ce document n'existe pas.");
     }
+    // Make sure the user can archive documents of this section
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
       return Helper::forbiddenResponse();
     }
+    // Archive document
     try {
       $document->archived = true;
       $document->save();
@@ -316,6 +391,7 @@ class DocumentController extends BaseController {
       $success = false;
       $message = "Une erreur s'est produite. Le document n'a pas été archivé.";
     }
+    // Redirect with status message
     return Redirect::route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
