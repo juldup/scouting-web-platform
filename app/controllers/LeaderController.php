@@ -1,7 +1,18 @@
 <?php
 
+/**
+ * Presents a list of the sections' leaders.
+ * Also provides tools to manage the listing of leaders. Leaders can
+ * be added, modified and deleted.
+ */
 class LeaderController extends BaseController {
   
+  /**
+   * [Route] Shows a page containing the leaders of a section.
+   * Can also show archived leaders of a previous year.
+   * 
+   * @param string $archive  The archive ('YYYY-YYYY') to show, or null for the current leaders
+   */
   public function showPage($section_slug = null, $archive = null) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_LEADERS)) {
@@ -24,6 +35,7 @@ class LeaderController extends BaseController {
               ->orderBy('leader_name', 'ASC')
               ->get();
     }
+    // Count leaders in charge, other leaders, and gender for determining the titles
     $countInCharge = 0;
     $countOthers = 0;
     $menInCharge = false; // Whether there is at least one male in charge
@@ -37,8 +49,7 @@ class LeaderController extends BaseController {
         if ($leader->gender != 'F') $menInOthers = true;
       }
     }
-    
-    // Archives
+    // List existing archives
     $archives = ArchivedLeader::select('year')
             ->distinct()
             ->where('section_id', '=', $this->section->id)
@@ -49,9 +60,8 @@ class LeaderController extends BaseController {
         $archiveYears[] = $year->year;
       }
     }
-    
     sort($archiveYears);
-    
+    // Make view
     return View::make('pages.leader.leaders', array(
         'is_leader' => $this->user->isLeader(),
         'leaders' => $leaders,
@@ -64,25 +74,37 @@ class LeaderController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Shows the leader page of a previous year
+   * 
+   * @param string $year  The archive in 'YYYY-YYYY' format
+   */
   public function showArchivedLeaders($year) {
     return $this->showPage($this->section->slug, $year);
   }
   
+  /**
+   * [Route] Shows the leader management page
+   * 
+   * @param integer $memberId  Optional: the id of a scout to turn into a leader
+   */
   public function showEdit($section_slug = null, $memberId = false) {
-    
+    // Make sure the user has access to this page
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
-    
+    // List leaders
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
             ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
             ->get();
-    
+    // List scouts that could be turned into a leader
+    $fifteenYearsAgo = date('Y-m-d', strtotime("-15 years"));
     $scouts = Member::where('is_leader', '=', false)
             ->where('validated', '=', true)
+            ->where('birth_date', '<', $fifteenYearsAgo)
             ->orderBy('last_name', 'ASC')
             ->orderBy('first_name', 'ASC')
             ->get();
@@ -90,7 +112,7 @@ class LeaderController extends BaseController {
     foreach ($scouts as $scout) {
       $scoutsForSelect[$scout->id] = $scout->last_name . " " . $scout->first_name;
     }
-    
+    // Get scout to turn into a leader (if any)
     if ($memberId) {
       $memberToTurnLeader = Member::where('is_leader', '=', false)
               ->where('validated', '=', true)
@@ -98,7 +120,7 @@ class LeaderController extends BaseController {
               ->first();
       if ($memberToTurnLeader) $leaders[] = $memberToTurnLeader;
     }
-    
+    // Make view
     return View::make('pages.leader.editLeaders', array(
         'leaders' => $leaders,
         'scouts' => $scoutsForSelect,
@@ -112,10 +134,18 @@ class LeaderController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Shows the management page with a scout selected to be turned into a leader
+   * 
+   * @param integer $member_id  The id of the scout to turn into a leader
+   */
   public function showMemberToLeader($member_id) {
     return $this->showEdit($this->section->slug, $member_id);
   }
   
+  /**
+   * [Route] Used when a scout to be turned into a leader is selected
+   */
   public function postMemberToLeader($section_slug) {
     $memberId = Input::get('member_id');
     if ($memberId) {
@@ -126,6 +156,9 @@ class LeaderController extends BaseController {
     }
   }
   
+  /**
+   * [Route] Returns the picutre of a leader
+   */
   public function getLeaderPicture($leader_id) {
     $leader = Member::find($leader_id);
     if ($leader && $leader->is_leader && $leader->has_picture) {
@@ -137,6 +170,9 @@ class LeaderController extends BaseController {
     }
   }
   
+  /**
+   * [Route] Returns the picture of an archived leader
+   */
   public function getArchivedLeaderPicture($archived_leader_id) {
     $leader = ArchivedLeader::find($archived_leader_id);
     if ($leader && $leader->has_picture) {
@@ -148,11 +184,15 @@ class LeaderController extends BaseController {
     }
   }
   
+  /**
+   * [Route] Used to submit the modified data of a leader
+   */
   public function submitLeader() {
+    // Get the leader from input data
     $memberId = Input::get('member_id');
     $sectionId = Input::get('section_id');
     if (!$sectionId) $sectionId = $this->section->id;
-    
+    // Determine which fields can be edited by the current leader
     $editionLevel = $this->editionLevelAllowed($memberId, $sectionId);
     $canChangeSection = $this->user->can(Privilege::$SECTION_TRANSFER, 1);
     if (!$editionLevel) {
@@ -160,12 +200,13 @@ class LeaderController extends BaseController {
               ->withInput()
               ->with('error_message', "Tu n'as pas le droit de faire cette modification.");
     }
-    
+    // Update database
     if ($memberId) {
       // Existing leader
       $leader = Member::find($memberId);
       $wasLeaderBefore = $leader->is_leader;
       if ($leader) {
+        // Update existing leader
         $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true);
         if ($result === true) {
           if (!$wasLeaderBefore) Privilege::addBasePrivilegesForLeader($leader);
@@ -186,7 +227,7 @@ class LeaderController extends BaseController {
         return Redirect::to(URL::previous())
                 ->with('error_message', "Tu n'as pas le droit d'inscrire un nouvel animateur.");
       }
-
+      // Create leader
       $result = Member::createFromInput(true);
       if (is_string($result)) {
         // An error has occured
@@ -198,7 +239,7 @@ class LeaderController extends BaseController {
         $message = "L'animateur a été ajouté au listing.";
       }
     }
-        
+    // Redirect with status message
     if ($success)
       return Redirect::to(URL::route('edit_leaders', array('section_slug' => $leader->getSection()->slug)))
               ->with($success ? 'success_message' : 'error_message', $message);
@@ -208,13 +249,19 @@ class LeaderController extends BaseController {
             ->withInput();
   }
   
+  /**
+   * [Route] Deletes a leader
+   */
   public function deleteLeader($leader_id, $section_slug) {
+    // Get leader to delete
     $member = Member::find($leader_id);
     $sectionId = $member ? $member->section_id : null;
     if ($sectionId) {
+      // Make sure the current user can delete this leader
       if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
         return Helper::forbiddenResponse();
       }
+      // Delete leader
       try {
         $member->delete();
         return Redirect::route('edit_leaders')
@@ -227,6 +274,11 @@ class LeaderController extends BaseController {
             ->with('error_message', "Une erreur est survenue. L'animateur n'a pas été supprimé.");
   }
   
+  /**
+   * Determines the fields that can be edited by the current user for
+   * the given member in the given section
+   * @return string|boolean "full", "limited" or false
+   */
   private function editionLevelAllowed($memberId, $sectionId) {
     if (!$memberId) {
       // Creating new leader
@@ -241,30 +293,25 @@ class LeaderController extends BaseController {
       $existingMember = Member::find($memberId);
       if (!$existingMember) return "full"; // Let the process continue, it will fail later anyway
       $memberSectionId = $existingMember->section_id;
-      
       // Check if the user has full edit privileges
       if ($this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId) &&
               $this->user->can(Privilege::$EDIT_LISTING_ALL, $memberSectionId)) {
         return "full";
       }
-      
       // Check if the user is modifying their own member entry
       if ($this->user->can(Privilege::$UPDATE_OWN_LISTING_ENTRY, $sectionId) &&
               $sectionId == $memberSectionId &&
               $this->user->isOwnerOfMember($memberId)) {
         return "full";
       }
-      
       // Check if the user has limited edit privileges
       if ($this->user->can(Privilege::$EDIT_LISTING_LIMITED, $sectionId) &&
               $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $memberSectionId)) {
         return "limited";
       }
-      
       // None of the above apply
       return false;
     }
-    
   }
   
 }

@@ -1,13 +1,20 @@
 <?php
 
+/**
+ * The leader corner provides a list of all the possible management actions
+ * for the leaders with a short description.
+ */
 class LeaderCornerController extends BaseController {
   
+  /**
+   * [Route] Displays the leader corner page
+   */
   public function showPage() {
-    
+    // Make sure the user is a leader
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
-    
+    // List operations of the leaders
     $operations = array(
         "Opérations courantes" => array(
             "Calendrier" => array(
@@ -145,7 +152,6 @@ class LeaderCornerController extends BaseController {
             )
         )
     );
-    
     // Remove disabled operations
     foreach ($operations as $category=>$ops) {
       foreach ($ops as $operation=>$operationData) {
@@ -155,7 +161,6 @@ class LeaderCornerController extends BaseController {
         }
       }
     }
-    
     // Create help section list
     $helpSections = array('general');
     foreach ($operations as $ops) {
@@ -165,7 +170,7 @@ class LeaderCornerController extends BaseController {
         }
       }
     }
-    
+    // Make view
     return View::make('pages.leaderCorner.leaderCorner', array(
         'operations' => $operations,
         'help_sections' => $helpSections,
