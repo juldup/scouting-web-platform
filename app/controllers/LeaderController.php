@@ -7,6 +7,8 @@
  */
 class LeaderController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   /**
    * [Route] Shows a page containing the leaders of a section.
    * Can also show archived leaders of a previous year.

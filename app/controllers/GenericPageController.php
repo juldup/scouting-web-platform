@@ -117,7 +117,7 @@ abstract class GenericPageController extends BaseController {
     } else {
       $sectionSlugParameter = array();
     }
-    return Redirect::route(route($this->getShowRouteName(), $sectionSlugParameter));
+    return Redirect::route($this->getShowRouteName(), $sectionSlugParameter);
   }
   
   /**

@@ -3,7 +3,6 @@ TODO list
 BIG TASKS:
 
 SMALL TASKS:
-- Select section hint under the section menu
 
 AT THE END:
 - Comment code

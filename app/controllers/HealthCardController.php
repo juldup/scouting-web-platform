@@ -6,6 +6,10 @@
  */
 class HealthCardController extends BaseController {
   
+  protected function currentPageAdaptToSections() {
+    return $this->user->isLeader();
+  }
+  
   /**
    * [Route] Shows the health card page
    * @return type

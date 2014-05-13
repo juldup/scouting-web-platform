@@ -8,6 +8,8 @@
  */
 class ListingController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   /**
    * [Route] Shows the listing page
    */

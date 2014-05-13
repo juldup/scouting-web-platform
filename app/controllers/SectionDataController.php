@@ -2,6 +2,8 @@
 
 class SectionDataController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   public function showPage() {
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();

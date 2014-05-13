@@ -2,6 +2,8 @@
 
 class SectionPageController extends GenericPageController {
   
+  protected $pagesAdaptToSections = true;
+  
   protected function getEditRouteName() {
     return "edit_section_page";
   }

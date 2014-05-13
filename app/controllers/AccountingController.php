@@ -8,6 +8,8 @@
  */
 class AccountingController extends BaseController {
   
+  protected $isSectionPage = true;
+  
   /**
    * [Route] Generate the page
    * 

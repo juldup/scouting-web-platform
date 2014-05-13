@@ -2,6 +2,10 @@
 
 class RegistrationController extends GenericPageController {
   
+  protected function currentPageAdaptToSections() {
+    return $this->user->isLeader();
+  }
+  
   public function showMain() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_REGISTRATION)) {

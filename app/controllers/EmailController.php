@@ -7,6 +7,8 @@
  */
 class EmailController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   /**
    * [Route] Shows a page containing the e-mails that were previously sent
    * 

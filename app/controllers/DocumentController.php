@@ -10,6 +10,8 @@
  */
 class DocumentController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   /**
    * [Route] Shows the document page
    * 

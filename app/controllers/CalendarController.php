@@ -9,6 +9,8 @@
  */
 class CalendarController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   /**
    * [Route] Shows the public calendar page
    */

@@ -2,6 +2,8 @@
 
 class RecentChangesController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   public function showPage() {
     
     $startDate = date('Y-m-d', time() - 3600 * 24 * 60);

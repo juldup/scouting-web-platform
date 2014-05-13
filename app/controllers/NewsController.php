@@ -2,6 +2,8 @@
 
 class NewsController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {

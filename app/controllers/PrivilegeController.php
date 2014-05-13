@@ -2,6 +2,8 @@
 
 class PrivilegeController extends BaseController {
   
+  protected $pagesAdaptToSections = true;
+  
   public function showEdit() {
     
     if (!$this->user->isLeader()) {

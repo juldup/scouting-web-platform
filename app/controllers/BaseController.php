@@ -12,6 +12,16 @@ abstract class BaseController extends Controller {
   // The current section
   protected $section;
   
+  // True when the current controller's page(s) adapt to the sections
+  protected $pagesAdaptToSections = false;
+  
+  /**
+   * Can be overriden by a controller when some of its page are section pages and some are not
+   */
+  protected function currentPageAdaptToSections() {
+    return $this->pagesAdaptToSections;
+  }
+  
   /**
    * Creates layout used by the controller.
    */
@@ -34,6 +44,8 @@ abstract class BaseController extends Controller {
     }
     // Select current tab
     $this->selectSection($sectionSlug);
+    // Determine whether the current page is a section specific page
+    View::share('section_page', $this->currentPageAdaptToSections());
   }
   
   /**
