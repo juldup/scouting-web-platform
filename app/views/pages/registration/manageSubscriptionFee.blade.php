@@ -43,12 +43,13 @@
     </div>
     <div class="form-horizontal">
       <div class="form-group">
-        <div class="col-sm-5 text-right">
+        <div class="col-xs-4 col-sm-5 text-right">
           <strong>
             Cotisation non payée
           </strong>
         </div>
-        <div class="col-sm-5 col-sm-offset-2" />
+        <div class="col-xs-4 col-sm-2"></div>
+        <div class="col-xs-4 col-sm-5" />
           <strong>
             Cotisation payée
           </strong>
@@ -56,12 +57,12 @@
       </div>
       @foreach ($members as $member)
         <div class="form-group {{ $member->subscription_paid ? "paid-member" : "unpaid-member" }}" data-member-id="{{ $member->id }}">
-          <div class="col-sm-5 text-right">
+          <div class="col-xs-4 col-sm-5 text-right">
             <div class="fee-unpaid">
               {{{ $member->last_name }}} {{{ $member->first_name }}}
             </div>
           </div>
-          <div class="col-sm-2 text-center">
+          <div class="col-xs-4 col-sm-2 text-center">
             <a class="btn-sm btn-primary toggle-subscription-paid-button fee-unpaid">
               <span class="glyphicon glyphicon-arrow-right"></span>
             </a>
@@ -69,7 +70,7 @@
               <span class="glyphicon glyphicon-arrow-left"></span>
             </a>
           </div>
-          <div class="col-sm-5 text-left">
+          <div class="col-xs-4 col-sm-5 text-left">
             <div class="fee-paid">
               {{{ $member->last_name }}} {{{ $member->first_name }}}
             </div>

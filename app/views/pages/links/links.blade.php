@@ -23,13 +23,15 @@
   </div>
   
   @foreach ($links as $link)
-    <div class="row well clickable clickable-no-default">
-      <div class="col-lg-12">
-        <legend>
-          <a href="{{{ $link->url }}}" target="_blank">{{{ $link->title }}}</a>
-        </legend>
-        <div>
-          {{ Helper::rawToHTML($link->description) }}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well clickable clickable-no-default">
+          <legend>
+            <a href="{{{ $link->url }}}" target="_blank">{{{ $link->title }}}</a>
+          </legend>
+          <div>
+            {{ Helper::rawToHTML($link->description) }}
+          </div>
         </div>
       </div>
     </div>

@@ -174,4 +174,27 @@
   </p>
 @endif
 
+@if ($help == 'suggestions')
+  <legend>Suggestions @yield('back_to_top')</legend>
+  <p>
+    Les visiteurs du site peuvent laisser des suggestions, concernant le site tout comme les activités de l'unité.
+  </p>
+  <p>
+    Cet outil permet de répondre aux suggestions ou de les supprimer.
+  </p>
+  <p>
+    Toutes les suggestions et leurs réponses sont publiques.
+  </p>
+@endif
+
+@if ($help == 'guest-book')
+  <legend>Livre d'or @yield('back_to_top')</legend>
+  <p>
+    Les visiteurs du site peuvent laisser des messages publics dans le livre d'or.
+  </p>
+  <p>
+    Cet outil permet de supprimer un message inadéquat.
+  </p>
+@endif
+
 </div>

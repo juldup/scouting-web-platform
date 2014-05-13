@@ -87,24 +87,24 @@
   </div>
   
   @foreach ($news as $newsItem)
-    <div class="row well">
+    <div class="row">
       <div class="col-lg-12">
-        <legend>
-          <div class="row">
-            <div class="col-md-10">
-              {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
+        <div class="well">
+          <legend>
+            <div class="row">
+              <div class="col-xs-8 col-sm-10">
+                {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
+              </div>
+              <div class="col-xs-4 col-sm-2 text-right">
+                <a class="btn-sm btn-default" href="javascript:editNews({{ $newsItem->id }})">Modifier</a>
+              </div>
             </div>
-            <div class="col-md-2 text-right">
-              <a class="btn-sm btn-default" href="javascript:editNews({{ $newsItem->id }})">Modifier</a>
-            </div>
+          </legend>
+          <p>
+          </p>
+          <div>
+            {{ Helper::rawToHTML($newsItem->body) }}
           </div>
-          
-        </legend>
-        <p>
-          
-        </p>
-        <div>
-          {{ Helper::rawToHTML($newsItem->body) }}
         </div>
       </div>
     </div>

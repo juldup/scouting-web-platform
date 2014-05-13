@@ -1,4 +1,4 @@
-<ul class="nav navbar-nav navbar-right">
+<ul class="nav navbar-nav navbar-right user-box">
   @if (!$user->isConnected())
     {{-- The visitor is not connected --}}
     <li>

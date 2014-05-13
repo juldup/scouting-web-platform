@@ -44,39 +44,41 @@
       </div>
     </div>
     @foreach ($docs as $doc)
-      <div class="row well clickable-no-default clickable">
+      <div class="row">
         <div class="col-lg-12">
-          @if ($user->isMember() || $doc->public)
-            <legend>
-              <div class="row">
-                <div class="col-md-10">
-                  @if ($showing_archives)
-                    {{ Helper::dateToHuman($doc->doc_date) }} :
-                  @endif
-                  <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
+          <div class="well clickable-no-default clickable">
+            @if ($user->isMember() || $doc->public)
+              <legend>
+                <div class="row">
+                  <div class="col-xs-8 col-sm-10">
+                    @if ($showing_archives)
+                      {{ Helper::dateToHuman($doc->doc_date) }} :
+                    @endif
+                    <a href="{{ URL::route('download_document', array('document_id' => $doc->id)) }}">
+                      {{{ $doc->title }}}
+                    </a>
+                  </div>
+                  <div class="col-xs-4 col-sm-2 text-right">
+                    <a class="btn-sm btn-default">Télécharger</a>
+                  </div>
+                </div>
+              </legend>
+              <p>
+                {{ Helper::rawToHTML($doc->description) }}
+              </p>
+            @else
+              <legend>
+                <div class="row">
+                  <div class="col-xs-10">
                     {{{ $doc->title }}}
-                  </a>
+                  </div>
                 </div>
-                <div class="col-md-2 text-right">
-                  <a class="btn-sm btn-default">Télécharger</a>
-                </div>
-              </div>
-            </legend>
-            <p>
-              {{ Helper::rawToHTML($doc->description) }}
-            </p>
-          @else
-            <legend>
-              <div class="row">
-                <div class="col-md-10">
-                  {{{ $doc->title }}}
-                </div>
-              </div>
-            </legend>
-            <p>
-              Document privé.
-            </p>
-          @endif
+              </legend>
+              <p>
+                Document privé.
+              </p>
+            @endif
+          </div>
         </div>
       </div>
     @endforeach

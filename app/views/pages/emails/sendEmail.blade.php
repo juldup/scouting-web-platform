@@ -60,8 +60,10 @@
               {{ Form::label('sender_name', 'Nom') }} :
               {{ Form::text('sender_name', $user->currentSection->name, array('class' => 'form-control large')) }}
               <span class="horiz-divider"></span>
-              {{ Form::label('sender_address', 'Adresse') }} :
-              {{ Form::text('sender_address', $user->currentSection->email, array('class' => 'form-control very-large')) }}
+              <span class="no-wrap">
+                {{ Form::label('sender_address', 'Adresse') }} :
+                {{ Form::text('sender_address', $user->currentSection->email, array('class' => 'form-control large')) }}
+              </span>
             </div>
           </div>
           <div class="form-group">

@@ -118,7 +118,7 @@
     <h3>{{{ $category }}}</h3>
     @foreach ($docs as $doc)
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-xs-6">
           <div class="well">
             <legend>{{{ $doc->title }}}</legend>
             <p>
@@ -126,12 +126,12 @@
             </p>
           </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-xs-6">
           <p>
-            <a class="btn btn-primary" href="javascript:editDocument({{ $doc->id }})">
+            <a class="btn-sm btn-primary" href="javascript:editDocument({{ $doc->id }})">
               Modifier
             </a>
-            <a class="btn btn-default archive-document-button" href="{{ URL::route('manage_documents_archive', array('section_slug' => $user->currentSection->slug, 'document_id' => $doc->id)) }}">
+            <a class="btn-sm btn-default archive-document-button" href="{{ URL::route('manage_documents_archive', array('section_slug' => $user->currentSection->slug, 'document_id' => $doc->id)) }}">
               Archiver
             </a>
             @if ($doc->public)

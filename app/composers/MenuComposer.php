@@ -113,6 +113,8 @@ class MenuComposer {
       $leaderCategory['Supervision'] = 'title';
 //      $leaderCategory['Changements récents'] = 'view_private_recent_changes';
       $leaderCategory['Liste des utilisateurs du site'] = 'user_list';
+      $leaderCategory['Gérer les suggestions'] = 'edit_suggestions';
+      $leaderCategory["Gérer le livre d'or"] = 'edit_guest_book';
       
       if (count($leaderCategory)) {
         $menuItems['Coin des animateurs'] = $leaderCategory;

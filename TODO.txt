@@ -6,7 +6,6 @@ SMALL TASKS:
 - Select section hint under the section menu
 
 AT THE END:
-- Layout for smartphones and tablets
 - Comment code
 - Check access control for each page
 - Remove test data from migration

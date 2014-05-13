@@ -113,10 +113,10 @@
               @foreach ($document_categories as $category)
                 @if ($category)
                   <div class="row document-category-row">
-                    <div class="col-sm-10">
+                    <div class="col-xs-10">
                       {{ Form::text('document_categories[]', $category, array("class" => "form-control document-category")) }}
                     </div>
-                    <div class="col-sm-2">
+                    <div class="col-xs-2">
                       <p class="form-side-note">
                         <span class="glyphicon glyphicon-remove document-category-remove"></span>
                       </p>
@@ -125,20 +125,20 @@
                 @endif
               @endforeach
               <div class="row document-category-row document-category-prototype" style="display: none;">
-                <div class="col-sm-10">
+                <div class="col-xs-10">
                   {{ Form::text('document_categories[]', "", array("class" => "form-control document-category")) }}
                 </div>
-                <div class="col-sm-2">
+                <div class="col-xs-2">
                   <p class="form-side-note">
                     <span class="glyphicon glyphicon-remove document-category-remove"></span>
                   </p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-10">
+                <div class="col-xs-10">
                   {{ Form::text('', 'Divers', array("class" => "form-control", "disabled")) }}
                 </div>
-                <div class="col-sm-2">
+                <div class="col-xs-2">
                   <p class="form-side-note">
                     <span class="glyphicon glyphicon-plus document-category-add"></span>
                   </p>
@@ -321,10 +321,10 @@
             <div class="col-sm-5">
               @foreach ($safe_emails as $safe_email)
                 <div class="row safe-email-row">
-                  <div class="col-sm-10">
+                  <div class="col-xs-10">
                     {{ Form::text('email_safe_list[]', $safe_email, array("class" => "form-control safe-email")) }}
                   </div>
-                  <div class="col-sm-2">
+                  <div class="col-xs-2">
                     <p class="form-side-note">
                       <span class="glyphicon glyphicon-remove safe-email-remove"></span>
                     </p>
@@ -332,17 +332,18 @@
                 </div>
               @endforeach
               <div class="row safe-email-row safe-email-row-prototype" style="display: none;">
-                <div class="col-sm-10">
+                <div class="col-xs-10">
                   {{ Form::text('email_safe_list[]', "", array("class" => "form-control safe-email")) }}
                 </div>
-                <div class="col-sm-2">
+                <div class="col-xs-2">
                   <p class="form-side-note">
                     <span class="glyphicon glyphicon-remove safe-email-remove"></span>
                   </p>
                 </div>
               </div>
               <div class="row">
-                <div class="col-sm-2 col-sm-offset-10">
+                <div class="col-xs-10"></div>
+                <div class="col-xs-2">
                   <p class="form-side-note">
                     <span class="glyphicon glyphicon-plus safe-email-add"></span>
                   </p>

@@ -39,7 +39,52 @@
         <h2>Vos fiches santé</h2>
       </div>
     </div>
-    <div class="row">
+    <div class="row health-card-list">
+      <div class="col-sm-12">
+        @foreach($members as $member)
+          <p class="health-card-row-title"><strong>{{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}</strong>
+            @if (array_key_exists('health_card', $member))
+              <a class="btn-sm btn-default" href="{{ URL::route("health_card_edit", $member['member']->id) }}">
+                Mettre à jour
+              </a>
+            @else
+              <a class="btn-sm btn-primary" href="{{ URL::route("health_card_edit", $member['member']->id) }}">
+                Créer
+              </a>
+            @endif
+            @if (array_key_exists('health_card', $member))
+              <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download", $member['member']->id) }}">
+                Télécharger
+              </a>
+            @endif
+          </p>
+          @if (array_key_exists('health_card', $member))
+            <p>
+              Dernière signature&nbsp;: {{ Helper::dateToHuman($member['health_card']->signature_date) }}
+            </p>
+            <p>
+              Expire dans&nbsp;: 
+              @if ($member['health_card']->daysBeforeDeletion() > 100)
+                {{ $member['health_card']->daysBeforeDeletion() }} jours</span>
+              @elseif ($member['health_card']->daysBeforeDeletion() > 1)
+                <span class="danger">{{ $member['health_card']->daysBeforeDeletion() }} jours</span>
+              @else
+                <span class="danger">Quelques heures</span>
+              @endif
+            </p>
+          @endif
+        @endforeach
+        @if ($download_all)
+          <p>&nbsp;</p>
+          <p>
+            <a class="btn-sm btn-primary" href="{{ URL::route("health_card_download_all") }}">
+              Télécharger tout
+            </a>
+          </p>
+        @endif
+      </div>
+    </div>
+    <div class="row health-card-table">
       <div class="col-md-10 col-md-offset-1">
         <table class="table table-striped table-hover ">
           <thead>
@@ -66,7 +111,7 @@
                 @endif
               </td>
               <td>
-                {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
+                <strong>{{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}</strong>
               </td>
               <td>
                 @if (array_key_exists('health_card', $member))

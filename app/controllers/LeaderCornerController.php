@@ -55,7 +55,7 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('accounting'),
                 'help-anchor' => 'tresorerie',
                 'help' => 'accounting',
-            )
+            ),
         ),
         "Opérations annuelles" => array(
             "Inscriptions" => array(
@@ -77,7 +77,7 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('section_data'),
                 'help-anchor' => 'sections',
                 'help' => 'manage-sections',
-            )
+            ),
         ),
         "Contenu du site" => array(
             "Page d'accueil" => array(
@@ -137,7 +137,7 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('edit_parameters'),
                 'help-anchor' => 'parametres',
                 'help' => 'edit-parameters',
-            )
+            ),
         ),
         "Supervision" => array(
 //            "Changements récents" => array(
@@ -149,7 +149,19 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('user_list'),
                 'help-anchor' => 'liste-membres',
                 'help' => 'user-list',
-            )
+            ),
+            "Gérer les suggestions" => array(
+                'url' => URL::route('edit_suggestions'),
+                'help-anchor' => 'suggestions',
+                'help' => 'suggestions',
+                'condition' => Parameter::$SHOW_SUGGESTIONS,
+            ),
+            "Gérer le livre d'or" => array(
+                'url' => URL::route('edit_guest_book'),
+                'help-anchor' => 'livre-d-or',
+                'help' => 'guest-book',
+                'condition' => Parameter::$SHOW_LINKS,
+            ),
         )
     );
     // Remove disabled operations

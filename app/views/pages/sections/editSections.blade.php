@@ -153,11 +153,11 @@
           <tr>
             <th colspan="5">
               <div class="row">
-                <div class="col-md-3"></div>
-                <div class="col-md-3">Section</div>
-                <div class="col-md-3">Adresse e-mail</div>
-                <div class="col-md-1">Sigle</div>
-                <div class="col-md-1">Couleur</div>
+                <div class="col-xs-3"></div>
+                <div class="col-xs-3">Section</div>
+                <div class="col-xs-3">Adresse e-mail</div>
+                <div class="col-xs-1">Sigle</div>
+                <div class="col-xs-1">Couleur</div>
               </div>
             </th>
           </tr>
@@ -167,7 +167,7 @@
             <tr data-section-id="{{ $section->id}}" data-draggable-id="{{ $section->id }}" class="draggable-row">
               <td>
                 <div class="row">
-                  <div class="col-md-3">
+                  <div class="col-xs-3">
                     @if ($user->can(Privilege::$MANAGE_SECTIONS, $section))
                       <a class="btn-sm btn-primary edit-button" href="">
                         Modifier
@@ -185,33 +185,33 @@
                       Détails
                     </a>
                   </div>
-                  <div class="col-md-3">{{{ $section->name }}}</div>
-                  <div class="col-md-3">{{{ $section->email }}}</div>
-                  <div class="col-md-1">{{{ $section->section_type }}}{{{ $section->section_type_number }}}</div>
-                  <div class="col-md-1"><span style="background-color: {{ $section->color }}" class="color-sample"></span></div>
+                  <div class="col-xs-3">{{{ $section->name }}}</div>
+                  <div class="col-xs-3">{{{ $section->email }}}</div>
+                  <div class="col-xs-1">{{{ $section->section_type }}}{{{ $section->section_type_number }}}</div>
+                  <div class="col-xs-1"><span style="background-color: {{ $section->color }}" class="color-sample"></span></div>
                 </div>
                 <div class="details_section" data-section-id="{{ $section->id}}" style="display: none;">
                   <div class="row">
-                    <div class="col-md-3 member-detail-label">
+                    <div class="col-xs-3 member-detail-label">
                       "De la section" :
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-xs-9">
                        "Voici les e-mails <strong>{{{ $section->de_la_section }}}</strong>."
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3 member-detail-label">
+                    <div class="col-xs-3 member-detail-label">
                       "La section" :
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-xs-9">
                       "Inscriptions pour <strong>{{{ $section->la_section }}}</strong>."
                     </div>
                   </div>
                   <div class="row">
-                    <div class="col-md-3 member-detail-label">
+                    <div class="col-xs-3 member-detail-label">
                       Nom des sous-groupes :
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-xs-9">
                       {{{ $section->subgroup_name }}}
                     </div>
                   </div>

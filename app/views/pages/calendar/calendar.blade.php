@@ -143,15 +143,14 @@
     </div>
   </div>
   
-  <div class="row">
+  {{-- Large screens --}}
+  <div class="row @if (!$editing) calendar-large-screens @endif">
     <div class='col-md-12'>
-      
       <div id="calendar" class="calendar">
         <div>
           {{-- Month header --}}
           <div class='month'>
-
-            {{-- Links to the 4 previous months --}}
+            {{-- Links to the previous 6 months --}}
             @for ($i = 6; $i >= 1; $i--)
               <span class='otherMonth'>
                 <a href="{{ URL::route($route_month, array('month' => (($month - $i + 11) % 12 + 1), 'year' => ($month - $i <= 0 ? $year - 1 : $year))) }}">
@@ -159,10 +158,8 @@
                 </a>
               </span>
             @endfor
-
             <span class='month-name'>{{{ $months[$month-1] }}} {{{ $year }}}</span>
-
-            {{-- Links to the 4 next months --}}
+            {{-- Links to the next 6 months --}}
             @for ($i = 1; $i <= 6; $i++)
               <span class='otherMonth'>
                 <a href="{{ URL::route($route_month, array('month' => (($month + $i + 11) % 12 + 1), 'year' => ($month + $i >= 13 ? $year + 1 : $year))) }}">
@@ -179,31 +176,25 @@
           @endfor
         </div>
         <div class="week">
-
           {{-- Blank days at the beginning of the month --}}
           @for ($x = 0; $x < $blank_days_before; $x++)
             <div></div>
           @endfor
-
           {{-- Days of the month --}}
           @for ($day = 1; $day <= $days_in_month; $day++)
-
             {{-- Next row at the end of the week --}}
             @if (($day + $blank_days_before - 1) % 7 == 0)
               </div>
               <div class="week">
             @endif
-
             {{-- Day --}}
             <div class='day {{ $editing ? "clickable" : "" }}'>
-
               {{-- Number of the day --}}
               @if ($editing)
                 <a class="day-number" href='javascript:addEvent({{{ $day }}})'>{{{ $day }}}</a>
               @else
                 <p class="day-number">{{{ $day }}}</p>
               @endif
-
               {{-- Events of the day --}}
               @foreach ($events[$day] as $event)
               @if ($editing) <a href="javascript:editEvent({{ $event->id }})"> @endif
@@ -214,18 +205,62 @@
               @if ($editing) </a> @endif
               @endforeach
             </div>
-
           @endfor
-
           @for ($x = 0; $x < $blank_days_after; $x++)
             <div></div>
           @endfor
-
         </div>
       </div>
-      
     </div>
   </div>
+  
+  {{-- Small screens --}}
+  @if (!$editing)
+    <div class="row calendar-small-screens">
+      <div class="col-md-12">
+        {{-- Month title --}}
+        <div class="text-center month-title">
+          {{-- Link to previous 2 months --}}
+          @for ($i = 2; $i >= 1; $i--)
+            <span class='otherMonth'>
+              <a href="{{ URL::route($route_month, array('month' => (($month - $i + 11) % 12 + 1), 'year' => ($month - $i <= 0 ? $year - 1 : $year))) }}">
+                {{{ $months_short[($month - $i + 11) % 12] }}} &leftarrow; <span class='horiz-divider'></span>
+              </a>
+            </span>
+          @endfor
+          <span class='month-name'>{{{ $months[$month-1] }}} {{{ $year }}}</span>
+          {{-- Links to the next 2 months --}}
+          @for ($i = 1; $i <= 2; $i++)
+            <span class='otherMonth'>
+              <a href="{{ URL::route($route_month, array('month' => (($month + $i + 11) % 12 + 1), 'year' => ($month + $i >= 13 ? $year + 1 : $year))) }}">
+                <span class='horiz-divider'></span> &rightarrow; {{{ $months_short[($month + $i - 1) % 12] }}}
+              </a>
+            </span>
+          @endfor
+        </div>
+        {{-- Events of the month --}}
+        @foreach ($calendar_items as $item)
+          <div class="calendar-event-row">
+            <div class="calendar-event-name" style="color: {{ $item->getSection()->color }};">
+              @if ($item->start_date == $item->end_date)
+                {{{ $days[(date('w', strtotime($item->start_date)) + 6) % 7] }}} {{{ Helper::dateToHuman($item->start_date) }}}&nbsp;:
+              @else
+                Du {{{ Helper::dateToHuman($item->start_date) }}} au {{{ Helper::dateToHuman($item->end_date) }}}&nbsp;:
+              @endif
+
+              {{{ $item->event }}}
+              @if ($user->currentSection->id == 1)
+                ({{{ $item->getSection()->name }}})
+              @endif
+              </div>
+            <div class="calendar-event-description">
+              {{{ $item->description }}}
+            </div>
+          </div>
+        @endforeach
+      </div>
+    </div>
+  @endif
   
   @if (!$editing && Parameter::get(Parameter::$CALENDAR_DOWNLOADABLE) == "true")
     <div class="row">
@@ -241,7 +276,7 @@
             </div>
             <div class="form-group">
               @foreach ($sectionList as $section)
-                <div class="col-md-3 text-right">
+                <div class="col-xs-7 col-sm-4 col-md-3 text-right">
                   {{ Form::label('section_' . $section->id, $section->name) }}
                   {{ Form::checkbox('section_' . $section->id, 1, $user->currentSection->id == 1 || $user->currentSection->id == $section->id) }}
                 </div>
@@ -253,17 +288,17 @@
               </div>
             </div>
             <div class="form-group">
-              <div class="col-md-3 text-right">
+              <div class="col-xs-7 col-sm-4 col-md-3 text-right">
                 {{ Form::label('semester_1', "Premier semestre") }}
                 {{ Form::checkbox('semester_1', 1, true) }}
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-xs-7 col-sm-4 col-md-3 text-right">
                 {{ Form::label('semester_2', "Second semestre") }}
                 {{ Form::checkbox('semester_2', 1, $include_second_semester_by_default) }}
               </div>
             </div>
             <div class="form-group">
-              <div class="col-md-9 text-right">
+              <div class="col-xs-7 col-sm-8 col-md-9 text-right">
                 {{ Form::submit('Télécharger', array('class' => 'btn btn-primary')) }}
               </div>
             </div>

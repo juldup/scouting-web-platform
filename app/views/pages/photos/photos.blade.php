@@ -141,7 +141,7 @@
     <div class="row">
       <?php $photoIndex = 0; ?>
       @foreach ($photos as $photo)
-        <div class="col-md-2 photo-thumbnail-wrapper">
+        <div class="col-xs-4 col-sm-3 col-md-2 photo-thumbnail-wrapper">
           <div class="photo-thumbnail">
             <a href="javascript:showPhoto({{ $photoIndex++ }})">
               <img src="{{ $photo->getThumbnailURL(); }}" />

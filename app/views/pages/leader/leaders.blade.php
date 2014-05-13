@@ -94,14 +94,14 @@
       <div class="col-md-6 leader-card">
         <div class="well">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-xs-6 col-sm-4 col-md-6">
               @if ($leader->has_picture)
                 <img class="leader_picture" src="{{ $leader->getPictureURL() }}" />
               @else
                 <img class="leader_picture" src="" alt=" Pas de photo " />
               @endif
             </div>
-            <div class="col-md-6">
+            <div class="col-xs-6 col-sm-8 col-md-6">
               <p class="leader-name">{{{ $leader->leader_name }}}</p>
               <p class="leader-real-name">{{{ $leader->first_name }}} {{{ $leader->last_name }}}</p>
               <p><em>{{ Helper::rawToHTML($leader->leader_description) }}</em></p>

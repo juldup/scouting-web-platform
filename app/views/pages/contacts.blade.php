@@ -15,7 +15,7 @@
   <div class="well">
     <legend>Contacter les animateurs d'unité</legend>
     @foreach ($unitLeaders as $leader)
-      <div class='row'>
+      <div class='row contact-row'>
         <div class="col-md-3">
           <p>
             <strong>{{{ $leader->leader_name }}}</strong>
@@ -46,7 +46,7 @@
   <div class='well'>
     <legend>Contacter les responsables des sections</legend>
     @foreach ($sectionLeaders as $leader)
-      <div class='row'>
+      <div class='row contact-row'>
         <div class="col-md-3">
           <p><strong>{{{ $leader->getSection()->name }}}</strong></p>
         </div>

@@ -29,6 +29,11 @@
 @stop
 
 @section('content')
+  
+  @if ($managing)
+    @include('subviews.contextualHelp', array('help' => 'guest-book'))
+  @endif
+  
   <div class="row">
     <div class="col-md-12">
       <h1>Livre d'or</h1>

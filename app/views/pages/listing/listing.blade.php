@@ -118,7 +118,7 @@
                   <td>{{{ $member->getPublicPhone() }}}</td>
                   <td>
                     <a class="btn-sm btn-default" href="{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PARENTS, "member_id" => $member->id)) }}">
-                      Envoyer un e-mail
+                      Envoyer&nbsp;un&nbsp;e&#8209;mail
                     </a>
                   </td>
                 </tr>

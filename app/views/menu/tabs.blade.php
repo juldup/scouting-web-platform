@@ -1,4 +1,4 @@
-<ul class="nav navbar-nav navbar-right">
+<ul class="nav navbar-nav navbar-right section-selector">
   <li class="dropdown active">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
       <span class="navbar-section-hint">Section :</span>

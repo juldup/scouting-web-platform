@@ -47,18 +47,18 @@
         <div class="form-horizontal">
           {{ Form::open(array('url' => URL::route('manage_member_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
             <div class="form-group">
-              <div class="col-md-2 col-md-offset-7 text-center">
+              <div class="col-sm-2 col-sm-offset-7 text-center">
                 {{ Form::submit('Enregistrer les transferts', array('class' => 'btn btn-primary submit-button', 'disabled' => 'disabled')) }}
               </div>
             </div>
             <div class="form-group">
-              <div class="col-md-5 text-right">
+              <div class="col-xs-4 col-sm-5 text-right">
                 <span class="form-control large text-left">{{{ $user->currentSection->name }}}</span>
               </div>
-              <div class="col-md-2 text-center">
+              <div class="col-xs-4 col-sm-2 text-center">
                 <label class="form-side-note">Vers</label>
               </div>
-              <div class="col-md-5">
+              <div class="col-xs-4 col-sm-5">
                 {{ Form::select('destination', Section::getSectionsForSelect(array(1, $user->currentSection)), null, array('class' => 'form-control large section-selector')) }}
               </div>
             </div>
@@ -67,14 +67,14 @@
                 <div class="hidden">
                   {{ Form::checkbox('members[' . $member->id . "]", 1, false, array('class' => 'transfered-checkbox')) }}
                 </div>
-                <div class="col-md-5 text-right">
+                <div class="col-xs-4 col-sm-5 text-right">
                   <span class="untransfered">
                     <label>{{{ $member->first_name }}} {{{ $member->last_name }}}</label>
                     <span class="horiz-divider"></span>
                   </span>
                   {{{ $member->year_in_section }}}e année
                 </div>
-                <div class="col-md-2 text-center">
+                <div class="col-xs-4 col-sm-2 text-center">
                   <a class='btn-sm btn-primary untransfered transfer-button' href="">
                     Faire passer
                   </a>
@@ -82,7 +82,7 @@
                     Annuler
                   </a>
                 </div>
-                <div class="col-md-5">
+                <div class="col-xs-4 col-sm-5">
                   <div class="transfered" style="display: none;">
                     <label>{{{ $member->first_name }}} {{{ $member->last_name }}}</label>
                     &rightarrow;

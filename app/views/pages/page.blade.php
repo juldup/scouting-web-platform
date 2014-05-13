@@ -24,7 +24,9 @@
 
 @section('content')
   <div class="row page_body">
-    <h1>{{{ $page_title }}}</h1>
-    {{ $page_body }}
+    <div class="col-md-12">
+      <h1>{{{ $page_title }}}</h1>
+      {{ $page_body }}
+    </div>
   </div>
 @stop

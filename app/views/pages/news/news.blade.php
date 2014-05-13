@@ -36,16 +36,18 @@
   </div>
   
   @foreach ($news as $newsItem)
-    <div class="row well">
-      <div class="col-lg-12">
-        <legend>
-          @if ($user->currentSection->id == 1)
-            {{{ Section::find($newsItem->section_id)->name }}} :
-          @endif
-          {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
-        </legend>
-        <div>
-          {{ Helper::rawToHTML($newsItem->body) }}
+    <div class="row">
+      <div class="col-md-12">
+        <div class="well">
+          <legend>
+            @if ($user->currentSection->id == 1)
+              {{{ Section::find($newsItem->section_id)->name }}} :
+            @endif
+            {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
+          </legend>
+          <div>
+            {{ Helper::rawToHTML($newsItem->body) }}
+          </div>
         </div>
       </div>
     </div>

@@ -488,5 +488,25 @@
   <p>Il est possible de supprimer un membre, mais pas d'en modifier les paramètres.
 @endif
 
+@if ($help == 'suggestions')
+  <p>Les visiteurs peuvent laisser des suggestions pour le site ou la vie de l'unité.</p>
+  <p>Cette page permet de&nbsp;:
+    <ul>
+      <li>Répondre à une suggestion (ou en changer la réponse)</li>
+      <li>Supprimer une suggestion inadéquate</li>
+    </ul>
+  </p>
+  <p>Attention&nbsp;: toutes les suggestions et leurs réponses sont publiques.</p>
+@endif
+
+@if ($help == 'guest-book')
+  <p>
+    Les visiteurs du site peuvent laisser des messages publics dans le livre d'or.
+  </p>
+  <p>
+    Cette page permet de supprimer un message inadéquat.
+  </p>
+@endif
+
 </div>
 </div>
