@@ -504,28 +504,6 @@ class CreateDatabase extends Migration {
       $table->index('year');
     });
     
-    // Test data
-    DB::table('parameters')->insert(array(
-        'name' => Parameter::$SMTP_HOST,
-        'value' => 'email-smtp.us-east-1.amazonaws.com'
-    ));
-    DB::table('parameters')->insert(array(
-        'name' => Parameter::$SMTP_PORT,
-        'value' => '587'
-    ));
-    DB::table('parameters')->insert(array(
-        'name' => Parameter::$SMTP_SECURITY,
-        'value' => 'tls'
-    ));
-    DB::table('parameters')->insert(array(
-        'name' => Parameter::$SMTP_USERNAME,
-        'value' => 'AKIAJT46KXQ3MMV5OBHQ'
-    ));
-    DB::table('parameters')->insert(array(
-        'name' => Parameter::$SMTP_PASSWORD,
-        'value' => 'AtE++d6p4vK0fdmIMngTTC/wAlSSz8C95i6EkajewPJ+'
-    ));
-    
 	}
   
 	/**

@@ -198,10 +198,21 @@
               {{-- Events of the day --}}
               @foreach ($events[$day] as $event)
               @if ($editing) <a href="javascript:editEvent({{ $event->id }})"> @endif
-              <p title="{{{ $event->description }}}" style="color: {{$event->getSection()->color}};">
-                <img src="{{ $event->getIcon() }}" class='calendar-event-icon' />
-                {{{ $event->event }}}
-              </p>
+              <div class="calendar-event-wrapper {{ !$editing ? "clickable" : "" }}">
+                <p class="calendar-event" title="{{{ $event->description }}}" style="color: {{$event->getSection()->color}};">
+                  <img src="{{ $event->getIcon() }}" class='calendar-event-icon' />
+                  {{{ $event->event }}}
+                </p>
+                @if (!$editing)
+                  <div class="calendar-event-details" style="display: none;">
+                    @if ($event->description)
+                      {{{ $event->description }}}
+                    @else
+                      Pas de description
+                    @endif
+                  </div>
+                @endif
+              </div>
               @if ($editing) </a> @endif
               @endforeach
             </div>

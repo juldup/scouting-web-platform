@@ -47,6 +47,18 @@ $().ready(function() {
     $("#download-calendar-form").show();
     return false;
   });
+  $("body").click(function(event) {
+    console.log("Hiding all");
+    $(".calendar-event-details").hide();
+  });
+  $(".calendar-event").click(function(event) {
+    var description = $(this).closest(".calendar-event-wrapper").find(".calendar-event-details");
+    if (!description.is(":visible")) {
+      setTimeout(function() {
+        description.show();
+      }, 0);
+    }
+  });
 });
 
 /**************************************************
