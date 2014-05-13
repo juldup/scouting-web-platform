@@ -1,12 +1,24 @@
 <?php
 
+/**
+ * This tools presents a page for visitors and members to contact other members by e-mail
+ * without the recipient's e-mail address being revealed.
+ * Only members can contact non-leader members. Leaders can be contacted by any visitor.
+ */
 class PersonalEmailController extends BaseController {
   
+  // The kinds of contactable persons
   public static $CONTACT_TYPE_PARENTS = "parents";
   public static $CONTACT_TYPE_PERSONAL = "personnel";
   public static $CONTACT_TYPE_ARCHIVED_LEADER = "archive-animateur";
   public static $CONTACT_TYPE_WEBMASTER = "webmaster";
   
+  /**
+   * [Route] Shows a page with a form to send an e-mail to a specific person
+   * 
+   * @param string $contact_type  The kind of contact (see above)
+   * @param string $member_id  The id of the member to contact (or anything for the webmaster)
+   */
   public function sendEmail($contact_type, $member_id) {
     if (URL::previous() != URL::current()) {
       // Record referrer url
@@ -43,18 +55,26 @@ class PersonalEmailController extends BaseController {
     } else {
       $member = null;
     }
+    // Make view
     return View::make('pages.personalEmail', array(
         'member' => $member,
         'contact_type' => $contact_type,
     ));
   }
   
+  /**
+   * [Route] Sends an e-mail to a given person
+   * 
+   * @param string $contact_type  The kind of contact (see the list at the top of this class)
+   * @param string $member_id  The id of the member to contact (or anything for the webmaster)
+   */
   public function submit($contact_type, $member_id) {
+    // Get input data
     $subject = Input::get('subject');
     $body = Input::get('body');
     $senderName = Input::get('sender_name');
     $senderEmail = Input::get('sender_email');
-    
+    // Check that all fields are non-empty
     $errorMessage = "";
     if (!$subject) $errorMessage .= "Vous devez entrer un sujet. ";
     if (!$body) $errorMessage .= "Vous devez entrer un message. ";
@@ -62,16 +82,17 @@ class PersonalEmailController extends BaseController {
     if (!$senderEmail) $errorMessage .= "Vous devez indiquer votre adresse e-mail. ";
     else if (!filter_var($senderEmail, FILTER_VALIDATE_EMAIL))
             $errorMessage .= "L'adresse $senderEmail n'est pas correcte. ";
-    
     if ($errorMessage) {
+      // One of the fields is incorrect, redirect with error message
       return Redirect::route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
               ->withInput()
               ->with('error_message', $errorMessage);
     } else {
+      // Create e-mail
       $bodyFull = "Voici un message de la part de $senderName envoyé depuis de site de l'unité " .
               Parameter::get(Parameter::$UNIT_SHORT_NAME) . " :\n\n" . $body;
       $bodyConfirm = "Votre message a bien été envoyé :\n\n" . $body;
-      
+      // Send e-mail to each recipient
       foreach ($this->getEmailAddressesFor($contact_type, $member_id) as $recipient) {
         $email = PendingEmail::create(array(
             'subject' => $subject,
@@ -83,6 +104,7 @@ class PersonalEmailController extends BaseController {
         ));
         $email->send();
       }
+      // Send confirmation e-mail to the sender
       $confirmationEmail = PendingEmail::create(array(
             'subject' => $subject,
             'raw_body' => $bodyConfirm,
@@ -92,13 +114,20 @@ class PersonalEmailController extends BaseController {
             'priority' => PendingEmail::$PERSONAL_SENDER_PRIORITY,
         ));
       $confirmationEmail->send();
+      // Redirect with success message
       return Redirect::route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
               ->with('success_message', "Votre e-mail a bien été envoyé.");
     }
     
   }
   
-  protected function getEmailAddressesFor($contact_type, $member_id) {
+  /**
+   * Returns the list of e-mail address for the given recipient
+   * 
+   * @param string $contact_type  The kind of contact (see the list at the top of this class)
+   * @param string $member_id  The id of the member to contact (or anything for the webmaster)
+   */
+  private function getEmailAddressesFor($contact_type, $member_id) {
     if ($contact_type != self::$CONTACT_TYPE_WEBMASTER) {
       // Get recipient member
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {

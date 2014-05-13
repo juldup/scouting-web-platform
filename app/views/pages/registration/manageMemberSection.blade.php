@@ -9,11 +9,13 @@
 @stop
 
 @section('back_links')
-  <p>
-    <a href='{{ URL::route('registration', array('section_slug' => $user->currentSection->slug)) }}'>
-      Retour à la page d'inscription
-    </a>
-  </p>
+  @if (Parameter::get(Parameter::$SHOW_REGISTRATION))
+    <p>
+      <a href='{{ URL::route('registration', array('section_slug' => $user->currentSection->slug)) }}'>
+        Retour à la page d'inscription
+      </a>
+    </p>
+  @endif
 @stop
 
 @section('content')

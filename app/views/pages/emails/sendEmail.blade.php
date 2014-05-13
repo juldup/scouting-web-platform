@@ -5,11 +5,13 @@
 @stop
 
 @section('back_links')
-  <p>
-    <a href="{{ URL::route('manage_emails') }}" >
-      Liste des e-mails
-    </a>
-  </p>
+  @if (Parameter::get(Parameter::$SHOW_EMAILS))
+    <p>
+      <a href="{{ URL::route('manage_emails') }}" >
+        Liste des e-mails
+      </a>
+    </p>
+  @endif
 @stop
 
 @section('additional_javascript')

@@ -1,12 +1,20 @@
 <?php
 
+/**
+ * Parameters are global parameters for the website. This controller provides tools
+ * for the leaders to change these parameters.
+ */
 class ParameterController extends BaseController {
   
+  /**
+   * [Route] Shows the parameter management page
+   */
   function showEdit() {
     // Check that the user can edit the parameters
     if (!$this->user->can(Privilege::$EDIT_GLOBAL_PARAMETERS, 1)) {
       return Helper::forbiddenResponse();
     }
+    // Put the registration fee values in an array
     $prices = array(
         '1 child' => Parameter::get(Parameter::$PRICE_1_CHILD),
         '1 leader' => Parameter::get(Parameter::$PRICE_1_LEADER),
@@ -15,6 +23,7 @@ class ParameterController extends BaseController {
         '3 children' => Parameter::get(Parameter::$PRICE_3_CHILDREN),
         '3 leaders' => Parameter::get(Parameter::$PRICE_3_LEADERS),
     );
+    // Make view
     return View::make('pages.parameters.editParameters', array(
         'pages' => $this->getPageList(),
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
@@ -24,6 +33,9 @@ class ParameterController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Updates the parameters. The whole set of parameters is updated with this action.
+   */
   function submitParameters() {
     // Check that the user can edit the parameters
     if (!$this->user->can(Privilege::$EDIT_GLOBAL_PARAMETERS, 1)) {
@@ -140,7 +152,10 @@ class ParameterController extends BaseController {
     }
   }
   
-  function getPageList() {
+  /**
+   * Returns the list of pages that can be toggled on/off with paramaters
+   */
+  private function getPageList() {
     $pages = array(
         // Welcome
         'page_sections' => array(

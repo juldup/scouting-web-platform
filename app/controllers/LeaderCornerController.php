@@ -50,6 +50,7 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('manage_health_cards'),
                 'help-anchor' => 'fiches-sante',
                 'help' => 'edit-health-cards',
+                'condition' => Parameter::$SHOW_HEALTH_CARDS,
             ),
             "Trésorerie" => array(
                 'url' => URL::route('accounting'),
@@ -160,7 +161,7 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('edit_guest_book'),
                 'help-anchor' => 'livre-d-or',
                 'help' => 'guest-book',
-                'condition' => Parameter::$SHOW_LINKS,
+                'condition' => Parameter::$SHOW_GUEST_BOOK,
             ),
         )
     );

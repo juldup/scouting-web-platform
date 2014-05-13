@@ -6,6 +6,7 @@ SMALL TASKS:
 
 AT THE END:
 - Comment code
+- Manage error messages (don't show them publicly)
 
 OPTIONAL/LATER:
 - List recent changes for leaders + import old userLogs

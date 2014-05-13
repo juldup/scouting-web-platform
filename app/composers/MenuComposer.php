@@ -91,13 +91,19 @@ class MenuComposer {
 //      $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
       
       $leaderCategory["Opérations courantes"] = 'title';
-      $leaderCategory['Gérer le calendrier'] = 'manage_calendar';
-      $leaderCategory['Gérer les photos'] = 'edit_photos';
-      $leaderCategory['Gérer les documents'] = 'manage_documents';
-      $leaderCategory['Gérer les nouvelles'] = 'manage_news';
-      $leaderCategory['Gérer les e-mails'] = 'manage_emails';
+      if (Parameter::get(Parameter::$SHOW_CALENDAR))
+        $leaderCategory['Gérer le calendrier'] = 'manage_calendar';
+      if (Parameter::get(Parameter::$SHOW_PHOTOS))
+        $leaderCategory['Gérer les photos'] = 'edit_photos';
+      if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
+        $leaderCategory['Gérer les documents'] = 'manage_documents';
+      if (Parameter::get(Parameter::$SHOW_NEWS))
+        $leaderCategory['Gérer les nouvelles'] = 'manage_news';
+      if (Parameter::get(Parameter::$SHOW_EMAILS))
+        $leaderCategory['Gérer les e-mails'] = 'manage_emails';
       $leaderCategory['Envoyer un e-mail'] = 'send_section_email';
-      $leaderCategory['Gérer les fiches santé'] = 'manage_health_cards';
+      if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
+        $leaderCategory['Gérer les fiches santé'] = 'manage_health_cards';
       $leaderCategory['Trésorerie'] = 'accounting';
       
       $leaderCategory['Opérations annuelles'] = 'title';
@@ -113,8 +119,10 @@ class MenuComposer {
       $leaderCategory['Supervision'] = 'title';
 //      $leaderCategory['Changements récents'] = 'view_private_recent_changes';
       $leaderCategory['Liste des utilisateurs du site'] = 'user_list';
-      $leaderCategory['Gérer les suggestions'] = 'edit_suggestions';
-      $leaderCategory["Gérer le livre d'or"] = 'edit_guest_book';
+      if (Parameter::get(Parameter::$SHOW_SUGGESTIONS))
+        $leaderCategory['Gérer les suggestions'] = 'edit_suggestions';
+      if (Parameter::get(Parameter::$SHOW_GUEST_BOOK))
+        $leaderCategory["Gérer le livre d'or"] = 'edit_guest_book';
       
       if (count($leaderCategory)) {
         $menuItems['Coin des animateurs'] = $leaderCategory;

@@ -1,18 +1,26 @@
 <?php
 
+/**
+ * News can be added to the news page. Each section has its own news.
+ * This controller displays the news page and allows leaders to add and edit news.
+ */
 class NewsController extends BaseController {
   
   protected $pagesAdaptToSections = true;
   
+  /**
+   * [Route] Shows the news page
+   * 
+   * @param boolean $showArchives  True if the archived news are being shown
+   * @param integer $page  The archive page to display
+   */
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
       return App::abort(404);
     }
-    
-    $oneYearAgo = Helper::oneYearAgo();
-    
     // Build query
+    $oneYearAgo = Helper::oneYearAgo();
     $query = News::orderBy('id', 'DESC');
     if ($this->section->id != 1) {
       $query->where('section_id', '=', $this->section->id);
@@ -24,23 +32,22 @@ class NewsController extends BaseController {
       $archiveQuery = clone $query->getQuery();
       $query->skip($page * $pageSize)
               ->take($pageSize);
+      // Determine whether there are more archive pages
       $hasArchives = count($archiveQuery
               ->skip(($page + 1) * $pageSize)
               ->take(1)
               ->get());
-      echo $archiveQuery
-              ->skip(($page + 1) * $pageSize)
-              ->take(1)->toSQL();
     } else {
       // Show recent news
       $archiveQuery = clone $query->getQuery();
       $query->where('news_date', '>=', $oneYearAgo);
+      // Determine whether there are archives
       $hasArchives = $archiveQuery->where('news_date', '<', $oneYearAgo)
               ->take(1)
               ->count();
     }
     $news = $query->get();
-    
+    // Make view
     return View::make('pages.news.news', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_NEWS, $this->section),
         'edit_url' => URL::route('manage_news', array('section_slug' => $this->section->slug)),
@@ -52,30 +59,36 @@ class NewsController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Shows the news page with archived news
+   */
   public function showArchives($section_slug = null) {
     $page = Input::get('page');
     if (!$page) $page = 0;
     return $this->showPage($section_slug, true, $page);
   }
   
+  /**
+   * [Route] Displays the news management page
+   */
   public function showEdit() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
       return App::abort(404);
     }
-    
+    // Make sure the user has access to this page
     if (!$this->user->can(Privilege::$EDIT_NEWS, $this->user->currentSection)) {
       return Helper::forbiddenResponse();
     }
-    
+    // Get news
     $oneYearAgo = Helper::oneYearAgo();
     $news = News::where('news_date', '>=', $oneYearAgo)
             ->orderBy('id', 'DESC')
             ->where('section_id', '=', $this->section->id)
             ->get();
-    
+    // Make list of sections for section selector
     $sections = Section::getSectionsForSelect();
-    
+    // Make view
     return View::make('pages.news.editNews', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_NEWS),
         'edit_url' => URL::route('manage_news', array('section_slug' => $this->section->slug)),
@@ -85,17 +98,20 @@ class NewsController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Creates or updates a piece of news in the database
+   */
   public function submitNews($section_slug) {
-    
+    // Gather input
     $newsId = Input::get('news_id');
     $title = Input::get('news_title');
     $body = Input::get('news_body');
     $sectionId = Input::get('section');
-    
+    // Make sure the current user can edit news for this section
     if (!$this->user->can(Privilege::$EDIT_NEWS, $sectionId)) {
       return Helper::forbiddenResponse();
     }
-    
+    // Make basic tests and update/create the piece of news
     $success = false;
     if (!$title) {
       $success = false;
@@ -105,6 +121,7 @@ class NewsController extends BaseController {
       $message = "Tu dois entrer un contenu.";
     } else {
       if ($newsId) {
+        // Updating a piece of news
         $news = News::find($newsId);
         if ($news) {
           if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
@@ -127,6 +144,7 @@ class NewsController extends BaseController {
           $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
         }
       } else {
+        // Creating a piece of news
         try {
           $news = News::create(array(
               'news_date' => date('Y-m-d'),
@@ -143,7 +161,7 @@ class NewsController extends BaseController {
         }
       }
     }
-    
+    // Redirect with status
     $response = Redirect::route('manage_news', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
@@ -151,18 +169,20 @@ class NewsController extends BaseController {
     else return $response->withInput();
   }
   
+  /**
+   * [Route] Deletes a piece of news from the database
+   */
   public function deleteNews($news_id) {
-    
+    // Get the news
     $news = News::find($news_id);
-    
     if (!$news) {
      App::abort(404, "Cette nouvelle n'existe pas.");
     }
-    
+    // Make sure the current user can delete this piece of news
     if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
       return Helper::forbiddenResponse();
     }
-    
+    // Delete the news
     try {
       $news->delete();
       $success = true;
@@ -171,7 +191,7 @@ class NewsController extends BaseController {
       $success = false;
       $message = "Une erreur s'est produite. La nouvelle n'a pas été supprimée.";
     }
-    
+    // Redirect with status message
     return Redirect::route('manage_news', array(
         "section_slug" => $news->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
