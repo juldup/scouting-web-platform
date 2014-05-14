@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Each section has its own home page. This controller manages them.
+ */
 class SectionPageController extends GenericPageController {
   
   protected $pagesAdaptToSections = true;

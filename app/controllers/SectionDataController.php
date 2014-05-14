@@ -1,22 +1,36 @@
 <?php
 
+/**
+ * The unit is composed of sections. These sections can be created, deleted and
+ * parametered by the leaders with this controller.
+ */
 class SectionDataController extends BaseController {
   
   protected $pagesAdaptToSections = true;
   
+  /**
+   * [Route] Show the section management page
+   */
   public function showPage() {
+    // Make sure the user is a leader and therefore has access to this page
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
+    // Get list of sections
     $sections = Section::where('id', '!=', 1)
             ->orderBy('position')
             ->get();
+    // Make view
     return View::make('pages.sections.editSections', array(
         'sections' => $sections,
     ));
   }
   
+  /**
+   * [Route] Updates the data of a given section
+   */
   public function submitSectionData() {
+    // Get input data
     $sectionId = Input::get('section_id');
     $name = Input::get('section_name');
     $email = Input::get('section_email');
@@ -26,9 +40,8 @@ class SectionDataController extends BaseController {
     $la_section = Input::get('section_la_section');
     $de_la_section = Input::get('section_de_la_section');
     $subgroup_name = Input::get('section_subgroup_name');
-    
+    // Get whether the user can change all section data or only limited data
     $fullEdit = $this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId);
-    
     // Check validity
     $errorMessage = "";
     if ($fullEdit) {
@@ -63,20 +76,23 @@ class SectionDataController extends BaseController {
     $subgroup_name = ucfirst($subgroup_name);
     if ($subgroup_name && !Helper::hasCorrectCapitals($subgroup_name))
       $errorMessage .= "L'usage des majuscules dans le nom des sous-groupes n'est pas correct. ";
-    
+    // If validity check did not pass, redirect with error message
     if ($errorMessage) {
       return Redirect::route('section_data')
               ->withInput()
               ->with('error_message', $errorMessage);
     }
-    
+    // Update or create section
     if ($sectionId) {
-      // Modify a section
+      // Updating a section
+      // Make sure the user can update this section, at least partially
       if (!$this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId) && !$this->user->can(Privilege::$EDIT_SECTION_EMAIL_AND_SUBGROUP, $sectionId)) {
         return Helper::forbiddenResponse();
       }
+      // Get section
       $section = Section::find($sectionId);
       if ($section) {
+        // Update section data
         if ($fullEdit) {
           $section->name = $name;
           $section->slug = $slug;
@@ -88,26 +104,28 @@ class SectionDataController extends BaseController {
         }
         $section->email = $email;
         $section->subgroup_name = $subgroup_name;
-
-        if (!$errorMessage) {
-          try {
-            $section->save();
-            return Redirect::route('section_data')->with('success_message', "Les changements ont été enregistrés.");
-          } catch (Exception $e) {
-          }
+        // Save and redirect with success message
+        try {
+          $section->save();
+          return Redirect::route('section_data')->with('success_message', "Les changements ont été enregistrés.");
+        } catch (Exception $e) {
+          // An error has occured while saving
+          return Redirect::route('section_data')
+                  ->withInput()
+                  ->with('error_message', "Une erreur est survenue.");
         }
-        return Redirect::route('section_data')
-                ->withInput()
-                ->with('error_message', "Une erreur est survenue.");
       } else {
+        // The section was not found, redirect with error message
         return Redirect::route('section_data')
                   ->with('error_message', "Une erreur est survenue : la section n'existe pas.");
       }
     } else {
-      // Create a new section
+      // Creating a new section
+      // Make sure the user can create a section
       if (!$this->user->can(Privilege::$MANAGE_SECTIONS, 1)) {
         return Helper::forbiddenResponse();
       }
+      // Create section
       $section = new Section();
       $section->name = $name;
       $section->slug = $slug;
@@ -120,30 +138,35 @@ class SectionDataController extends BaseController {
       $section->subgroup_name = $subgroup_name;
       try {
         $section->save();
+        // Set position equal to id to start with, the section will come last in position
         $section->position = $section->id;
         $section->save();
+        // Redirect with success message
         return Redirect::route('section_data')->with('success_message', "La section a été créée avec succès. N'oublie pas de mettre à jour l'ordre des sections.");
       } catch (Exception $ex) {
+        // An error has occured, redirect with error message
+        return Redirect::route('section_data')
+                  ->withInput()
+                  ->with('error_message', "Une erreur est survenue. La section n'a pas pu être créée.");
       }
-      return Redirect::route('section_data')
-                ->withInput()
-                ->with('error_message', "Une erreur est survenue. La section n'a pas pu être créée.");
     }
   }
+  
+  /**
+   * [Route] Ajax call to save section order
+   */
   public function changeSectionOrder() {
+    // Prepare error response
     $errorResponse = json_encode(array("result" => "Failure"));
-    
     // Check that the user has the right to modify the section order
     if (!$this->user->can(Privilege::$MANAGE_SECTIONS, 1)) {
       return $errorResponse;
     }
-    
+    // Get new order from input
     $sectionIdsInOrder = Input::get('section_order');
     $sectionIdsInOrderArray = explode(" ", $sectionIdsInOrder);
-    
     // Retrieve sections
     $sections = Section::where('id', '!=', 1)->get();
-    
     // Check that the number of sections corresponds
     if (count($sectionIdsInOrderArray) != count($sections)) {
       return $errorResponse;
@@ -154,12 +177,12 @@ class SectionDataController extends BaseController {
         return $errorResponse;
       }
     }
-    
     // Get the list of positions
     $positions = array();
     foreach ($sections as $section) {
       $positions[] = $section->position;
     }
+    // Sort positions
     sort($positions);
     // Assign new positions
     foreach ($sections as $section) {
@@ -177,11 +200,13 @@ class SectionDataController extends BaseController {
         return $errorResponse;
       }
     }
-    
+    // Return success message
     return json_encode(array('result' => "Success"));
-
   }
   
+  /**
+   * [Route] Deletes an existing section (if it does not contain any members)
+   */
   public function deleteSection($section_id) {
     // Check that the user can delete a section
     if (!$this->user->can(Privilege::$MANAGE_SECTIONS, 1)) {
@@ -221,10 +246,10 @@ class SectionDataController extends BaseController {
       return Redirect::route('section_data')
               ->with('success_message', "La section " . $section->name . " a été supprimée avec succès.");
     } catch (Exception $e) {
+      return Redirect::route('section_data')
+              ->withInput()
+              ->with('error_message', "La section " . $section->name . " n'a été supprimée.");
     }
-    return Redirect::route('section_data')
-            ->withInput()
-            ->with('error_message', "La section " . $section->name . " n'a été supprimée.");
   }
   
 }

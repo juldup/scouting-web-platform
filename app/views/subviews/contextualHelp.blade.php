@@ -224,7 +224,8 @@
   </p>
   <p>Les parents peuvent eux-même réinscrire leurs enfants via la page d'inscription s'ils sont connectés sur le site. Cela peut être une manière de gérer les réinscriptions de l'unité.</p>
   <p>Sur cette page, tu peux le marquer les scouts comme réinscrits, les désinscrire <strong>(attention&nbsp;: effet immédiat)</strong>, ou annuler
-  leur réinscription.</p>  
+  leur réinscription.</p>
+  <p>Le statut de réinscription est remis à zéro le <strong>1er janvier</strong>. Il est donc possible de gérer les réinscriptions pour l'année suivante à partir du 1er janvier.</p>
 @endif
 
 @if ($help == 'edit-year-in-section')

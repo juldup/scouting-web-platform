@@ -1,104 +1,16 @@
 <?php
 
+/**
+ * Future members can register as scouts or leaders through a registration form.
+ * The leaders can then validate the registration.
+ * 
+ * This controller also allows the leaders to manage reregistrations, transfers between
+ * sections, members' year in the section and check subscription fee payment.
+ */
 class RegistrationController extends GenericPageController {
   
   protected function currentPageAdaptToSections() {
     return $this->user->isLeader();
-  }
-  
-  public function showMain() {
-    // Make sure this page can be displayed
-    if (!Parameter::get(Parameter::$SHOW_REGISTRATION)) {
-      return App::abort(404);
-    }
-    
-    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
-      $page = $this->getPage();
-      $pageBody = $page->body_html;
-      $pageBody = str_replace("(PRIX UN ENFANT)", Parameter::get(Parameter::$PRICE_1_CHILD), $pageBody);
-      $pageBody = str_replace("(PRIX DEUX ENFANTS)", Parameter::get(Parameter::$PRICE_2_CHILDREN), $pageBody);
-      $pageBody = str_replace("(PRIX TROIS ENFANTS)", Parameter::get(Parameter::$PRICE_3_CHILDREN), $pageBody);
-      $pageBody = str_replace("(PRIX UN ANIMATEUR)", Parameter::get(Parameter::$PRICE_1_LEADER), $pageBody);
-      $pageBody = str_replace("(PRIX DEUX ANIMATEURS)", Parameter::get(Parameter::$PRICE_2_LEADERS), $pageBody);
-      $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
-      $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
-      $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
-      $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
-      $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
-      
-      $familyMembers = array();
-      if ($this->user->isMember()) {
-        $familyMembers = $this->user->getAssociatedMembers();
-      }
-      
-      return View::make('pages.registration.registrationMain', array(
-          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
-          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
-          'page_title' => $this->getPageTitle(),
-          'page_body' => $pageBody,
-          'family_members' => $familyMembers,
-          'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
-      ));
-    } else {
-      return View::make('pages.registration.registrationInactive', array(
-          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
-                              || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)
-                              || $this->user->can(Privilege::$SECTION_TRANSFER, 1),
-          'page_title' => $this->getPageTitle(),
-      ));
-    }
-  }
-  
-  public function reregister($member_id) {
-    if (!$this->user->isOwnerOfMember($member_id)) {
-      return Helper::forbiddenResponse();
-    }
-    $member = Member::find($member_id);
-    if (!$member) return App::abort(404, "Ce member n'existe pas.");
-    try {
-      $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
-      $member->save();
-      return Redirect::route('registration')->with('success_message', "La réinscription de " . $member->first_name . " " . $member->last_name . " a été enregistrée.");
-    } catch (Exception $ex) {
-      return Redirect::route('registration')->with('error_message', "Une erreur est survenue. La réinscription de "
-              . $member->first_name . " " . $member->last_name . " n'a pas été enregistrée. Contactez l'animateur d'unité. $ex");
-    }
-  }
-  
-  public function showForm() {
-    return View::make('pages.registration.registrationForm', array(
-        'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
-    ));
-  }
-  
-  public function submit() {
-    $policyAgreement = Input::get('policy_agreement') ? true : false;
-    
-    if (Parameter::get(Parameter::$SHOW_UNIT_POLICY) && !$policyAgreement) {
-      $success = false;
-      $message = "Vous devez adhérer à la charte d'unité pour inscrire un enfant.";
-    } else {
-      $result = Member::createFromInput(false);
-      if (is_string($result)) {
-        // An error has occured
-        $success = false;
-        $message = $result;
-        if (!$message) $message = "Une erreur est survenue. Votre inscription n'a pas été enregistrée. " .
-                "Veuillez réessayer ou <a href='" . URL::route('contacts') . 
-                "'>contacter l'animateur d'unité</a>.";
-      } else {
-        $success = true;
-        $message = "Votre inscription a été enregistrée. L'animateur d'unité la validera prochainement.";
-      }
-    }
-    
-    if ($success)
-      return Redirect::to(URL::route('registration_form'))
-            ->with('success_message', $message);
-    else
-      return Redirect::to(URL::route('registration_form'))
-            ->with('error_message', $message)
-            ->withInput();
   }
   
   protected function getEditRouteName() {
@@ -120,6 +32,125 @@ class RegistrationController extends GenericPageController {
     return Parameter::get(Parameter::$SHOW_REGISTRATION);
   }
   
+  /**
+   * [Route] Shows the public registration information page
+   */
+  public function showMain() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_REGISTRATION)) {
+      return App::abort(404);
+    }
+    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+      // The registrations are active (i.e. people can register)
+      // Get page text and update it with the parametric values
+      $page = $this->getPage();
+      $pageBody = $page->body_html;
+      $pageBody = str_replace("(PRIX UN ENFANT)", Parameter::get(Parameter::$PRICE_1_CHILD), $pageBody);
+      $pageBody = str_replace("(PRIX DEUX ENFANTS)", Parameter::get(Parameter::$PRICE_2_CHILDREN), $pageBody);
+      $pageBody = str_replace("(PRIX TROIS ENFANTS)", Parameter::get(Parameter::$PRICE_3_CHILDREN), $pageBody);
+      $pageBody = str_replace("(PRIX UN ANIMATEUR)", Parameter::get(Parameter::$PRICE_1_LEADER), $pageBody);
+      $pageBody = str_replace("(PRIX DEUX ANIMATEURS)", Parameter::get(Parameter::$PRICE_2_LEADERS), $pageBody);
+      $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
+      $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
+      $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
+      $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
+      $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
+      // Get the list of members owned by the user for the reregistration form
+      $familyMembers = array();
+      if ($this->user->isMember()) {
+        $familyMembers = $this->user->getAssociatedMembers();
+      }
+      // Make view
+      return View::make('pages.registration.registrationMain', array(
+          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
+          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'page_title' => $this->getPageTitle(),
+          'page_body' => $pageBody,
+          'family_members' => $familyMembers,
+          'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
+      ));
+    } else {
+      // The registration are not active, show a default page
+      return View::make('pages.registration.registrationInactive', array(
+          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
+                              || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)
+                              || $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+          'page_title' => $this->getPageTitle(),
+      ));
+    }
+  }
+  
+  /**
+   * [Route] Marks a member as reregistered for the next year
+   */
+  public function reregister($member_id) {
+    // Make sure the user owns this member
+    if (!$this->user->isOwnerOfMember($member_id)) {
+      return Helper::forbiddenResponse();
+    }
+    // Get the member
+    $member = Member::find($member_id);
+    if (!$member) return App::abort(404, "Ce member n'existe pas.");
+    // Update reregistration status
+    try {
+      $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
+      $member->save();
+      return Redirect::route('registration')->with('success_message', "La réinscription de " . $member->first_name . " " . $member->last_name . " a été enregistrée.");
+    } catch (Exception $ex) {
+      return Redirect::route('registration')->with('error_message', "Une erreur est survenue. La réinscription de "
+              . $member->first_name . " " . $member->last_name . " n'a pas été enregistrée. Contactez l'animateur d'unité. $ex");
+    }
+  }
+  
+  /**
+   * [Route] Displays the registration form page
+   */
+  public function showForm() {
+    return View::make('pages.registration.registrationForm', array(
+        'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+    ));
+  }
+  
+  /**
+   * [Route] Called when the registration form is submitted
+   */
+  public function submit() {
+    // Get whether the policy agreement has been accepted
+    $policyAgreement = Input::get('policy_agreement') ? true : false;
+    if (Parameter::get(Parameter::$SHOW_UNIT_POLICY) && !$policyAgreement) {
+      // The policy agreement has not been accepted, set error message
+      $success = false;
+      $message = "Vous devez adhérer à la charte d'unité pour inscrire un enfant.";
+    } else {
+      // The policy agreement has been accepted, create a new member instance from input
+      $result = Member::createFromInput(false);
+      if (is_string($result)) {
+        // An error has occured
+        $success = false;
+        $message = $result;
+        if (!$message) $message = "Une erreur est survenue. Votre inscription n'a pas été enregistrée. " .
+                "Veuillez réessayer ou <a href='" . URL::route('contacts') . 
+                "'>contacter l'animateur d'unité</a>.";
+      } else {
+        // Success
+        $success = true;
+        $message = "Votre inscription a été enregistrée. L'animateur d'unité la validera prochainement.";
+      }
+    }
+    // Redirect with status message
+    if ($success)
+      return Redirect::to(URL::route('registration_form'))
+            ->with('success_message', $message);
+    else
+      return Redirect::to(URL::route('registration_form'))
+            ->with('error_message', $message)
+            ->withInput();
+  }
+  
+  /**
+   * [Route] Shows the registration management page, where the leaders
+   * can validate or cancel pending registrations
+   */
   public function manageRegistration() {
     // Check that the user is allowed to reach this page
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
@@ -149,13 +180,19 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  /**
+   * [Route] Deletes a pending registration
+   */
   public function deleteRegistration($member_id) {
+    // Get the pending registration to delete
     $member = Member::find($member_id);
     $sectionId = $member ? $member->section_id : null;
     if ($sectionId) {
+      // Make sure the leader can cancel registrations
       if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
         return Helper::forbiddenResponse();
       }
+      // Remove pending registration
       try {
         $member->delete();
         return Redirect::route('manage_registration')
@@ -163,10 +200,14 @@ class RegistrationController extends GenericPageController {
       } catch (Exception $ex) {
       }
     }
+    // An error has occured
     return Redirect::route('manage_registration')
                 ->with("error_message", "Une erreur est survenue. La demande d'inscription n'a pas été supprimée. $memberId");
   }
   
+  /**
+   * [Route] Used to submit a member data and validate their registration
+   */
   public function manageSubmit() {
     // Get input data
     $sectionId = Input::get('section_id');
@@ -179,7 +220,7 @@ class RegistrationController extends GenericPageController {
               !$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
         return Helper::forbiddenResponse();
       }
-      // Update member
+      // Update member with input data
       $result = $member->updateFromInput(true, true, true, true, true);
       // Create result message
       if ($result === true) {
@@ -207,6 +248,9 @@ class RegistrationController extends GenericPageController {
       return Redirect::to(URL::previous())->with($success ? 'success_message' : 'error_message', $message)->withInput();
   }
   
+  /**
+   * [Route] Shows the reregistration management page
+   */
   public function manageReregistration() {
     // Make sure the user is allowed to access this page
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)) {
@@ -232,6 +276,9 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  /**
+   * [Route] Ajax call to mark a member as reregistered for the next year
+   */
   public function ajaxReregister() {
     // Find member
     $memberId = Input::get('member_id');
@@ -251,6 +298,9 @@ class RegistrationController extends GenericPageController {
     }
   }
   
+  /**
+   * [Route] Ajax call to cancel a reregistration
+   */
   public function ajaxCancelReregistration() {
     // Find member
     $memberId = Input::get('member_id');
@@ -270,6 +320,9 @@ class RegistrationController extends GenericPageController {
     }
   }
   
+  /**
+   * [Route] Ajax call to delete a member from the reregistration page
+   */
   public function ajaxDeleteMember() {
     // Find member
     $memberId = Input::get('member_id');
@@ -288,6 +341,9 @@ class RegistrationController extends GenericPageController {
     }
   }
   
+  /**
+   * [Route] Shows the year in section management page
+   */
   public function manageYearInSection() {
     // Make sure the user is allowed to access this page
     if (!$this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)) {
@@ -311,6 +367,10 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  /**
+   * [Route] Ajax call to change the year of a single member or of all members of a section
+   * @return type
+   */
   public function ajaxUpdateYearInSection() {
     if (Input::has('section_id')) {
       $sectionId = Input::get('section_id');
@@ -362,6 +422,9 @@ class RegistrationController extends GenericPageController {
     }
   }
   
+  /**
+   * [Route] Shows the section transfer page
+   */
   public function manageMemberSection() {
     // Make sure the user is allowed to access this page
     if (!$this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
@@ -385,17 +448,25 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  /**
+   * [Route] Used to submit the transfers from a section to another
+   */
   public function submitUpdateSection($section_slug) {
+    // Get sections from and to
     $sectionFrom = Section::where('slug', '=', $section_slug)->first();
     $sectionTo = Section::find(Input::get('destination'));
+    // Get list of members to transfer
     $memberIdsToTransfer = Input::get('members');
+    // Make sure these parameters are all set correctly
     if (!$sectionFrom || !$sectionTo || !is_array($memberIdsToTransfer) || !count($memberIdsToTransfer)) {
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('error_message', "Une erreur est survenue. Les changements n'ont pas été enregistrés");
     }
+    // Make sure the user can operate transfers between sections
     if (!$this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
       return Helper::forbiddenResponse();
     }
+    // Transfer each member and reset their year in the section and their subgroup name
     $errorList = "";
     $success = false;
     foreach ($memberIdsToTransfer as $memberId=>$val) {
@@ -414,6 +485,7 @@ class RegistrationController extends GenericPageController {
         $errorList .= ($errorList ? ", " : "") . $member->first_name . " " . $member->last_name;
       }
     }
+    // Redirect with status message
     if (!$success) {
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('error_message', "Une erreur s'est produite. Les changements n'ont pas été enregistrés.");
@@ -424,9 +496,12 @@ class RegistrationController extends GenericPageController {
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('success_message', "Le transfert a été opéré avec succès.");
     }
-    
   }
   
+  /**
+   * [Route] Shows the subscription fee management page, where the leaders
+   * can check members that have paid their fee
+   */
   public function manageSubscriptionFee() {
     // Make sure the user is allowed to access this page
     if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
@@ -453,17 +528,25 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  /**
+   * [Route] Ajax call to toggle a list of fee payment status
+   */
   public function updateSubscriptionFee() {
+    // Make sure the user is allowed to change the fee payment status
     if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
       return json_encode(array('result' => 'Failure'));
     }
+    // Get list of changes
     $changes = Input::all();
+    // Apply changes
     $error = false;
     $message = "";
     foreach ($changes as $memberId => $state) {
+      // Get member and payment status
       $memberId = substr($memberId, strlen('member-'));
       $state = $state != "false" && $state;
       $member = Member::find($memberId);
+      // Update status
       if ($member) {
         try {
           $member->subscription_paid = $state;
@@ -477,6 +560,7 @@ class RegistrationController extends GenericPageController {
         $message .= "Member $memberId does not exist. ";
       }
     }
+    // Redirect with status message
     return json_encode(array('result' => $error ? "Failure" : "Success", 'message' => $message));
   }
   

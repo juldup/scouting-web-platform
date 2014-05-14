@@ -3,10 +3,11 @@ TODO list
 BIG TASKS:
 
 SMALL TASKS:
+- Manage error messages (don't show them publicly)
+- In leader corner and leader menu, disable links to page the user has not access to
 
 AT THE END:
 - Comment code
-- Manage error messages (don't show them publicly)
 
 OPTIONAL/LATER:
 - List recent changes for leaders + import old userLogs

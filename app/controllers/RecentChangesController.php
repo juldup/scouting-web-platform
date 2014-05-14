@@ -1,15 +1,20 @@
 <?php
 
+/**
+ * Provides a page that list changes that were recently made to the website content
+ */
 class RecentChangesController extends BaseController {
   
   protected $pagesAdaptToSections = true;
   
+  /**
+   * [Route] Displays the recent changes page
+   */
   public function showPage() {
-    
+    // 60 days ago
     $startDate = date('Y-m-d', time() - 3600 * 24 * 60);
-    
+    // Container for the recent changes
     $recentChanges = array();
-    
     // List recent news
     $news = News::where('created_at', '>=', $startDate)
             ->orderBy('created_at', 'desc')
@@ -24,7 +29,6 @@ class RecentChangesController extends BaseController {
           'type' => 'Nouvelle',
       );
     }
-    
     // List recent documents
     $documents = Document::where('created_at', '>=', $startDate)
             ->where('archived', '=', false)
@@ -40,7 +44,6 @@ class RecentChangesController extends BaseController {
           'type' => 'Document',
       );
     }
-    
     // List recent e-mails
     $emails = Email::where('created_at', '>=', $startDate)
             ->where('archived', '=', false)
@@ -57,7 +60,6 @@ class RecentChangesController extends BaseController {
           'type' => 'E-mail',
       );
     }
-    
     // List recent photos
     $albums = PhotoAlbum::where('archived', '=', false)
             ->where('photo_count', '!=', 0)
@@ -74,13 +76,13 @@ class RecentChangesController extends BaseController {
           'type' => 'Photos',
       );
     }
-    
+    // Function to sort changes by date
     function compareChanges($a, $b) {
       return strcmp($b['datetime'], $a['datetime']);
     }
-    
+    // Sort changes by date
     usort($recentChanges, "compareChanges");
-    
+    // Make view
     return View::make('pages.recentChanges.recentChanges', array(
         'recent_changes' => $recentChanges,
     ));

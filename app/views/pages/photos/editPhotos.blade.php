@@ -12,7 +12,7 @@
     var saveAlbumOrderURL = "{{ URL::route('ajax_change_album_order') }}";
     @if ($selected_album_id)
       $().ready(function() {
-        $(".editable-text[data-editable-id={{ $selected_album_id }}]").changeToEditMode();
+        $(".editable-text[data-editable-id={{ $selected_album_id }}]").changeEditableTextToEditMode();
       });
     @endif
   </script>

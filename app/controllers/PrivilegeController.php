@@ -1,29 +1,37 @@
 <?php
 
+/**
+ * There are a set of privileges (i.e. allowed actions) on the site, and each
+ * leader can be assigned a subset of them individually.
+ * 
+ * This controller provides a tool to assign the privileges to the leaders.
+ */
 class PrivilegeController extends BaseController {
   
   protected $pagesAdaptToSections = true;
   
+  /**
+   * [Route] Shows the leader privilege management page
+   */
   public function showEdit() {
-    
+    // Make sure the user is a leader and therefore has access to this page
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
-    
+    // Check if the user can edit the other leader's privileges or can only view this page in readonly mode
     $canEditPrivileges = $this->user->can(Privilege::$EDIT_LEADER_PRIVILEGES, $this->section);
-    
+    // Get the leaders of the currently selected section
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
             ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
             ->get();
-    
     // List of privileges
     $privilegeList = Privilege::getPrivilegeArrayByCategory($this->section->id != 1);
-    // List of active privileges
+    // List of assigned privileges
     $privilegeRawData = Privilege::all();
-    
+    // Construct privilege table
     $privilegeTable = array();
     foreach ($privilegeList as $category) {
       foreach ($category as $privilegeData) {
@@ -44,14 +52,13 @@ class PrivilegeController extends BaseController {
         }
       }
     }
-    
-    // Set state to 'true' for all active privileges
+    // Set state to 'true' for all assigned privileges
     foreach ($privilegeRawData as $privilegeData) {
       if (isset($privilegeTable[$privilegeData->operation][$privilegeData->member_id])) {
         $privilegeTable[$privilegeData->operation][$privilegeData->member_id][$privilegeData->scope]['state'] = true;
       }
     }
-    
+    // Make view
     return View::make('pages.leader.editPrivileges', array(
         'leaders' => $leaders,
         'privilege_list' => $privilegeList,
@@ -59,11 +66,17 @@ class PrivilegeController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Ajax call to update a list of privilege assignment
+   */
   public function updatePrivileges() {
+    // Get the list of changes from the input
     $privileges = Input::all();
     $error = false;
+    // Update each of them in the database
     foreach ($privileges as $privilegeData=>$state) {
       try {
+        // Get input data
         $privilegeData = explode(":", $privilegeData);
         $operation = str_replace("_", " ", $privilegeData[0]);
         $scope = $privilegeData[1];
@@ -78,7 +91,8 @@ class PrivilegeController extends BaseController {
         if ($this->user->can(Privilege::$EDIT_LEADER_PRIVILEGES, $leader->section_id)
                 && $this->user->can($operation, $leader->section_id)) {
           $state = $state == "true" ? true : false;
-            Privilege::set($operation, $scope, $leaderId, $state);
+          // Update privilege state in database
+          Privilege::set($operation, $scope, $leaderId, $state);
         } else {
           $error = true;
         }
@@ -86,7 +100,7 @@ class PrivilegeController extends BaseController {
         $error = true;
       }
     }
-    
+    // Return response
     if ($error) return json_encode(array("result" => "Failure"));
     else return json_encode(array("result" => "Success"));
   }
