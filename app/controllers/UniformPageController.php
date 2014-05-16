@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * The uniform page is a custom page with content that can be edited by the leaders
+ * for each section independently.
+ */
 class UniformPageController extends GenericPageController {
   
   protected $pagesAdaptToSections = true;

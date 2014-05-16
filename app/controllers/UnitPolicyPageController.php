@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * The unit policy page is a global page with content that can be edited by the leaders.
+ */
 class UnitPolicyPageController extends GenericPageController {
   
   protected function getEditRouteName() {
