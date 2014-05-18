@@ -95,7 +95,7 @@ class CreateDatabase extends Migration {
     DB::table('pages')->insert(array(
         'type' => 'home',
         'section_id' => 1,
-        'body_html' => "<h1>Page d'accueil de l'unité</h1><p>Bienvenue.</p>",
+        'body_html' => "<p>Bienvenue.</p>",
     ));
     DB::table('pages')->insert(array(
         'type' => 'registration',
@@ -114,8 +114,6 @@ class CreateDatabase extends Migration {
       $table->string('original_name');
       $table->integer('page_id')->unsigned();
       $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
-      
-      
       $table->timestamps();
     });
     
