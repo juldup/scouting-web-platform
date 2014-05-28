@@ -1,7 +1,18 @@
 <?php
 
+/**
+ * This class provides a function that outputs the members' addresses
+ * in envelop format
+ */
 class EnvelopsPDF {
   
+  /**
+   * Outputs the envelops with the addresses of the members of the specified sections
+   * in PDF format
+   * 
+   * @param array $sections  The list of section to include
+   * @param string $format  The envelop format ("c6" (C6) or "c5_6" (C5/6))
+   */
   public static function downloadEnvelops($sections, $format) {
     // Parameters
     if ($format == "c6") {

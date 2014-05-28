@@ -1,14 +1,17 @@
 <?php
 
+/**
+ * This class provides a function that outputs the members' listing in PDF, CSV or Excel format
+ */
 class ListingPDF {
   
-  protected $output;
-  protected $exportPrivateData;
-  
-  protected $normalStyle = null;
-  protected $headerStyle = null;
-  protected $titleStyle = null;
-  
+  /**
+   * Outputs the listing for download
+   * 
+   * @param array $sections  The list of sections to include
+   * @param string $output  The output format ('pdf', 'csv' or 'excel')
+   * @param boolean $exportPrivateData  Whether the private data must be included in the listing (csv and pdf only)
+   */
   public static function downloadListing($sections, $output = 'pdf', $exportPrivateData = false) {
     if ($output != "excel" && $output != "csv") $output = "pdf";
     if ($output == "pdf" && $exportPrivateData) $exportPrivateData = false;
@@ -16,6 +19,20 @@ class ListingPDF {
     $listingExcel->doDownloadListing($sections, $output, $exportPrivateData);
   }
   
+  // The output format
+  protected $output;
+  
+  // Whether the private data must be included
+  protected $exportPrivateData;
+  
+  // PDF styles
+  protected $normalStyle = null;
+  protected $headerStyle = null;
+  protected $titleStyle = null;
+  
+  /**
+   * Outputs the listing for download
+   */
   protected function doDownloadListing($sections, $output, $exportPrivateData) {
     $this->output = $output;
     $this->exportPrivateData = $exportPrivateData;
@@ -94,6 +111,9 @@ class ListingPDF {
     }
   }
   
+  /**
+   * Creates a template Excel file
+   */
   protected function createExcelFile($delasection) {
     // Create new PHPExcel object
     $excelDocument = new PHPExcel();
@@ -149,6 +169,14 @@ class ListingPDF {
     return $excelDocument;
   }
   
+  /**
+   * Creates a sheet in the Excel document for a given section
+   * 
+   * @param type $excelDocument  The document to fill in
+   * @param type $sheetIndex  The index of the sheet to create
+   * @param type $section  The section
+   * @param type $csvMode  Whether the output will be CSV
+   */
   protected function fillInSheetForSection($excelDocument, $sheetIndex, $section, $csvMode = false) {
     // Create sheet(s) to match index
     while ($excelDocument->getSheetCount() < $sheetIndex + 1) {

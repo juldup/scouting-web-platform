@@ -1,9 +1,16 @@
 <?php
 
+/**
+ * ScoutMailer provides functions to send e-mails through an SMTP server
+ */
 class ScoutMailer {
   
+  // The mailer (stored for reuse)
   protected static $mailer;
   
+  /**
+   * Sends the given e-mail. Returns whether the e-mail was sent.
+   */
   public static function send(Swift_Message $message) {
     // Check that the recipient's e-mail address is not banned
     $to = $message->getTo();
@@ -15,6 +22,9 @@ class ScoutMailer {
     return $mailer->send($message);
   }
   
+  /**
+   * Returns (and generates if needed) the mailer
+   */
   protected static function getMailer() {
     if (!self::$mailer) {
       $transport = Swift_SmtpTransport::newInstance(
@@ -28,6 +38,9 @@ class ScoutMailer {
     return self::$mailer;
   }
   
+  /**
+   * If there are unsent e-mails in the database, try to sent them (with a limit on the number of e-mails to send)
+   */
   public static function sendPendingEmails($limit = 10) {
     // Current time
     $time = time();    

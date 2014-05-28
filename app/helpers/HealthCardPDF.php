@@ -1,7 +1,14 @@
 <?php
 
+/**
+ * This class provides method to print the health cards and health card
+ * summary in PDF format
+ */
 class HealthCardPDF {
   
+  /**
+   * Outputs the given health card in PDF format
+   */
   public static function healthCardToPDF(HealthCard $healthCard) {
     $pdf = new HealthCardPDF();
     $pdf->addCard($healthCard);
@@ -9,6 +16,9 @@ class HealthCardPDF {
     $pdf->outputPDF($filename);
   }
   
+  /**
+   * Outputs the given list of health cards in PDF format
+   */
   public static function healthCardsToPDF($healthCards) {
     $pdf = new HealthCardPDF();
     foreach ($healthCards as $healthCard) {
@@ -18,6 +28,12 @@ class HealthCardPDF {
     $pdf->outputPDF($filename);
   }
   
+  /**
+   * Outputs the summary of the given health cards in PDF format
+   * 
+   * @param type $healthCards
+   * @param Section $section
+   */
   public static function healthCardsToSummaryPDF($healthCards, Section $section) {
     $pdf = new HealthCardPDF();
     // Init page
@@ -27,7 +43,7 @@ class HealthCardPDF {
     $pdf->pdf->Cell(100, 8, "Résumé des fiches santé " . $section->de_la_section);
     $pdf->pdf->Ln(12);
     $nothingSpecial = "";
-    // Add card summary
+    // Add cards' summary
     foreach ($healthCards as $healthCard) {
       $hasSpecialData = $pdf->addCardSummary($healthCard);
       if (!$hasSpecialData) {
@@ -49,77 +65,105 @@ class HealthCardPDF {
     $pdf->outputPDF($filename);
   }
   
+  // Constants
   protected static $LINE_HEIGHT = 4.2;
   protected static $INTERLINE = 6;
   protected static $SMALL_INTERLINE = 3;
   
+  // The current PDF document
   protected $pdf;
   
-  // Adds a cell with the exact width of the contained text
+  /**
+   * (Helper function)
+   * Adds a cell with the exact width of the contained text
+   */
   protected function cell($str) {
     $this->pdf->Cell($this->pdf->GetStringWidth($str." "), 4, $str);
   }
   
-  // Adds a title cell
+  /**
+   * (Helper function)
+   * Adds a title cell
+   */
   protected function title($str) {
     $this->pdf->SetFont("Helvetica","","10");
     $this->cell($str);
   }
   
-  // Adds a content cell with fixed width
-  function content($length, $str) {
+  /**
+   * (Helper function)
+   * Adds a content cell with fixed width
+   */
+  protected function content($length, $str) {
     // If $str starts with |, this symbol is not displayed but the text is bold and undelined
     $this->pdf->SetFont("Helvetica","I" . (substr($str,0,1) == "|" ? "BU" : ""),"10");
     $this->pdf->Cell($length, self::$LINE_HEIGHT, (substr($str,0,1) == "|" ? substr($str,1) : $str));
   }
   
-  // Adds a couple of title and value
-  function entry($title, $length, $value) {
+  /**
+   * (Helper function)
+   * Adds a couple of title and value
+   */
+  protected function entry($title, $length, $value) {
     $this->title($title);
     $this->content($length, $value);
   }
   
-  // Adds an entry cell with a title and a fixed width content
-  function fixedEntry($titleLength, $title, $length, $value) {
+  /**
+   * (Helper function)
+   * Adds an entry cell with a title and a fixed width content
+   */
+  protected function fixedEntry($titleLength, $title, $length, $value) {
     $this->pdf->SetFont("Helvetica", "", "10");
     $this->pdf->Cell($titleLength, self::$LINE_HEIGHT, $title);
     $this->content($length, $value);
   }
   
-  // Adds a multiline title
-  function titleMultiline($str, $length = 185) {
+  /**
+   * (Helper function)
+   * Adds a multiline title
+   */
+  protected function titleMultiline($str, $length = 185) {
     $this->pdf->SetFont("Helvetica", "", "10");
     $this->pdf->MultiCell($length, self::$LINE_HEIGHT, $str . "\n");
   }
   
-  // Adds a multiline cell
-  function multiline($str, $length = 185) {
+  /**
+   * (Helper function)
+   * Adds a multiline cell
+   */
+  protected function multiline($str, $length = 185) {
     // If $str starts with |, this symbol is not displayed but the text is bold and undelined
     $this->pdf->SetFont("Times", "I" . (substr($str,0,1) == "|" ? "BU" : ""), "10");
     $this->pdf->MultiCell($length, self::$LINE_HEIGHT, (substr($str,0,1) == "|" ? substr($str,1) : $str) . "\n");
   }
   
+  /**
+   * (Constructor)
+   * Starts a new PDF document
+   */
   public function __construct() {
     $this->pdf = new TCPDF('P', 'mm', 'A4');
     $this->pdf->setPrintHeader(false);
     $this->pdf->setPrintFooter(false);
   }
   
-  public function addCard(HealthCard $healthCard) {
-    
-    $expirationDate = date('Y-m-d', strtotime($healthCard->signature_date) + 365*24*3600);
+  /**
+   * Adds a new page with the content of the given card
+   */
+  protected function addCard(HealthCard $healthCard) {
+    $exirationDate = date('Y-m-d', strtotime($healthCard->signature_date) + 365*24*3600);
     $member = $healthCard->getMember();
-    
     // French grammar for masculine/feminine words
     $e = ($member->gender == "F" ? "e" : "");
     $il = ($member->gender == "F" ? "elle" : "il");
-    
+    // Create page
     $this->pdf->AddPage();
     $this->pdf->SetAutoPageBreak(true, 10);
     $this->pdf->SetFont('Helvetica','B',16);
     $this->pdf->Cell(100,8,'FICHE SANTÉ INDIVIDUELLE');
     $this->pdf->Ln(8);
-    
+    // Print legal stuff
     $this->pdf->SetFont('Times','I',8);
     $this->pdf->MultiCell(190,3,"Cette fiche a été complétée en ligne sur " . URL::route('health_card') . 
             " et doit être mise à jour avec précision au début de chaque année scoute, et avant chaque camp," . 
@@ -132,13 +176,11 @@ class HealthCardPDF {
             " traitement des données personnelles, vous pouvez les consulter et les modifier à tout moment." .
             " Ces données seront détruites le " . Helper::dateToHuman($expirationDate) . " si aucun dossier" .
             " n'est ouvert et que la fiche n'est pas resignée entretemps.");
-    
     $this->pdf->Ln(4);
-    
+    // Identity section
     $this->pdf->SetFont("Times","B",10);
     $this->pdf->Cell(185, self::$LINE_HEIGHT, "Identité du scout");
     $this->pdf->Ln(self::$INTERLINE);
-    
     $this->entry("Nom : ", 60, $member->last_name);
     $this->entry("Prénom : ", 50, $member->first_name);
     $this->entry("Né$e le : ", 20, $member->getHumanBirthDate());
@@ -147,11 +189,10 @@ class HealthCardPDF {
     $this->pdf->Ln();
     $this->entry("Téléphone : ", 75, $member->getPersonalPhone());
     $this->pdf->Ln(self::$INTERLINE);
-    
+    // Contact section
     $this->pdf->SetFont("Times", "B", 10);
     $this->pdf->Cell(185, self::$LINE_HEIGHT, "Personnes à contacter en cas d'urgence");
     $this->pdf->Ln(self::$INTERLINE);
-    
     $y = $this->pdf->GetY();
     $this->title("1 : ");
     $this->multiline($healthCard->contact1_name
@@ -168,12 +209,13 @@ class HealthCardPDF {
             . $healthCard->contact2_phone, 90);
     $this->pdf->SetY(max($this->pdf->GetY(), $y2));
     $this->pdf->Ln(2);
-    
+    // Doctor section
     $this->pdf->SetFont("Times","B",10);
     $this->pdf->Cell(35, self::$LINE_HEIGHT, "Médecin traitant :");
     $this->multiline($healthCard->doctor_name . "\n" . $healthCard->doctor_address . "\n" . $healthCard->doctor_phone);
     $this->pdf->Ln(2);
     
+    // Health data section
     $this->pdf->SetFont("Times","B",10);
     $this->pdf->Cell(185, self::$LINE_HEIGHT, "Informations confidentielles concernant la santé du scout");
     $this->pdf->Ln(self::$INTERLINE);
@@ -236,12 +278,14 @@ class HealthCardPDF {
       $this->pdf->Ln(self::$SMALL_INTERLINE);
     } else $this->pdf->Ln(self::$SMALL_INTERLINE);
     
+    // Comments section
     if ($healthCard->comments) {
       $this->title("Commentaires : ");
       $this->multiline("|" . $healthCard->comments, 153);
       $this->pdf->Ln(self::$SMALL_INTERLINE);
     }
     
+    // Bottom notice
     $this->pdf->SetFont("Times","B",10);
     $this->pdf->Cell(35, self::$LINE_HEIGHT, "Remarque");
     $this->pdf->Ln(self::$INTERLINE);
@@ -254,6 +298,7 @@ class HealthCardPDF {
             " crème Euceta® ou Calendeel®, désinfectant (Cédium® ou Isobétadine®), Flamigel®.\n");
     $this->pdf->Ln(3);
     
+    // Signature
     $this->pdf->SetFont("Times","I" ,"8");
     $this->pdf->MultiCell(185,3, "« Je marque mon accord pour que la prise en charge ou" .
             " les traitements estimés nécessaires soient entrepris durant le séjour de" .
@@ -265,23 +310,18 @@ class HealthCardPDF {
     $this->pdf->Ln();
     $this->entry("Date :", 50, Helper::dateToHuman($healthCard->signature_date));
     $this->entry("Signature électronique : ", 60, "\"" . $healthCard->signatory_email . "\"");
-    
   }
   
   /*
    * Adds data summary and returns whether data has been added or not
    */
   protected function addCardSummary($healthCard) {
-    
     $member = $healthCard->getMember();
-    
     // French grammar for masculine/feminine words
     $e = ($member->gender == "F" ? "e" : "");
     $il = ($member->gender == "F" ? "elle" : "il");
-    
     // Get important data from health card
     $importantData = array();
-    
     if (!$healthCard->has_no_constrained_activities) 
       $importantData[] = "Ne peut pas participer à toutes les activités : " . $healthCard->constrained_activities_details;
     if ($healthCard->medical_data)
@@ -303,7 +343,7 @@ class HealthCardPDF {
       $importantData[] = $healthCard->other_important_information;
     if ($healthCard->comments)
       $importantData[] = "Commentaires : " . $healthCard->comments;
-    
+    // Print important data (if any)
     if (count($importantData)) {
       // Display name
       $this->pdf->SetFont("Times","B",11);
@@ -313,13 +353,18 @@ class HealthCardPDF {
       foreach ($importantData as $data) {
         $this->multiline($data);
       }
+      // Important data was printed
       return true;
     } else {
+      // Nothing was printed
       return false;
     }
   }
   
-  public function outputPDF($filename) {
+  /**
+   * Outputs the PDF document for download
+   */
+  protected function outputPDF($filename) {
     $this->pdf->Output($filename . ".pdf", "D");
     
   }

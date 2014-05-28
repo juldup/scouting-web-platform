@@ -1,7 +1,15 @@
 <?php
 
+/**
+ * This class provides various helper functions
+ */
 class Helper {
   
+  /**
+   * Returns the string with normalized characters, including only a-z, A-Z, 0-9, '-', '_', '.', '(', ')' and ' '
+   * @param type $string
+   * @return string
+   */
   public static function removeSpecialCharacters($string) {
     $string = preg_split('//u',$string, -1, PREG_SPLIT_NO_EMPTY);
     $newString = "";
@@ -32,6 +40,9 @@ class Helper {
     return $newString;
   }
   
+  /**
+   * Returns the given string tranformed for use inside javascript quotes
+   */
   public static function sanitizeForJavascript($string) {
     $string = addslashes($string);
     $string = str_replace("\r\n", "\\n", $string);
@@ -41,39 +52,63 @@ class Helper {
     return $string;
   }
   
+  /**
+   * Returns the given string transformed for safe use in html
+   */
   public static function sanitizeForHTML($string) {
     $string = str_replace("<", "&lt;", $string);
     $string = str_replace(">", "&gt;", $string);
     return $string;
   }
   
+  /**
+   * Transforms a raw multiline text so that the line breaks will appear in HTML
+   */
   public static function rawToHTML($string) {
     return str_replace("\n", "<br />", htmlspecialchars($string));
   }
   
+  /**
+   * Returns the 'YYYY-MM-DD' date of one year ago
+   */
   public static function oneYearAgo() {
     return date('Y-m-d', time() - 365*24*3600);
   }
   
+  /**
+   * Returns the current 'YYYY-YYYY' scouting year (scouting year starts in August)
+   */
   public static function thisYear() {
     $year = date('Y');
     if (date('m') < 8) $thisYear = ($year - 1) . "-" . $year;
     else $thisYear = $year . "-" . ($year + 1);
   }
   
+  /**
+   * Returns the day of the month of a 'YYYY-MM-DD' sql date
+   */
   public static function getDateDay($sqlDate) {
     return substr($sqlDate, 8, 2) + 0;
   }
   
+  /**
+   * Returns month of the year of a 'YYYY-MM-DD' sql date
+   */
   public static function getDateMonth($sqlDate) {
     return substr($sqlDate, 5, 2) + 0;
   }
   
+  /**
+   * Returns the year 'YYYY-MM-DD' sql date
+   */
   public static function getDateYear($sqlDate) {
     return substr($sqlDate, 0, 4);
   }
   
-  // Checks if date exists and return it sql-formatted
+  /**
+   * Checks if the given date is valid and returns it sql-formatted.
+   * Returns false if invalid
+   */
   public static function checkAndReturnDate($year, $month, $day) {
     $date = "$year-$month-$day";
     $timestamp = strtotime($date);
@@ -83,31 +118,46 @@ class Helper {
     return $date;
   }
   
+  /**
+   * Transforms a 'YYYY-MM-DD' sql date in D/M/YYYY' format
+   */
   public static function dateToHuman($sqlDate) {
     if ($sqlDate == "0000-00-00" || $sqlDate == "0" || !$sqlDate) return "";
     return date('j/n/Y', strtotime($sqlDate));
   }
   
+  /**
+   * Transforms a "00:00" time in "00h00" format
+   */
   public static function timeToHuman($time) {
     $parts = explode(":", $time);
     return $parts[0] . "h" . $parts[1];
   }
   
+  /**
+   * Returns the character at the given index in $string
+   */
   public static function charAt($string, $index) {
     return substr($string, $index, 1);
   }
   
+  /**
+   * Returns whether $haystack starts with $needle
+   */
   public static function startsWith($haystack, $needle) {
     return $needle === "" || strpos($haystack, $needle) === 0;
   }
   
   /**
    * Returns whether the given string abides by the rules of capital letters
-   * if first and last names (i.e. must contain a capital letter, and a letter
+   * for first and last names (i.e. must contain a capital letter, and a letter
    * cannot be followed by a capital letter)
    * 
-   * @param type $string Must be utf8-encoded
-   * @return boolean
+   * Some valid names: 'Jean', 'Marie-Cécile', 'Ruysman', 'De Pauw', 'Le blanc'
+   * Some invalid names: 'jean', MArie', 'RuysMan', 'DePauw', 'le Blanc' (unless $firstLetterMustBeCapital is false)
+   * 
+   * @param string $string  The string (must be utf8-encoded)
+   * @param type $firstLetterMustBeCapital  If true, the first letter must be a capital letter
    */
   public static function hasCorrectCapitals($string, $firstLetterMustBeCapital = true) {
     if (!$string) return;
@@ -134,22 +184,20 @@ class Helper {
   }
   
   /**
-   * Formats a phone number with pattern "0XXX/XX.XX.XX", "0XX/XX.XX.XX" or "0X/XXX.XX.XX"
+   * Formats a phone number with pattern "0XXX XX XX XX", "0XX XX XX XX" or "0X XXX XX XX"
    * according to http://en.wikipedia.org/wiki/Telephone_numbers_in_Belgium.
+   * If the phone number is international, it is returned unchanged.
    * 
    * Returns "" if the phone number is incorrect or empty.
    */
   public static function formatPhoneNumber($originalPhoneNumber) {
-    
+    // Trim phone number
     $phoneNumber = trim($originalPhoneNumber);
-    if (!$phoneNumber) return null;
-    
+    if (!$phoneNumber) return "";
     // Check if the phone number is starting with a '+'
     $hasPlusSymbol = strpos(preg_replace('/[^0-9\+]+/', '', $phoneNumber), "+") === 0;
-    
     // Keep only numbers
     $phoneNumber = preg_replace('/[^0-9]+/', '', $phoneNumber);
-    
     // Check for international prefix
     if ($hasPlusSymbol && self::startsWith($phoneNumber, "32")) {
       // Belgian number, drop the international prefix
@@ -165,11 +213,10 @@ class Helper {
       // International number, don't format it
       return $originalPhoneNumber;
     }
-    
+    // Add leading zero
     if (!self::startsWith($phoneNumber, "0")) {
       $phoneNumber = "0" . $phoneNumber;
     }
-    
     // Determine prefix length
     if (self::startsWith($phoneNumber, "0468") ||
         self::startsWith($phoneNumber, "047") ||
@@ -190,7 +237,6 @@ class Helper {
       $zonePrefixLength = 3;
       $suffixLength = 6;
     }
-    
     // Extract prefix and suffix
     $prefix = substr($phoneNumber, 0, $zonePrefixLength);
     $suffix = substr($phoneNumber, $zonePrefixLength);
@@ -200,20 +246,28 @@ class Helper {
     $suffix1 = substr($suffix, 0, strlen($suffix) - 4);
     $suffix2 = substr($suffix, strlen($suffix) - 4, 2);
     $suffix3 = substr($suffix, strlen($suffix) - 2, 2);
-    
+    // Return phone number
     $phoneNumber = "$prefix $suffix1 $suffix2 $suffix3";
-    
     return $phoneNumber;
   }
   
+  /**
+   * Returns a forbidden 'access denied' HTTP response
+   */
   public static function forbiddenResponse() {
     return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
   }
   
+  /**
+   * Returns a forbidden 'you are not a member' HTTP response
+   */
   public static function forbiddenNotMemberResponse() {
     return Illuminate\Http\Response::create(View::make('forbiddenNotMember'), Illuminate\Http\Response::HTTP_FORBIDDEN);
   }
   
+  /**
+   * Creates a slug for the given string
+   */
   public static function slugify($text) {
     // Based on: http://stackoverflow.com/questions/2955251/php-function-to-make-slug-url-string#2955878
     // Remove special characters
@@ -234,6 +288,9 @@ class Helper {
     return $text;
   }
   
+  /**
+   * Returns the given cash amount (float) in format '0,00'
+   */
   public static function formatCashAmount($amount) {
     $amount = trim($amount);
     $amount = str_replace(",", ".", $amount);
