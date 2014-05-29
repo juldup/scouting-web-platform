@@ -1,14 +1,59 @@
 <?php
 
+/**
+ * This Eloquent class represents the health card of a member, filled in by their parents.
+ * Health cards are kept in the system for 365 days when they are created or modified.
+ * 
+ * Columns:
+ *   - member_id:       Member this health card refers to
+ *   - signatory_id:    User account that was used to sign this health card
+ *   - signatory_email: The e-mail of the user account used to sign this health card
+ *   - reminder_sent:   Whether an expiration reminder e-mail has been sent for this health card
+ *   - signature_date:  Date at which the health card was last signed by the parents
+ *   The following fields are the health data filled in by the parents
+ *   - contact1_name
+ *   - contact1_address
+ *   - contact1_phone
+ *   - contact1_relationship
+ *   - contact2_name
+ *   - contact2_address
+ *   - contact2_phone
+ *   - contact2_relationship
+ *   - doctor_name
+ *   - doctor_address
+ *   - doctor_phone
+ *   - has_no_constrained_activities
+ *   - constrained_activities_details
+ *   - medical_data
+ *   - medical_history
+ *   - has_tetanus_vaccine
+ *   - tetanus_vaccine_details
+ *   - has_allergy
+ *   - allergy_details
+ *   - allergy_consequences
+ *   - has_special_diet
+ *   - special_diet_details
+ *   - other_important_information
+ *   - has_drugs
+ *   - drugs_details
+ *   - drugs_autonomy
+ *   - comments
+ */
 class HealthCard extends Eloquent {
   
   protected $guarded = array('id', 'signatory_id', 'signatory_email',
       'reminder_sent', 'signature_date', 'created_at', 'updated_at');
   
+  /**
+   * Returns the member this health card refers to
+   */
   public function getMember() {
     return Member::find($this->member_id);
   }
   
+  /**
+   * Returns the number of days remaining before the automatic deletion of this health card
+   */
   public function daysBeforeDeletion() {
     $seconds_diff = strtotime($this->signature_date) + 365*24*3600 - time();
     return ceil($seconds_diff / (3600 * 24));

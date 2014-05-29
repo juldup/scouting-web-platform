@@ -301,7 +301,7 @@ class CreateDatabase extends Migration {
       $table->string('contact1_phone')->nullable();
       $table->string('contact1_relationship')->nullable();
       $table->string('contact2_name')->nullable();
-      $table->string('contact2_address')->nullabel();
+      $table->string('contact2_address')->nullable();
       $table->string('contact2_phone')->nullable();
       $table->string('contact2_relationship')->nullable();
       $table->string('doctor_name')->nullable();
