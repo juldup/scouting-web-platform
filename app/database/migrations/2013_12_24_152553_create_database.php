@@ -92,6 +92,7 @@ class CreateDatabase extends Migration {
       $table->index('type');
       $table->index('section_id');
     });
+    // Default pages
     DB::table('pages')->insert(array(
         'type' => 'home',
         'section_id' => 1,
@@ -328,7 +329,7 @@ class CreateDatabase extends Migration {
       $table->index('member_id');
     });
     
-    // Photo folders
+    // Photo albums
     Schema::create('photo_albums', function($table) {
       $table->increments('id');
       $table->integer('section_id')->unsigned();

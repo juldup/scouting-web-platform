@@ -1,11 +1,25 @@
 <?php
 
+/**
+ * This Eloquent class represents a global parameter of the website.
+ * It provides functions to access the parameters.
+ * 
+ * Columns:
+ *   - name:  Name of the parameter
+ *   - value: Value of the parameter
+ */
 class Parameter extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
+  
+  // Folder (relative to storage folder) where the website logo is stored
   public static $LOGO_IMAGE_FOLDER = "site_data/website_logo/";
   
+  /**
+   *  Parameter names
+   */
+  // Page access parameters
   public static $CALENDAR_DOWNLOADABLE = "Calendar downloadable";
   public static $SHOW_SECTIONS = "Show sections";
   public static $SHOW_ADDRESSES = "Show addresses";
@@ -27,7 +41,7 @@ class Parameter extends Eloquent {
   public static $SHOW_SUGGESTIONS = "Show suggestions";
   public static $SHOW_GUEST_BOOK = "Show guest book";
   public static $SHOW_HELP = "Show help";
-  
+  // Unit specific parameters
   public static $UNIT_SHORT_NAME = "Unit short name";
   public static $UNIT_LONG_NAME = "Unit long name";
   public static $UNIT_BANK_ACCOUNT = "Unit bank account";
@@ -35,18 +49,18 @@ class Parameter extends Eloquent {
   public static $WEBMASTER_EMAIL = "Webmaster e-mail address";
   public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
   public static $LOGO_IMAGE = "Logo image";
-  
+  // Website metadata
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
   public static $WEBSITE_META_KEYWORDS = "Website meta keywords";
   public static $ADDITIONAL_HEAD_HTML = "Additional head html";
-  
+  // Subscription fees
   public static $PRICE_1_CHILD = "Price for one child";
   public static $PRICE_2_CHILDREN = "Price for two children";
   public static $PRICE_3_CHILDREN = "Price for three children";
   public static $PRICE_1_LEADER = "Price for one leader";
   public static $PRICE_2_LEADERS = "Price for two leaders";
   public static $PRICE_3_LEADERS = "Price for three leaders";
-  
+  // SMTP parameters
   public static $SMTP_HOST = "Smtp host";
   public static $SMTP_PORT = "Smtp port";
   public static $SMTP_USERNAME = "Smtp username";
@@ -54,9 +68,15 @@ class Parameter extends Eloquent {
   public static $SMTP_SECURITY  = "Smtp security";
   public static $VERIFIED_EMAIL_SENDERS = "Verified e-mail senders";
   
+  // List of parameters, stored to avoid multiple accesses to database
   private static $parameters = null;
+  
+  // List of verified e-mail senders
   private static $verifiedEmailSenders = null;
   
+  /**
+   * Fetches the parameters in the database and stores them in the $parameters variable
+   */
   private static function fetchParameters() {
     $parameters = self::all();
     self::$parameters = array();
@@ -65,6 +85,10 @@ class Parameter extends Eloquent {
     }
   }
   
+  /**
+   * Returns the value of the given parameter.
+   * If the parameter is not set, returns "".
+   */
   public static function get($parameterName) {
     if (self::$parameters == null) {
       self::fetchParameters();
@@ -78,6 +102,9 @@ class Parameter extends Eloquent {
     }
   }
   
+  /**
+   * Updates the value of a parameter in the database
+   */
   public static function set($parameterName, $value) {
     // Get parameter
     $parameter = Parameter::where('name', '=', $parameterName)->first();
@@ -95,6 +122,9 @@ class Parameter extends Eloquent {
     }
   }
   
+  /**
+   * Returns whether the given e-mail address in the verified sender list
+   */
   public static function isVerifiedSender($emailAddress) {
     if (!self::$verifiedEmailSenders) {
       self::$verifiedEmailSenders = explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS));

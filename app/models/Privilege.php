@@ -1,7 +1,11 @@
 <?php
-
 /**
+ * This Eloquent class represents a privilege of a leader
  * 
+ * Columns:
+ *   - operation: A string representing which operation this privilege allows
+ *   - scope:     'S' if the privilege is limited to the leader's section, 'U' for unit if they can use this privilege on any section
+ *   - member_id: The leader affected by this privilege
  * 
  * Note : predefined privileges are privileges that can be automatically applied to classes
  * of members :
@@ -13,6 +17,12 @@
 class Privilege extends Eloquent {
   
   var $guarded = array('id', 'created_at', 'updated_at');
+  
+  // Following are all the privileges with
+  //   - id: the string representing the privilege
+  //   - text: a textual description of the privilege
+  //   - section: true if this privilege can be applied to only a section, false if it is a global privilige
+  //   - predefined: in which predefined classes it will be applied
   
   public static $UPDATE_OWN_LISTING_ENTRY = array(
       'id' => 'Update own listing entry',
@@ -161,6 +171,9 @@ class Privilege extends Eloquent {
       'predefined' => "U"
   );
   
+  /**
+   * Returns the list of privileges
+   */
   public static function getPrivilegeList() {
     return array(
         self::$UPDATE_OWN_LISTING_ENTRY,
@@ -190,12 +203,18 @@ class Privilege extends Eloquent {
     );
   }
   
-  
+  /**
+   * Returns the list of privileges sorted in 4 categories
+   * 
+   * @param boolean $forSection  Whether this is for a section leader or a unit leader
+   */
   public static function getPrivilegeArrayByCategory($forSection = false) {
+    // The four categories
     $basicPrivileges = array();
     $leaderInChargePrivileges = array();
     $unitTeamPrivileges = array();
     $unitLeaderPrivileges = array();
+    // Sort privileges into categories
     foreach (self::getPrivilegeList() as $privilege) {
       if (strpos($privilege['predefined'], "A") !== false) {
         if ($forSection) {
@@ -228,6 +247,7 @@ class Privilege extends Eloquent {
         $unitLeaderPrivileges[] = array('privilege' => $privilege, 'scope' => 'U');
       }
     }
+    // Return list of categories
     return array(
         "Gestion de base" => $basicPrivileges,
         "Gestion avancée" => $leaderInChargePrivileges,
@@ -236,6 +256,9 @@ class Privilege extends Eloquent {
     );
   }
   
+  /**
+   * Sets and saves all the privileges from the base category to the given leader
+   */
   public static function addBasePrivilegesForLeader($leader) {
     foreach (self::getPrivilegeList() as $privilege) {
       if (strpos($privilege['predefined'], "A") !== false) {
@@ -250,15 +273,20 @@ class Privilege extends Eloquent {
     }
   }
   
-  // Sets a privilege for a leader
+  /**
+   * Sets ($state = true) or unsets ($state = false) and saves a privilege for a leader in a given scope
+   */
   public static function set($operation, $scope, $leaderId, $state) {
+    // Find existing privilege
     $privilege = Privilege::where('operation', '=', $operation)
             ->where('scope', '=', $scope)
             ->where('member_id', '=', $leaderId)
             ->first();
     if ($privilege && !$state) {
+      // Privilege exists and should be removed
       $privilege->delete();
     } elseif (!$privilege && $state) {
+      // Privilege does not exist and should be created
       Privilege::create(array(
           'operation' => $operation,
           'scope' => $scope,

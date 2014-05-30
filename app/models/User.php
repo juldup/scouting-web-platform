@@ -1,10 +1,24 @@
 <?php
 
+/**
+ * This Eloquent class represents a user (visitor) of the website
+ * 
+ * Columns:
+ *   - password:          Encoded password of the user
+ *   - username:          Username
+ *   - email:             E-mail address of the user
+ *   - default_section:   The default section is the section loaded by default when starting a new session
+ *   - is_webmaster:      Whether this user is the webmaster of the website (the webmaster has all privileges on the website)
+ *   - last_visit:        Date of the latest visit (excepted the current)
+ *   - current_visit:     Date of the current visit
+ *   - verification_code: A code sent by e-mail to the user to verify their e-mail address
+ *   - verified:          Whether the e-mail address ownership has been verified with the verification code
+ */
 class User extends Eloquent {
   
   protected $fillable = array('username', 'password', 'email', 'default_section');
   
-  // Whether the user is connected (by default, they are)
+  // Whether the user is logged in (by default, they are)
   var $isConnected = true;
   
   // Currently selected tab
@@ -22,14 +36,18 @@ class User extends Eloquent {
   // Whether this user is a leader (null = unknown)
   private $isLeader = null;
   
-  // Returns a dummy user that is not logged in
+  /**
+   * Returns a dummy user that is not logged in
+   */
   public static function disconnectedUser() {
     $user = new User();
     $user->isConnected = false;
     return $user;
   }
   
-  // Returns the user with the given login and password
+  /**
+   * Returns the user with the given login and password (null if no match)
+   */
   public static function getWithUsernameAndPassword($username, $password) {
     // Get users corresponding to username (as username or e-mail address)
     $users = User::where(function($query) use ($username) {
@@ -46,6 +64,9 @@ class User extends Eloquent {
     return null;
   }
   
+  /**
+   * Creates a new user with the given credentials
+   */
   public static function createWith($username, $email, $password) {
     $hashedPassword = User::encodePassword($password);
     $user = self::create(array(
@@ -60,14 +81,23 @@ class User extends Eloquent {
     return $user;
   }
   
+  /**
+   * Returns the name of the username cookie
+   */
   public static function getCookieUsernameName() {
     return strtolower(Parameter::get(Parameter::$UNIT_SHORT_NAME)) . '_username';
   }
   
+  /**
+   * Returns the name of the password cookie
+   */
   public static function getCookiePasswordName() {
     return strtolower(Parameter::get(Parameter::$UNIT_SHORT_NAME)) . '_password';
   }
   
+  /**
+   * Updates the e-mail of the user and unsets the verified field
+   */
   public function changeEmail($email) {
     $this->email = $email;
     $this->verified = false;
@@ -75,20 +105,32 @@ class User extends Eloquent {
     $this->save();
   }
   
+  /**
+   * Updates the password of the user
+   */
   public function changePassword($password) {
     $this->password = self::encodePassword($password);
     $this->save();
   }
   
+  /**
+   * Updates the default section of the user
+   */
   public function changeDefaultSection($defaultSection) {
     $this->default_section = $defaultSection;
     $this->save();
   }
   
+  /**
+   * Generates a new random verification code
+   */
   private static function generateVerificationCode() {
     return hash('sha256', rand()) . time();
   }
-
+  
+  /**
+   * Returns the password encoded
+   */
   public static function encodePassword($password) {
     // Generate random salt
     $salt = substr(sha1(uniqid(rand(), true)), 0, 11);
@@ -98,6 +140,13 @@ class User extends Eloquent {
     return $salt . $hashedPassword;
   }
   
+  /**
+   * Returns the password encoded to save in a cookie (different from
+   * the encoded password in the database)
+   * 
+   * @param type $password  The raw user password
+   * @param type $hashedPassword  The encoded password as in the database (used for retro-compatibility)
+   */
   public static function getCookiePassword($password, $hashedPassword) {
     // Retrieve salt from hash
     $salt = substr($hashedPassword, 0, 11);
@@ -112,6 +161,12 @@ class User extends Eloquent {
     return $cookiePassword;
   }
   
+  /**
+   * Tests whether a raw password (or cookie password) corresponds to an encoded password
+   * 
+   * @param type $rawPassword  The raw password entered by the user or the cookie password
+   * @param type $hashedPassword  The encoded password from the database
+   */
   public static function testPassword($rawPassword, $hashedPassword) {
     // 11 first characters in hash is salt
     $salt = substr($hashedPassword, 0, 11);
@@ -128,13 +183,18 @@ class User extends Eloquent {
            md5($salt . hash('sha256', $salt . $rawPassword)) == $hashedPassword;
   }
   
-  // Returns whether the user is logged in
+  /**
+   *  Returns whether the user is logged in
+   */
   public function isConnected() {
     return $this->isConnected;
   }
   
-  // Returns whether the user owns the given member
+  /**
+   * Returns whether the user owns the given member
+   */
   public function isOwnerOfMember($memberId) {
+    if (!$this->isConnected || !$this->verified) return false;
     if ($memberId instanceof Member) $memberId = $memberId->id;
     foreach ($this->getAssociatedMembers() as $member) {
       if ($member->id == $memberId) {
@@ -144,7 +204,9 @@ class User extends Eloquent {
     return false;
   }
   
-  // Returns whether the user is logged in and is a member
+  /**
+   * Returns whether the user is logged in and is a member
+   */
   public function isMember() {
     if ($this->isMember === null) {
       // If the user is not connected, they cannot be a member
@@ -163,7 +225,9 @@ class User extends Eloquent {
     return $this->isMember;
   }
   
-  // Returns whether the user is a leader
+  /**
+   * Returns whether the user is logged in and is a leader
+   */
   public function isLeader() {
     if ($this->isLeader === null) {
       // If the user is not connected, they cannot be a leader
@@ -182,11 +246,17 @@ class User extends Eloquent {
     return $this->isLeader;
   }
   
+  /**
+   * Returns whether the user is logged in and is a former member
+   */
   public function isFormerLeader() {
-    if (!$this->isConnected) return false;
+    if (!$this->isConnected || !$this->verified) return false;
     return ArchivedLeader::where('email_member', '=', $this->email)->first() != null;
   }
   
+  /**
+   * Returns the default section of the user
+   */
   public function getDefaultSection() {
     if ($this->default_section) {
       return Section::find($this->default_section);
@@ -195,8 +265,12 @@ class User extends Eloquent {
     }
   }
   
-  // Fetches if need be and returns the list of associated members (i.e. sharing this user's e-mail address)
+  /**
+   * Fetches (if needed) and returns the list of associated members (i.e. sharing this user's e-mail address).
+   * If the user is not logged in or unverified, there are no associated members
+   */
   public function getAssociatedMembers() {
+    if (!$this->isConnected || !$this->verified) return array();
     if ($this->associatedMembers === null) {
       // Find all members sharing an e-mail address with this use
       $email = $this->email;
@@ -218,8 +292,11 @@ class User extends Eloquent {
     return $this->associatedMembers;
   }
   
-  // Filters the associated members to keep only leaders
+  /**
+   * Returns the list of associated members that happen to be leaders
+   */
   public function getAssociatedLeaderMembers() {
+    if (!$this->isConnected || !$this->verified) return array();
     if ($this->associatedLeaderMembers === null) {
       $this->associatedLeaderMembers = array();
       foreach ($this->getAssociatedMembers() as $member) {
@@ -231,6 +308,9 @@ class User extends Eloquent {
     return $this->associatedLeaderMembers;
   }
   
+  /**
+   * Return whether this user can do the given action (privilege) for the given section
+   */
   public function can($action, $section = "") {
     // An unlogged user cannot do anything
     if (!$this->isConnected) {
@@ -244,7 +324,6 @@ class User extends Eloquent {
     if ($this->is_webmaster) {
       return true;
     }
-    
     // Find section id
     if (!$section) {
       $sectionId = $this->currentSection->id;
@@ -253,10 +332,10 @@ class User extends Eloquent {
     } else {
       $sectionId = $section->id;
     }
-    
+    // Convert action to operation
     $operation = $action;
     if (!is_string($operation)) $operation = $action['id'];
-    
+    // Search privileges for all leaders associated with this user
     foreach ($this->getAssociatedLeaderMembers() as $leaderMember) {
       $privileges = Privilege::where('member_id', '=', $leaderMember->id)->where("operation", "=", $operation)->get();
       foreach ($privileges as $privilege) {
@@ -272,7 +351,6 @@ class User extends Eloquent {
         }
       }
     }
-    
     // No associated leader or matching privilege
     return false;
   }
