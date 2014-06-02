@@ -10,7 +10,11 @@
             <li class="divider"></li>
             <li class="dropdown-header">{{{ $item }}}</li>
           @else
-            <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
+            @if ($item_data['url'])
+              <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
+            @else
+            <li class="disabled"><a>{{{ $item }}}</a></li>
+            @endif
           @endif
         @endforeach
       </ul>

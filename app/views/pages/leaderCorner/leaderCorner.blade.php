@@ -21,11 +21,18 @@
             {{{ $operationCategory }}}
           </div>
           @foreach ($ops as $operationName=>$operationData)
-            <div class="list-group-item clickable leader-help-item" data-leader-help="{{ $operationData['help'] }}">
-              <a href="{{ $operationData['url'] }}"></a>
-              {{{ $operationName }}}
-              <a href="#{{ $operationData['help-anchor'] }}" class="help-badge"></a>
-            </div>
+            @if ($operationData['url'])
+              <div class="list-group-item clickable leader-help-item" data-leader-help="{{ $operationData['help'] }}">
+                <a href="{{ $operationData['url'] }}"></a>
+                {{{ $operationName }}}
+                <a href="#{{ $operationData['help-anchor'] }}" class="help-badge"></a>
+              </div>
+            @else
+              <div class="list-group-item leader-help-item" data-leader-help="{{ $operationData['help'] }}">
+                <span class="leader-corner-disabled">{{{ $operationName }}}</span>
+                <a href="#{{ $operationData['help-anchor'] }}" class="help-badge"></a>
+              </div>
+            @endif
           @endforeach
         </div>
       </div>

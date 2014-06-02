@@ -62,8 +62,10 @@ class RegistrationController extends GenericPageController {
       }
       // Make view
       return View::make('pages.registration.registrationMain', array(
-          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, $this->section),
-          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
+          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section) ||
+                          $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section) ||
+                          $this->user->can(Privilege::$SECTION_TRANSFER, 1),
           'page_title' => $this->getPageTitle(),
           'page_body' => $pageBody,
           'family_members' => $familyMembers,

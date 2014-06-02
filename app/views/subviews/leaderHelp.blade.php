@@ -46,7 +46,7 @@
     Cet outil te permet d'envoyer facilement des e-mails à tous les parents de ta section.
     Il offre certains avantages par rapport à envoyer les e-mails depuis une autre boite e-mail :
     <ul>
-      <li>Les adresses e-mail des destinaires ne sont jamais partagées, tu les gardes ainsi confidentiel et évites tout abu de la par des parents.</li>
+      <li>Les adresses e-mail des destinaires ne sont jamais partagées, tu les gardes ainsi confidentiel et évites tout abu de la part des parents.</li>
       <li>Les e-mails envoyés depuis le site peuvent être consultés sur le site. Les parents peuvent donc facilement consulter les e-mails égarés.</li>
     </ul>
   </p>

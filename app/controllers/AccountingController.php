@@ -10,8 +10,17 @@ class AccountingController extends BaseController {
   
   protected $isSectionPage = true;
   
+  protected $pagesAdaptToSections = true;
+  
   /**
-   * [Route] Generate the page
+   * [Route] Generates the page when no year is specified
+   */
+  public function showPageCurrentYear() {
+    return $this->showPage(null);
+  }
+  
+  /**
+   * [Route] Generates the page
    * 
    * @param string $year  Used to view the accounting data of another year (default is the current scout year)
    */

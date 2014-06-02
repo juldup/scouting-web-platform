@@ -92,37 +92,41 @@ class MenuComposer {
       
       $leaderCategory["Opérations courantes"] = 'title';
       if (Parameter::get(Parameter::$SHOW_CALENDAR))
-        $leaderCategory['Gérer le calendrier'] = 'manage_calendar';
+        $leaderCategory['Gérer le calendrier'] = $user->can(Privilege::$EDIT_CALENDAR) ? 'manage_calendar' : null;
       if (Parameter::get(Parameter::$SHOW_PHOTOS))
-        $leaderCategory['Gérer les photos'] = 'edit_photos';
+        $leaderCategory['Gérer les photos'] = $user->can(Privilege::$POST_PHOTOS) ? 'edit_photos' : null;
       if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
-        $leaderCategory['Gérer les documents'] = 'manage_documents';
+        $leaderCategory['Gérer les documents'] = $user->can(Privilege::$EDIT_DOCUMENTS) ? 'manage_documents' : null;
       if (Parameter::get(Parameter::$SHOW_NEWS))
-        $leaderCategory['Gérer les nouvelles'] = 'manage_news';
+        $leaderCategory['Gérer les nouvelles'] = $user->can(Privilege::$EDIT_NEWS) ? 'manage_news' : null;
       if (Parameter::get(Parameter::$SHOW_EMAILS))
-        $leaderCategory['Gérer les e-mails'] = 'manage_emails';
-      $leaderCategory['Envoyer un e-mail'] = 'send_section_email';
+        $leaderCategory['Gérer les e-mails'] = $user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : null;
+      $leaderCategory['Envoyer un e-mail'] = $user->can(Privilege::$SEND_EMAILS) ? 'send_section_email' : null;
       if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
-        $leaderCategory['Gérer les fiches santé'] = 'manage_health_cards';
+        $leaderCategory['Gérer les fiches santé'] = $user->can(Privilege::$VIEW_HEALTH_CARDS) ? 'manage_health_cards' : null;
       $leaderCategory['Trésorerie'] = 'accounting';
       
       $leaderCategory['Opérations annuelles'] = 'title';
-      $leaderCategory['Gérer les inscriptions'] = 'manage_registration';
-      $leaderCategory['Gérer le listing'] = 'manage_listing';
+      $leaderCategory['Gérer les inscriptions'] =
+              $user->can(Privilege::$EDIT_LISTING_ALL) || $user->can(Privilege::$EDIT_LISTING_LIMITED) ||
+              $user->can(Privilege::$SECTION_TRANSFER || $user->can(Privilege::$MANAGE_ACCOUNTING))
+              ? 'manage_registration' : null;
+      $leaderCategory['Gérer le listing'] =
+              $user->can(Privilege::$EDIT_LISTING_ALL) || $user->can(Privilege::$EDIT_LISTING_LIMITED) ? 'manage_listing' : null;
       $leaderCategory['Gérer les animateurs'] = 'edit_leaders';
       $leaderCategory['Privilèges des animateurs'] = 'edit_privileges';
       $leaderCategory['Gérer les sections'] = 'section_data';
       
       $leaderCategory['Contenu du site'] = 'title';
-      $leaderCategory["Paramètres du site"] = 'edit_parameters';
+      $leaderCategory["Paramètres du site"] = $user->can(Privilege::$EDIT_GLOBAL_PARAMETERS) ? 'edit_parameters' : null;
       
       $leaderCategory['Supervision'] = 'title';
 //      $leaderCategory['Changements récents'] = 'view_private_recent_changes';
       $leaderCategory['Liste des utilisateurs du site'] = 'user_list';
       if (Parameter::get(Parameter::$SHOW_SUGGESTIONS))
-        $leaderCategory['Gérer les suggestions'] = 'edit_suggestions';
+        $leaderCategory['Gérer les suggestions'] = $user->can(Privilege::$MANAGE_SUGGESIONS) ? 'edit_suggestions' : null;
       if (Parameter::get(Parameter::$SHOW_GUEST_BOOK))
-        $leaderCategory["Gérer le livre d'or"] = 'edit_guest_book';
+        $leaderCategory["Gérer le livre d'or"] = $user->can(Privilege::$DELETE_GUEST_BOOK_ENTRIES) ? 'edit_guest_book' : null;
       
       if (count($leaderCategory)) {
         $menuItems['Coin des animateurs'] = $leaderCategory;
