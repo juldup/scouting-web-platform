@@ -35,7 +35,7 @@ class ContactController extends BaseController {
       if ($leader) $sectionLeaders[] = $leader;
     }
     // Make view
-    return View::make('pages.contacts', array(
+    return View::make('pages.contacts.contacts', array(
         "unitLeaders" => $unitLeaders,
         "sectionLeaders" => $sectionLeaders,
         "webmaster" => array(

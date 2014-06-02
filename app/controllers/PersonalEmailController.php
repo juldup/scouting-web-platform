@@ -56,7 +56,7 @@ class PersonalEmailController extends BaseController {
       $member = null;
     }
     // Make view
-    return View::make('pages.personalEmail', array(
+    return View::make('pages.contacts.personalEmail', array(
         'member' => $member,
         'contact_type' => $contact_type,
     ));

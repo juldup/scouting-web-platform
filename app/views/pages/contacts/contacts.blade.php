@@ -68,6 +68,7 @@
   </div>
   
   <div class='well'>
+    <a name='webmaster'></a>
     <legend>Contacter le webmaster (Julien Dupuis)</legend>
     <div class='row'>
       <div class="col-md-3">
