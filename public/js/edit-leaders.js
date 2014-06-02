@@ -1,10 +1,18 @@
+/**
+ * This script is present on the calendar management page and provides
+ * functionalities to add, modify and delete events
+ */
+
 $().ready(function() {
+  // Submit scout-to-leader form when a scout is selected
   $("#scout_to_leader select").bind('change', function() {
     $("#scout_to_leader form").trigger('submit');
   });
+  // Add confirmation on delete button
   $(".warning-delete").click(function() {
     return confirm("Veux-tu vraiment supprimer cet animateur du listing ?");
   });
+  // Hide the current edit form
   $(".dismiss-form").click(function(event) {
     event.preventDefault();
     $(this).closest('.member-form-wrapper').slideUp();
@@ -17,6 +25,9 @@ $().ready(function() {
   }
 });
 
+/**
+ * Empties and shows the leader edit form
+ */
 function addLeader(sectionId) {
   $("#member_form legend:first").html("Ajouter un animateur");
   $("#member_form [name='member_id']").val("");
@@ -49,10 +60,17 @@ function addLeader(sectionId) {
   $("#member_form").slideDown();
 }
 
+/**
+ * Hides the member form
+ */
 function dismissMemberForm() {
   $("#member_form").slideUp();
 }
 
+/**
+ * Shows the member for to edit the user's own data and
+ * hides the regular member form
+ */
 function editOwnData(leaderId) {
   showEditLeaderForm($("#own-data-form"), leaderId);
   if ($("#member_form").is(":visible")) {
@@ -63,6 +81,11 @@ function editOwnData(leaderId) {
   }
 }
 
+/**
+ * Sets the edit leader form to match a given member and shows it.
+ * Sets the form title according to scoutToLeader boolean (whether we are turning a scout into a leader).
+ * Hides the edit own data form if it is visible.
+ */
 function editLeader(leaderId, scoutToLeader) {
   if (scoutToLeader)
     $("#member_form legend:first").html("Transformer un scout en animateur");
@@ -77,6 +100,9 @@ function editLeader(leaderId, scoutToLeader) {
   }
 }
 
+/**
+ * Sets the given leader form to match the geven leader and shows it
+ */
 function showEditLeaderForm(form, leaderId) {
   form.find("[name='member_id']").val(leaderId);
   form.find("[name='first_name']").val(leaders[leaderId].first_name);

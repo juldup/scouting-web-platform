@@ -1,9 +1,17 @@
+/**
+ * This script is present on the document management page
+ */
+
+// Add confirmation on archive buttons
 $().ready(function() {
   $(".archive-document-button").click(function() {
     return confirm("Archiver ce document ?");
   });
 });
 
+/**
+ * Empties and shows the document form
+ */
 function addDocument() {
   $("#document_form legend:first").html("Nouveau document");
   $("#document_form [name='doc_id']").val("");
@@ -17,10 +25,16 @@ function addDocument() {
   $("#document_form").slideDown();
 }
 
+/**
+ * Hides the document form
+ */
 function dismissDocumentForm() {
   $("#document_form").slideUp();
 }
 
+/**
+ * Sets the document form to match a document and shows it
+ */
 function editDocument(docId) {
   $("#document_form legend:first").html("Modifier un document");
   $("#document_form [name='doc_id']").val(docId);

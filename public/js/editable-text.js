@@ -1,9 +1,25 @@
+/**
+ * This script offers a generic tool to have editable small texts on the page.
+ * An editable text must appear in a tag like the following:
+ * <span class="editable-text" data-editable-submit-url="%URL%" data-editable-id="%ID">
+ *   <span class="editable-text-value">
+ *     %INITIAL VALUE%
+ *   </span>
+ * </span>
+ * 
+ * An edition icon will be appended to the text. When the text or icon is clicked, an
+ * input field and a save button appear. When saving the text, if it has changed, a POST ajax
+ * request is sent to the submit url with this data: {id:%ID%, value:%NEW VALUE%}.
+ */
+
 $().ready(function() {
   // Initialize all editable texts in the page
   $(".editable-text:visible").initEditableText();
 });
 
-// Adds an edit icon and makes the text clickable for editing
+/**
+ * Adds an edit icon and makes the text clickable for editing
+ */
 $.fn.initEditableText = function() {
   // Add edit icon
   $(this).append("<span class='glyphicon glyphicon-edit editable-edit-icon'></span>");
@@ -11,9 +27,11 @@ $.fn.initEditableText = function() {
   $(this).on('click', function() {
     $(this).changeEditableTextToEditMode();
   });
-}
+};
 
-// Changes editable text to edit mode
+/**
+ * Changes editable text to edit mode
+ */
 $.fn.changeEditableTextToEditMode = function() {
   if ($(this).data('editing') !== true) {
     // Dismiss all other texts 
@@ -61,9 +79,11 @@ $.fn.changeEditableTextToEditMode = function() {
       $(this).closest(".editable-text").changeEditableTextToNormalMode();
     });
   }
-}
+};
 
-// Changes editable text back from edit mode
+/**
+ * Changes editable text back from edit mode
+ */
 $.fn.changeEditableTextToNormalMode = function() {
   // Change editing status back
   $(this).data('editing', false);
@@ -74,9 +94,11 @@ $.fn.changeEditableTextToNormalMode = function() {
   // Show normal elements
   $(this).find('.editable-text-value').show();
   $(this).find('.editable-edit-icon').show();
-}
+};
 
-// Submits the value of an editable text
+/**
+ * Submits the value of an editable text
+ */
 $.fn.submitEditableText = function() {
   var newValue = $(this).find('.editable-text-input').val().trim();
   if ((newValue === "" && !$(this).data('editable-allow-empty'))
@@ -104,4 +126,4 @@ $.fn.submitEditableText = function() {
       }
     });
   }
-}
+};

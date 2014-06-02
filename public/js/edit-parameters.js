@@ -1,3 +1,7 @@
+/**
+ * This script is present on the website parameter management page
+ */
+
 $().ready(function() {
   // Logo preview
   $("input[type='file'][name='logo']").change(function(event) {
@@ -12,7 +16,7 @@ $().ready(function() {
     }(file);
     reader.readAsDataURL(file);
   });
-  // Document categories
+  // Document categories delete/add
   $('.document-category-remove').click(function() {
     $(this).closest(".document-category-row").remove();
   })
@@ -22,7 +26,7 @@ $().ready(function() {
     newElement.removeClass('document-category-prototype');
     newElement.show();
   });
-  // Verified e-mail senders
+  // Verified e-mail senders delete/add
   $('.safe-email-remove').click(function() {
     $(this).closest(".safe-email-row").remove();
   })

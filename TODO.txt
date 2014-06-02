@@ -7,7 +7,7 @@ SMALL TASKS:
 - In leader corner and leader menu, disable links to pages the user has not access to
 
 AT THE END:
-- Comment code
+- Write readme
 
 OPTIONAL/LATER:
 - List recent changes for leaders + import old userLogs

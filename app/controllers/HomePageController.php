@@ -54,11 +54,12 @@ class HomePageController extends GenericPageController {
     $logoName = Parameter::get(Parameter::$LOGO_IMAGE);
     if ($logoName) {
       $path = storage_path(Parameter::$LOGO_IMAGE_FOLDER . $logoName);
-      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+      return Response::make(file_get_contents($path), 200, array(
           "Content-Type" => "image",
           "Content-Length" => filesize($path),
       ));
     }
+    return App::abort(204); // No content
   }
   
 }

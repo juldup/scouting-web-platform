@@ -162,6 +162,7 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
     // Users
     $query = $pdo->prepare("SELECT * FROM members");
     $query->execute();
+    $userCounter = 0;
     foreach ($query->fetchAll() as $user) {
       $newUser = User::create(array(
           'username' => $user['pseudo'],
@@ -169,10 +170,9 @@ class ImportOldSiteDatabaseCommand extends \Illuminate\Console\Command {
           'email' => $user['email'],
           'default_section' => $user['ongletFixe'] ? $this->sectionToId($user['onglet']) : 1,
       ));
-      
       $newUser->is_webmaster = $user['privilege'] == "webmaster";
       $newUser->last_visit = strtotime($user['lastVisit']);
-      $newUser->verification_code = $user['verificationCode'];
+      $newUser->verification_code = $user['verificationCode'] ? $user['verificationCode'] : hash('sha256', rand()) . ($userCounter++) . time();
       $newUser->current_visit = $user['currentVisit'];
       $newUser->verified = $user['verified'];
       $newUser->save();

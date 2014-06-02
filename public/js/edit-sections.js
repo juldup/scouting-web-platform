@@ -1,3 +1,7 @@
+/**
+ * This script is present on the section management page
+ */
+
 $().ready(function() {
   // Edit button
   $(".edit-button").click(function(event) {
@@ -31,6 +35,7 @@ $().ready(function() {
       window.location = sections[sectionId].delete_url;
     }
   });
+  // Color button
   $("#section_form .color-sample").click(function(event) {
     var thisColorSample = $(this);
     thisColorSample.colorpicker({
@@ -55,6 +60,9 @@ $().ready(function() {
   });
 });
 
+/**
+ * Empties and shows the section form to add a new section
+ */
 function createSection(sectionId) {
   var defaultColor = "#FF8800";
   $("#section_form legend").text("Créer une nouvelle section");
@@ -73,6 +81,9 @@ function createSection(sectionId) {
   $("#section_form").slideDown();
 }
 
+/**
+ * Sets the section form to match an existing section and shows it
+ */
 function editSection(sectionId) {
   $("#section_form legend").text("Modifier la section");
   $("#section_form [name='section_id']").val(sectionId);
@@ -91,6 +102,9 @@ function editSection(sectionId) {
   $("#section-form-limited").slideUp();
 }
 
+/**
+ * Sets the limited section form to match an existing section and shows it
+ */
 function editSectionLimited(sectionId) {
   $("#section-form-limited legend").text("Modifier la section " + sections[sectionId].name);
   $("#section-form-limited [name='section_id']").val(sectionId);
@@ -100,6 +114,9 @@ function editSectionLimited(sectionId) {
   $("#section_form").slideUp();
 }
 
+/**
+ * Shows the details of the given section
+ */
 function showSectionDetails(sectionId) {
   var element = $(".details_section[data-section-id='" + sectionId + "']");
   var visible = element.is(":visible");
@@ -111,6 +128,9 @@ function showSectionDetails(sectionId) {
   }
 }
 
+/**
+ * Save the new order of the sections (see reorder-list.js)
+ */
 function saveDraggableOrder(table, sectionOrder) {
   $.ajax({
     type: "POST",

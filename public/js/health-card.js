@@ -1,3 +1,7 @@
+/**
+ * This script is present on the health card page
+ */
+
 $().ready(function() {
   // Prevent Enter key from validating the form
   document.onkeypress = function(evt) {
@@ -9,5 +13,5 @@ $().ready(function() {
       inputs.eq( inputs.index($(evt.target)) + 1 ).focus();
       return false;
     }
-  }
+  };
 });

@@ -1,3 +1,11 @@
+/**
+ * This script is present on the calendar management page and provides
+ * functionalities to add, modify and delete events
+ */
+
+/**
+ * Empties and shows the event form for a given day
+ */
 function addEvent(day) {
   $("#calendar_event_form legend:first").html("Ajouter un événement");
   $("#calendar_event_form [name='start_date_day']").val(day);
@@ -16,10 +24,16 @@ function addEvent(day) {
   document.getElementById("event_name").focus();
 }
 
+/**
+ * Hides the event form
+ */
 function dismissEvent() {
   $("#calendar_event_form").slideUp();
 }
 
+/**
+ * Sets the form to match an existing event and shows it
+ */
 function editEvent(eventId) {
   $("#calendar_event_form legend:first").html("Modifier un événement");
   $("#calendar_event_form [name='event_id']").val(eventId);

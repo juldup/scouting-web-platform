@@ -1,4 +1,9 @@
+/**
+ * This script is present on the registration form page
+ */
+
 $().ready(function() {
+  // Show/hide leader specific fields when the is_leader switch is toggled
   $("#registration_form input[name='is_leader']").change(function(obj) {
     if ($("#registration_form input[name='is_leader']").prop("checked")) {
       $("#registration_form .leader_specific").slideDown();
@@ -6,11 +11,11 @@ $().ready(function() {
       $("#registration_form .leader_specific").slideUp();
     }
   });
+  // Initially show the leader_specific fiels if needed
   if ($("#registration_form input[name='is_leader']").prop("checked")) {
     $("#registration_form .leader_specific").show();
   }
   
-
   // Prevent Enter key from validating the form
   document.onkeypress = function(evt) {
     var evt = (evt) ? evt : ((event) ? event : null);
@@ -21,6 +26,6 @@ $().ready(function() {
       inputs.eq( inputs.index($(evt.target)) + 1 ).focus();
       return false;
     }
-  }
+  };
   
 });

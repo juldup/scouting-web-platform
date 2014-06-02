@@ -1,19 +1,43 @@
-// Init: make rows draggable
+/**
+ * This script provides a generic tool to have lists that can be reordered
+ * by drag and drop.
+ * 
+ * The data on the page must be organized as such:
+ *   <div class="draggable-table">
+ *     <div class="draggable-row" data-draggable-id="%ID1%">
+ *     <div class="draggable-row" data-draggable-id="%ID2%">
+ *     ...
+ *   </div>
+ * The table can be a <table> and the rows <tr>.
+ * 
+ * When the order is changed, the saveDraggableOrder is called if it is defined.
+ * saveDraggableOrder(table, newOrder) takes two arguments:
+ *   - table: a jquery object containing the related .draggable-table
+ *   - newOrder: the ids of the rows separated by spaces
+ * 
+ */
+
 $().ready(function() {
+  // Make all rows draggable
   $(".draggable-table").each(function() {
     $(this).data('order', '');
     $(this).find(".draggable-row").initDraggableRow();
   });
 });
 
+/**
+ * Link functions to drag events on the given row
+ */
 $.fn.initDraggableRow = function() {
   $(this).attr('onDragStart', "draggableDragStart(event)");
   $(this).attr('onDragOver', "draggableDragOver(event)");
   $(this).attr('onDragEnd', "draggableDragEnd(event)");
   $(this).attr('draggable', "true");
-}
+};
 
-// Compute the current order of the rows in the table
+/**
+ * Computes and returns the current order of the rows in the table
+ */
 $.fn.computeCurrentOrder = function() {
   var order = "";
   // For each row in order
@@ -25,7 +49,9 @@ $.fn.computeCurrentOrder = function() {
   return order.trim();
 };
 
-// Start dragging
+/**
+ * Called when a drag is started on a row
+ */
 function draggableDragStart(event) {
   // Get the table involved in this event
   var table = $(event.target).closest('.draggable-table');
@@ -37,7 +63,9 @@ function draggableDragStart(event) {
   table.data('order', table.computeCurrentOrder());
 }
 
-// Drag over another element
+/**
+ * Called when something is being dragged on a row
+ */
 function draggableDragOver(event) {
   // Prevent any default behavior
   event.preventDefault();
@@ -58,7 +86,9 @@ function draggableDragOver(event) {
   }
 }
 
-// Drag ending
+/**
+ * Called when the drag is being dropped
+ */
 function draggableDragEnd(event) {
   // Prevent any default behavior
   event.preventDefault();

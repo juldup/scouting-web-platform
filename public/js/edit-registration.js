@@ -1,4 +1,9 @@
+/**
+ * This script is present on the registration management page
+ */
+
 $().ready(function() {
+  // Show/hide leader specific fields when the is_leader switch is toggled
   $("#member_form input[name='is_leader']").change(function(obj) {
     if ($("#member_form input[name='is_leader']").prop("checked")) {
       $("#member_form .leader_specific").show();
@@ -6,15 +11,22 @@ $().ready(function() {
       $("#member_form .leader_specific").hide();
     }
   });
+  // Initially hide the leader specific fields if needed
   if (!$("#member_form input[name='is_leader']").prop("checked")) {
     $("#member_form .leader_specific").hide();
   }
 });
 
+/**
+ * Hide the member form
+ */
 function dismissMemberForm() {
   $("#member_form").slideUp();
 }
 
+/**
+ * Sets the member form to match a member and shows it
+ */
 function editRegistration(memberId) {
   $("#member_form [name='member_id']").val(memberId);
   $("#member_form [name='first_name']").val(registrations[memberId].first_name);

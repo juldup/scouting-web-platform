@@ -1,12 +1,16 @@
-// Page edition
+/**
+ * This script is present on all the page content editor pages
+ */
 
-// Insert image at current location
+/**
+ * Inserts the given image at the current location in the text
+ */
 function editPageInsertImage(imageURL) {
   var element = CKEDITOR.dom.element.createFromHtml("<img style='max-width: 80%' src='" + imageURL + "'/>");
   CKEDITOR.instances['page_body'].insertElement(element);
 }
 
-// Uploads an image and adds it to the list
+// Initialize functionality to upload an image and add it to the list
 $().ready(function() {
   if (typeof image_upload_url != 'undefined') {
     var element = document.getElementById('uploader');
@@ -30,6 +34,9 @@ $().ready(function() {
   }
 });
 
+/**
+ * Adds an image the to list of images
+ */
 function addImageToList(data) {
   $("#edit_page_form #image_list").append(
           "<span id='image_" + data.image_id + "'>" +
@@ -39,6 +46,7 @@ function addImageToList(data) {
           " <span class='horiz-divider'></span>");
 }
 
+// Initially add all images from the initial_images array to the image list
 $().ready(function() {
   if (typeof initial_images !== "undefined") {
     initial_images.forEach(function(image_data) {
@@ -47,6 +55,9 @@ $().ready(function() {
   }
 });
 
+/**
+ * Removes an image from the list and saves the change
+ */
 function removeImage(image_id) {
   var url = image_remove_url.replace("image_id", image_id);
   $.ajax(url).done(function(json) {

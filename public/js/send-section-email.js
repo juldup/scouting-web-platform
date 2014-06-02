@@ -1,3 +1,8 @@
+/**
+ * This script is present on the section e-mail sending page
+ */
+
+// Number of attachment fields
 var attachmentCount = 0;
 
 $().ready(function() {
@@ -34,12 +39,12 @@ $().ready(function() {
       });
     }
   });
-  // Adds an attachment
+  // Add an attachment button
   $("#add-attachment-button").click(function(event) {
     attachmentCount++;
     var clone = $(".attachment-input-wrapper").first().clone();
     clone.show();
-    clone.find("input").attr('name', 'attachments[' + attachmentCount + ']')
+    clone.find("input").attr('name', 'attachments[' + attachmentCount + ']');
     $(this).before(clone);
     clone.find('.remove-attachment').click(function() {
       $(this).closest(".attachment-input-wrapper").remove();
@@ -87,7 +92,7 @@ $().ready(function() {
       alert(extraRecipientError);
       return false;
     }
-    // Compte le nombre de destinataires
+    // Make sure there is at least one recipient
     if ($(".recipient-list .recipient-checkbox:checked").length === 0 && extraRecipientsCount === 0) {
       alert("Il n'y a aucun destinataire sélectionné !");
       return false;
@@ -97,6 +102,9 @@ $().ready(function() {
   });
 });
 
+/**
+ * Returns whether an e-mail address is valid
+ */
 function validateEmail(email) { 
     var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email);

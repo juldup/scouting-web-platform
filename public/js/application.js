@@ -1,3 +1,7 @@
+/**
+ * This script is loaded on all pages of the website and provides some
+ * functionalities used on most pages
+ */
 
 /**************************************************
  * KEEP SESSION ALIVE
@@ -48,7 +52,6 @@ $().ready(function() {
     return false;
   });
   $("body").click(function(event) {
-    console.log("Hiding all");
     $(".calendar-event-details").hide();
   });
   $(".calendar-event").click(function(event) {

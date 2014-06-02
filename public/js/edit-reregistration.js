@@ -1,4 +1,9 @@
+/**
+ * This script is present on the reregistration management page
+ */
+
 $().ready(function() {
+  // Save reregistration status when a reregistration button is clicked
   $(".reregister-member-button").on('click', function() {
     var row = $(this).closest('.member-row');
     var memberId = row.data('member-id');
@@ -16,6 +21,7 @@ $().ready(function() {
     });
     return false;
   });
+  // Cancel reregistration status when a cancel button is clicked
   $(".cancel-reregistration-button").on('click', function() {
     var row = $(this).closest('.member-row');
     var memberId = row.data('member-id');
@@ -33,6 +39,7 @@ $().ready(function() {
     });
     return false;
   });
+  // Delete a member when a delete button is clicked
   $(".delete-member-button").on('click', function() {
     var row = $(this).closest('.member-row');
     var memberName = row.find('.member-name').text().trim();

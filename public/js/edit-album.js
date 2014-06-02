@@ -1,3 +1,12 @@
+/**
+ * This script is present on the album management page and provides
+ * functionalities to add, modify and delete photos from the current
+ * album
+ */
+
+/**
+ * Uploads the photo order after photos have been reordered (see reorder-list.js)
+ */
 function savePhotoOrder(table, photoOrder) {
   $.ajax({
     type: "POST",
@@ -14,8 +23,13 @@ function savePhotoOrder(table, photoOrder) {
     }
   });
 }
+
+// Set order upload function (see reorder-list.js)
 var saveDraggableOrder = savePhotoOrder;
 
+/**
+ * Removes a photo from the list and saves the change
+ */
 function deletePhoto(photoButton) {
   if (!confirm("Veux-tu vraiment supprimer cette photo ?")) return false;
   var row = $(photoButton).closest('.photo-row');
@@ -32,10 +46,10 @@ function deletePhoto(photoButton) {
       alert("Une erreur est survenue. La photo n'a pas pu être supprimée.");
     }
   });
-  
   return false;
 }
 
+// Initialize drag zone to add new photos
 $().ready(function() {
   $("#photo-drop-area").each(function() {
     $(this).attr('ondragover', 'draggingOverPhotoDropArea(event)');
@@ -48,28 +62,53 @@ $().ready(function() {
   initRotateButtons($("body"));
 });
 
+/**
+ * Called when the photo drop area is being dragged over
+ */
 function draggingOverPhotoDropArea(event) {
   event.preventDefault();
   $("#photo-drop-area").addClass('drag-over');
 }
 
+/**
+ * Called when the drag leaves the the photo drop area
+ */
 function draggingOverPhotoDropAreaDone(event) {
   $("#photo-drop-area").removeClass('drag-over');
 }
 
+/**
+ * Called when the photo drop area is being clicked, presents a
+ * file chooser to choose pictures
+ */
 function selectPicturesManually() {
   $("#file-input").trigger("click");
 }
 
+/**
+ * Called when photos have been added manually
+ */
 function picturesManuallySelected() {
   var files = $("#file-input").prop("files");
   addPicturesFromList(files);
 }
 
+// Picture counter to create unique ids
 var newPictureCount = 0;
+
+// List of pictures waiting to be uploaded
 var picturesToUpload = new Array();
+
+// Whether a picture is currently being uploaded
 var uploadInProgress = false;
+
+// Id of the photo currently being uploaded
 var currentUploadId = 0;
+
+/**
+ * Called when files are being dragged onto the photo drag area.
+ * Adds the photos to the pending upload list.
+ */
 function addPictures(event) {
   event.preventDefault();
   draggingOverPhotoDropAreaDone(event);
@@ -78,19 +117,25 @@ function addPictures(event) {
   addPicturesFromList(files);
 }
 
+/**
+ * Adds all photo from the file list to the photo list
+ * and to the pending upload list
+ */
 function addPicturesFromList(files) {
   for (var i = 0; i < files.length; i++) {
     var file = files[i];
+    // Make sure the photo is an jpeg or png image
     if (file.type === "image/jpeg" || file.type === "image/png") {
+      // Generate new id
       newPictureCount++;
-      // Création d'une nouvelle ligne pour cette photo
+      // Create a new row for the photo
       var rowId = "photo_row_new_" + newPictureCount;
       var prototype = $("#upload-row-prototype");
       var newRow = prototype.clone();
       prototype.before(newRow);
       newRow.show();
       newRow.attr('id', rowId);
-      // Add picture to queue
+      // Add picture to upload queue
       picturesToUpload.push({"file": file, "id": newPictureCount});
       // Try uploading next picture
       uploadNextPicture();
@@ -98,18 +143,27 @@ function addPicturesFromList(files) {
   }
 }
 
+/**
+ * Tries to upload the next photo from the pending list
+ */
 function uploadNextPicture() {
+  // Return if another upload is already happening
   if (uploadInProgress) return;
   if (picturesToUpload.length !== 0) {
+    // Flag that there is an upload in progress
     uploadInProgress = true;
+    // Get first pending file from the list
     fileData = picturesToUpload.shift();
+    // Get uploaded photo id
     currentUploadId = fileData.id;
-    lastPercentage = 0;
+    // Show upload status on the page
     $("#photo_row_new_" + fileData.id + " .status").html("Envoi en cours...");
+    // Create data for post
     data = new FormData();
     data.append('id', currentUploadId);
     data.append('file', fileData.file);
     data.append('album_id', currentAlbumId);
+    // Upload file
     $.ajax({
       url: uploadPhotoURL,
       type: "POST",
@@ -120,6 +174,7 @@ function uploadNextPicture() {
     }).done(function(json) {
       data = JSON.parse(json);
       if (data.result === "Success") {
+        // Photo successfully uploaded
         // Create new row for this photo
         var prototype = $("#photo-row-prototype");
         var newRow = prototype.clone();
@@ -135,6 +190,7 @@ function uploadNextPicture() {
         $("#photo_row_new_" + data.id).before(newRow);
         initRotateButtons(newRow);
       } else {
+        // Upload failed
         // Display error message to user
         alert("Une erreur est survenue lors du transfert d'image");
       }
@@ -147,6 +203,9 @@ function uploadNextPicture() {
   }
 }
 
+/**
+ * Link rotate action to rotate buttons within a given page element
+ */
 function initRotateButtons($container) {
   $container.find(".rotate-clockwise-button").click(function() {
     var photoId = $(this).closest(".photo-row").data("photo-id");
@@ -158,6 +217,9 @@ function initRotateButtons($container) {
   });
 }
 
+/**
+ * Rotates a photo (clockwise or counterclockwise) and uploads the change
+ */
 function rotatePicture(photoId, clockwise) {
   $.ajax({
       url: rotatePhotoURL,

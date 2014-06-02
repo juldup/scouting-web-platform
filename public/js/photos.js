@@ -1,7 +1,14 @@
+/**
+ * This script is present on the photo album page
+ */
+
 $().ready(function() {
+  // Create carousel on photos
   $('#photo-carousel').carousel({interval: 3000});
+  // Initially pause the carousel
   $('#photo-carousel').carousel('pause');
   
+  // Preloading of adjacent pictures for faster transitions
   $.fn.extend({
     // Applied on an div.item, pre-loads images contained in it and its neighbours
     loadImagesAround: function() {
@@ -34,17 +41,22 @@ $().ready(function() {
   $('#photo-carousel .item').last().loadImage();
   $('#photo-carousel .item').last().prev().loadImage();
   
+  // When a picture is change, load neighbor images
   $('#photo-carousel').on('slide.bs.carousel', function(event) {
     var next = $(event.relatedTarget);
     next.loadImagesAround();
   });
   
+  // Open another photo album
   $(".photo-album-row").click(function() {
     var url = $(this).find("a.photo-album-link").attr('href');
     if (url) window.location = url;
   });
 });
 
+/**
+ * Starts the photo carousel
+ */
 function startCarousel() {
   $('#photo-carousel').carousel('cycle');
   $('#photo-carousel').carousel('next');
@@ -52,12 +64,18 @@ function startCarousel() {
   $('#carousel-controls #carousel-stop').show();
 }
 
+/**
+ * Pauses the photo carousel
+ */
 function stopCarousel() {
   $('#photo-carousel').carousel('pause');
   $('#carousel-controls #carousel-start').show();
   $('#carousel-controls #carousel-stop').hide();
 }
 
+/**
+ * Shows a particular photo and stops the carousel
+ */
 function showPhoto(photoIndex) {
   $('#photo-carousel').carousel(photoIndex);
   stopCarousel();

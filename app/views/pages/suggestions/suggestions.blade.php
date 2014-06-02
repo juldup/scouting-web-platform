@@ -128,10 +128,14 @@
                 <div class="form-horizontal suggestion-edit-response" style="display:none;">
                   {{ Form::open(array('url' => URL::route('edit_suggestions_submit_response', array('suggestion_id' => $suggestion->id)))) }}
                     <div class="form-group">
-                      {{ Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) }}
+                      <div class="col-md-12">
+                        {{ Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) }}
+                      </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::submit('Enregistrer', array('class' => "btn btn-primary")) }}
+                      <div class="col-md-12">
+                        {{ Form::submit('Enregistrer', array('class' => "btn btn-primary")) }}
+                      </div>
                     </div>
                   {{ Form::close() }}
                 </div>

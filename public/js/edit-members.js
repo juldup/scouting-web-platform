@@ -1,4 +1,9 @@
+/**
+ * This script is present on the listing management page and on the listing page
+ */
+
 $().ready(function() {
+  // Shows/hides the leader-specific fields of the form when the is_leader switch is toggled
   $("#member_form input[name='is_leader']").change(function(obj) {
     if ($("#member_form input[name='is_leader']").prop("checked")) {
       $("#member_form .leader_specific").show();
@@ -6,21 +11,30 @@ $().ready(function() {
       $("#member_form .leader_specific").hide();
     }
   });
+  // Initially hides the leader specific fields if needed
   if (!$("#member_form input[name='is_leader']").prop("checked")) {
     $("#member_form .leader_specific").hide();
   }
+  // Update the subgroup name when a subgroup is selected
   $("#member_form select[name='subgroup_select']").change(function() {
     $("#member_form input[name='subgroup']").val($(this).val());
   });
+  // Add confirmation to delete buttons
   $(".warning-delete").click(function() {
     return confirm("Veux-tu vraiment supprimer ce membre du listing ?");
   });
 });
 
+/**
+ * Hides the member form
+ */
 function dismissMemberForm() {
   $("#member_form").slideUp();
 }
 
+/**
+ * Sets the member form to match a given member and shows it
+ */
 function editMember(memberId) {
   $("#member_form [name='member_id']").val(memberId);
   $("#member_form [name='first_name']").val(members[memberId].first_name);
@@ -72,6 +86,10 @@ function editMember(memberId) {
   document.getElementById("first_name").focus();
 }
 
+/**
+ * Shows the member details section of a given member, and hides
+ * the details for the other members
+ */
 function showMemberDetails(memberId) {
   var element = $("#details_" + memberId);
   var visible = element.is(":visible");
