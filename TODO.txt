@@ -5,7 +5,6 @@ BIG TASKS:
 SMALL TASKS:
 
 AT THE END:
-- Write readme
 
 OPTIONAL/LATER:
 - List recent changes for leaders + import old userLogs

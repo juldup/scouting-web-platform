@@ -1,4 +1,22 @@
 @extends('base')
+<?php
+/**
+ * Belgian Scouting Web Platform
+ * Copyright (C) 2014  Julien Dupuis
+ * 
+ * This code is licensed under the GNU General Public License.
+ * 
+ * This is free software, and you are welcome to redistribute it
+ * under under the terms of the GNU General Public License.
+ * 
+ * It is distributed without any warranty; without even the
+ * implied warranty of merchantability or fitness for a particular
+ * purpose. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ **/
+?>
 
 @section('title')
   Coin des animateurs
@@ -48,7 +66,7 @@
     <table style='margin-left: 50px'>
       <tr><td style='vertical-align: top'><span class='important'>Non inscrit</span>&nbsp;: <td>Accès limité aux pages publiques.</tr>
       <tr><td style='vertical-align: top'><span class='important'>Visiteur</span>&nbsp;: <td>Il peut écrire dans le livre d'or, mais n'a accès à aucune information privée.</tr>
-      <tr><td style='vertical-align: top'><span class='important'>Membre</span>&nbsp;: <td>Un membre (scout ou parent) peut consulter les listings limités, télécharger les documents, voir les e-mail, les photos et créer des fiches santé pour sa famille.  Un compte d'utilisateur est automatiquement membre si son adresse e-mail a été validée et fait partie de nos listings.</tr>
+      <tr><td style='vertical-align: top'><span class='important'>Membre</span>&nbsp;: <td>Un membre (scout ou parent) peut consulter les listings limités, télécharger les documents, voir les e-mails, les photos et créer des fiches santé pour sa famille.  Un compte d'utilisateur est automatiquement membre si son adresse e-mail a été validée et fait partie de nos listings.</tr>
       <tr><td style='vertical-align: top'><span class='important'>Animateur</span>&nbsp;: <td>Un animateur peut accéder au coin des animateurs. Certains droits lui sont attribués par l'animateur d'unité.</tr>
       <tr><td style='vertical-align: top'><span class='important'>Webmaster</span>&nbsp;: <td>Il n'a aucune limitation.</tr>
     </table>
