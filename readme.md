@@ -14,7 +14,7 @@ The Belgian Scouting Web Platform is licensed under the [GNU General Public Lice
 
 1. Copy the whole project on your server
 1. Install composer at the root of the file hierarchy: `curl -sS https://getcomposer.org/installer | php`
-1. Run composer to load libraries: `curl -sS https://getcomposer.org/installer | php`
+1. Run composer to load libraries: `php composer.phar install`
 1. Make sure the **app/storage/** folder has read/write access for the www user
 1. Create a database and configure **/app/config/database.php** (lines 55-64) to access your database
 1. Run the command `./artisan migrate:install` to generate the database
@@ -158,7 +158,7 @@ Une fois que vous avez votre hébergement et votre système d'envoi d'e-mails, v
 1. Copiez toute la hiérarchie du projet sur votre serveur
 1. Arrangez-vous pour que le répertoire **app/storage/** ait les droit d'accès en lecture et écriture pour l'utilisateur www (`chmod 777 -R app/storage` fera l'affaire)
 1. Installez composer à la racine du projet: `curl -sS https://getcomposer.org/installer | php`
-1. Installez les librairies via composer: `curl -sS https://getcomposer.org/installer | php`
+1. Installez les librairies via composer: `php composer.phar install`
 1. Créez une base de données et configurez **/app/config/database.php** (lignes 55-64) pour accéder à votre base de données
 1. Exécutez la commande `./artisan migrate:install` à la racine du projet pour générer la base de données
 1. Faites pointer l'URL de base **/** vers le répertoire **public/**
