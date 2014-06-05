@@ -13,13 +13,15 @@ The Belgian Scouting Web Platform is licensed under the [GNU General Public Lice
 #### Instructions for installation:
 
 1. Copy the whole project on your server
-1. Make the base url **/** point to the **public/** folder
+1. Install composer at the root of the file hierarchy: `curl -sS https://getcomposer.org/installer | php`
+1. Run composer to load libraries: `curl -sS https://getcomposer.org/installer | php`
 1. Make sure the **app/storage/** folder has read/write access for the www user
+1. Create a database and configure **/app/config/database.php** (lines 55-64) to access your database
+1. Run the command `./artisan migrate:install` to generate the database
+1. Make the base url **/** point to the **public/** folder
 1. Create the two following cron jobs:
   * A job every minute requesting : `http://yourdomain.com/cron/envoi-automatique-emails`
   * A job every day or twice a day requesting : `http://yourdomain.com/cron/suppression-auto-fiches-sante`
-1. Create a database and configure **/app/config/database.php** (lines 55-64) to access your database
-1. Run the command `./artisan migrate:install` to generate the database
 1. In a web browser, load the `http://yourdomain.com/login` page and create a new webmaster user account
 1. In the database, table users, find this webmaster user and set the is_webmaster field to 1
 1. Create the unit's sections at `http://yourdomain.com/gestion/donnees-section`
@@ -154,13 +156,15 @@ vous assurer de l'envoi correct des e-mails.
 Une fois que vous avez votre hébergement et votre système d'envoi d'e-mails, voici les instructions d'installation :
 
 1. Copiez toute la hiérarchie du projet sur votre serveur
-1. Faites pointer l'URL de base **/** vers le répertoire **public/**
 1. Arrangez-vous pour que le répertoire **app/storage/** ait les droit d'accès en lecture et écriture pour l'utilisateur www (`chmod 777 -R app/storage` fera l'affaire)
+1. Installez composer à la racine du projet: `curl -sS https://getcomposer.org/installer | php`
+1. Installez les librairies via composer: `curl -sS https://getcomposer.org/installer | php`
+1. Créez une base de données et configurez **/app/config/database.php** (lignes 55-64) pour accéder à votre base de données
+1. Exécutez la commande `./artisan migrate:install` à la racine du projet pour générer la base de données
+1. Faites pointer l'URL de base **/** vers le répertoire **public/**
 1. Créer les deux tâches cron suivantes :
   * Une tâche toutes les minutes chargeant : `http://yourdomain.com/cron/envoi-automatique-emails`
   * Une tâche tous les jours ou deux fois par jour changeant : `http://yourdomain.com/cron/suppression-auto-fiches-sante`
-1. Créer une base de données et configurez **/app/config/database.php** (lignes 55-64) pour accéder à votre base de données
-1. Exécutez la commande `./artisan migrate:install` à la racine du projet pour générer la base de données
 1. Dans un navigateur web, chargez la page `http://yourdomain.com/login` et créer un compte d'utilisateur pour le webmaster
 1. Dans la table users de la base de données, trouvez cet utilisateur webmaster et mettez la valeur du champ is_webmaster à 1 (pour donner tous les droits au webmaster)
 1. Créez les sections de l'unité sur la page `http://yourdomain.com/gestion/donnees-section`
