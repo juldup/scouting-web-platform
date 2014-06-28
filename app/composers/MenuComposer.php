@@ -23,17 +23,33 @@ class MenuComposer {
   
   public function compose($view) {
     
-    $menuItems = array();
-    
     // Get current route to set current menu item as active
     $currentRoute = Route::current();
     $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
     $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
     
+    // Generate menus
+    $menuArray = $this->generateMainMenu($currentRouteName);
+    $sectionList = $this->generateSectionList($currentRouteName);
+    $sectionMenuItems = $this->generateSectionMenu($currentRouteName);
+    
+    // Pass the menu arrays to the view
+    $view->withMenuItems($menuArray)
+            ->withSectionList($sectionList)
+            ->withSectionMenuItems($sectionMenuItems);
+    
+  }
+  
+  /**
+   * Generate the main menu
+   */
+  private function generateMainMenu($currentRouteName) {
+    $menuItems = array();
+    
     // Home category
     $homeCategory = array();
     if (Parameter::get(Parameter::$SHOW_SECTIONS))
-      $homeCategory["Unité et sections"] = 'section';
+      $homeCategory["L'unité"] = 'section_unit';
     if (Parameter::get(Parameter::$SHOW_ADDRESSES))
       $homeCategory["Adresses utiles"] = 'addresses';
     if (Parameter::get(Parameter::$SHOW_CONTACTS))
@@ -51,34 +67,12 @@ class MenuComposer {
       $generalCategory["Fiches santé"] = 'health_card';
     if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
       $generalCategory["Charte d'unité"] = 'unit_policy';
-    if (Parameter::get(Parameter::$SHOW_UNIFORMS))
-      $generalCategory["Les uniformes"] = 'uniform';
     if (Parameter::get(Parameter::$SHOW_LINKS))
       $generalCategory["Liens utiles"] = 'links';
+    $generalCategory["divider_1"] = 'divider';
+    $generalCategory["Changements sur le site"] = 'view_recent_changes';
     if (count($generalCategory)) {
       $menuItems['Général'] = $generalCategory;
-    }
-    
-    // Animation category
-    $animationCategory = array();
-    if (Parameter::get(Parameter::$SHOW_NEWS))
-      $animationCategory["Nouvelles"] = 'news';
-    if (Parameter::get(Parameter::$SHOW_CALENDAR))
-      $animationCategory["Calendrier"] = 'calendar';
-    if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
-      $animationCategory["Télécharger"] = 'documents';
-    if (Parameter::get(Parameter::$SHOW_EMAILS))
-      $animationCategory["E-mails"] = 'emails';
-    if (Parameter::get(Parameter::$SHOW_PHOTOS))
-      $animationCategory["Photos"] = 'photos';
-    if (Parameter::get(Parameter::$SHOW_LEADERS))
-      $animationCategory["Les animateurs"] = 'leaders';
-    if (Parameter::get(Parameter::$SHOW_LISTING))
-      $animationCategory["Listing des scouts"] = 'listing';
-    $animationCategory["divider_1"] = 'divider';
-    $animationCategory["Changements sur le site"] = 'view_recent_changes';
-    if (count($animationCategory)) {
-      $menuItems['Animation'] = $animationCategory;
     }
     
     // Opinion category
@@ -171,9 +165,71 @@ class MenuComposer {
       );
     }
     
-    // Pass the menu array to the view
-    $view->withMenuItems($menuArray);
+    return $menuArray;
+  }
+  
+  /**
+   * Generate the top part of the section menu containing the section list
+   */
+  private function generateSectionList($currentRouteName) {
+    // Get current section
+    $user = View::shared('user');
+    $selectedSectionId = $user->currentSection->id;
     
+    // Generate section items with transposed route parameters to match the section
+    $sections = Section::orderBy('position')->get();
+    $sectionList = array();
+    foreach ($sections as $section) {
+      $routeParameters['section_slug'] = $section->slug;
+      $sectionList[] = array(
+          // Transpose route for section pages, url to section main page otherwise
+          "link" => View::shared('section_page') ? URL::route($currentRouteName, $routeParameters) : URL::route('section', array('section_slug' => $section->slug)),
+          "text" => $section->id == 1 ? "Toute l'unité" : $section->name,
+          "is_selected" => $selectedSectionId == $section->id,
+          "color" => $section->color,
+      );
+    }
+    
+    return $sectionList;
+  }
+  
+  /**
+   * Generate the bottom part of the section menu containing access the the section pages
+   */
+  private function generateSectionMenu($currentRouteName) {
+    // Section category
+    $sectionMenuItems = array();
+    if (Parameter::get(Parameter::$SHOW_NEWS))
+      $sectionMenuItems["Nouvelles"] = 'news';
+    if (Parameter::get(Parameter::$SHOW_CALENDAR))
+      $sectionMenuItems["Calendrier"] = 'calendar';
+    if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
+      $sectionMenuItems["Télécharger"] = 'documents';
+    if (Parameter::get(Parameter::$SHOW_EMAILS))
+      $sectionMenuItems["E-mails"] = 'emails';
+    if (Parameter::get(Parameter::$SHOW_PHOTOS))
+      $sectionMenuItems["Photos"] = 'photos';
+    if (Parameter::get(Parameter::$SHOW_LEADERS))
+      $sectionMenuItems["Les animateurs"] = 'leaders';
+    if (Parameter::get(Parameter::$SHOW_LISTING))
+      $sectionMenuItems["Listing des scouts"] = 'listing';
+    if (Parameter::get(Parameter::$SHOW_UNIFORMS))
+      $sectionMenuItems["Les uniformes"] = 'uniform';
+    
+    // Generate menu structure (with sub-category titles, dividers and items' route)
+    $sectionMenuArray = array();
+    foreach ($sectionMenuItems as $itemName => $itemData) {
+      $route = $itemData != 'divider' && $itemData != 'title' ? $itemData : null;
+      $active = $route == $currentRouteName;
+      $sectionMenuArray[$itemName] = array(
+          'url' => $route ? URL::route($route) : null,
+          'active' => $active,
+          'is_divider' => $itemData == "divider",
+          'is_title' => $itemData == 'title',
+      );
+    }
+    
+    return $sectionMenuArray;
   }
   
 }

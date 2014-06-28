@@ -74,6 +74,7 @@ Route::post('ajax/images/upload/{page_id}', array("as" => "ajax_upload_image", "
 Route::get('ajax/images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
 
 // Section pages
+Route::get('unite', array("as" => "section_unit", "uses" => "SectionPageController@showUnitPage"));
 Route::get('section/{section_slug?}', array("as" => "section", "uses" => "SectionPageController@showPage"));
 Route::get('gestion/page-section/{section_slug}', array("as" => "edit_section_page", "uses" => "SectionPageController@showEdit"));
 Route::post('gestion/page-section/{section_slug}', array("as" => "edit_section_page_submit", "uses" => "SectionPageController@savePage"));

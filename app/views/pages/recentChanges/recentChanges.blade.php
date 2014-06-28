@@ -43,6 +43,7 @@
             @endif
           </td>
           <td>
+            <span class="glyphicon glyphicon-certificate" style="color: {{ $change['section']->color }};"></span>
             {{{ $change['section']->name }}}
           </td>
           <td>

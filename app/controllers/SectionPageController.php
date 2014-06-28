@@ -21,7 +21,9 @@
  */
 class SectionPageController extends GenericPageController {
   
-  protected $pagesAdaptToSections = true;
+  protected function currentPageAdaptToSections() {
+    return $this->isSectionPage();
+  }
   
   protected function getEditRouteName() {
     return "edit_section_page";
@@ -33,7 +35,12 @@ class SectionPageController extends GenericPageController {
     return "section_home";
   }
   protected function isSectionPage() {
-    return true;
+    // When visiting the unit presentation page from the main menu, this page is not
+    // considered a section page
+    $currentRoute = Route::current();
+    $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
+    $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
+    return ($currentRouteName != 'section_unit');
   }
   protected function getPageTitle() {
     if ($this->section->id == 1) return "Présentation de l'unité";
@@ -41,6 +48,14 @@ class SectionPageController extends GenericPageController {
   }
   protected function canDisplayPage() {
     return Parameter::get(Parameter::$SHOW_SECTIONS);
+  }
+  
+  /**
+   * [Route] Shows the unit presentation page from the main menu
+   */
+  protected function showUnitPage() {
+    $this->section = Section::find(1);
+    return $this->showPage();
   }
   
 }

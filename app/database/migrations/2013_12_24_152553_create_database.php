@@ -90,7 +90,7 @@ class CreateDatabase extends Migration {
         'position' => 1,
         'section_type' => 'U',
         'section_type_number' => 0,
-        'color' => "#000000",
+        'color' => "#606363",
         'email' => '',
         'de_la_section' => "de l'unité",
         'la_section' => "l'unité",

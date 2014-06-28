@@ -59,6 +59,7 @@
         <div class="well">
           <legend>
             @if ($user->currentSection->id == 1)
+              <span class="glyphicon glyphicon-certificate" style="color: {{ Section::find($newsItem->section_id)->color }}"></span>
               {{{ Section::find($newsItem->section_id)->name }}} :
             @endif
             {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}

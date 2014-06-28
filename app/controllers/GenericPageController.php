@@ -77,7 +77,7 @@ abstract class GenericPageController extends BaseController {
       // For section pages, add the section slug in the route parameters
       $sectionSlugParameter = array("section_slug" => $this->user->currentSection->slug);
     } else {
-      $sectionSlugParameter = array();
+      $sectionSlugParameter = array("section_slug" => 'unite');
     }
     $editURL = URL::route($this->getEditRouteName(), $sectionSlugParameter);
     // Make view

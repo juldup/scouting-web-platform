@@ -21,8 +21,6 @@
  */
 class RecentChangesController extends BaseController {
   
-  protected $pagesAdaptToSections = true;
-  
   /**
    * [Route] Displays the recent changes page
    */

@@ -84,6 +84,9 @@
     <div class="row">
       <div class="col-md-12">
         <h2>
+          @if (count($sections) > 1)
+            <span class="glyphicon glyphicon-certificate" style="color: {{ $sct['section_data']->color }}"></span>
+          @endif
           Listing {{{ $sct['section_data']->de_la_section }}}
         </h2>
       </div>

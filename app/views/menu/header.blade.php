@@ -38,11 +38,14 @@
     
   </div>
 </div>
-<div class="navbar navbar-collapse navbar-default navbar-static-top second-nav-bar collapse" id='bs-example-navbar-collapse-1'>
+<div class="navbar navbar-collapse navbar-default navbar-static-top second-nav-bar collapse" id='bs-example-navbar-collapse-1'
+     @if ($section_page)
+       style="border-bottom: 4px {{ $user->currentSection->color }} solid;"
+     @endif
+     >
   <div class="container">
     <div>
       @include('menu.menu')
-      @include('menu.tabs')
     </div>
   </div>
 </div>
