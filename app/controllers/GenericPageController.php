@@ -123,7 +123,7 @@ abstract class GenericPageController extends BaseController {
       return Helper::forbiddenResponse();
     }
     // Update page
-    $newBody = Input::get('page_body');
+    $newBody = stripslashes(Input::get('page_body'));
     $page = $this->getPage();
     $page->body_html = $newBody;
     $page->save();
