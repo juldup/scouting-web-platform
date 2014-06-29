@@ -42,10 +42,10 @@
         {{ Form::open(array('files' => true, 'url' => URL::route('edit_parameters_submit', array('section_slug' => $user->currentSection->slug)))) }}
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Prix des cotisations
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -72,10 +72,10 @@
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Inscriptions
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -90,10 +90,10 @@
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Pages du site
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -111,10 +111,10 @@
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Catégories de documents
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -167,10 +167,10 @@
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Paramètres de l'unité
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -203,19 +203,26 @@
             <div class="col-sm-4 control-label">
               {{ Form::label('logo', "Logo du site") }}
             </div>
-            <div class="col-md-8">
+            <div class="col-sm-8">
               <img src="{{ URL::route('website_logo') }}" class="website-logo-preview" />
               {{ Form::file('logo', array('class' => 'btn btn-default website-logo-file-selector')) }}
             </div>
-            <div class="col-lg-1"></div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('logo_two_lines', "Logo sur deux lignes") }}
+            </div>
+            <div class="col-sm-8">
+              {{ Form::checkbox('logo_two_lines', 1, $logo_two_lines) }}
+            </div>
           </div>
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Moteurs de recherche
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -239,10 +246,10 @@
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Paramètres avancés du site
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -259,10 +266,10 @@
           
           <legend>
             <div class="row">
-              <div class="col-md-9">
+              <div class="col-sm-8">
                 Paramètres avancés des e-mails
               </div>
-              <div class="col-md-3 text-right">
+              <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
               </div>
             </div>
@@ -371,7 +378,7 @@
           </div>
           
           <div class="row">
-            <div class="col-md-12 text-right">
+            <div class="col-sm-12 text-right">
               <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
             </div>
           </div>

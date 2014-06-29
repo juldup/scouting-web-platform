@@ -470,6 +470,7 @@
           <li><strong>Sigle de l'unité</strong>&nbsp;: Le nom court de l'unité (p.ex. SV001)</li>
           <li><strong>N° de compte</strong>&nbsp;: Le numéro de compte en banque de l'unité pour les paiements de cotisation</li>
           <li><strong>Logo du site</strong>&nbsp;: Le logo qui apparaitra en haut du site</li>
+          <li><strong>Logo sur deux lignes</strong>&nbsp;: Le logo peut apparaitre en petit à côté du titre (NON), ou en plus grand sur les deux lignes du menu (OUI) </li>
         </ul>
       </li>
       <li>

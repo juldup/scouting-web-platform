@@ -260,6 +260,41 @@ html {
   margin-left: -15px;
 }
 
+@media(min-width: @screen-tablet) {
+  
+  .navigation-wrapper.logo-two-lines .website-logo-wrapper {
+    width: 90px;
+    height: 100%;
+    position: relative;
+    display: inline-block;
+    top: -16px;
+  }
+
+  .navigation-wrapper.logo-two-lines .website-logo-frame {
+    margin-top: -10px;
+    height: 90px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 86px;
+  }
+
+  .navigation-wrapper.logo-two-lines .website-logo {
+    max-height: 90px;
+    max-width: 90px;
+    vertical-align: middle;
+  }
+  
+  .navigation-wrapper.logo-two-lines .menu-wrapper {
+    margin-left: 112px;
+  }
+  
+  .navigation-wrapper:not(.logo-two-lines) .website-title {
+    margin-left: 20px;
+  }
+  
+}
+
 /**************************************************
  * NAVIGATION LINKS IN THE PAGE
  **************************************************/

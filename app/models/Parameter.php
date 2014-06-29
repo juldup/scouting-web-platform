@@ -65,6 +65,7 @@ class Parameter extends Eloquent {
   public static $WEBMASTER_EMAIL = "Webmaster e-mail address";
   public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
   public static $LOGO_IMAGE = "Logo image";
+  public static $LOGO_TWO_LINES = "Logo displayed on two lines";
   // Website metadata
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
   public static $WEBSITE_META_KEYWORDS = "Website meta keywords";

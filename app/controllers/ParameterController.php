@@ -46,6 +46,7 @@ class ParameterController extends BaseController {
         'prices' => $prices,
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
         'safe_emails' => explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
+        'logo_two_lines' => Parameter::get(Parameter::$LOGO_TWO_LINES),
     ));
   }
   
@@ -117,6 +118,12 @@ class ParameterController extends BaseController {
         Parameter::set(Parameter::$LOGO_IMAGE, $filename);
       }
     } catch (Exception $e) {
+      $error = true;
+    }
+    // Save the logo on two lines option
+    try {
+      Parameter::set(Parameter::$LOGO_TWO_LINES, Input::get('logo_two_lines'));
+    } catch (Exception $ex) {
       $error = true;
     }
     // Save the search engine parameters
