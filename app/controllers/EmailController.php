@@ -287,7 +287,7 @@ class EmailController extends BaseController {
       }
     }
     // Add extra recipients
-    $extraRecipientArray = explode(",", $extraRecipients);
+    $extraRecipientArray = preg_split("/[\s,;]+/", $extraRecipients);
     foreach ($extraRecipientArray as $extra) {
       $address = trim($extra);
       if (filter_var($address, FILTER_VALIDATE_EMAIL) && !in_array($address, $recipientArray)) {

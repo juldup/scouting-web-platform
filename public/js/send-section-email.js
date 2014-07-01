@@ -92,7 +92,7 @@ $().ready(function() {
       return false;
     }
     // Extra recipients
-    var extraRecipients = $("textarea#extra_recipients").val().split(/ |;|,/);
+    var extraRecipients = $("textarea#extra_recipients").val().split(/[\s,;]+/);
     var extraRecipientsCount = 0;
     var extraRecipientError = "";
     extraRecipients.forEach(function(email) {
