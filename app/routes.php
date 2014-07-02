@@ -40,9 +40,13 @@ View::composer('menu.tabs', "TabsComposer");
 // Cron tasks
 Route::get('cron/envoi-automatique-emails', array("as" => "cron_send_emails_automatically", "uses" => function() {
   ScoutMailer::sendPendingEmails();
+  // Update cron job status
+  Parameter::set(Parameter::$CRON_EMAIL_LAST_EXECUTION, time());
 }));
 Route::get('cron/suppression-auto-fiches-sante', array("as" => "cron_auto_delete_health_cards", "uses" => function() {
   HealthCard::autoReminderAndDelete();
+  // Update cron job last execution time
+  Parameter::set(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION, time());
 }));
 
 // General
@@ -262,6 +266,9 @@ Route::post('gestion/parametres/submit', array("as" => "edit_parameters_submit",
 // View recent changes
 Route::get('changements-recents/{section_slug?}', array("as" => "view_recent_changes", "uses" => "RecentChangesController@showPage"));
 Route::get('gestion/changements-recents/{section_slug?}', array("as" => "view_private_recent_changes", "uses" => "RecentChangesController@showPrivateChanges"));
+
+// Monitoring
+Route::get('gestion/supervision', array("as" => "monitoring", "uses" => "MonitoringController@showPage"));
 
 // Personal e-mails
 Route::get('/email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));

@@ -182,6 +182,11 @@ class LeaderCornerController extends BaseController {
                 'help' => 'guest-book',
                 'condition' => Parameter::$SHOW_GUEST_BOOK,
             ),
+            (MonitoringController::cronTaskTimedOut() ? "<span class='danger'><span class='glyphicon glyphicon-warning-sign'></span></span> " : "") . "Tâches cron" => array(
+                'url' => URL::route('monitoring'),
+                'help-anchor' => 'supervision-taches',
+                'help' => 'monitoring',
+            ),
         )
     );
     // Remove disabled operations

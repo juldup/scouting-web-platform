@@ -84,6 +84,9 @@ class Parameter extends Eloquent {
   public static $SMTP_PASSWORD = "Smtp password";
   public static $SMTP_SECURITY  = "Smtp security";
   public static $VERIFIED_EMAIL_SENDERS = "Verified e-mail senders";
+  // Cron jobs status
+  public static $CRON_EMAIL_LAST_EXECUTION = "Cron e-mail last execution";
+  public static $CRON_HEALTH_CARDS_LAST_EXECUTION = "Cron health cards last execution";
   
   // List of parameters, stored to avoid multiple accesses to database
   private static $parameters = null;

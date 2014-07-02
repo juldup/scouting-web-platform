@@ -529,5 +529,14 @@
   </p>
 @endif
 
+@if ($help == 'monitoring')
+  <p>
+    Cette page liste les tâches cron du site, avec leur statut.
+  </p>
+  <p>
+    Si une tâche n'a pas été exécutée depuis trop longtemps, un message d'erreur est affiché et le problème doit être solutionné par le webmaster.
+  </p>
+@endif
+
 </div>
 </div>

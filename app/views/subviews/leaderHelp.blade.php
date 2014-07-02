@@ -216,4 +216,14 @@
   </p>
 @endif
 
+@if ($help == 'monitoring')
+  <legend>Tâches cron @yield('back_to_top')</legend>
+  <p>
+    Cette page liste les tâches cron du site, avec leur statut.
+  </p>
+  <p>
+    Si une tâche n'a pas été exécutée depuis trop longtemps, un message d'erreur est affiché.
+  </p>
+@endif
+
 </div>
