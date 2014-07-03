@@ -90,7 +90,7 @@
           <div class="form-group">
             {{ Form::label('last_name', "Nom", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('last_name', '', array('class' => 'form-control')) }}
+              {{ Form::text('last_name', $default['last_name'], array('class' => 'form-control')) }}
             </div>
           </div>
           
@@ -113,7 +113,7 @@
           <div class='form-group'>
             {{ Form::label('nationality', "Nationalité", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-8">
-              {{ Form::text('nationality', 'BE', array('class' => 'small form-control')) }}
+              {{ Form::text('nationality', $default['nationality'], array('class' => 'small form-control')) }}
             </div>
           </div>
           
@@ -122,21 +122,21 @@
           <div class='form-group'>
             {{ Form::label('address', "Rue et numéro", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('address', '', array('class' => 'form-control')) }}
+              {{ Form::text('address', $default['address'], array('class' => 'form-control')) }}
             </div>
           </div>
           
           <div class='form-group'>
             {{ Form::label('postcode', "Code postal", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('postcode', '', array('class' => 'small form-control')) }}
+              {{ Form::text('postcode', $default['postcode'], array('class' => 'small form-control')) }}
             </div>
           </div>
           
           <div class='form-group'>
             {{ Form::label('city', "Localité", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('city', '', array('class' => 'form-control')) }}
+              {{ Form::text('city', $default['city'], array('class' => 'form-control')) }}
             </div>
           </div>
           
@@ -145,35 +145,35 @@
           <div class="row">
             {{ Form::label('phone1', "Téléphone/GSM des parents", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-9">
-              {{ Form::text('phone1', '', array('placeholder' => "Numéro principal", 'class' => "form-control medium")) }}
+              {{ Form::text('phone1', $default['phone1'], array('placeholder' => "Numéro principal", 'class' => "form-control medium")) }}
               <span class='horiz-divider'></span>
               {{ Form::label('phone1_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone1_private') }}
+              {{ Form::checkbox('phone1_private', 1, $default['phone1_private']) }}
               <span class='horiz-divider'></span>
               {{ Form::label('phone1_owner', 'Téléphone de', array('class' => 'control-label')) }}
-              {{ Form::text('phone1_owner', '', array('placeholder' => "Ex: maison", 'class' => "medium form-control")) }}
+              {{ Form::text('phone1_owner', $default['phone1_owner'], array('placeholder' => "Ex: maison", 'class' => "medium form-control")) }}
             </div>
           </div>
           <div class="row">
             <div class="col-md-9 col-md-offset-3">
-              {{ Form::text('phone2', '', array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
+              {{ Form::text('phone2', $default['phone2'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
               <span class='horiz-divider'></span>
               {{ Form::label('phone2_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone2_private') }}
+              {{ Form::checkbox('phone2_private', 1, $default['phone2_private']) }}
               <span class='horiz-divider'></span>
               {{ Form::label('phone2_owner', 'Téléphone de', array('class' => 'control-label')) }}
-              {{ Form::text('phone2_owner', '', array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) }}
+              {{ Form::text('phone2_owner', $default['phone2_owner'], array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) }}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-9 col-md-offset-3">
-              {{ Form::text('phone3', '', array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
+              {{ Form::text('phone3', $default['phone3'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
               <span class='horiz-divider'></span>
               {{ Form::label('phone3_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone3_private') }}
+              {{ Form::checkbox('phone3_private', 1, $default['phone3_private']) }}
               <span class='horiz-divider'></span>
               {{ Form::label('phone3_owner', 'Téléphone de', array('class' => 'control-label')) }}
-              {{ Form::text('phone3_owner', '', array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) }}
+              {{ Form::text('phone3_owner', $default['phone3_owner'], array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) }}
             </div>
           </div>
           
@@ -188,9 +188,9 @@
           </div>
           
           <div class='row'>
-            {{ Form::label('email_member', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) }}
+            {{ Form::label('email1', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-4">
-              {{ Form::text('email1', '', array('class' => 'form-control')) }}
+              {{ Form::text('email1', $default['email1'], array('class' => 'form-control')) }}
             </div>
             <div class="col-md-5">
               <p class="form-side-note">Il est recommandé de donner une adresse e-mail.</p>
@@ -198,7 +198,7 @@
           </div>
           <div class="row">
             <div class="col-md-4 col-md-offset-3">
-              {{ Form::text('email2', '', array('class' => 'form-control')) }}
+              {{ Form::text('email2', $default['email2'], array('class' => 'form-control')) }}
             </div>
             <div class="col-md-5">
               <p class="form-side-note">Les adresses e-mail resteront toujours confidentielles (*).</p>
@@ -206,7 +206,7 @@
           </div>
           <div class="form-group">
             <div class="col-md-4 col-md-offset-3">
-              {{ Form::text('email3', '', array('class' => 'form-control')) }}
+              {{ Form::text('email3', $default['email3'], array('class' => 'form-control')) }}
             </div>
           </div>
           
@@ -323,12 +323,12 @@
           <div class='row'>
             {{ Form::label('family_in_other_units', "Famille dans d'autres unités", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-2">
-              {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), '', array('class' => 'form-control')) }}
+              {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), $default['family_in_other_units'], array('class' => 'form-control')) }}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-6 col-md-offset-3">
-              {{ Form::textarea('family_in_other_units_details', '',
+              {{ Form::textarea('family_in_other_units_details', $default['family_in_other_units_details'],
                         array('placeholder' => "Si le scout a des frères et sœurs dans une autre unité, " .
                                                "cela peut entrainer une réduction de la cotisation. Indiquer " .
                                                "ici qui et dans quelle(s) unité(s).", 'rows' => 3, 'class' => 'form-control')) }}

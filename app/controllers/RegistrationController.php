@@ -124,8 +124,43 @@ class RegistrationController extends GenericPageController {
    * [Route] Displays the registration form page
    */
   public function showForm() {
+    if (Session::get('registration')) {
+      // Get default value from last form filled during this session
+      $defaultValues = Session::get('registration');
+    } else {
+      $members = $this->user->getAssociatedMembers();
+      if (count($members)) {
+        // Get value from another existing member owned by this user
+        $defaultValues = $members[0]->attributesToArray();
+      } else {
+        // Default values if none of the above apply
+        $defaultValues = array(
+          'last_name' => '',
+          'nationality' => 'BE',
+          'address' => '',
+          'postcode' => '',
+          'city' => '',
+          'phone1' => '',
+          'phone1_private' => '',
+          'phone1_owner' => '',
+          'phone2' => '',
+          'phone2_private' => '',
+          'phone2_owner' => '',
+          'phone3' => '',
+          'phone3_private' => '',
+          'phone3_owner' => '',
+          'email1' => '',
+          'email2' => '',
+          'email3' => '',
+          'family_in_other_units' => '0',
+          'family_in_other_units_details' => '',
+        );
+      }
+    }
+    // Make view with default values
     return View::make('pages.registration.registrationForm', array(
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+        'default' => $defaultValues,
     ));
   }
   
@@ -153,6 +188,26 @@ class RegistrationController extends GenericPageController {
         // Success
         $success = true;
         $message = "Votre inscription a été enregistrée. L'animateur d'unité la validera prochainement.";
+        // Save values in session for re-use for another registration
+        Session::put('registration.last_name', Input::get('last_name'));
+        Session::put('registration.nationality', Input::get('nationality'));
+        Session::put('registration.address', Input::get('address'));
+        Session::put('registration.postcode', Input::get('postcode'));
+        Session::put('registration.city', Input::get('city'));
+        Session::put('registration.phone1', Input::get('phone1'));
+        Session::put('registration.phone1_private', Input::get('phone1_private'));
+        Session::put('registration.phone1_owner', Input::get('phone1_owner'));
+        Session::put('registration.phone2', Input::get('phone2'));
+        Session::put('registration.phone2_private', Input::get('phone2_private'));
+        Session::put('registration.phone2_owner', Input::get('phone2_owner'));
+        Session::put('registration.phone3', Input::get('phone3'));
+        Session::put('registration.phone3_private', Input::get('phone3_private'));
+        Session::put('registration.phone3_owner', Input::get('phone3_owner'));
+        Session::put('registration.email1', Input::get('email1'));
+        Session::put('registration.email2', Input::get('email2'));
+        Session::put('registration.email3', Input::get('email3'));
+        Session::put('registration.family_in_other_units', Input::get('family_in_other_units'));
+        Session::put('registration.family_in_other_units_details', Input::get('family_in_other_units_details'));
       }
     }
     // Redirect with status message
