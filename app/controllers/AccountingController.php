@@ -78,6 +78,48 @@ class AccountingController extends BaseController {
         $inheritTransaction = $accountingItem;
       }
     }
+    // Delete expired locks
+    AccountingLock::where('timestamp', '<', time() - 30)->delete();
+    // Check if this accounting page is locked by another user
+    $lockedByUser = false;
+    $accountingLock = null;
+    if ($canEdit) {
+      // Get current lock on this page
+      $lock = AccountingLock::where('invalidated', '=', false)
+              ->where('section_id', '=', $this->section->id)
+              ->where('year', '=', $year)
+              ->first();
+      if ($lock) {
+        // There is a lock
+        if ($lock->user_id == $this->user->id) {
+          // Locked by another window of the same user, invalidate previous lock and create a new one
+          $lock->invalidated = true;
+          $lock->save();
+          $accountingLock = AccountingLock::create(array(
+              'section_id' => $this->section->id,
+              'user_id' => $this->user->id,
+              'timestamp' => time(),
+              'year' => $year
+          ));
+          Log::error("Accounting: creating lock " . $accountingLock->id);
+        } else {
+          // Locked by another user, disable editing
+          $canEdit = false;
+          $user = User::find($lock->user_id);
+          $lockedByUser = $user->username;
+          Log::info("Accounting: locked by another user");
+        }
+      } else {
+        // Not locked, create new lock
+        $accountingLock = AccountingLock::create(array(
+            'section_id' => $this->section->id,
+            'user_id' => $this->user->id,
+            'timestamp' => time(),
+            'year' => $year
+        ));
+        Log::error("Accounting: creating lock " . $accountingLock->id);
+      }
+    }
     // Make view
     return View::make('pages.accounting.accounting', array(
         'categories' => $categories,
@@ -88,19 +130,54 @@ class AccountingController extends BaseController {
         'inherit_cash' => ($inheritTransaction->cashin_cents - $inheritTransaction->cashout_cents) / 100.0,
         'inherit_bank' => ($inheritTransaction->bankin_cents - $inheritTransaction->bankout_cents) / 100.0,
         'can_edit' => $canEdit,
+        'locked_by_user' => $lockedByUser,
+        'lock_id' => $accountingLock ? $accountingLock->id : "",
     ));
+  }
+  
+  /**
+   * [Route] Ajax call to update the lock of an accounting instance
+   */
+  public function ajaxUpdateLock($lockId) {
+    // Get lock
+    $lock = AccountingLock::where('id', '=', $lockId)
+            ->where('timestamp', '>', time() - 30)
+            ->where('invalidated', '=', false)
+            ->where('user_id', '=', $this->user->id)
+            ->first();
+    if ($lock) {
+      // Lock found, refresh its timestamp
+      $lock->timestamp = time();
+      $lock->save();
+      return json_encode(array("result" => "Success"));
+    } else {
+      // Lock does not exist, return error message
+      return json_encode(array("result" => "Failure", "message" => "Cette page n'est plus réservée. $lockId"));
+    }
   }
   
   /**
    * [Route] Ajax call to update the changes to the accounting data
    * 
-   * @param string $year  The scout year being modified
+   * @param string $lockId  Id of the accounting lock
    */
-  public function commitChanges($year) {
+  public function commitChanges($lockId) {
     if (!$this->user->isLeader() || !$this->user->can(Privilege::$MANAGE_ACCOUNTING, $this->section)) {
       // Access denied, return error result
       return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges pour modifier les comptes de cette section."));
     }
+    // Check lock
+    $lock = AccountingLock::where('id', '=', $lockId)
+            ->where('timestamp', '>', time() - 30)
+            ->where('invalidated', '=', false)
+            ->where('section_id', '=', $this->section->id)
+            ->where('user_id', '=', $this->user->id)
+            ->first();
+    if (!$lock) {
+      return json_encode(array("result" => "Failure", "message" => "La connexion à ces comptes a été interrompue ou une autre page a été ouverte. Veuillez réessayer."));
+    }
+    $year = $lock->year;
+    // Lock is valid
     try {
       // Basic request checks
       if (!$year) throw new Exception("Year parameter is missing");
@@ -181,7 +258,7 @@ class AccountingController extends BaseController {
     }
     // Return response
     if ($error) {
-      return json_encode(array("result" => "Failure", "message" => $error));
+      return json_encode(array("result" => "Failure", "message" => "Une erreur est survenue lors de l'enregistrement des comptes."));
     } else {
       return json_encode(array("result" => "Success", "new_transactions" => $newTransactions));
     }

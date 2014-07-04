@@ -368,6 +368,7 @@ angularAccounting.controller('AccountingController', function ($scope) {
         }).done(function(json) {
           try {
             data = JSON.parse(json);
+            var errorMessage = null;
             if (data.result === "Success") {
               // Upload was successful
               // Replace new transactions' temporary ids with actual ids
@@ -387,11 +388,12 @@ angularAccounting.controller('AccountingController', function ($scope) {
             } else {
               // An error has occured
               console.error(data.message);
+              errorMessage = data.message;
               throw "error";
             }
           } catch (err) {
             // On error, reload the page so the user can see what has actually been saved
-            alert("Une erreur est survenue lors de l'enregistrement des comptes.");
+            alert(errorMessage ? errorMessage : "Une erreur est survenue lors de l'enregistrement des comptes.");
             // Reload page
             window.location = window.location;
           }
@@ -399,6 +401,35 @@ angularAccounting.controller('AccountingController', function ($scope) {
       }
     }, 1000); // Upload in 1 second
   };
+  
+  // Extend lock periodically
+  if ($scope.canEdit) {
+    $scope.extendLock = function() {
+      $.ajax({
+        type: "GET",
+        url: extendLockURL,
+      }).done(function(json) {
+        try {
+          data = JSON.parse(json);
+          if (data.result === "Success") {
+            // Lock extension was successful, re-extend in 10 seconds
+            setTimeout($scope.extendLock, 10000);
+          } else {
+            // An error has occured
+            console.error(data.message);
+            throw "error";
+          }
+        } catch (err) {
+          // Lock has been lost for this page
+          alert("Il est impossible de modifier les comptes sur plusieurs pages simultanément. Pour les modifier à nouveau ici, rafraichis cette page.");
+          // Quit editing mode
+          $scope.canEdit = false;
+          $scope.$apply();
+        }
+      });
+    };
+    setTimeout($scope.extendLock, 10000);
+  }
   
 });
 

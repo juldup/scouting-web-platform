@@ -475,6 +475,21 @@ class CreateDatabase extends Migration {
       $table->index('position');
     });
     
+    // Accounting lock
+    Schema::create('accounting_locks', function($table) {
+      $table->increments('id');
+      $table->string('year');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->integer('user_id')->unsigned();
+      $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+      $table->integer('timestamp');
+      $table->boolean('invalidated')->default(false);
+      $table->timestamps();
+      
+      $table->index('timestamp');
+    });
+    
     // Banned e-mails
     Schema::create('banned_emails', function($table) {
       $table->increments('id');
@@ -530,6 +545,7 @@ class CreateDatabase extends Migration {
 	public function down() {
     Schema::drop('archived_leaders');
     Schema::drop('banned_emails');
+    Schema::drop('accounting_locks');
     Schema::drop('accounting_items');
     Schema::drop('guest_book_entries');
     Schema::drop('suggestions');

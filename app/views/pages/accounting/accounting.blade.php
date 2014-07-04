@@ -66,11 +66,13 @@
   <script src="{{ asset('js/libs/angular-1.2.15.min.js') }}"></script>
   <script src="{{ asset('js/libs/angular-ui-0.4.0.js') }}"></script>
   <script>
-    var commitAccountingChangesURL = "{{ URL::route('ajax-accounting-commit-changes', array('section_slug' => $user->currentSection->slug, 'year' => $year))}}";
+    var commitAccountingChangesURL = "{{ URL::route('ajax-accounting-commit-changes', array('section_slug' => $user->currentSection->slug, 'lock_id' => $lock_id))}}";
     var inheritanceCash = {{ $inherit_cash }};
     var inheritanceBank = {{ $inherit_bank }};
     var previousYear = "{{{ $previous_year }}}";
     var canEdit = {{ $can_edit ? "true" : "false" }};
+    var lockId = "{{ $lock_id }}";
+    var extendLockURL = "{{ URL::route('ajax-accounting-extend-lock', array('lock_id' => $lock_id)) }}";
     var categories = [
     @foreach ($categories as $category_name => $category)
       {
@@ -102,6 +104,13 @@
   @include('subviews.contextualHelp', array('help' => 'accounting'))
   
   <h1>Trésorie {{{ $user->currentSection->de_la_section }}}&nbsp;: année {{{ $year }}}</h1>
+  @if ($locked_by_user)
+    <p class='alert alert-warning'>
+      Ces comptes sont pour le moment modifiés par <strong>{{ $locked_by_user }}</strong>.
+      Pour que tu puisses modifier ces comptes, cet utilisateur doit fermer cette page dans son navigateur.
+    </p>
+  @endif
+  
   @include('pages.accounting.accounting-angular')
   <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
 @stop
