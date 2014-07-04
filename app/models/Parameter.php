@@ -87,6 +87,7 @@ class Parameter extends Eloquent {
   // Cron jobs status
   public static $CRON_EMAIL_LAST_EXECUTION = "Cron e-mail last execution";
   public static $CRON_HEALTH_CARDS_LAST_EXECUTION = "Cron health cards last execution";
+  public static $CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION = "Cron increment year in section last execution";
   
   // List of parameters, stored to avoid multiple accesses to database
   private static $parameters = null;

@@ -48,6 +48,11 @@ Route::get('cron/suppression-auto-fiches-sante', array("as" => "cron_auto_delete
   // Update cron job last execution time
   Parameter::set(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION, time());
 }));
+Route::get('cron/augmenter-annee-auto', array("as" => "cron_auto_increment_year_in_section", "uses" => function() {
+  Member::updateYearInSectionAuto();
+  // Update cron job last execution time
+  Parameter::set(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION, time());
+}));
 
 // General
 Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));

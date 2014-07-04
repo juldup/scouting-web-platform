@@ -71,6 +71,21 @@
               @endif
             </td>
           </tr>
+          <tr>
+            <td>Augmentation automatique de l'année dans la section</td>
+            <td>{{ $incrementYearInSectionLastExecution ? date('j/n/Y à G:i', $incrementYearInSectionLastExecution) : "Jamais" }}</td>
+            <td>
+              @if ($incrementYearInSectionTimedOut)
+                <span class="danger">
+                  Attention&nbsp;!
+                  Cette tâche n'a pas été exécutée depuis trop longtemps.
+                  Préviens le <a href="{{ URL::route('contacts') }}#webmaster">webmaster</a>.
+                </span>
+              @else
+                <span class="safe">OK</span>
+              @endif
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

@@ -333,6 +333,7 @@ class Member extends Eloquent {
     // Create member
     try {
       if ($validate) $data['validated'] = true;
+      $data['year_in_section_last_update'] = date('Y') . "-" . (date('Y') + 1);
       $member = Member::create($data);
       if ($member->is_leader) return $member->uploadPictureFromInput();
       else return $member;
@@ -550,6 +551,25 @@ class Member extends Eloquent {
     }
     // There is no picture file
     return true;
+  }
+  
+  /**
+   * Updates the year in section of all members automatically based on the current
+   * date and the year_in_section_last_update field
+   */
+  public static function updateYearInSectionAuto() {
+    // Get current year
+    $month = date('m');
+    $startYear = date('Y');
+    if ($month < 8) $startYear--;
+    $currentYear = $startYear . "-" . ($startYear + 1);
+    // Update members' year in section where needed
+    Member::where('validated', '=', true)
+            ->where('year_in_section_last_update', '<', $currentYear)
+            ->increment('year_in_section');
+    Member::where('validated', '=', true)
+            ->where('year_in_section_last_update', '<', $currentYear)
+            ->update(array('year_in_section_last_update' => $currentYear));
   }
   
 }

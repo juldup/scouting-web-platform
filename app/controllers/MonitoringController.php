@@ -33,12 +33,15 @@ class MonitoringController extends BaseController {
     // Get status
     $emailLastExecution = Parameter::get(Parameter::$CRON_EMAIL_LAST_EXECUTION);
     $healthCardsLastExecution = Parameter::get(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION);
+    $incrementYearInSectionLastExecution = Parameter::get(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION);
     // Show page
     return View::make('pages.monitoring.monitoring', array(
         "emailLastExecution" => $emailLastExecution,
         "healthCardsLastExecution" => $healthCardsLastExecution,
+        "incrementYearInSectionLastExecution" => $incrementYearInSectionLastExecution,
         "emailTimedOut" => self::emailTimedOut($emailLastExecution),
         "healthCardsTimedOut" => self::healthCardsTimedOut($healthCardsLastExecution),
+        "incrementYearInSectionTimedOut" => self::incrementYearInSectionTimedOut($incrementYearInSectionLastExecution),
     ));
   }
   
@@ -48,7 +51,10 @@ class MonitoringController extends BaseController {
   public static function cronTaskTimedOut() {
     $emailLastExecution = Parameter::get(Parameter::$CRON_EMAIL_LAST_EXECUTION);
     $healthCardsLastExecution = Parameter::get(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION);
-    return self::emailTimedOut($emailLastExecution) || self::healthCardsTimedOut($healthCardsLastExecution);
+    $incrementYearInSectionLastExecution = Parameter::get(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION);
+    return self::emailTimedOut($emailLastExecution) ||
+            self::healthCardsTimedOut($healthCardsLastExecution) ||
+            self::incrementYearInSectionTimedOut($incrementYearInSectionLastExecution);
   }
   
   /**
@@ -63,6 +69,15 @@ class MonitoringController extends BaseController {
    */
   private static function healthCardsTimedOut($healthCardsLastExecution) {
     return !$healthCardsLastExecution || (time() - $healthCardsLastExecution > 3600 * 24 * 2); // More than 2 days ago
+  }
+  
+  /**
+   * Returns true if the increment year in section cron task has timed out
+   */
+  private static function incrementYearInSectionTimedOut($incrementYearInSectionLastExecution) {
+    $year = date('m') < 8 ? date('Y') - 1 : date('Y');
+    $lastAugustFirst = strtotime($year . "-08-02");
+    return !$incrementYearInSectionLastExecution || $incrementYearInSectionLastExecution < $lastAugustFirst;
   }
   
 }

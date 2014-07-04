@@ -182,6 +182,7 @@ class CreateDatabase extends Migration {
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections');
       $table->integer('year_in_section')->default(1);
+      $table->string('year_in_section_last_update');
       $table->string('subgroup')->nullable();
       $table->integer('family_in_other_units')->default(0);
       $table->text('family_in_other_units_details')->nullable();
