@@ -101,13 +101,11 @@ class AccountingController extends BaseController {
               'timestamp' => time(),
               'year' => $year
           ));
-          Log::error("Accounting: creating lock " . $accountingLock->id);
         } else {
           // Locked by another user, disable editing
           $canEdit = false;
           $user = User::find($lock->user_id);
           $lockedByUser = $user->username;
-          Log::info("Accounting: locked by another user");
         }
       } else {
         // Not locked, create new lock
@@ -117,7 +115,6 @@ class AccountingController extends BaseController {
             'timestamp' => time(),
             'year' => $year
         ));
-        Log::error("Accounting: creating lock " . $accountingLock->id);
       }
     }
     // Make view

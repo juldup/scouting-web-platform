@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en" @yield('html_parameters')>
 <head>
-  <link rel="SHORTCUT ICON" href="favicon.ico">
+  <link rel="SHORTCUT ICON" href="{{ URL::to('') }}/favicon.ico">
   <meta charset="UTF-8">
 	<title>
     {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}} - @yield('title')
