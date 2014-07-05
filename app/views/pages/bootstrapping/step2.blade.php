@@ -19,7 +19,7 @@
 ?>
 
 @section('title')
-  Initialisation du site - étape 1
+  Initialisation du site - étape 2
 @stop
 
 @section('additional_javascript')

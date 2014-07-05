@@ -41,6 +41,16 @@ class WebsiteBootstrappingController extends Controller {
   }
   
   /**
+   * [Route] Shows the page of the given step
+   */
+  public function showStep($step) {
+    // Save step
+    self::setCurrentBootstrappingStep($step);
+    // Call corresponding function
+    return call_user_func(array($this, "step$step"));
+  }
+  
+  /**
    * Returns the current bootstrapping step (if any, 0 otherwise)
    */
   private static function getCurrentBootstrappingStep() {
@@ -61,16 +71,6 @@ class WebsiteBootstrappingController extends Controller {
     try {
       file_put_contents($bootstrappingStep, $step);
     } catch (Exception $e) {}
-  }
-  
-  /**
-   * [Route] Shows the page of the given step
-   */
-  public function showStep($step) {
-    // Save step
-    self::setCurrentBootstrappingStep($step);
-    // Call corresponding function
-    return call_user_func(array($this, "step$step"));
   }
   
   /**
@@ -95,6 +95,9 @@ class WebsiteBootstrappingController extends Controller {
       // Check that the bootstrapping step file is writable and readable
       touch("$siteDataRoot/site_data/bootstrapping-step.txt");
       file_get_contents("$siteDataRoot/site_data/bootstrapping-step.txt");
+      // Check that the website base url file is writable and readable
+      touch("$siteDataRoot/site_data/website-base-url.txt");
+      file_get_contents("$siteDataRoot/site_data/website-base-url.txt");
       // Make sure the root folder is writable
       touch("$siteDataRoot/site_data/test");
       unlink("$siteDataRoot/site_data/test");
@@ -198,6 +201,90 @@ class WebsiteBootstrappingController extends Controller {
         'username' => array_key_exists('username', $databaseConfig) ? $databaseConfig['username'] : '',
         'password' => '',
     ));
+  }
+  
+  /**
+   * Step 3: Creating cron jobs
+   */
+  public function step3() {
+    // Save website URL to file
+    $baseURL = URL::to('');
+    file_put_contents(__DIR__ . "/../storage/site_data/website-base-url.txt", $baseURL);
+    // Make view
+    return View::make('pages.bootstrapping.step3', array(
+        'cron_tasks_created' => false,
+    ));
+  }
+  
+  /**
+   * Step 4: Create a user account for the webmaster
+   */
+  public function step4() {
+    $errorMessage = "";
+    // Check if there is already a webmaster for the website
+    $existingWebmaster = User::where('is_webmaster', '=', true)->first();
+    if (!$existingWebmaster) {
+      if (Request::isMethod('post')) {
+        // Get input data
+        $username = Input::get('username');
+        $email = strtolower(Input::get('email'));
+        $password = Input::get('password');
+        // Validate data
+        $validator = Validator::make(
+                array(
+                    "username" => $username,
+                    "email" => $email,
+                    "password" => $password,
+                ),
+                array(
+                    "username" => "required|unique:users,username",
+                    "email" => "required|email",
+                    "password" => "required|min:6",
+                ),
+                array(
+                    "username.required" => "Veuillez entrer un nom d'utilisateur.",
+                    "username.unique" => "Ce nom d'utilisateur est déjà utilisé. Choisissez-en un autre.",
+                    "email.required" => "Veuillez entrer une adresse e-mail.",
+                    "email.email" => "L'adresse e-mail n'est pas valide.",
+                    "password.required" => "Veuillez entrer un mot de passe.",
+                    "password.min" => "Le mot de passe doit compter au moins 6 caractères.",
+                )
+        );
+        if ($validator->fails()) {
+          return Redirect::to(URL::current())
+                  ->withInput()
+                  ->withErrors($validator);
+        }
+        // Create user
+        $user = User::createWith($username, $email, $password);
+        $user->is_webmaster = true;
+        $user->verified = true;
+        $user->save();
+        // Move to next step
+        return Redirect::route('bootstrapping-step', array('step' => 5));
+      }
+      // Construct error message
+      $errors = Session::get('errors');
+      if ($errors) {
+        foreach ($errors->getMessages() as $messageArray) {
+          foreach ($messageArray as $message) {
+            $errorMessage .= $message . " ";
+          }
+        }
+      }
+    }
+    // Make view
+    return View::make('pages.bootstrapping.step4', array(
+        'error_message' => $errorMessage,
+        'existing_webmaster' => $existingWebmaster,
+    ));
+  }
+  
+  /**
+   * Step 5: E-mail sending configuration
+   */
+  public function step5() {
+    // TODO
   }
   
 }
