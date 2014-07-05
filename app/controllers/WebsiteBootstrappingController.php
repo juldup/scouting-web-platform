@@ -29,6 +29,10 @@ class WebsiteBootstrappingController extends Controller {
    * has already been started
    */
   public function showPage() {
+    // Check access
+    if (!self::accessToBootstrappingPagesAllowed()) {
+      return Redirect::to(URL::route('home'));
+    }
     // Get current step
     $step = self::getCurrentBootstrappingStep();
     if ($step) {
@@ -44,10 +48,26 @@ class WebsiteBootstrappingController extends Controller {
    * [Route] Shows the page of the given step
    */
   public function showStep($step) {
+    // Check access
+    if (!self::accessToBootstrappingPagesAllowed()) {
+      return Redirect::to(URL::route('home'));
+    }
     // Save step
     self::setCurrentBootstrappingStep($step);
     // Call corresponding function
     return call_user_func(array($this, "step$step"));
+  }
+  
+  /**
+   * Check whether accessing the bootstrapping pages is still allowed
+   * (i.e. if the last step has not been reached yet)
+   */
+  private static function accessToBootstrappingPagesAllowed() {
+    try {
+      $bootstrappingDone = Parameter::get(Parameter::$BOOTSTRAPPING_DONE);
+      return !$bootstrappingDone;
+    } catch (Exception $ex) {}
+    return true;
   }
   
   /**
@@ -262,6 +282,8 @@ class WebsiteBootstrappingController extends Controller {
         $user->save();
         // Save webmaster e-mail
         Parameter::set(Parameter::$WEBMASTER_EMAIL, $email);
+        // Log in as webmaster
+        Session::put('user_id', $user->id);
         // Move to next step
         return Redirect::route('bootstrapping_step', array('step' => 5));
       }
@@ -462,6 +484,28 @@ class WebsiteBootstrappingController extends Controller {
     // Make view
     return View::make('pages.bootstrapping.step7', array(
         'error_message' => Session::get('error_message'),
+    ));
+  }
+  
+  /**
+   * Step 8: Final step with instructions to go on
+   */
+  public function step8() {
+    // Mark the website as operational
+    Parameter::set(Parameter::$BOOTSTRAPPING_DONE, true);
+    // Send information by e-mail to the webmaster
+    $email = PendingEmail::create(array(
+        'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Informations sur la gestion du site",
+        'html_body' => View::make('pages.bootstrapping.site-information'),
+        'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+        'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+        'recipient' => Parameter::get(Parameter::$WEBMASTER_EMAIL),
+        'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+    ));
+    $email->send();
+    // Make view
+    return View::make('pages.bootstrapping.step8', array(
+        
     ));
   }
   

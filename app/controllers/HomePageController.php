@@ -53,7 +53,7 @@ class HomePageController extends GenericPageController {
    */
   public function showPage() {
     // Check if the site is being initialized
-    if (Parameter::get(Parameter::$BOOTSTRAPPING_STEP) != 'done') {
+    if (!Parameter::get(Parameter::$BOOTSTRAPPING_DONE)) {
       // Website bootstrapping process still in progress
       return Redirect::route('bootstrapping');
     }

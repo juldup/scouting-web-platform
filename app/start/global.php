@@ -49,7 +49,7 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 App::error(function(Exception $exception, $code)
 {
 	Log::error($exception);
-  if ($exception instanceof PDOException) {
+  if ($exception instanceof PDOException || $exception->getMessage() == "Database [] not configured.") {
     // There is no connection to the database yet, this means the website needs to be bootstrapped
     // Redirecting to bootstrapping page
     return Redirect::route('bootstrapping', array('db_safe' => true));
