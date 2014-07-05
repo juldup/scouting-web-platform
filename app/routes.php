@@ -282,7 +282,7 @@ Route::post('/email-personnel/soumettre/{contact_type}/{member_id}', array("as" 
 
 // Website bootstrapping
 Route::get('/initialisation-du-site', array("as" => "bootstrapping", "uses" => "WebsiteBootstrappingController@showPage"));
-Route::any('/initialisation-du-site/etape-{step}', array("as" => "bootstrapping-step", "uses" => "WebsiteBootstrappingController@showStep"));
+Route::any('/initialisation-du-site/etape-{step}', array("as" => "bootstrapping_step", "uses" => "WebsiteBootstrappingController@showStep"));
 
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));

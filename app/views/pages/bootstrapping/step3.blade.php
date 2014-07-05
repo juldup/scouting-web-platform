@@ -90,7 +90,7 @@
         </tbody>
       </table>
       <p>
-        <a class="btn btn-primary" href="{{ URL::route('bootstrapping-step', array('step' => 4)) }}">
+        <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 4)) }}">
           Passer à l'étape 4
         </a>
       </p>

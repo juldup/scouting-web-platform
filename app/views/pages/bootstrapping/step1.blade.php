@@ -32,7 +32,7 @@
           L'accès en écriture a été vérifié et fonctionne correctement.
         </p>
         <p>
-          <a class="btn btn-primary" href="{{ URL::route('bootstrapping-step', array('step' => 2)) }}">
+          <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 2)) }}">
             Passer à l'étape 2
           </a>
         </p>
@@ -45,7 +45,7 @@
         </div>
         <p>Veuillez donner l'accès à ce répertoire&nbsp;: <strong>chmod 777 -R app/storage/site_data</strong></p>
         <p>
-          <a class="btn btn-primary" href="{{ URL::route('bootstrapping-step', array('step' => 1)) }}">
+          <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 1)) }}">
             Réessayer
           </a>
         </p>

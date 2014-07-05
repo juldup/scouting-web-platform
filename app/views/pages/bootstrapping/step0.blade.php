@@ -63,7 +63,7 @@
         </ul>
       </p>
       <p>
-        <a class="btn btn-primary" href="{{ URL::route('bootstrapping-step', array('step' => 1)) }}">
+        <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 1)) }}">
           Commencer
         </a>
       </p>

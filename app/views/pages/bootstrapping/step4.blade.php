@@ -31,7 +31,7 @@
           Il y a déjà un compte d'utilisateur pour le webmaster sur ce site&nbsp;: <strong>{{ $existing_webmaster->username }}</strong>.
         </p>
         <p>
-          <a class="btn btn-primary" href="{{ URL::route('bootstrapping-step', array('step' => 5)) }}">
+          <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 5)) }}">
             Passer à l'étape 5
           </a>
         </p>

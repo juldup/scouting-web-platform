@@ -44,12 +44,12 @@
           La base de données est correctement configurée.
         </p>
         <p>
-          <a class='btn btn-default' href="{{ URL::route('bootstrapping-step', array('step' => 2, 'reset' => true)) }}">
+          <a class='btn btn-default' href="{{ URL::route('bootstrapping_step', array('step' => 2, 'reset' => true)) }}">
             Reconfigurer la base de données
           </a>
         </p>
         <p>
-          <a class="btn btn-primary" href="{{ URL::route('bootstrapping-step', array('step' => 3)) }}">
+          <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 3)) }}">
             Passer à l'étape 3
           </a>
         </p>

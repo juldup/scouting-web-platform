@@ -33,7 +33,7 @@ class WebsiteBootstrappingController extends Controller {
     $step = self::getCurrentBootstrappingStep();
     if ($step) {
       // Bootstrapping has been started previously, go directly to current step
-      return Redirect::route('bootstrapping-step', array("step" => $step, "db_safe" => Input::get('db_safe')));
+      return Redirect::route('bootstrapping_step', array("step" => $step, "db_safe" => Input::get('db_safe')));
     } else {
       // Show welcome page
       return $this->step0();
@@ -153,7 +153,7 @@ class WebsiteBootstrappingController extends Controller {
       // Save data to file in json format
       file_put_contents($databaseConfigFilePath, json_encode($databaseData));
       // Redirect to 'GET' route
-      return Redirect::route('bootstrapping-step', array('step' => 2));
+      return Redirect::route('bootstrapping_step', array('step' => 2));
     }
     // Check if a database file already exists
     $databaseExists = false;
@@ -260,8 +260,10 @@ class WebsiteBootstrappingController extends Controller {
         $user->is_webmaster = true;
         $user->verified = true;
         $user->save();
+        // Save webmaster e-mail
+        Parameter::set(Parameter::$WEBMASTER_EMAIL, $email);
         // Move to next step
-        return Redirect::route('bootstrapping-step', array('step' => 5));
+        return Redirect::route('bootstrapping_step', array('step' => 5));
       }
       // Construct error message
       $errors = Session::get('errors');
@@ -284,7 +286,86 @@ class WebsiteBootstrappingController extends Controller {
    * Step 5: E-mail sending configuration
    */
   public function step5() {
-    // TODO
+    if (Request::isMethod('post')) {
+      if (Input::get('action') == 'configuration') {
+        // Posting configuration data
+        // Save data
+        $error = false;
+        try {
+          Parameter::set(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, Input::get('default_email_from_address'));
+          Parameter::set(Parameter::$SMTP_HOST, Input::get('smtp_host'));
+          Parameter::set(Parameter::$SMTP_PORT, Input::get('smtp_port'));
+          Parameter::set(Parameter::$SMTP_USERNAME, Input::get('smtp_username'));
+          Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
+          Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
+        } catch (Exception $e) {
+          $error = true;
+        }
+        // Save verified e-mail sender list
+        $verifiedSendersArray = Input::get('email_safe_list');
+        $verifiedSenders = "";
+        foreach ($verifiedSendersArray as $verifiedSender) {
+          if ($verifiedSender && strpos($verifiedSenders, ";") === false) {
+            if ($verifiedSenders) $verifiedSenders .= ";";
+            $verifiedSenders .= strtolower($verifiedSender);
+          }
+        }
+        try {
+          Parameter::set(Parameter::$VERIFIED_EMAIL_SENDERS, $verifiedSenders);
+        } catch (Exception $e) {
+          $error = true;
+        }
+        // Redirect
+        if (!$error) {
+          return Redirect::route('bootstrapping_step', array('step' => 5, 'action' => 'testing'));
+        } else {
+          return Redirect::to(URL::current())
+                  ->with('error_message', "Une erreur est survenue. Les données n'ont pas pu être sauvées.");
+        }
+      } elseif (Input::get('action') == 'testing') {
+        // Posting e-mail address for testing
+        // Check e-mail address
+        $email = Input::get('email');
+        if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+          return Redirect::to(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
+                  ->with('error_message', "Cette adresse e-mail n'est pas valide");
+        }
+        // Create e-mail
+        $pendingEmail = PendingEmail::create(array(
+            'subject' => "E-mail de test " . date('Y-m-d H:i:s'),
+            'raw_body' => "Cet e-mail a été envoyé depuis le site " . URL::to('') . ".\n\nL'envoi des e-mails est fonctionnel.",
+            'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+            'sender_name' => "Site scout",
+            'recipient' => $email,
+            'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
+        ));
+        // Try sending e-mail
+        try {
+          $pendingEmail->send();
+          // Remove e-mail from database
+          $pendingEmail->delete();
+          if ($pendingEmail->sent) {
+            // Success
+            return Redirect::to(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
+                    ->with('success_message', "L'e-mail a été envoyé avec succès. Vérifiez que vous l'avez bien reçu avant de passer à l'étape 6.");
+          }
+        } catch (Exception $e) {
+          // Remove e-mail from database
+          $pendingEmail->delete();
+        }
+        // Error
+        return Redirect::to(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
+                    ->with('error_message', "L'e-mail n'a pas été envoyé. La configuration n'est pas correcte.");
+      }
+    }
+    // Make view
+    return View::make('pages.bootstrapping.step5', array(
+        'configuration' => Input::get('action') != 'testing',
+        'testing' => Input::get('action') == 'testing',
+        'safe_emails' => explode(",", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
+        'error_message' => Session::get('error_message'),
+        'success_message' => Session::get('success_message'),
+    ));
   }
   
 }
