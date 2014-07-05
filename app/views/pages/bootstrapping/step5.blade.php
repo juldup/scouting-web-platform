@@ -42,7 +42,7 @@
 @section('content')
   <div class="row">
     <div class="col-sm-12">
-      <h1>Étape 5 : Configuration de l'envoi des e-mails</h1>
+      <h1>Étape 5 : Configurer l'envoi des e-mails</h1>
       @if ($error_message)
         <p class="alert alert-danger">
           {{{ $error_message }}}

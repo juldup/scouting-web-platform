@@ -368,4 +368,101 @@ class WebsiteBootstrappingController extends Controller {
     ));
   }
   
+  /**
+   * Step 6: Configuring unit information
+   */
+  public function step6() {
+    $error = false;
+    $success = false;
+    // Save parameters from input
+    if (Request::isMethod('post')) {
+      // Save new prices
+      try {
+        Parameter::set(Parameter::$PRICE_1_CHILD, Helper::formatCashAmount(Input::get('price_1_child')));
+        Parameter::set(Parameter::$PRICE_1_LEADER, Helper::formatCashAmount(Input::get('price_1_leader')));
+        Parameter::set(Parameter::$PRICE_2_CHILDREN, Helper::formatCashAmount(Input::get('price_2_children')));
+        Parameter::set(Parameter::$PRICE_2_LEADERS, Helper::formatCashAmount(Input::get('price_2_leaders')));
+        Parameter::set(Parameter::$PRICE_3_CHILDREN, Helper::formatCashAmount(Input::get('price_3_children')));
+        Parameter::set(Parameter::$PRICE_3_LEADERS, Helper::formatCashAmount(Input::get('price_3_leaders')));
+      } catch (Exception $e) {
+        $error = true;
+      }
+      // Save the unit parameters
+      try {
+        Parameter::set(Parameter::$UNIT_LONG_NAME, Input::get('unit_long_name'));
+        Parameter::set(Parameter::$UNIT_SHORT_NAME, Input::get('unit_short_name'));
+        Parameter::set(Parameter::$UNIT_BANK_ACCOUNT, Input::get('unit_bank_account'));
+      } catch (Exception $e) {
+        $error = true;
+      }
+      // Save the logo
+      $logoFile = Input::file('logo');
+      try {
+        if ($logoFile) {
+          $filename = $logoFile->getClientOriginalName();
+          $logoFile->move(storage_path() . "/" . Parameter::$LOGO_IMAGE_FOLDER, $filename);
+          Parameter::set(Parameter::$LOGO_IMAGE, $filename);
+        }
+      } catch (Exception $e) {
+        $error = true;
+      }
+      // Save the logo on two lines option
+      try {
+        Parameter::set(Parameter::$LOGO_TWO_LINES, Input::get('logo_two_lines') ? true : false);
+      } catch (Exception $ex) {
+        $error = true;
+      }
+      // Save the search engine parameters
+      try {
+        Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, Input::get('website_meta_description'));
+        Parameter::set(Parameter::$WEBSITE_META_KEYWORDS, Input::get('website_meta_keywords'));
+      } catch (Exception $ex) {
+        $error = true;
+      }
+      if (!$error) $success = true;
+    }
+    // Make view
+    return View::make('pages.bootstrapping.step6', array(
+        'success' => $success,
+        'error' => $error,
+    ));
+  }
+  
+  /**
+   * Step 7: create sections
+   */
+  public function step7() {
+    // Input data
+    if (Request::isMethod('post')) {
+      try {
+        Section::where('id', '!=', 1)->delete();
+        $sectionData = json_decode(Input::get('data'), true);
+        // Create each section
+        foreach ($sectionData as $data) {
+          $section = new Section();
+          $section->name = $data['name'];
+          $section->slug = Helper::slugify($data['name']); // TODO manage collisions
+          $section->email = $data['email'];
+          $section->section_type = strlen($data['code'] >= 1) ? substr($data['code'], 0, 1) : '';
+          $section->section_type_number = strlen($data['code'] >= 2) ? substr($data['code'], 1) : '';
+          $section->color = $data['color'];
+          $section->la_section = $data['la_section'];
+          $section->de_la_section = $data['de_la_section'];
+          $section->subgroup_name = $data['subgroup'];
+          $section->save();
+        }
+        // Success, go to next step
+        return Redirect::to(URL::route('bootstrapping_step', array('step' => 8)));
+      } catch (Exception $e) {
+        // Error, show error message
+        return Redirect::to(URL::route('bootstrapping_step', array('step' => 7)))
+              ->with('error_message', "Une erreur s'est produite");
+      }
+    }
+    // Make view
+    return View::make('pages.bootstrapping.step7', array(
+        'error_message' => Session::get('error_message'),
+    ));
+  }
+  
 }

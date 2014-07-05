@@ -65,6 +65,8 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_3_LEADERS, 'value' => '26,75'));
     DB::table('parameters')->insert(array('name' => Parameter::$UNIT_BANK_ACCOUNT, 'value' => 'BE00-0000-0000-0000'));
     DB::table('parameters')->insert(array('name' => Parameter::$DOCUMENT_CATEGORIES, 'value' => 'Convocations;Documents administratifs;Informations générales;Pour les scouts'));
+    DB::table('parameters')->insert(array('name' => Parameter::$WEBSITE_META_KEYWORDS, 'value' => 'scout, scoutisme, unité, louveteaux, baladins, éclaireurs, pionniers, meute, troupe, ribambelle, poste'));
+    DB::table('parameters')->insert(array('name' => Parameter::$WEBSITE_META_DESCRIPTION, 'value' => "Site web de l'unité scoute de ..., membre de la Fédération des Scouts Baden-Powell de Belgique"));
     
     // Sections
     Schema::create('sections', function($table) {
@@ -302,6 +304,7 @@ class CreateDatabase extends Migration {
       $table->text('description');
       $table->timestamps();
     });
+    DB::table('links')->insert(array('title' => 'Fédération des Scouts Baden-Powell de Belgique', 'url' => 'http://www.lesscouts.be', 'description' => 'Fédération scoute dont fait partie cette unité.'));
     
     // Health cards
     Schema::create('health_cards', function($table) {

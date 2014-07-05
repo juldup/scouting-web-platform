@@ -38,7 +38,7 @@
 @section('content')
   <div class="row">
     <div class="col-sm-12">
-      <h1>Étape 2 : Configuration de la base de données</h1>
+      <h1>Étape 2 : Configurer la base de données</h1>
       @if ($database_exists)
         <p class="alert alert-success">
           La base de données est correctement configurée.

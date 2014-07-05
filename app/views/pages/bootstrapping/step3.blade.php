@@ -25,7 +25,7 @@
 @section('content')
   <div class="row">
     <div class="col-sm-12">
-      <h1>Étape 3 : Création des tâches CRON</h1>
+      <h1>Étape 3 : Créer les tâches CRON</h1>
       <p>
         Pour le bon fonctionnement du site, 3 tâches CRON doivent être exécutées. Faites la configuration des tâches CRON
         via votre hébergeur ou via un outil de tâches CRON extérieur au site. Il y a deux manières de configurer les tâches CRON&nbsp;:

@@ -22,7 +22,6 @@
   Initialisation du site
 @stop
 
-
 @section('content')
   <div class="row">
     <div class="col-sm-12">
@@ -37,28 +36,25 @@
             <strong>Étape 1&nbsp;: Donner l'accès en écriture au système de fichiers</strong>
           </li>
           <li>
-            <strong>Étape 2&nbsp;: Configuration de la base de données</strong>
+            <strong>Étape 2&nbsp;: Configurer la base de données</strong>
           </li>
           <li>
-            <strong>Étape 3&nbsp;: Création des tâches CRON</strong>
+            <strong>Étape 3&nbsp;: Créer les tâches CRON</strong>
           </li>
           <li>
             <strong>Étape 4&nbsp;: Créer un compte d'utilisateur pour le webmaster</strong>
           </li>
           <li>
-            <strong>Étape 5&nbsp;: Configuration de l'envoi des e-mails</strong>
+            <strong>Étape 5&nbsp;: Configurer l'envoi des e-mails</strong>
           </li>
           <li>
-            <strong>Étape 6&nbsp;: Configuration des paramètres de l'unité (nom, sigle, logo, etc.)</strong>
+            <strong>Étape 6&nbsp;: Configurer les paramètres de l'unité (nom, sigle, logo, etc.)</strong>
           </li>
           <li>
-            <strong>Étape 7&nbsp;: Création des sections</strong>
+            <strong>Étape 7&nbsp;: Créer les sections</strong>
           </li>
           <li>
-            <strong>Étape 8&nbsp;: Paramétrage du prix des cotisations</strong>
-          </li>
-          <li>
-            <strong>Étape 9&nbsp;: Rédaction des pages du site et inscription des membres</strong>
+            <strong>Étape 8&nbsp;: Rédiger les pages du site et inscrire les membres</strong>
           </li>
         </ul>
       </p>
