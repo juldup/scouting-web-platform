@@ -52,10 +52,15 @@ class HomePageController extends GenericPageController {
    * home page if a section is selected via the section menu
    */
   public function showPage() {
+    // Check if the site is being initialized
+    if (Parameter::get(Parameter::$BOOTSTRAPPING_STEP) != 'done') {
+      // Website bootstrapping process still in progress
+      return Redirect::route('bootstrapping');
+    }
+    // Redirect to a section's home page if a section is specified
     $routeParameters = Route::current()->parameters();
     if (array_key_exists("section_slug", $routeParameters)) {
       if ($this->section->id != 1) {
-        // Redirect to a section's home page
         return Redirect::route('section', array('section_slug' => $routeParameters['section_slug']));
       }
     }

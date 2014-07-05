@@ -280,6 +280,10 @@ Route::get('gestion/supervision', array("as" => "monitoring", "uses" => "Monitor
 Route::get('/email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));
 Route::post('/email-personnel/soumettre/{contact_type}/{member_id}', array("as" => "personal_email_submit", "uses" => "PersonalEmailController@submit"));
 
+// Website bootstrapping
+Route::get('/initialisation-du-site', array("as" => "bootstrapping", "uses" => "WebsiteBootstrappingController@showPage"));
+Route::any('/initialisation-du-site/etape-{step}', array("as" => "bootstrapping-step", "uses" => "WebsiteBootstrappingController@showStep"));
+
 // Home
 Route::get('/{section_slug?}', array("as" => "home", "uses" => "HomePageController@showPage"));
 Route::get('gestion/accueil/{section_slug?}', array("as" => "edit_home_page", "uses" => "HomePageController@showEdit"));

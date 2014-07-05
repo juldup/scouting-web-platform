@@ -1,5 +1,14 @@
 <?php
 
+// Get database data from file
+$databaseFilePath = __DIR__ . "/../storage/site_data/database/database-config.txt";
+if (file_exists($databaseFilePath)) {
+  $databaseConfigText = file_get_contents($databaseFilePath);
+  $databaseConfig = json_decode($databaseConfigText, true);
+} else {
+  return;
+}
+
 return array(
 
 	/*
@@ -26,7 +35,7 @@ return array(
 	|
 	*/
 
-	'default' => 'mysql',
+	'default' => array_key_exists('driver', $databaseConfig) ? $databaseConfig['driver'] : 'mysql',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -48,16 +57,16 @@ return array(
 
 		'sqlite' => array(
 			'driver'   => 'sqlite',
-			'database' => __DIR__.'/../database/production.sqlite',
+			'database' => __DIR__ . '/../storage/site_data/database/database.sqlite',
 			'prefix'   => '',
 		),
 
 		'mysql' => array(
 			'driver'    => 'mysql',
-			'host'      => 'localhost',
-			'database'  => 'scouts-laravel',
-			'username'  => 'scouts-laravel',
-			'password'  => 'scouts',
+			'host'      => array_key_exists('host', $databaseConfig) ? $databaseConfig['host'] : 'dummy',
+			'database'  => array_key_exists('database', $databaseConfig) ? $databaseConfig['database'] : 'dummy',
+			'username'  => array_key_exists('username', $databaseConfig) ? $databaseConfig['username'] : 'dummy',
+			'password'  => array_key_exists('password', $databaseConfig) ? $databaseConfig['password'] : 'dummy',
 			'charset'   => 'utf8',
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
@@ -65,10 +74,10 @@ return array(
 
 		'pgsql' => array(
 			'driver'   => 'pgsql',
-			'host'     => 'localhost',
-			'database' => 'database',
-			'username' => 'root',
-			'password' => '',
+			'host'      => array_key_exists('host', $databaseConfig) ? $databaseConfig['host'] : '',
+			'database'  => array_key_exists('database', $databaseConfig) ? $databaseConfig['database'] : '',
+			'username'  => array_key_exists('username', $databaseConfig) ? $databaseConfig['username'] : '',
+			'password'  => array_key_exists('password', $databaseConfig) ? $databaseConfig['password'] : '',
 			'charset'  => 'utf8',
 			'prefix'   => '',
 			'schema'   => 'public',
@@ -76,10 +85,10 @@ return array(
 
 		'sqlsrv' => array(
 			'driver'   => 'sqlsrv',
-			'host'     => 'localhost',
-			'database' => 'database',
-			'username' => 'root',
-			'password' => '',
+			'host'      => array_key_exists('host', $databaseConfig) ? $databaseConfig['host'] : '',
+			'database'  => array_key_exists('database', $databaseConfig) ? $databaseConfig['database'] : '',
+			'username'  => array_key_exists('username', $databaseConfig) ? $databaseConfig['username'] : '',
+			'password'  => array_key_exists('password', $databaseConfig) ? $databaseConfig['password'] : '',
 			'prefix'   => '',
 		),
 

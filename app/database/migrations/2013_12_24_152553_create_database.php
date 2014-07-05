@@ -543,30 +543,34 @@ class CreateDatabase extends Migration {
 	 * @return void
 	 */
 	public function down() {
-    Schema::drop('archived_leaders');
-    Schema::drop('banned_emails');
-    Schema::drop('accounting_locks');
-    Schema::drop('accounting_items');
-    Schema::drop('guest_book_entries');
-    Schema::drop('suggestions');
-    Schema::drop('pending_emails');
-    Schema::drop('email_attachments');
-    Schema::drop('emails');
-    Schema::drop('photos');
-    Schema::drop('photo_albums');
-    Schema::drop('health_cards');
-    Schema::drop('links');
-    Schema::drop('documents');
-    Schema::drop('news');
-    Schema::drop('calendar_items');
-    Schema::drop('privileges');
-    Schema::drop('members');
-    Schema::drop('password_recoveries');
-    Schema::drop('users');
-    Schema::drop('page_images');
-		Schema::drop('pages');
-    Schema::drop('sections');
-    Schema::drop('parameters');
+    self::dropAllTables();
 	}
+  
+  public static function dropAllTables() {
+    try { Schema::drop('archived_leaders'); } catch (Exception $e) {}
+    try { Schema::drop('banned_emails'); } catch (Exception $e) {}
+    try { Schema::drop('accounting_locks'); } catch (Exception $e) {}
+    try { Schema::drop('accounting_items'); } catch (Exception $e) {}
+    try { Schema::drop('guest_book_entries'); } catch (Exception $e) {}
+    try { Schema::drop('suggestions'); } catch (Exception $e) {}
+    try { Schema::drop('pending_emails'); } catch (Exception $e) {}
+    try { Schema::drop('email_attachments'); } catch (Exception $e) {}
+    try { Schema::drop('emails'); } catch (Exception $e) {}
+    try { Schema::drop('photos'); } catch (Exception $e) {}
+    try { Schema::drop('photo_albums'); } catch (Exception $e) {}
+    try { Schema::drop('health_cards'); } catch (Exception $e) {}
+    try { Schema::drop('links'); } catch (Exception $e) {}
+    try { Schema::drop('documents'); } catch (Exception $e) {}
+    try { Schema::drop('news'); } catch (Exception $e) {}
+    try { Schema::drop('calendar_items'); } catch (Exception $e) {}
+    try { Schema::drop('privileges'); } catch (Exception $e) {}
+    try { Schema::drop('members'); } catch (Exception $e) {}
+    try { Schema::drop('password_recoveries'); } catch (Exception $e) {}
+    try { Schema::drop('users'); } catch (Exception $e) {}
+    try { Schema::drop('page_images'); } catch (Exception $e) {}
+		try { Schema::drop('pages'); } catch (Exception $e) {}
+    try { Schema::drop('sections'); } catch (Exception $e) {}
+    try { Schema::drop('parameters'); } catch (Exception $e) {}
+  }
   
 }

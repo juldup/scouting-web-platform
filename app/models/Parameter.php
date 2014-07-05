@@ -67,6 +67,7 @@ class Parameter extends Eloquent {
   public static $LOGO_IMAGE = "Logo image";
   public static $LOGO_TWO_LINES = "Logo displayed on two lines";
   // Website metadata
+  public static $BOOTSTRAPPING_STEP = "Website bootstrapping step";
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
   public static $WEBSITE_META_KEYWORDS = "Website meta keywords";
   public static $ADDITIONAL_HEAD_HTML = "Additional head html";
