@@ -73,7 +73,7 @@ class CreateDatabase extends Migration {
       $table->increments('id');
       $table->string('name');
       $table->string('slug')->unique();
-      $table->string('position');
+      $table->integer('position');
       $table->string('section_type')->nullable();
       $table->string('section_type_number')->nullable();
       $table->string('color')->default("#000000");

@@ -472,6 +472,8 @@ class WebsiteBootstrappingController extends Controller {
           $section->de_la_section = $data['de_la_section'];
           $section->subgroup_name = $data['subgroup'];
           $section->save();
+          $section->position = $section->id;
+          $section->save();
         }
         // Success, go to next step
         return Redirect::to(URL::route('bootstrapping_step', array('step' => 8)));
@@ -502,7 +504,9 @@ class WebsiteBootstrappingController extends Controller {
         'recipient' => Parameter::get(Parameter::$WEBMASTER_EMAIL),
         'priority' => PendingEmail::$PERSONAL_EMAIL_PRIORITY,
     ));
-    $email->send();
+    try {
+      $email->send();
+    } catch (Exception $e) {}
     // Make view
     return View::make('pages.bootstrapping.step8', array(
         

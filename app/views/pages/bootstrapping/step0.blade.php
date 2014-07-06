@@ -27,7 +27,7 @@
     <div class="col-sm-12">
       <h1>Bienvenue sur votre nouveau site</h1>
       <p>
-        Bravo&nbsp;! Votre site est installé. Vous allez à présent pouvoir le configurer pour le rendre fonctionnel pour votre unité.
+        Bravo&nbsp;! Votre site est installé. Vous allez à présent pouvoir le configurer et le rendre fonctionnel pour votre unité.
       </p>
       <p>
         Voici les différentes étapes de ce processus&nbsp;:

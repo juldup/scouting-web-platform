@@ -1,4 +1,4 @@
-#### ***[Instructions en français ici](lisez-moi.md)***
+#### [Instructions en français ici](lisez-moi.md)
 
 &nbsp;
 
