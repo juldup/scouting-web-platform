@@ -104,15 +104,16 @@ class PersonalEmailController extends BaseController {
               ->withInput()
               ->with('error_message', $errorMessage);
     } else {
-      // Create e-mail
-      $bodyFull = "Voici un message de la part de $senderName envoyé depuis de site de l'unité " .
-              Parameter::get(Parameter::$UNIT_SHORT_NAME) . " :\n\n" . $body;
-      $bodyConfirm = "Votre message a bien été envoyé :\n\n" . $body;
       // Send e-mail to each recipient
       foreach ($this->getEmailAddressesFor($contact_type, $member_id) as $recipient) {
+        $emailContent = Helper::renderEmail('personalEmail', $recipient, array(
+            'message_body' => $body,
+            'header_text' => "Voici un message de la part de $senderName envoyé depuis de site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+        ));
         $email = PendingEmail::create(array(
             'subject' => $subject,
-            'raw_body' => $bodyFull,
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
             'sender_email' => $senderEmail,
             'sender_name' => $senderName,
             'recipient' => $recipient,
@@ -121,9 +122,14 @@ class PersonalEmailController extends BaseController {
         $email->send();
       }
       // Send confirmation e-mail to the sender
+      $emailContent = Helper::renderEmail('personalEmail', $senderEmail, array(
+          'message_body' => $body,
+          'header_text' => $this->getConfirmationHeader($contact_type, $member_id),
+      ));
       $confirmationEmail = PendingEmail::create(array(
             'subject' => $subject,
-            'raw_body' => $bodyConfirm,
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
             'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
             'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
             'recipient' => $senderEmail,
@@ -135,6 +141,33 @@ class PersonalEmailController extends BaseController {
               ->with('success_message', "Votre e-mail a bien été envoyé.");
     }
     
+  }
+  
+  /**
+   * Returns the header of the confirmation message
+   * 
+   * @param string $contact_type  The kind of contact (see the list at the top of this class)
+   * @param string $member_id  The id of the member to contact (or anything for the webmaster)
+   */
+  private function getConfirmationHeader($contact_type, $member_id) {
+    $middlePart = "";
+    if ($contact_type == self::$CONTACT_TYPE_WEBMASTER) {
+      $middlePart = " au webmaster";
+    } else {
+      // Get recipient member
+      if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
+        $member = ArchivedLeader::find($member_id);
+      } else {
+        $member = Member::find($member_id);
+      }
+      // Check that there is a personnal e-mail address to write to
+      if ($contact_type == self::$CONTACT_TYPE_PERSONAL || $contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
+        $middlePart = " à " . $member->first_name . " " . $member->last_name;
+      } elseif ($contact_type == self::$CONTACT_TYPE_PARENTS) {
+        $middlePart = " aux parents de " . $member->first_name . " " . $member->last_name;
+      }
+    }
+    return "Voici une copie du message que vous avez envoyé$middlePart depuis de site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME);
   }
   
   /**

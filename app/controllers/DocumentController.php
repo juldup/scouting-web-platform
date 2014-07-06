@@ -220,13 +220,13 @@ class DocumentController extends BaseController {
       // Send document by e-mail
       $document = Document::find($documentId);
       if (!$document) return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe pas.")->withInput();
-      $body = View::make('emails.sendDocument', array(
+      $emailContent = Helper::renderEmail('sendDocument', $emailAddress, array(
           'document' => $document,
-          'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
-      ))->render();
+      ));
       $email = PendingEmail::create(array(
           'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Document " . $document->title,
-          'raw_body' => $body,
+          'raw_body' => $emailContent['txt'],
+          'html_body' => $emailContent['html'],
           'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
           'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
           'recipient' => $emailAddress,

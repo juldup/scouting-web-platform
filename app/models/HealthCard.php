@@ -92,20 +92,20 @@ class HealthCard extends Eloquent {
     foreach ($healthCards as $healthCard) {
       $member = Member::find($healthCard->member_id);
       if ($member) {
-        $body = View::make('emails.healthCardReminder', array(
-            'health_card' => $healthCard,
-            'member' => $member,
-            'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
-        ))->render();
         // Send an e-mail for each parent (or to the member if they are a leader)
         $emailAddresses = $member->getParentsEmailAddresses();
         if ($member->is_leader) {
           $emailAddresses = array($member->email_member);
         }
         foreach ($emailAddresses as $emailAddress) {
-          $email = PendingEmail::create(array(
+          $emailContent = Helper::renderEmail('healthCardReminder', $emailAddress, array(
+              'health_card' => $healthCard,
+              'member' => $member,
+          ));
+          PendingEmail::create(array(
               'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] La fiche santé de " . $member['first_name'] . " " . $member['last_name'] . " va bientôt expirer",
-              'raw_body' => $body,
+              'raw_body' => $emailContent['txt'],
+              'html_body' => $emailContent['html'],
               'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
               'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
               'recipient' => $emailAddress,

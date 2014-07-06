@@ -56,25 +56,46 @@ class PendingEmail extends Eloquent {
   public function send() {
     // Create Swift message to encapsulate this e-mail
     $message = Swift_Message::newInstance();
+    // Set subject
     $message->setSubject($this->subject);
+    // Set sender
     if (Parameter::isVerifiedSender($this->sender_email)) {
       $message->setFrom($this->sender_email, $this->sender_name ? $this->sender_name : null);
     } else {
       $message->setFrom(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), $this->sender_name ? $this->sender_name : null);
       $message->setReplyTo($this->sender_email, $this->sender_name ? $this->sender_name : null);
     }
+    // Set recipient
     $message->setTo($this->recipient);
+    // Set body
     if ($this->section_email_id) {
+      // This is a section e-mail
       $email = Email::find($this->section_email_id);
+      // Add attachments
       $attachments = EmailAttachment::where('email_id', '=', $email->id)->get();
       foreach ($attachments as $attachment) {
         $message->attach(Swift_Attachment::newInstance(file_get_contents($attachment->getPath()), $attachment->filename));
       }
-      $message->setBody($email->body_html, 'text/html', 'utf-8');
-    } elseif ($this->html_body) {
-      $message->setBody($this->html_body, 'text/html', 'utf-8');
+      // Generate e-mail content
+      $emailContent = Helper::renderEmail('pureHtmlEmail', $this->recipient, array(
+          'html_body' => $email->body_html,
+      ));
+      $message->setBody($emailContent['html'], 'text/html', 'utf-8');
+      $message->addPart($emailContent['txt'], 'text/plain', 'utf-8');
     } else {
-      $message->setBody($this->raw_body);
+      // This is a regular e-mail, not a section e-mail
+      // Add html body
+      if ($this->html_body) {
+        $message->setBody($this->html_body, 'text/html', 'utf-8');
+      }
+      // Add raw body
+      if ($this->raw_body) {
+        if ($this->html_body) {
+          $message->addPart($this->raw_body, 'text/plain', 'utf-8');
+        } else {
+          $message->setBody($this->raw_body, 'text/plain', 'utf-8');
+        }
+      }
     }
     // Add attached document (if any and if it still exists)
     if ($this->attached_document_id) {
@@ -87,6 +108,7 @@ class PendingEmail extends Eloquent {
     try {
       $result = ScoutMailer::send($message);
     } catch (Exception $ex) {
+      Log::error($ex);
       $result = false;
     }
     // Update e-mail depending on result

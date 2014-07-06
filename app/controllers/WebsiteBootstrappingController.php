@@ -353,9 +353,14 @@ class WebsiteBootstrappingController extends Controller {
                   ->with('error_message', "Cette adresse e-mail n'est pas valide");
         }
         // Create e-mail
+        $emailContent = Helper::renderEmail('personalEmail', $email, array(
+            'message_body' => "Bravo ! Le service d'envoi d'e-mails a été configuré correctement.\n\nL'envoi des e-mails est tout à fait fonctionnel.",
+            'header_text' => "Cet e-mail a été envoyé depuis le site " . URL::to(''),
+        ));
         $pendingEmail = PendingEmail::create(array(
             'subject' => "E-mail de test " . date('Y-m-d H:i:s'),
-            'raw_body' => "Cet e-mail a été envoyé depuis le site " . URL::to('') . ".\n\nL'envoi des e-mails est fonctionnel.",
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
             'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
             'sender_name' => "Site scout",
             'recipient' => $email,
@@ -496,9 +501,13 @@ class WebsiteBootstrappingController extends Controller {
     // Mark the website as operational
     Parameter::set(Parameter::$BOOTSTRAPPING_DONE, true);
     // Send information by e-mail to the webmaster
+    $emailContent = Helper::renderEmail('pureHtmlEmail', Parameter::get(Parameter::$WEBMASTER_EMAIL), array(
+        'html_body' => View::make('pages.bootstrapping.site-information')->render(),
+    ));
     $email = PendingEmail::create(array(
         'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Informations sur la gestion du site",
-        'html_body' => View::make('pages.bootstrapping.site-information'),
+        'html_body' => $emailContent['html'],
+        'raw_body' => $emailContent['txt'],
         'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
         'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
         'recipient' => Parameter::get(Parameter::$WEBMASTER_EMAIL),

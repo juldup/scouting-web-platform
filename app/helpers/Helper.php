@@ -316,4 +316,20 @@ class Helper {
     return $integerPart . "," . ($decimalPart >= 10 ? "" : "0") . $decimalPart;
   }
   
+  /**
+   * Renders an e-mail and returns an array with two elements: 'html' and 'txt'
+   * for the html and the raw versions of the e-mail's body
+   * 
+   * @param type $templateName  The template's file name (should be in both views/emails/html and views/emails/txt} folders)
+   * @param type $recipientEmail  The e-mail address of the recipient to generate ban code
+   * @param array $parameters  The parameters that will be transfered to the templates
+   */
+  public static function renderEmail($templateName, $recipientEmail, $parameters) {
+    $parameters['ban_email_code'] = BannedEmail::getCodeForEmail($recipientEmail);
+    return array(
+        "html" => View::make("emails.html.$templateName", $parameters)->render(),
+        "txt" => View::make("emails.txt.$templateName", $parameters)->render(),
+    );
+  }
+  
 }

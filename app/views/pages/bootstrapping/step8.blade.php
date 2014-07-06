@@ -32,7 +32,7 @@
         de vous familiariser avec les outils. Ces informations ont également été envoyées par e-mail à l'adresse du webmaster.
       </p>
       <p>
-        <a class="btn btn-primary" target="_blank" href="{{ URL::to('home') }}">Aller vers le site</a>
+        <a class="btn btn-primary" target="_blank" href="{{ URL::route('home') }}">Aller vers le site</a>
       </p>
       @include('pages.bootstrapping.site-information')
     </div>

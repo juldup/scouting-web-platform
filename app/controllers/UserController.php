@@ -120,14 +120,14 @@ class UserController extends BaseController {
     // Validation passed, create user
     $user = User::createWith($username, $email, $password);
     // Send verification e-mail
-    $emailContent = View::make('emails.createUser', array(
-        'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+    $emailContent = Helper::renderEmail('createUser', $email, array(
+        'username' => $username,
         'verification_code' => $user->verification_code,
-        'ban_email_code' => BannedEmail::getCodeForEmail($email),
-    ))->render();
+    ));
     $pendingEmail = PendingEmail::create(array(
         'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Validez votre compte d'utilisateur",
-        'raw_body' => $emailContent,
+        'raw_body' => $emailContent['txt'],
+        'html_body' => $emailContent['html'],
         'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
         'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
         'recipient' => $email,
@@ -232,14 +232,13 @@ class UserController extends BaseController {
           // Data is valid, update user e-mail
           $this->user->changeEmail($email);
           // Send validation link by e-mail
-          $emailContent = View::make('emails.changeUserEmailAddress', array(
-              'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+          $emailContent = Helper::renderEmail('changeUserEmailAddress', $this->user->email, array(
               'verification_code' => $this->user->verification_code,
-              'ban_email_code' => BannedEmail::getCodeForEmail($this->user->email),
-          ))->render();
+          ));
           $pendingEmail = PendingEmail::create(array(
               'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Activer votre compte d'utilisateur",
-              'raw_body' => $emailContent,
+              'html_body' => $emailContent['html'],
+              'raw_body' => $emailContent['txt'],
               'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
               'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
               'recipient' => $this->user->email,
@@ -341,14 +340,14 @@ class UserController extends BaseController {
       return Helper::forbiddenNotMemberResponse();
     }
     // Send validation link by e-mail
-    $emailContent = View::make('emails.resendValitationLink', array(
-        'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME),
+    $emailContent = Helper::renderEmail('resendValidationLink', $this->user->email, array(
+        'username' => $this->user->username,
         'verification_code' => $this->user->verification_code,
-        'ban_email_code' => BannedEmail::getCodeForEmail($this->user->email),
-    ))->render();
+    ));
     $pendingEmail = PendingEmail::create(array(
         'subject' => "[Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME) . "] Activer votre compte d'utilisateur",
-        'raw_body' => $emailContent,
+        'raw_body' => $emailContent['txt'],
+        'html_body' => $emailContent['html'],
         'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
         'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
         'recipient' => $this->user->email,
@@ -379,13 +378,13 @@ class UserController extends BaseController {
           $passwordRecoveries[$user->username] = PasswordRecovery::createForUser($user);
         }
         // Send e-mail
-        $emailContent = View::make('emails.passwordRecovery', array(
+        $emailContent = Helper::renderEmail('passwordRecovery', $email, array(
             'recoveries' => $passwordRecoveries,
-            'website_name' => Parameter::get(Parameter::$UNIT_SHORT_NAME)
-        ))->render();
+        ));
         $pendingEmail = PendingEmail::create(array(
             'subject' => 'Récupérer votre mot de passe',
-            'raw_body' => $emailContent,
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
             'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
             'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
             'recipient' => $email,
