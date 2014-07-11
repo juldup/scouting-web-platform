@@ -21,7 +21,8 @@
 <head>
   <link rel="SHORTCUT ICON" href="{{ URL::to('') }}/favicon.ico">
   <meta charset="UTF-8">
-	<title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>
     {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}} - @yield('title')
   </title>
   {{ Less::to('styles') }}
