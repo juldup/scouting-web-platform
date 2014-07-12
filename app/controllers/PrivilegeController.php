@@ -90,6 +90,8 @@ class PrivilegeController extends BaseController {
     $privileges = Input::all();
     $error = false;
     // Update each of them in the database
+    $logChanges = array();
+    $logCount = 1;
     foreach ($privileges as $privilegeData=>$state) {
       try {
         // Get input data
@@ -109,13 +111,17 @@ class PrivilegeController extends BaseController {
           $state = $state == "true" ? true : false;
           // Update privilege state in database
           Privilege::set($operation, $scope, $leaderId, $state);
+          $logChanges["Changement " . $logCount++] = $leader->getFullName() . ($state ? " peut : " : " ne peut plus : ") . $operation;
         } else {
           $error = true;
         }
       } catch (Exception $e) {
+        Log::error($e);
         $error = true;
       }
     }
+    // Log
+    LogEntry::log("Privilèges", "Changement des privilèges", $logChanges);
     // Return response
     if ($error) return json_encode(array("result" => "Failure"));
     else return json_encode(array("result" => "Success"));

@@ -285,7 +285,9 @@ class Privilege extends Eloquent {
               'scope' => $privilege['section'] ? 'S' : 'U',
               'member_id' => $leader->id,
           ));
-        } catch (Exception $e) {}
+        } catch (Exception $e) {
+          Log::error($e);
+        }
       }
     }
   }

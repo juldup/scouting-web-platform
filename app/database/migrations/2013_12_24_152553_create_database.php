@@ -533,6 +533,18 @@ class CreateDatabase extends Migration {
       $table->index('year');
     });
     
+    // Logs
+    Schema::create('log_entries', function($table) {
+      $table->increments('id');
+      $table->integer('user_id')->unsigned()->nullable()->default(null);
+      $table->integer('section_id')->unsigned()->nullable()->default(null);
+      $table->string('category')->nullable()->default(null);
+      $table->string('action');
+      $table->text('data')->nullable()->default(null);
+      $table->boolean('is_error')->default(false);
+      $table->timestamps();
+    });
+    
 	}
   
 	/**
@@ -545,6 +557,7 @@ class CreateDatabase extends Migration {
 	}
   
   public static function dropAllTables() {
+    try { Schema::drop('log_entries'); } catch (Excetpion $e) {}
     try { Schema::drop('archived_leaders'); } catch (Exception $e) {}
     try { Schema::drop('banned_emails'); } catch (Exception $e) {}
     try { Schema::drop('accounting_locks'); } catch (Exception $e) {}

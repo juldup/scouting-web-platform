@@ -56,6 +56,9 @@ class PageImageController extends BaseController {
     ));
     // Save the image in the filesystem
     $file->move($image->getPathFolder(), $image->getPathFilename());
+    
+    // Log
+    LogEntry::log("Page", "Ajout d'une image à la librairie d'images d'une page", array("Image" => $image->original_name, "Page" => $page_id));
     // Return the response
     return json_encode(array(
         "result" => "OK",
@@ -79,6 +82,8 @@ class PageImageController extends BaseController {
     }
     // Delete the image object from the database
     $image->delete();
+    // Log
+    LogEntry::log("Page", "Suppression d'une image de la librairie d'images d'une page", array("Image" => $image->original_name, "Page" => $image->page_id));
     // Return response
     return json_encode(array(
         "result" => "OK",

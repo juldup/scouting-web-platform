@@ -62,11 +62,11 @@ class PersonalEmailController extends BaseController {
       }
       // Check that there is a parent's e-mail address to write to
       if (($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress())) {
-        App::abort(404, "Impossible de contacter les parents de " . $member->first_name . " " . $member->last_name . ". Leur adresse e-mail est inconnue.");
+        App::abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
       }
       // Check that there is a personnal e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->email_member) {
-        App::abort(404, "Impossible de contacter " . $member->first_name . " " . $member->last_name . ". Son adresse e-mail est inconnue.");
+        App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
     } else {
       $member = null;
@@ -136,6 +136,8 @@ class PersonalEmailController extends BaseController {
             'priority' => PendingEmail::$PERSONAL_SENDER_PRIORITY,
         ));
       $confirmationEmail->send();
+      // Log
+      LogEntry::log("E-mail personnel", "Envoi d'un e-mail personnel", array("De" => $senderEmail, "Type" => $contact_type, "Destinataire" => $member_id));
       // Redirect with success message
       return Redirect::route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
               ->with('success_message', "Votre e-mail a bien été envoyé.");
@@ -164,7 +166,7 @@ class PersonalEmailController extends BaseController {
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL || $contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
         $middlePart = " à " . $member->first_name . " " . $member->last_name;
       } elseif ($contact_type == self::$CONTACT_TYPE_PARENTS) {
-        $middlePart = " aux parents de " . $member->first_name . " " . $member->last_name;
+        $middlePart = " aux parents de " . $member->getFullName();
       }
     }
     return "Voici une copie du message que vous avez envoyé$middlePart depuis de site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME);
@@ -199,14 +201,14 @@ class PersonalEmailController extends BaseController {
       }
       // Check that there is a parent's e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress()) {
-        App::abort(404, "Impossible de contacter les parents de " . $member->first_name . " " . $member->last_name . ". Leur adresse e-mail est inconnue.");
+        App::abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
       }
       // Check that there is a personnal e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->email_member) {
-        App::abort(404, "Impossible de contacter " . $member->first_name . " " . $member->last_name . ". Son adresse e-mail est inconnue.");
+        App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER && !$member->email_member) {
-        App::abort(404, "Impossible de contacter " . $member->first_name . " " . $member->last_name . ". Son adresse e-mail est inconnue.");
+        App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
       if ($contact_type == self::$CONTACT_TYPE_PARENTS) {
         return $member->getParentsEmailAddresses();

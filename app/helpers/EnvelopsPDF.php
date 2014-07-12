@@ -103,7 +103,7 @@ class EnvelopsPDF {
         $nameList = "Parents de " . $nameList;
       } else {
         // Leader
-        $nameList = $member->first_name . " " . $member->last_name;
+        $nameList = $member->getFullName();
       }
       // Generate envelop
       $pdf->AddPage();

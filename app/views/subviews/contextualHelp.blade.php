@@ -538,5 +538,21 @@
   </p>
 @endif
 
+@if ($help == 'logs')
+  <p>
+    Cette page montre toutes les opérations qui ont été effectuées sur le site&nbsp;:
+    <ul>
+      <li><strong>#</strong>&nbsp;: Le numéro du log, par ordre décroissant</li>
+      <li><strong>Date</strong>&nbsp;: La date et l'heure à laquelle l'action s'est déroulée</li>
+      <li><strong>Utilisateur</strong>&nbsp;: L'utilisateur qui a commis l'action ("Visiteur" is aucun utilisateur n'était connecté)</li>
+      <li><strong>Catégorie</strong>&nbsp;: La catégorie de l'action</li>
+      <li><strong>Action</strong>&nbsp;: La description de l'action</li>
+      <li><strong>Section</strong>&nbsp;: La section qui était sélectionnée au moment de l'action</li>
+    </ul>
+  </p>
+  <p>Clique sur une action pour en voir les <strong>détails</strong>.</p>
+  <p>Utilise les <strong>filtres</strong> pour rechercher des actions précises.</p>
+@endif
+
 </div>
 </div>

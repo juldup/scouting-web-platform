@@ -163,6 +163,13 @@ class Member extends Eloquent {
   }
   
   /**
+   * Returns the first name and last name of the member, separated by a space
+   */
+  public function getFullName() {
+    return $this->first_name . " " . $this->last_name;
+  }
+  
+  /**
    * Returns a public phone number of this member
    */
   public function getPublicPhone() {
@@ -311,6 +318,7 @@ class Member extends Eloquent {
       if ($this->is_leader) return $this->uploadPictureFromInput();
       else return true;
     } catch (Exception $ex) {
+      Log::error($ex);
       return false;
     }
   }
@@ -338,6 +346,7 @@ class Member extends Eloquent {
       if ($member->is_leader) return $member->uploadPictureFromInput();
       else return $member;
     } catch (Exception $e) {
+      Log::error($e);
       return false;
     }
   }
@@ -544,6 +553,7 @@ class Member extends Eloquent {
           $this->save();
           return true;
         } catch (Exception $e) {
+          Log::error($e);
           // An error has occured while saving the picture
           return "La photo n'a pas pu être enregistrée.";
         }
@@ -570,6 +580,7 @@ class Member extends Eloquent {
     Member::where('validated', '=', true)
             ->where('year_in_section_last_update', '<', $currentYear)
             ->update(array('year_in_section_last_update' => $currentYear));
+    LogEntry::log("Inscription", "Augmentation automatique de l'année de tous les membres");
   }
   
 }

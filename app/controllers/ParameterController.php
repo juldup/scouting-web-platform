@@ -67,6 +67,7 @@ class ParameterController extends BaseController {
       Parameter::set(Parameter::$PRICE_3_CHILDREN, Helper::formatCashAmount(Input::get('price_3_children')));
       Parameter::set(Parameter::$PRICE_3_LEADERS, Helper::formatCashAmount(Input::get('price_3_leaders')));
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save active registration parameter
@@ -74,6 +75,7 @@ class ParameterController extends BaseController {
     try {
       Parameter::set(Parameter::$REGISTRATION_ACTIVE, $registration_active ? "true" : "false");
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the page parameters
@@ -84,6 +86,7 @@ class ParameterController extends BaseController {
       try {
         Parameter::set($pageData['parameter_name'], $pageInput ? "true" : "false");
       } catch (Exception $e) {
+        Log::error($e);
         $error = true;
       }
     }
@@ -99,6 +102,7 @@ class ParameterController extends BaseController {
     try {
       Parameter::set(Parameter::$DOCUMENT_CATEGORIES, $documentCategories);
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the unit parameters
@@ -107,6 +111,7 @@ class ParameterController extends BaseController {
       Parameter::set(Parameter::$UNIT_SHORT_NAME, Input::get('unit_short_name'));
       Parameter::set(Parameter::$UNIT_BANK_ACCOUNT, Input::get('unit_bank_account'));
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the logo
@@ -118,25 +123,29 @@ class ParameterController extends BaseController {
         Parameter::set(Parameter::$LOGO_IMAGE, $filename);
       }
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the logo on two lines option
     try {
-      Parameter::set(Parameter::$LOGO_TWO_LINES, Input::get('logo_two_lines'));
-    } catch (Exception $ex) {
+      Parameter::set(Parameter::$LOGO_TWO_LINES, Input::get('logo_two_lines') ? 1 : 0);
+    } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the search engine parameters
     try {
       Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, Input::get('website_meta_description'));
       Parameter::set(Parameter::$WEBSITE_META_KEYWORDS, Input::get('website_meta_keywords'));
-    } catch (Exception $ex) {
+    } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the advanced site parameters
     try {
       Parameter::set(Parameter::$ADDITIONAL_HEAD_HTML, Input::get('additional_head_html'));
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save the advanced e-mail parameters
@@ -149,6 +158,7 @@ class ParameterController extends BaseController {
       Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
       Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Save verified e-mail sender list
@@ -163,13 +173,16 @@ class ParameterController extends BaseController {
     try {
       Parameter::set(Parameter::$VERIFIED_EMAIL_SENDERS, $verifiedSenders);
     } catch (Exception $e) {
+      Log::error($e);
       $error = true;
     }
     // Return to parameter page
     if (!$error) {
+      LogEntry::log("Paramètres", "Modification des paramètres du site");
       return Redirect::route('edit_parameters')
               ->with('success_message', 'Les paramètres ont été enregistrés avec succès.');
     } else {
+      LogEntry::error("Paramètres", "Erreur lors de la modification des paramètres du site");
       return Redirect::route('edit_parameters')
               ->with('error_message', 'Une erreur est survenue. Tous les paramètres n\'ont peut-être pas été enregistrés.');
     }

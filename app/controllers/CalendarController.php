@@ -211,21 +211,25 @@ class CalendarController extends BaseController {
       $message = "La durée n'est pas valide. Elle doit être au minimum <strong>1</strong>.";
     } else {
       // Tests passed
+      $eventData = array(
+          'start_date' => $startDate,
+          'end_date' => $endDate,
+          'event' => $eventName,
+          'description' => $description,
+          'type' => $eventType,
+          'section_id' => $sectionId,
+      );
       if ($eventId) {
         // The event already exists, update it
         $calendarItem = CalendarItem::find($eventId);
         if ($calendarItem) {
-          $calendarItem->start_date = $startDate;
-          $calendarItem->end_date = $endDate;
-          $calendarItem->event = $eventName;
-          $calendarItem->description = $description;
-          $calendarItem->type = $eventType;
-          $calendarItem->section_id = $sectionId;
+          $calendarItem->update($eventData);
           try {
             $calendarItem->save();
             $success = true;
             $message = "L'événement a été mis à jour.";
           } catch (Illuminate\Database\QueryException $e) {
+            Log::error($e);
             $success = false;
             $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
           }
@@ -236,17 +240,11 @@ class CalendarController extends BaseController {
       } else {
         // Creating a new event
         try {
-          CalendarItem::create(array(
-              'start_date' => $startDate,
-              'end_date' => $endDate,
-              'event' => $eventName,
-              'description' => $description,
-              'type' => $eventType,
-              'section_id' => $sectionId,
-          ));
+          CalendarItem::create($eventData);
           $success = true;
           $message = "L'événement a été créé.";
         } catch (Illuminate\Database\QueryException $e) {
+          Log::error($e);
           $success = false;
           $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
         }
@@ -258,8 +256,13 @@ class CalendarController extends BaseController {
         "month" => $month,
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
-    if ($success) return $redirect;
-    else return $redirect->withInput();
+    if ($success) {
+      LogEntry::log("Calendrier", $eventId ? "Modification d'une événement du calendrier" : "Ajout d'un événement dans le calendrier", $eventData);
+      return $redirect;
+    } else {
+      LogEntry::error("Calendrier", "Erreur lors de l'enregistrement d'un événement du calendrier");
+      return $redirect->withInput();
+    }
   }
   
   /**
@@ -283,9 +286,12 @@ class CalendarController extends BaseController {
       $calendarItem->delete();
       $success = true;
       $message = "L'événement a été supprimé.";
+      LogEntry::log("Calendrier", "Suppression d'un événement du calendrier", array("Événement" => $calendarItem->event, "Date" => $calendarItem->start_date));
     } catch (Illuminate\Database\QueryException $e) {
+      Log::error($e);
       $success = false;
       $message = "Une erreur s'est produite. L'événement n'a pas été supprimé.";
+      LogEntry::error("Calendrier", "Erreur lors de la suppression d'un événement du calendrier");
     }
     // Redirect back to calendar edition page
     return Redirect::route('manage_calendar_month', array(

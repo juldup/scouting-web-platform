@@ -187,6 +187,11 @@ class LeaderCornerController extends BaseController {
                 'help-anchor' => 'supervision-taches',
                 'help' => 'monitoring',
             ),
+            "Logs" => array(
+                'url' => URL::route('logs'),
+                'help-anchor' => 'logs',
+                'help' => 'logs',
+            ),
         )
     );
     // Remove disabled operations

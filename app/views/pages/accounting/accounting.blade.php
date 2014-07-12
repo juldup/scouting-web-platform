@@ -27,7 +27,6 @@
 @stop
 
 @section('back_links')
-  
   <p>
     @if ($this_year < $year)
       <a href='{{ URL::route('accounting_by_year', array('section_slug' => $user->currentSection->slug, 'year' => $this_year)) }}'>

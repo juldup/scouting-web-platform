@@ -83,9 +83,7 @@
                   <strong>Pièces jointes :</strong>
                 @endif
                 @foreach ($email->getAttachments() as $attachment)
-                  <a href="{{ URL::route('download_attachment', array('attachment_id' => $attachment->id)) }}">
-                    {{{ $attachment->filename }}}
-                  </a>
+                  <a href="{{ URL::route('download_attachment', array('attachment_id' => $attachment->id)) }}">{{{ $attachment->filename }}}</a>
                   <span class="horiz-divider"></span>
                 @endforeach
               </p>

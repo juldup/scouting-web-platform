@@ -103,7 +103,7 @@ var newTransactionCounter = 0;
 var angularAccounting = angular.module('accounting', ['ui']);
 
 // The angular controller
-angularAccounting.controller('AccountingController', function ($scope) {
+angularAccounting.controller('AccountingController', function($scope) {
 	
   /**
    * Formats the given value using the currencyFormatter parameter

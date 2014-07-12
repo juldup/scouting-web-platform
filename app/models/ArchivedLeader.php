@@ -20,6 +20,8 @@
  * This Eloquent class represents the data of a former leader. Each leader of
  * a previous year has one instance of this class for each year they were a leader.
  * 
+ * Leaders are being archived on the first modification made after July 1st.
+ * 
  * Columns:
  *   - member_id:            The active member if the leader is still registered, null if the leader has left the unit
  *   - year:                 The year this member was a leader
@@ -53,6 +55,7 @@ class ArchivedLeader extends Eloquent {
             ->count();
     if (!$count) {
       self::archiveLeaders($lastYear);
+      LogEntry::log("Animateurs", "Archivage des animateurs", array("Année" => $lastYear));
     }
   }
   
@@ -92,7 +95,7 @@ class ArchivedLeader extends Eloquent {
   private static function getLastYear() {
     $month = date('m');
     $startYear = date('Y') - 1;
-    if ($month <= 8) $startYear--;
+    if ($month <= 6) $startYear--;
     return $startYear . "-" . ($startYear + 1);
   }
   

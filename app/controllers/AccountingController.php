@@ -219,6 +219,7 @@ class AccountingController extends BaseController {
             try {
               $accountingItem->save();
             } catch (Exception $e) {
+              Log::error($e);
               $error = $e->getMessage();
             }
           } else {
@@ -238,11 +239,12 @@ class AccountingController extends BaseController {
                   'receipt' => $transaction->receipt,
                   'position' => $position++,
               ));
+              // Record new transaction id for sending back to the page
+              $newTransactions[$transaction->id] = $accountingItem->id;
             } catch (Exception $e) {
+              Log::error($e);
               $error = $e->getMessage();
             }
-            // Record new transaction id for sending back to the page
-            $newTransactions[$transaction->id] = $accountingItem->id;
           }
         }
       }
@@ -251,12 +253,15 @@ class AccountingController extends BaseController {
         $transaction->delete();
       }
     } catch (Exception $e) {
+      Log::error($e);
       $error = $e->getMessage();
     }
     // Return response
     if ($error) {
+      LogEntry::error("Comptes", "Erreur lors de l'enregistrement des comptes", array('Erreur' => $error));
       return json_encode(array("result" => "Failure", "message" => "Une erreur est survenue lors de l'enregistrement des comptes."));
     } else {
+      LogEntry::log("Comptes", "Comptes modifiés");
       return json_encode(array("result" => "Success", "new_transactions" => $newTransactions));
     }
   }
@@ -351,6 +356,7 @@ class AccountingController extends BaseController {
       $split = explode("/", $humanDate);
       return $split[2] . "-" . $split[1] . "-" . $split[0];
     } catch (Exception $e) {
+      Log::error($e);
       return false;
     }
   }

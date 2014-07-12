@@ -234,6 +234,8 @@ class DocumentController extends BaseController {
           'attached_document_id' => $documentId,
       ));
       $email->send();
+      // Log
+      LogEntry::log("Documents", "Envoi d'un document par e-mail", array('Document' => $document->title, 'Destinataire' => $emailAddress));
       // Redirect to previous page with success message
       return Redirect::to(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$emailAddress</strong>.");
     } else {
@@ -268,6 +270,12 @@ class DocumentController extends BaseController {
       $success = false;
       $message = "Tu dois entrer un titre.";
     } else {
+      $docData = array(
+          'title' => $title,
+          'description' => $description,
+          'category' => $category,
+          'public' => $public,
+      );
       if ($docId) {
         // The document already exists and is being updated
         $document = Document::find($docId);
@@ -277,10 +285,7 @@ class DocumentController extends BaseController {
             return Helper::forbiddenResponse();
           }
           // Update the document
-          $document->title = $title;
-          $document->description = $description;
-          $document->public = $public;
-          $document->category = $category;
+          $document->update($docData);
           $document->setFileName($filename, $actualFileName);
           try {
             $document->save();
@@ -292,6 +297,7 @@ class DocumentController extends BaseController {
             $message = "Le document a été mis a jour.";
             $section_slug = $document->getSection()->slug;
           } catch (Exception $e) {
+            Log::error($e);
             $success = false;
             $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
           }
@@ -311,15 +317,12 @@ class DocumentController extends BaseController {
           $document = null;
           try {
             // Create document
-            $document = Document::create(array(
-                'doc_date' => date('Y-m-d'),
-                'title' => $title,
-                'description' => $description,
-                'category' => $category,
-                'public' => $public,
-                'filename' => 'document',
-                'section_id' => $this->section->id,
-            ));
+            $docDataFull = array_merge(array(
+              'doc_date' => date('Y-m-d'),
+              'filename' => 'document',
+              'section_id' => $this->section->id,
+            ), $docData);
+            $document = Document::create($docDataFull);
             // Move file
             $file->move($document->getPathFolder(), $document->getPathFilename());
             // Save filename
@@ -328,6 +331,7 @@ class DocumentController extends BaseController {
             $success = true;
             $message = "Le document a été créé.";
           } catch (Exception $e) {
+            Log::error($e);
             $success = false;
             $message = "Une erreur s'est produite. Le document n'a pas été enregistré.";
             // Try deleting created document if it exists
@@ -335,6 +339,7 @@ class DocumentController extends BaseController {
               try {
                 $document->delete();
               } catch (Exception $e) {
+                Log::error($e);
               }
             }
           }
@@ -345,8 +350,14 @@ class DocumentController extends BaseController {
     $response = Redirect::route('manage_documents', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
-    if ($success) return $response;
-    else return $response->withInput();
+    if ($success) {
+      LogEntry::log("Documents", $docId ? "Modification d'un document" : "Ajout d'un document",
+              array("Titre" => $title, "Description" => $description, "Categorie" => $category, "Public" => $public ? "Oui" : "Non"));
+      return $response;
+    } else {
+      LogEntry::error("Documents", "Erreur lors de la sauvegarde d'un document");
+      return $response->withInput();
+    }
   }
   
   /**
@@ -375,9 +386,12 @@ class DocumentController extends BaseController {
         $document->delete();
         $success = true;
         $message = "Le document a été supprimé.";
+        LogEntry::log("Documents", "Suppression d'un document", array("Document" => $document->title));
       } catch (Exception $e) {
+        Log::error($e);
         $success = false;
         $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
+        LogEntry::log("Documents", "Erreur lors de la suppression d'un document", array("Erreur" => $e->getMessage()));
       }
     }
     // Redirect to previous page with success or error message
@@ -405,9 +419,12 @@ class DocumentController extends BaseController {
       $document->save();
       $success = true;
       $message = "Le document a été archivé.";
+      LogEntry::log("Documents", "Archivage d'un document", array("Document" => $document->title));
     } catch (Exception $e) {
+      Log::error($e);
       $success = false;
       $message = "Une erreur s'est produite. Le document n'a pas été archivé.";
+      LogEntry::error("Documents", "Erreur lors de l'archivage d'un document", array("Erreur" => $e->getMessage()));
     }
     // Redirect with status message
     return Redirect::route('manage_documents', array(

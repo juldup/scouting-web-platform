@@ -116,6 +116,12 @@ class PendingEmail extends Eloquent {
       $this->sent = true;
     } else {
       $this->priority = $this->priority + 1;
+      if ($this->priority == PendingEmail::$MAX_PRIORITY) {
+        LogEntry::error("E-mails", "Erreur lors de l'envoi d'un e-mail", array(
+            "Sujet" => $this->subject,
+            "Destinataire" => $this->recipient,
+            "Expéditeur" => $this->sender_name ? $this->sender_name . " (" . $this->sender_email . ")" : $this->sender_email));
+      }
     }
     $this->save();
   }

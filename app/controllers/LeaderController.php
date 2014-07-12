@@ -257,14 +257,19 @@ class LeaderController extends BaseController {
         $message = "L'animateur a été ajouté au listing.";
       }
     }
+    // Get section
+    $section = Section::find(Input::get('section'));
     // Redirect with status message
-    if ($success)
-      return Redirect::to(URL::route('edit_leaders', array('section_slug' => $leader->getSection()->slug)))
-              ->with($success ? 'success_message' : 'error_message', $message);
-    else
+    if ($success) {
+      LogEntry::log("Animateurs", $memberId ? "Modification d'un animateur" : "Ajout d'un animateur",
+              array("Nom" => Input::get('first_name') . " " . Input::get('last_name'), "Section" => $section->name));
+      return Redirect::to(URL::route('edit_leaders', array('section_slug' => $section->slug)))
+              ->with('success_message', $message);
+    } else {
       return Redirect::to(URL::previous())
-            ->with($success ? 'success_message' : 'error_message', $message)
+            ->with('error_message', $message)
             ->withInput();
+    }
   }
   
   /**
@@ -279,13 +284,18 @@ class LeaderController extends BaseController {
       if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
         return Helper::forbiddenResponse();
       }
+      // Archive leaders if needed
+      ArchivedLeader::archiveLeadersIfNeeded();
       // Delete leader
       try {
         $member->delete();
+        LogEntry::log("Animateurs", "Suppression d'un animateur", array("Nom" => $member->getFullName()));
         return Redirect::route('edit_leaders')
-                ->with('success_message', $member->first_name . " " . $member->last_name
+                ->with('success_message', $member->getFullName()
                         . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::error("Animateurs", "Erreur lors de la suppression d'un animateur", array("Erreur" => $ex->getMessage()));
       }
     }
     return Redirect::route('edit_leaders')

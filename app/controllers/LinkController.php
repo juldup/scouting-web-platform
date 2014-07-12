@@ -96,12 +96,15 @@ class LinkController extends BaseController {
             $success = true;
             $message = "Le lien a été mis a jour.";
           } catch (Exception $e) {
+            Log::error($e);
             $success = false;
             $message = "Une erreur est survenue. Les changements n'ont pas été enregistrés.";
+            LogEntry::error("Liens", "Erreur lors de l'enregistrement d'un lien", array("Erreur" => $ex->getMessage()));
           }
         } else {
           $success = false;
           $message = "Une erreur est survenue. Les changements n'ont pas été enregistrés.";
+          LogEntry::error("Liens", "Erreur lors de l'enregistrement d'un lien", array("Erreur" => "Le lien $linkId n'existe pas"));
         }
       } else {
         // Creating new link
@@ -114,16 +117,22 @@ class LinkController extends BaseController {
           $success = true;
           $message = "Le lien a été créé.";
         } catch (Exception $ex) {
+          Log::error($ex);
           $success = false;
           $message = "Une erreur est survenue. Le lien n'a pas été créé.";
+          LogEntry::error("Liens", "Erreur lors de l'enregistrement d'un lien", array("Erreur" => $ex->getMessage()));
         }
       }
     }
     // Redirect with status message
     $redirect = Redirect::route('edit_links')
             ->with($success ? "success_message" : "error_message", $message);
-    if ($success) return $redirect;
-    else return $redirect->withInput();
+    if ($success) {
+      LogEntry::log("Liens", $linkId ? "Modification d'un lien" : "Ajout d'un nouveau lien", array("Title" => $title, "Description" => $description, "URL" => $url));
+      return $redirect;
+    } else {
+      return $redirect->withInput();
+    }
   }
   
   /**
@@ -137,11 +146,14 @@ class LinkController extends BaseController {
     // Delete link
     $link = Link::find($link_id);
     try {
-      if (!$link) throw new Exception();
+      if (!$link) throw new Exception("Link $link_id does not exist");
       $link->delete();
+      LogEntry::log("Liens", "Suppression d'un lien", array("Lien" => $link->title, "Description" => $link->description, "URL" => $link->url));
       return Redirect::route('edit_links')
               ->with('success_message', "Le lien vers " . $link->url . " a été supprimé");
     } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("Liens", "Erreur lors de la suppression d'un lien", array("Erreur" => $ex->getMessage()));
       return Redirect::route('edit_links')
               ->with('error_message', "Une erreur est survenue. Le lien n'a pas été supprimé.");
     }

@@ -70,7 +70,7 @@ class ScoutMailer {
     $twoMinutesAgo = $time - 120;
     $emails = PendingEmail::where('sent', '=', 0)
             ->where('last_retry', '<', $twoMinutesAgo)
-            ->where('priority', '<=', PendingEmail::$MAX_PRIORITY)
+            ->where('priority', '<', PendingEmail::$MAX_PRIORITY)
             ->orderBy('priority')
             ->orderBy('created_at')
             ->limit($limit)

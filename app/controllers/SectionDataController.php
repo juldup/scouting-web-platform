@@ -123,9 +123,12 @@ class SectionDataController extends BaseController {
         // Save and redirect with success message
         try {
           $section->save();
+          LogEntry::log("Sections", "Modification des données d'une section", array("Section" => $section->name));
           return Redirect::route('section_data')->with('success_message', "Les changements ont été enregistrés.");
         } catch (Exception $e) {
           // An error has occured while saving
+          Log::error($e);
+          LogEntry::error("Sections", "Erreur lors de la modification des données d'une section", array("Erreur" => $e->getMessage()));
           return Redirect::route('section_data')
                   ->withInput()
                   ->with('error_message', "Une erreur est survenue.");
@@ -157,10 +160,14 @@ class SectionDataController extends BaseController {
         // Set position equal to id to start with, the section will come last in position
         $section->position = $section->id;
         $section->save();
+        // Log
+        LogEntry::log("Sections", "Création d'une nouvelle section", array("Section" => $name));
         // Redirect with success message
         return Redirect::route('section_data')->with('success_message', "La section a été créée avec succès. N'oublie pas de mettre à jour l'ordre des sections.");
       } catch (Exception $ex) {
         // An error has occured, redirect with error message
+        Log::error($ex);
+        LogEntry::error("Sections", "Erreur lors de la création d'une nouvelle section", array("Erreur" => $ex->getMessage()));
         return Redirect::route('section_data')
                   ->withInput()
                   ->with('error_message', "Une erreur est survenue. La section n'a pas pu être créée.");
@@ -213,9 +220,13 @@ class SectionDataController extends BaseController {
       try {
         $section->save();
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::error("Sections", "Erreur lors du réordonnancement des sections", array("Erreur" => $ex->getMessage()));
         return $errorResponse;
       }
     }
+    // Log
+    LogEntry::log("Sections", "Réordonnancement des sections");
     // Return success message
     return json_encode(array('result' => "Success"));
   }
@@ -259,9 +270,12 @@ class SectionDataController extends BaseController {
     // Delete section
     try {
       $section->delete();
+      LogEntry::log("Sections", "Suppression d'une section", array("Section" => $section->name));
       return Redirect::route('section_data')
               ->with('success_message', "La section " . $section->name . " a été supprimée avec succès.");
     } catch (Exception $e) {
+      Log::error($e);
+      LogEntry::error("Sections", "Erreur lors de la suppression d'une section", array("Erreur" => $e->getMessage()));
       return Redirect::route('section_data')
               ->withInput()
               ->with('error_message', "La section " . $section->name . " n'a été supprimée.");

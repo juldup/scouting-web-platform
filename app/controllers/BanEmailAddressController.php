@@ -60,6 +60,8 @@ class BanEmailAddressController extends BaseController {
     // Mark e-mail address as banned
     $banned->banned = true;
     $banned->save();
+    // Save log
+    LogEntry::log("Ban", "Plus aucun e-mail ne sera envoyé à une adresse e-mail", array('Adresse e-mail' => $banned->email));
     // Return view
     return View::make('pages.banEmailAddress.confirmBan', array(
         'email' => $banned->email,

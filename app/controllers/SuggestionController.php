@@ -56,6 +56,8 @@ class SuggestionController extends BaseController {
         'body' => $body,
         'user_id' => $this->user->isConnected() ? $this->user->id : null,
     ));
+    // Log
+    LogEntry::log("Suggestions", "Ajout d'une suggestion", array("Suggestion" => $body));
     // Redirect back with success message
     return Redirect::route('suggestions')
             ->with('success_message', "Votre suggestion a été enregistrée.");
@@ -91,9 +93,12 @@ class SuggestionController extends BaseController {
     if ($suggestion) {
       try {
         $suggestion->delete();
+        LogEntry::log("Suggestions", "Suppression d'une suggestion", array("Suggestion" => $suggestion->body));
         return Redirect::route('edit_suggestions')
                 ->with('success_message', "La suggestion a été supprimée.");
       } catch (Exception $e) {
+        Log::error($e);
+        LogEntry::error("Suggestions", "Erreur lors de la suppression d'une suggestion", array("Erreur" => $e->getMessage()));
       }
     }
     return Redirect::route('edit_suggestions')
@@ -116,9 +121,12 @@ class SuggestionController extends BaseController {
         $response = Input::get("response_$suggestion_id");
         $suggestion->response = $response;
         $suggestion->save();
+        LogEntry::log("Suggestions", "Réponse à une suggestion", array("Suggestion" => $suggestion->body, "Réponse" => $suggestion->response));
         return Redirect::route('edit_suggestions')
               ->with('success_message', "La réponse a été enregistrée.");
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::error("Suggestions", "Erreur lors de la réponse à une suggestion", array("Erreur" => $ex->getMessage()));
       }
     }
     return Redirect::route('edit_suggestions')

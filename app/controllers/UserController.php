@@ -145,6 +145,7 @@ class UserController extends BaseController {
     // Redirect to previous page
     $referrer = Session::get('login_referrer', URL::route('home'));
     Session::forget('login_referrer');
+    LogEntry::log("Utilisateur", "Nouvel utilisateur", array("Nom d'utilisateur" => $username, "E-mail" => $email));
     return Redirect::to($referrer);
   }
   
@@ -182,6 +183,7 @@ class UserController extends BaseController {
         // Remove the user from the system
         $user->delete();
         $status = "canceled";
+        LogEntry::log("Utilisateur", "Invalidation d'un compte d'utilisateur", array("Nom d'utilisateur" => $user->username, "E-mail" => $user->email));
       }
     } else {
       // The verification code is invalid
@@ -246,6 +248,7 @@ class UserController extends BaseController {
           ));
           $pendingEmail->send();
           // Redirect with success message
+          LogEntry::log("Utilisateur", "Changement d'adresse e-mail", array("Utilisateur" => $this->user->username, "E-mail" => $email));
           return Redirect::route('edit_user')
                   ->with('success_message', 'Votre adresse e-mail a été modifiée avec succès. Un lien de validation vous a été envoyé par e-mail.');
         } elseif ($action == 'password') {
@@ -267,6 +270,7 @@ class UserController extends BaseController {
           // Input data is valid, update password
           $this->user->changePassword($password);
           // Redirect with success message
+          LogEntry::log("Utilisateur", "Changement de mot de passe", array("Utilisateur" => $this->user->username));
           return Redirect::route('edit_user')
                   ->with('success_message', 'Votre mot de passe a été modifié avec succès.');
         } elseif ($action == 'section') {
@@ -284,6 +288,7 @@ class UserController extends BaseController {
           // Update user default section
           $this->user->changeDefaultSection($defaultSection);
           // Redirect with success message
+          LogEntry::log("Utilisateur", "Changement de section par défaut", array("Utilisateur" => $this->user->username, "Section" => Section::find($defaultSection)->name));
           return Redirect::route('edit_user')
                   ->with('success_message', 'Votre section par défaut a été modifiée avec succès.');
         }
@@ -392,10 +397,12 @@ class UserController extends BaseController {
         ));
         $pendingEmail->send();
         // Redirect with success message
+        LogEntry::log("Utilisateur", "Envoi d'une e-mail pour récupérer son mot de passe", array("Adresse e-mail" => $email));
         return Redirect::to(URL::current())
                 ->with('success_message', "Un e-mail a été envoyé à $email.");
       } else {
         // No user with this e-mail address, redirect with error message
+        LogEntry::log("Utilisateur", "Adresse inconnue pour la récupération de mot de passe", array("Adresse e-mail" => $email));
         return Redirect::to(URL::current())->with('error_message', "Aucun utilisateur n'est enregistré avec l'adresse $email.");
       }
     }
@@ -442,6 +449,7 @@ class UserController extends BaseController {
             // Remove password recovery entry
             $passwordRecovery->delete();
             // Redirect with 'done' status
+            LogEntry::log("Utilisateur", "Changement de mot de passe via e-mail", array("Utilisateur" => $user->username, "E-mail" => $user->email));
             return Redirect::route('change_password', array('code' => 'done'));
           }
         } else {
@@ -491,9 +499,12 @@ class UserController extends BaseController {
       try {
         $user->delete();
         // Redirect with success message
+        LogEntry::log("Utilisateur", "Suppression d'un utilisateur", array("Utilisateur" => $user->username, "E-mail" => $user->email));
         return Redirect::route('user_list')
                 ->with("success_message", "L'utilisateur " . $user->username . " a été supprimé du site.");
       } catch (Exception $e) {
+        Log::error($e);
+        LogEntry::error("Utilisateur", "Erreur lors de la suppression d'un utilisateur", array("Erreur" => $e->getMessage()));
       }
     }
     // User not found or another error, redirect with error message

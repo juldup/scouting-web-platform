@@ -113,10 +113,13 @@ class RegistrationController extends GenericPageController {
     try {
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
       $member->save();
-      return Redirect::route('registration')->with('success_message', "La réinscription de " . $member->first_name . " " . $member->last_name . " a été enregistrée.");
+      LogEntry::log("Inscription", "Réinscription d'un membre", array("Membre" => $member->getFullName()));
+      return Redirect::route('registration')->with('success_message', "La réinscription de " . $member->getFullName() . " a été enregistrée.");
     } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("Inscription", "Erreur lors de la réinscription d'un membre", array("Erreur" => $ex->getMessage()));
       return Redirect::route('registration')->with('error_message', "Une erreur est survenue. La réinscription de "
-              . $member->first_name . " " . $member->last_name . " n'a pas été enregistrée. Contactez l'animateur d'unité. $ex");
+              . $member->getFullName() . " n'a pas été enregistrée. Contactez l'animateur d'unité. $ex");
     }
   }
   
@@ -211,13 +214,15 @@ class RegistrationController extends GenericPageController {
       }
     }
     // Redirect with status message
-    if ($success)
+    if ($success) {
+      LogEntry::log("Inscription", "Nouvelle demande d'inscription", array("Nom" => Input::get('first_name') . " " . Input::get('last_name')));
       return Redirect::to(URL::route('registration_form'))
             ->with('success_message', $message);
-    else
+    } else {
       return Redirect::to(URL::route('registration_form'))
             ->with('error_message', $message)
             ->withInput();
+    }
   }
   
   /**
@@ -268,9 +273,12 @@ class RegistrationController extends GenericPageController {
       // Remove pending registration
       try {
         $member->delete();
+        LogEntry::log("Inscription", "Suppression d'une demande d'inscription", array("Nom" => $member->getFullName()));
         return Redirect::route('manage_registration')
-                ->with("success_message", "La demande d'inscription de " . $member->first_name . " " . $member->last_name . " a été supprimée.");
+                ->with("success_message", "La demande d'inscription de " . $member->getFullName() . " a été supprimée.");
       } catch (Exception $ex) {
+        LogEntry::error("Inscription", "Erreur lors de la suppression d'une demande d'inscription", array("Erreur" => $ex->getMessage()));
+        Log::error($ex);
       }
     }
     // An error has occured
@@ -298,12 +306,13 @@ class RegistrationController extends GenericPageController {
       // Create result message
       if ($result === true) {
         $success = true;
-        $name = $member->first_name . " " . $member->last_name;
+        $name = $member->getFullName();
         if ($member->is_leader) {
           $message = "$name est à présent inscrit en tant qu'animateur.";
         } else {
           $message = "$name est à présent inscrit.";
         }
+        LogEntry::log("Inscription", "Validation d'une demande d'inscription", array("Membre" => $member->getFullName()));
       } else {
         $success = false;
         $message = $result ? $result : "Une erreur est survenue. Le nouveau membre n'a pas été inscrit.";
@@ -365,8 +374,11 @@ class RegistrationController extends GenericPageController {
     try {
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
       $member->save();
+      LogEntry::log("Inscription", "Réinscription d'un membre", array("Membre" => $member->getFullName()));
       return json_encode(array('result' => 'Success'));
     } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("Inscription", "Erreur lors de la réinscription d'un membre", array("Erreur" => $ex->getMessage()));
       return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
     }
   }
@@ -387,8 +399,11 @@ class RegistrationController extends GenericPageController {
     try {
       $member->last_reregistration = null;
       $member->save();
+      LogEntry::log("Inscription", "Annulation de la réinscription d'un membre", array("Membre" => $member->getFullName()));
       return json_encode(array('result' => 'Success'));
     } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("Inscription", "Erreur lors de l'annulation de la réinscription d'un membre", array("Erreur" => $ex->getMessage()));
       return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
     }
   }
@@ -408,8 +423,11 @@ class RegistrationController extends GenericPageController {
     // Delete member
     try {
       $member->delete();
+      LogEntry::log("Inscription", "Suppression d'un membre", array("Membre" => $member->getFullName()));
       return json_encode(array('result' => 'Success'));
     } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("Inscription", "Erreur lors de la suppression d'un membre", array("Erreur" => $ex->getMessage()));
       return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
     }
   }
@@ -466,8 +484,11 @@ class RegistrationController extends GenericPageController {
         foreach ($members as $member) {
           $memberYears[$member->id] = $member->year_in_section;
         }
+        LogEntry::log("Inscription", "Augmentation de l'année des membres de la section");
         return json_encode(array("result" => "Success", 'years' => $memberYears));
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::error("Inscription", "Erreur lors du changement de l'année dans la section", array("Erreur" => $ex->getMessage()));
         return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
       }
     } else {
@@ -488,8 +509,11 @@ class RegistrationController extends GenericPageController {
       try {
         $member->year_in_section = $yearInSection;
         $member->save();
+        LogEntry::log("Inscription", "Changement de l'année dans la section", array("Membre" => $member->getFullName(), "Année" => $yearInSection));
         return json_encode(array('result' => 'Success'));
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::error("Inscription", "Erreur lors du changement de l'année dans la section", array("Erreur" => $ex->getMessage()));
         return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
       }
     }
@@ -542,6 +566,7 @@ class RegistrationController extends GenericPageController {
     // Transfer each member and reset their year in the section and their subgroup name
     $errorList = "";
     $success = false;
+    $transferedMembers = "";
     foreach ($memberIdsToTransfer as $memberId=>$val) {
       $member = Member::find($memberId);
       if ($member && $member->section_id == $sectionFrom->id) {
@@ -551,21 +576,29 @@ class RegistrationController extends GenericPageController {
           $member->subgroup = null;
           $member->save();
           $success = true;
+          $transferedMembers .= ($transferedMembers ? ", " : "") . $member->getFullName();
         } catch (Exception $ex) {
-          $errorList .= ($errorList ? ", " : "") . $member->first_name . " " . $member->last_name;
+          Log::error($ex);
+          $errorList .= ($errorList ? ", " : "") . $member->getFullName();
         }
       } else {
-        $errorList .= ($errorList ? ", " : "") . $member->first_name . " " . $member->last_name;
+        $errorList .= ($errorList ? ", " : "") . $member->getFullName();
       }
     }
     // Redirect with status message
     if (!$success) {
+      LogEntry::error("Inscription", "Erreur lors du transfert de membres entre des sections",
+              array("Depuis" => $sectionFrom->name, "Vers" => $sectionTo->name, "Erreurs" => $errorList));
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('error_message', "Une erreur s'est produite. Les changements n'ont pas été enregistrés.");
     } elseif ($errorList) {
+      LogEntry::error("Inscription", "Erreur lors du transfert de membres entre des sections",
+              array("Depuis" => $sectionFrom->name, "Vers" => $sectionTo->name, "Membres transférés" => $transferedMembers, "Erreurs" => $errorList));
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('error_message', "Le transfert a été opéré, sauf pour : $errorList");
     } else {
+      LogEntry::log("Inscription", "Transfert de membres entre des sections",
+              array("Depuis" => $sectionFrom->name, "Vers" => $sectionTo->name, "Membres transférés" => $transferedMembers));
       return Redirect::route('manage_member_section', array('section_slug' => $section_slug))
               ->with('success_message', "Le transfert a été opéré avec succès.");
     }
@@ -614,6 +647,7 @@ class RegistrationController extends GenericPageController {
     // Apply changes
     $error = false;
     $message = "";
+    $members = "";
     foreach ($changes as $memberId => $state) {
       // Get member and payment status
       $memberId = substr($memberId, strlen('member-'));
@@ -624,7 +658,9 @@ class RegistrationController extends GenericPageController {
         try {
           $member->subscription_paid = $state;
           $member->save();
+          $members .= ($members ? ", " : "") . $member->getFullName();
         } catch (Exception $e) {
+          Log::error($e);
           $error = true;
           $message .= "$e ";
         }
@@ -633,6 +669,7 @@ class RegistrationController extends GenericPageController {
         $message .= "Member $memberId does not exist. ";
       }
     }
+    LogEntry::log("Inscription", "Mise à jour du statut de paiement de cotisation", array("Membres" => $members));
     // Redirect with status message
     return json_encode(array('result' => $error ? "Failure" : "Success", 'message' => $message));
   }

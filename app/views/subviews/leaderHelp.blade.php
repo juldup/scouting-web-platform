@@ -226,4 +226,11 @@
   </p>
 @endif
 
+@if ($help == 'logs')
+  <legend>Logs @yield('back_to_top')</legend>
+  <p>
+    Cette page montre toutes les opérations qui ont été effectuées sur le site.
+  </p>
+@endif
+
 </div>

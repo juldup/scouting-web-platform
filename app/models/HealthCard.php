@@ -81,8 +81,15 @@ class HealthCard extends Eloquent {
    * and deletes expired health cards.
    */
   public static function autoReminderAndDelete() {
-    // Delete too old health cards
     $oneYearAgo = date('Y-m-d', strtotime("-1 year"));
+    // Log deleted health cards
+    $deletedHealthCards = HealthCard::where('signature_date', '<=', $oneYearAgo)->get();
+    $deletedNames = "";
+    foreach ($deletedHealthCards as $healthCard) {
+      $deletedNames .= ($deletedNames ? ", " : "") . $healthCard->getMember()->getFullName();
+    }
+    LogEntry::log("Fiche santé", "Suppression automatique de fiches santé", array("Membres" => $deletedNames));
+    // Delete too old health cards
     HealthCard::where('signature_date', '<=', $oneYearAgo)->delete();
     // Create reminder e-mails
     $oneYearMinusOneWeekAgo = date('Y-m-d', strtotime("-1 year") + 8 * 24 * 3600);
@@ -97,7 +104,9 @@ class HealthCard extends Eloquent {
         if ($member->is_leader) {
           $emailAddresses = array($member->email_member);
         }
+        $recipients = "";
         foreach ($emailAddresses as $emailAddress) {
+          $recipients .= ($recipients ? ", " : "") . $emailAddress;
           $emailContent = Helper::renderEmail('healthCardReminder', $emailAddress, array(
               'health_card' => $healthCard,
               'member' => $member,
@@ -115,6 +124,7 @@ class HealthCard extends Eloquent {
         // Mark reminder as sent
         $healthCard->reminder_sent = true;
         $healthCard->save();
+        LogEntry::log("Fiche santé", "Envoi d'une e-mail de rappel", array("Membre" => $member->getFullName(), "Destinataires" => $recipients));
       }
     }
     // Send e-mails

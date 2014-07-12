@@ -152,8 +152,10 @@ class NewsController extends BaseController {
             $message = "La nouvelle a été mise à jour.";
             $section_slug = $news->getSection()->slug;
           } catch (Illuminate\Database\QueryException $e) {
+            Log::error($e);
             $success = false;
             $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+            LogEntry::error("Nouvelles", "Erreur lors de l'enregistrement d'une nouvelle", array("Erreur" => $e->getMessage()));
           }
         } else {
           $success = false;
@@ -172,8 +174,10 @@ class NewsController extends BaseController {
           $success = true;
           $message = "La nouvelle a été créée.";
         } catch (Illuminate\Database\QueryException $e) {
+          Log::error($e);
           $success = false;
           $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
+          LogEntry::error("Nouvelles", "Erreur lors de l'enregistrement d'une nouvelle", array("Erreur" => $e->getMessage()));
         }
       }
     }
@@ -181,8 +185,13 @@ class NewsController extends BaseController {
     $response = Redirect::route('manage_news', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
-    if ($success) return $response;
-    else return $response->withInput();
+    if ($success) {
+      LogEntry::log("Nouvelles", $newsId ? "Modification d'une nouvelle" : "Ajout d'une nouvelle",
+              array("Titre" => $title, "Contenu" => $body, "Date" => Helper::dateToHuman($news->news_date)));
+      return $response;
+    } else {
+      return $response->withInput();
+    }
   }
   
   /**
@@ -192,7 +201,7 @@ class NewsController extends BaseController {
     // Get the news
     $news = News::find($news_id);
     if (!$news) {
-     App::abort(404, "Cette nouvelle n'existe pas.");
+      App::abort(404, "Cette nouvelle n'existe pas.");
     }
     // Make sure the current user can delete this piece of news
     if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
@@ -203,9 +212,13 @@ class NewsController extends BaseController {
       $news->delete();
       $success = true;
       $message = "La nouvelle a été supprimée.";
+      LogEntry::log("Nouvelles", "Suppression d'une nouvelle",
+              array("Titre" => $news->title, "Contenu" => $news->body, "Date" => Helper::dateToHuman($news->news_date)));
     } catch (Illuminate\Database\QueryException $e) {
+      Log::error($e);
       $success = false;
       $message = "Une erreur s'est produite. La nouvelle n'a pas été supprimée.";
+      LogEntry::error("Nouvelles", "Erreur lors de la suppression d'une nouvelle", array("Erreur" => $e->getMessage()));
     }
     // Redirect with status message
     return Redirect::route('manage_news', array(

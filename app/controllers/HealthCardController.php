@@ -155,12 +155,14 @@ class HealthCardController extends BaseController {
     if (!$errorMessage) {
       // Get health card
       $healthCard = HealthCard::where('member_id', '=', $memberId)->first();
+      $newHealthCard = false;
       if ($healthCard) {
         // Update the exsting health card
         $healthCard->update($inputAll);
       } else {
         // Create health card
         $healthCard = HealthCard::create($inputAll);
+        $newHealthCard = true;
       }
       // Save signatory data
       $healthCard->reminder_sent = false;
@@ -169,6 +171,12 @@ class HealthCardController extends BaseController {
       $healthCard->signature_date = date('Y-m-d');
       // Save the health card
       $healthCard->save();
+    }
+    // Log
+    if (!$errorMessage) {
+      $member = Member::find($memberId);
+      LogEntry::log("Fiche santé", $newHealthCard ? "Création d'une fiche santé" : "Mise à jour d'une fiche santé",
+              array("Membre" => $member->getFullName()));
     }
     // Redirect with status message
     if ($errorMessage || $warningMessage) {
@@ -199,6 +207,8 @@ class HealthCardController extends BaseController {
     }
     // Get health card
     $healthCard = HealthCard::where('member_id', '=', $member_id)->first();
+    // Log
+    LogEntry::log("Fiche santé", "Télachargement d'une fiche santé", array("Membre" => $member->getFullName()));
     // Output the health card in PDF format
     HealthCardPDF::healthCardToPDF($healthCard);
   }

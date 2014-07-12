@@ -218,9 +218,11 @@ class PhotoController extends BaseController {
           "Content-Disposition" => 'attachment; filename="photos.zip"',
       ));
       unlink($filename);
+      LogEntry::log("Photos", "Téléchargement d'un album", array("Album" => PhotoAlbum::find($album_id)->name));
       return $response;
     } else {
       // An error has occured
+      LogEntry::error("Photos", "Erreur lors du téléchargement d'un album", "Le fichier n'a pas pu être créé");
       throw App::abort(500, "Une erreur est survenue.");
     }
   }
@@ -261,6 +263,7 @@ class PhotoController extends BaseController {
       return Helper::forbiddenResponse();
     }
     // Create album
+    $album = null;
     try {
       $album = PhotoAlbum::create(array(
           'section_id' => $this->section->id,
@@ -269,9 +272,12 @@ class PhotoController extends BaseController {
       ));
       $album->position = $album->id;
       $album->save();
+      LogEntry::log("Photos", "Création d'un nouvel album", array("Album" => $album->name));
     } catch (Exception $ex) {
+      Log::error($ex);
       // The album could not be created
       if ($album) $album.delete();
+      LogEntry::error("Photos", "Erreur lors de la création d'un album", array("Erreur" => $ex->getMessage()));
       return Redirect::route('edit_photos')
               ->with('error_message', "Une erreur est survenue. L'album n'a pas pu être créé.");
     }
@@ -332,9 +338,12 @@ class PhotoController extends BaseController {
       try {
         $album->save();
       } catch (Exception $ex) {
+        Log::error($ex);
         return $errorResponse;
       }
     }
+    // Log
+    LogEntry::log("Photos", "Réordonnancement des albums");
     // Return success response
     return json_encode(array('result' => "Success"));
   }
@@ -359,8 +368,11 @@ class PhotoController extends BaseController {
     // Delete the album
     try {
       $album->delete();
+      LogEntry::log("Photos", "Suppression d'un album", array("Album" => $album->name));
     } catch (Exception $ex) {
       // Album could not be deleted, redirect with error message
+      Log::error($ex);
+      LogEntry::error("Photos", "Erreur lors de la suppression d'un album", array("Erreur" => $ex->getMessage()));
       return Redirect::route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
               ->with('error_message', "Une erreur est survenue. L'album n'as pas été supprimé.");
     }
@@ -385,8 +397,11 @@ class PhotoController extends BaseController {
     try {
       $album->archived = true;
       $album->save();
+      LogEntry::log("Photos", "Archivage d'un album", array("Album" => $album->name));
     } catch (Exception $ex) {
       // An error has occured
+      Log::error($ex);
+      LogEntry::error("Photos", "Erreur lors de l'archivage d'un album", array("Erreur" => $ex->getMessage()));
       return Redirect::route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
               ->with('error_message', "Une erreur est survenue. L'album n'as pas été archivé.");
     }
@@ -414,8 +429,11 @@ class PhotoController extends BaseController {
     try {
       $album->name = $newName;
       $album->save();
+      LogEntry::log("Photos", "Renommage d'un album", array("Album" => $album->name));
     } catch (Exception $ex) {
       // Error
+      Log::error($ex);
+      LogEntry::error("Photos", "Erreur lors du renommage d'un album", array("Erreur" => $ex->getMessage()));
       return $errorResponse;
     }
     // Success
@@ -500,10 +518,12 @@ class PhotoController extends BaseController {
       try {
         $photo->save();
       } catch (Exception $ex) {
+        Log::error($ex);
         return $errorResponse;
       }
     }
     // Everything went well
+    LogEntry::log("Photos", "Réordonnancement des photos", array("Album" => $album->name));
     return json_encode(array('result' => "Success"));
   }
   
@@ -525,31 +545,39 @@ class PhotoController extends BaseController {
         try {
           $album->updatePhotoCount();
         } catch (Exception $ex) {
+          Log::error($ex);
           // Never mind
         }
         // Remove actual files
         try {
           unlink($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL));
         } catch (Exception $e) {
+          Log::error($e);
           // The photo was not removed from the filesystem, do nothing special
         }
         try {
           unlink($photo->getPhotoPath(Photo::$FORMAT_PREVIEW));
         } catch (Exception $e) {
+          Log::error($e);
           // The photo was not removed from the filesystem, do nothing special
         }
         try {
           unlink($photo->getPhotoPath(Photo::$FORMAT_THUMBNAIL));
         } catch (Exception $e) {
+          Log::error($e);
           // The photo was not removed from the filesystem, do nothing special
         }
+        // Log
+        LogEntry::log("Photos", "Suppression d'une photo", array("Album" => $album->name, "Photo" => $photo->filename));
         // Return success response
         return json_encode(array('result' => "Success"));
       } catch (Exception $ex) {
         // Do nothing
+        Log::error($ex);
       }
     }
     // If reaching here, the photo has not been deleted
+    LogEntry::error("Photos", "Erreur lors de la suppression d'une photo", array("Album" => $album ? $album->name : "?", "Photo" => $photo ? $photo->filename : "?"));
     return json_encode(array('result' => "Failure"));
   }
   
@@ -587,12 +615,15 @@ class PhotoController extends BaseController {
       // Create thumbnail and preview pictures
       $photo->createThumbnailPicture();
       $photo->createPreviewPicture();
+      LogEntry::log("Photos", "Ajout d'une photo", array("Album" => $album->name, "Photo" => $photo->filename));
     } catch (Exception $ex) {
-      die ($ex);
+      Log::error($ex);
+      LogEntry::error("Photos", "Erreur lors de l'ajout d'une photo", array("Erreur" => $ex->getMessage()));
       // Revert if possible
       try {
         if ($photo != null) $photo->delete();
       } catch (Exception $e) {
+        Log::error($e);
       }
       return $errorResponse;
     }
@@ -600,6 +631,7 @@ class PhotoController extends BaseController {
     try {
       $album->updatePhotoCount();
     } catch (Exception $ex) {
+      Log::error($ex);
       // Never mind
     }
     // Return success response
@@ -632,8 +664,11 @@ class PhotoController extends BaseController {
     try {
       $photo->caption = $newCaption;
       $photo->save();
+      LogEntry::log("Photos", "Changement de la description d'une photo", array("Album" => $album->name, "Photo" => $photo->filename, "Description" => $newCaption));
     } catch (Exception $ex) {
       // Error
+      Log::error($ex);
+      LogEntry::error("Photos", "Erreur lors du changement de la description d'une photo", array("Erreur" => $ex->getMessage()));
       return $errorResponse;
     }
     // Success
@@ -661,6 +696,7 @@ class PhotoController extends BaseController {
     try {
       $photo->rotate($clockwise);
     } catch (Exception $e) {
+      Log::error($e);
       // Error
       return $errorResponse;
     }

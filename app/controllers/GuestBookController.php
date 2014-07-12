@@ -65,10 +65,14 @@ class GuestBookController extends BaseController {
           'body' => $body,
           'author' => $author,
       ));
+      // Log
+      LogEntry::log("Livre d'or", "Ajout d'une entrée dans le livre d'or", array("Auteur" => $author, "Message" => $body));
       // Redirect with success message
       return Redirect::route('guest_book')
               ->with('success_message', "Votre message a été ajouté dans le livre d'or.");
     } catch (Exception $e) {
+      Log::error($e);
+      LogEntry::error("Livre d'or", "Erreur lors de l'ajout d'une entrée dans le livre d'or", array("Auteur" => $author, "Message" => $body));
       return Redirect::route('guest_book')
               ->with('error_message', "Une erreur est survenue. Votre message n'a pas été ajouté au livre d'or.")
               ->withInput();
@@ -103,9 +107,11 @@ class GuestBookController extends BaseController {
     $entry = GuestBookEntry::find($entry_id);
     if ($entry) {
       $entry->delete();
+      LogEntry::log("Livre d'or", "Suppression d'une entrée du livre d'or", array("Auteur" => $entry->author, "Message" => $entry->body));
       return Redirect::route('edit_guest_book')
             ->with('success_message', "Le message a été supprimé.");
     }
+    LogEntry::error("Livre d'or", "Erreur lors de la suppression d'une entrée du livre d'or");
     return Redirect::route('edit_guest_book')
           ->with('error_message', "Une erreur est survenue. Le message n'a pas été supprimé.");
   }

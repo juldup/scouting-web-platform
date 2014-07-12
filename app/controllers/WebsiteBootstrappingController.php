@@ -22,8 +22,6 @@
  */
 class WebsiteBootstrappingController extends Controller {
   
-  
-  
   /**
    * [Route] Show the bootstrapping welcome page or a step page if the bootstrapping
    * has already been started

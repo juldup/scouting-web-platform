@@ -277,8 +277,12 @@ Route::get('gestion/changements-recents/{section_slug?}', array("as" => "view_pr
 Route::get('gestion/supervision', array("as" => "monitoring", "uses" => "MonitoringController@showPage"));
 
 // Personal e-mails
-Route::get('/email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));
-Route::post('/email-personnel/soumettre/{contact_type}/{member_id}', array("as" => "personal_email_submit", "uses" => "PersonalEmailController@submit"));
+Route::get('email-personnel/{contact_type}/{member_id}/{section_slug?}', array("as" => "personal_email", "uses" => "PersonalEmailController@sendEmail"));
+Route::post('email-personnel/soumettre/{contact_type}/{member_id}', array("as" => "personal_email_submit", "uses" => "PersonalEmailController@submit"));
+
+// Logs
+Route::get('gestion/logs', array("as" => "logs", "uses" => "LogController@showPage"));
+Route::get('ajax/gestion/logs/logs-suivants/{lastKnownLogId}/{count}', array("as" => "ajax_load_more_logs", "uses" => "LogController@loadMoreLogs"));
 
 // Website bootstrapping
 Route::get('/initialisation-du-site', array("as" => "bootstrapping", "uses" => "WebsiteBootstrappingController@showPage"));

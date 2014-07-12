@@ -104,6 +104,8 @@ class ListingController extends BaseController {
     } else {
       $sections = array($this->section);
     }
+    // Log
+    LogEntry::log("Listing", "Téléchargement du listing", array("Section" => $this->section->name, "Format" => $format));
     // Output listing
     ListingPDF::downloadListing($sections, $format);
   }
@@ -200,13 +202,15 @@ class ListingController extends BaseController {
       $message = "Une erreur est survenue. Les données n'ont pas été modifiées.";
     }
     // Redirect with status message
-    if ($success)
+    if ($success) {
+      LogEntry::log("Listing", "Modification d'un membre", array("Membre" => $member->getFullName()));
       return Redirect::to(URL::to(URL::previous()))
               ->with($success ? 'success_message' : 'error_message', $message);
-    else
+    } else {
       return Redirect::to(URL::previous())
             ->with($success ? 'success_message' : 'error_message', $message)
             ->withInput();
+    }
   }
   
   /**
@@ -224,10 +228,13 @@ class ListingController extends BaseController {
       // Delete member
       try {
         $member->delete();
+        LogEntry::log("Listing", "Suppression d'un membre", array("Membre" => $member->getFullName()));
         return Redirect::route('manage_listing')
-                ->with('success_message', $member->first_name . " " . $member->last_name
+                ->with('success_message', $member->getFullName()
                         . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::log("Listing", "Erreur lors de la suppression d'un membre", array("Membre" => $member->getFullName(), "Erreur" => $ex->getMessage()));
       }
     }
     // An error has occurred
@@ -251,6 +258,7 @@ class ListingController extends BaseController {
     } else {
       $sections = array($this->section);
     }
+    LogEntry::log("Listing", "Téléchargement du listing complet", array("Section" => $this->section->name, "Format" => $format));
     ListingPDF::downloadListing($sections, $format, true);
   }
   
@@ -272,6 +280,7 @@ class ListingController extends BaseController {
     } else {
       $sections = array($this->section);
     }
+    LogEntry::log("Listing", "Téléchargement des enveloppes", array("Section" => $this->section->name, "Format" => $format));
     // Generate and output envelops
     EnvelopsPDF::downloadEnvelops($sections, $format);
   }

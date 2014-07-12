@@ -116,6 +116,7 @@ class EmailController extends BaseController {
     $path = $attachment->getPath();
     $filename = str_replace("\"", "", $attachment->filename);
     if (file_exists($path)) {
+      LogEntry::log("E-mails", "Téléchargement d'une pièce jointe", array("Sujet de l'e-mail" => $email->subject, "Date" => Helper::dateToHuman($email->date), "Pièce jointe" => $attachment->filename));
       return Response::make(file_get_contents($path), 200, array(
           'Content-Type' => 'application/octet-stream',
           'Content-length' => filesize($path),
@@ -124,6 +125,7 @@ class EmailController extends BaseController {
       ));
     } else {
       // The file has not been found
+      LogEntry::error("E-mails", "Pièce jointe non trouvée", array("Filename" => $filename, "Path" => $path));
       return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus.");
     }
   }
@@ -258,6 +260,8 @@ class EmailController extends BaseController {
         try {
           $attachments[] = EmailAttachment::newFromFile($file);
         } catch (Exception $ex) {
+          Log::error($ex);
+          LogEntry::error("E-mails", "Erreur lors de l'enregistrement des pièces jointes d'un e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
           return Redirect::route('send_section_email')
                   ->withInput()
                   ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
@@ -313,6 +317,8 @@ class EmailController extends BaseController {
         $attachment->save();
       }
     } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("E-mails", "Erreur lors d'un envoi d'e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
       return Redirect::route('send_section_email')
               ->withInput()
               ->with('error_message', "Une erreur s'est produite. L'e-mail n'a pas été envoyé. $ex");
@@ -329,6 +335,7 @@ class EmailController extends BaseController {
           'sent' => false,
       ));
     }
+    LogEntry::log("E-mails", "Envoi d'un e-mail de section", array("Sujet" => $subject));
     return Redirect::route('manage_emails')
             ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }
@@ -350,9 +357,12 @@ class EmailController extends BaseController {
       try {
         $email->deleted = true;
         $email->save();
+        LogEntry::log("E-mails", "Suppression d'un e-mail de section", array("Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
         return Redirect::route('manage_emails')
                 ->with('success_message', "L'e-mail a été supprimé.");
       } catch (Exception $ex) {
+        Log::error($ex);
+        LogEntry::error("E-mails", "Erreur lors de la suppression d'un e-mail", array("Erreur" => $ex->getMessage(), "Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
         return Redirect::route('manage_emails')
                 ->with('error_message', "Une erreur est survenue. L'e-mail n'a pas pu être supprimé.");
       }
@@ -382,9 +392,12 @@ class EmailController extends BaseController {
       $email->save();
       $success = true;
       $message = "L'e-mail a été archivé.";
+      LogEntry::log("E-mails", "Archivage d'un e-mail de section", array("Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
     } catch (Exception $e) {
+      Log::error($e);
       $success = false;
       $message = "Une erreur s'est produite. L'e-mail n'a pas été archivé.";
+      LogEntry::error("E-mails", "Erreur lors de l'archivage d'un e-mail de section", array("Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
     }
     // Redirect with status message
     return Redirect::route('manage_emails', array(

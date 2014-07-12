@@ -168,7 +168,7 @@ class HealthCardPDF {
    * Adds a new page with the content of the given card
    */
   protected function addCard(HealthCard $healthCard) {
-    $exirationDate = date('Y-m-d', strtotime($healthCard->signature_date) + 365*24*3600);
+    $expirationDate = date('Y-m-d', strtotime($healthCard->signature_date) + 365*24*3600);
     $member = $healthCard->getMember();
     // French grammar for masculine/feminine words
     $e = ($member->gender == "F" ? "e" : "");
@@ -363,7 +363,7 @@ class HealthCardPDF {
     if (count($importantData)) {
       // Display name
       $this->pdf->SetFont("Times","B",11);
-      $this->pdf->Cell(185, 5, $member->first_name . " " . $member->last_name);
+      $this->pdf->Cell(185, 5, $member->getFullName());
       $this->pdf->Ln(self::$INTERLINE);
       // Display important data
       foreach ($importantData as $data) {
