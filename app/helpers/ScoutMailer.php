@@ -57,7 +57,7 @@ class ScoutMailer {
   /**
    * If there are unsent e-mails in the database, try to sent them (with a limit on the number of e-mails to send)
    */
-  public static function sendPendingEmails($limit = 10) {
+  public static function sendPendingEmails($limit = 200) {
     // Current time
     $time = time();    
     // Delete all e-mails sent more than one hour ago
@@ -77,6 +77,8 @@ class ScoutMailer {
             ->get();
     // Try sending e-mails (if not locked by another process)
     foreach ($emails as $email) {
+      // Make sure we have enough time to process this e-mail
+      set_time_limit(1800);
       // Lock with last_retry to avoid collision
       $count = DB::table('pending_emails')
               ->where('id', '=', $email->id)
