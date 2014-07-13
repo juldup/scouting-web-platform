@@ -88,7 +88,9 @@ class HealthCard extends Eloquent {
     foreach ($deletedHealthCards as $healthCard) {
       $deletedNames .= ($deletedNames ? ", " : "") . $healthCard->getMember()->getFullName();
     }
-    LogEntry::log("Fiche santé", "Suppression automatique de fiches santé", array("Membres" => $deletedNames));
+    if ($deletedNames) {
+      LogEntry::log("Fiche santé", "Suppression automatique de fiches santé", array("Membres" => $deletedNames));
+    }
     // Delete too old health cards
     HealthCard::where('signature_date', '<=', $oneYearAgo)->delete();
     // Create reminder e-mails

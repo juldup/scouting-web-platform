@@ -213,6 +213,45 @@ class RegistrationController extends GenericPageController {
         Session::put('registration.family_in_other_units_details', Input::get('family_in_other_units_details'));
       }
     }
+    // Send confirmation e-mail
+    if ($success) {
+      $member = $result;
+      // E-mail to parents/member
+      $emailAddresses = $member->is_leader ? array($member->email_member) : $member->getParentsEmailAddresses();
+      foreach ($emailAddresses as $recipient) {
+        $emailContent = Helper::renderEmail('registrationConfirmation', $recipient, array(
+            'member' => $member,
+            'to_leaders' => false,
+        ));
+        $email = PendingEmail::create(array(
+            'subject' => "Demande d'inscription de " . $member->getFullName(),
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
+            'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+            'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+            'recipient' => $recipient,
+            'priority' => PendingEmail::$ACCOUNT_EMAIL_PRIORITY,
+        ));
+        $email->send();
+      }
+      // E-mail to unit's leader(s) in charge
+      foreach (self::getLeaderInChargeEmailAddresses() as $recipient) {
+        $emailContent = Helper::renderEmail('registrationConfirmation', $recipient, array(
+            'member' => $member,
+            'to_leaders' => true,
+        ));
+        $email = PendingEmail::create(array(
+            'subject' => "Demande d'inscription de " . $member->getFullName() . " dans la section " . $member->getSection()->name,
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
+            'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+            'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+            'recipient' => $recipient,
+            'priority' => PendingEmail::$ACCOUNT_EMAIL_PRIORITY,
+        ));
+        // Don't send right away, there is no rush
+      }
+    }
     // Redirect with status message
     if ($success) {
       LogEntry::log("Inscription", "Nouvelle demande d'inscription", array("Nom" => Input::get('first_name') . " " . Input::get('last_name')));
@@ -223,6 +262,23 @@ class RegistrationController extends GenericPageController {
             ->with('error_message', $message)
             ->withInput();
     }
+  }
+  
+  /**
+   * Returns an array containing the e-mail addresses of all the unit's leader in charge.
+   * In general there, will be only one.
+   */
+  private static function getLeaderInChargeEmailAddresses() {
+    $unitLeadersInCharge = Member::where('is_leader', '=', true)
+            ->where('section_id', '=', '1')
+            ->where('validated', '=', true)
+            ->where('leader_in_charge', '=', true)
+            ->get();
+    $emailAddresses = array();
+    foreach ($unitLeadersInCharge as $leader) {
+      $emailAddresses[] = $leader->email_member;
+    }
+    return $emailAddresses;
   }
   
   /**

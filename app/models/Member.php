@@ -315,7 +315,7 @@ class Member extends Eloquent {
     // Save
     try {
       $this->save();
-      if ($this->is_leader) return $this->uploadPictureFromInput();
+      if ($this->is_leader) return $this->uploadPictureFromInput() ? true : false;
       else return true;
     } catch (Exception $ex) {
       Log::error($ex);
@@ -532,7 +532,8 @@ class Member extends Eloquent {
   
   /**
    * Saves the uploaded picture to the file system and updates the member
-   * to mark it as having a leader picture
+   * to mark it as having a leader picture. Returns this member instance, or
+   * a string in case of error.
    */
   public function uploadPictureFromInput() {
     // Get picture file
@@ -551,7 +552,7 @@ class Member extends Eloquent {
           // Update member
           $this->has_picture = true;
           $this->save();
-          return true;
+          return $this;
         } catch (Exception $e) {
           Log::error($e);
           // An error has occured while saving the picture
@@ -560,7 +561,7 @@ class Member extends Eloquent {
       }
     }
     // There is no picture file
-    return true;
+    return $this;
   }
   
   /**
