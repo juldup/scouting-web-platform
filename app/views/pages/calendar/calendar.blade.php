@@ -172,7 +172,7 @@
             @for ($i = 6; $i >= 1; $i--)
               <span class='otherMonth'>
                 <a href="{{ URL::route($route_month, array('month' => (($month - $i + 11) % 12 + 1), 'year' => ($month - $i <= 0 ? $year - 1 : $year))) }}">
-                  {{{ $months_short[($month - $i + 11) % 12] }}} &leftarrow; <span class='horiz-divider'></span>
+                  {{{ $months_short[($month - $i + 11) % 12] }}} &larr; <span class='horiz-divider'></span>
                 </a>
               </span>
             @endfor
@@ -181,7 +181,7 @@
             @for ($i = 1; $i <= 6; $i++)
               <span class='otherMonth'>
                 <a href="{{ URL::route($route_month, array('month' => (($month + $i + 11) % 12 + 1), 'year' => ($month + $i >= 13 ? $year + 1 : $year))) }}">
-                  <span class='horiz-divider'></span> &rightarrow; {{{ $months_short[($month + $i - 1) % 12] }}}
+                  <span class='horiz-divider'></span> &rarr; {{{ $months_short[($month + $i - 1) % 12] }}}
                 </a>
               </span>
             @endfor
@@ -253,7 +253,7 @@
           @for ($i = 2; $i >= 1; $i--)
             <span class='otherMonth'>
               <a href="{{ URL::route($route_month, array('month' => (($month - $i + 11) % 12 + 1), 'year' => ($month - $i <= 0 ? $year - 1 : $year))) }}">
-                {{{ $months_short[($month - $i + 11) % 12] }}} &leftarrow; <span class='horiz-divider'></span>
+                {{{ $months_short[($month - $i + 11) % 12] }}} &larr; <span class='horiz-divider'></span>
               </a>
             </span>
           @endfor
@@ -262,7 +262,7 @@
           @for ($i = 1; $i <= 2; $i++)
             <span class='otherMonth'>
               <a href="{{ URL::route($route_month, array('month' => (($month + $i + 11) % 12 + 1), 'year' => ($month + $i >= 13 ? $year + 1 : $year))) }}">
-                <span class='horiz-divider'></span> &rightarrow; {{{ $months_short[($month + $i - 1) % 12] }}}
+                <span class='horiz-divider'></span> &rarr; {{{ $months_short[($month + $i - 1) % 12] }}}
               </a>
             </span>
           @endfor

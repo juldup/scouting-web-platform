@@ -107,6 +107,10 @@ function selectPicturesManually() {
  */
 function picturesManuallySelected() {
   var files = $("#file-input").prop("files");
+  if (!files) {
+    alert("Désolés. Ton navigateur ne permet pas cette opération.\nEssaie d'utiliser Google Chrome ou Firefox.");
+    return;
+  }
   addPicturesFromList(files);
 }
 
