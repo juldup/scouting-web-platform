@@ -101,14 +101,14 @@ class User extends Eloquent {
    * Returns the name of the username cookie
    */
   public static function getCookieUsernameName() {
-    return strtolower(Parameter::get(Parameter::$UNIT_SHORT_NAME)) . '_username';
+    return strtolower(Helper::slugify(Parameter::get(Parameter::$UNIT_SHORT_NAME))) . '_username';
   }
   
   /**
    * Returns the name of the password cookie
    */
   public static function getCookiePasswordName() {
-    return strtolower(Parameter::get(Parameter::$UNIT_SHORT_NAME)) . '_password';
+    return strtolower(Helper::slugify(Parameter::get(Parameter::$UNIT_SHORT_NAME))) . '_password';
   }
   
   /**
