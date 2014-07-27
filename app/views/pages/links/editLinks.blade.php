@@ -39,8 +39,8 @@
 
 @section('back_links')
   <p>
-    <a href='{{ URL::route('links') }}'>
-      Retour à la page de liens utiles
+    <a href='{{ URL::route('contacts') }}'>
+      Retour à la page de contacts
     </a>
   </p>
 @stop

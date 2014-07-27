@@ -17,10 +17,33 @@
  **/
 
 /**
- * The contact page publicly shows the contact information of the leaders in charge.
- * The e-mail addresses are kept private though, and so are the phone numbers that are marked as private.
+ * The contact page publicly shows:
+ * - the address of the unit's premises (an editable page)
+ * - the contact information of the leaders in charge.
+ * - a list of external links (see LinkController)
+ * 
+ * The contacts' e-mail addresses are kept private, and so are the phone numbers that are marked as private.
  */
-class ContactController extends BaseController {
+class ContactController extends GenericPageController {
+  
+  protected function getEditRouteName() {
+    return "edit_address_page";
+  }
+  protected function getShowRouteName() {
+    return "contacts";
+  }
+  protected function getPageType() {
+    return "addresses";
+  }
+  protected function isSectionPage() {
+    return false;
+  }
+  protected function getPageTitle() {
+    return "Adresse";
+  }
+  protected function canDisplayPage() {
+    return Parameter::get(Parameter::$SHOW_ADDRESSES);
+  }
   
   /**
    * [Route] Shows the contact page
@@ -30,6 +53,9 @@ class ContactController extends BaseController {
     if (!Parameter::get(Parameter::$SHOW_CONTACTS)) {
       return App::abort(404);
     }
+    // Get page
+    $page = $this->getPage();
+    $pageBody = $page->body_html;
     // Find unit staff
     $unitLeaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', '1')
@@ -50,6 +76,8 @@ class ContactController extends BaseController {
               ->first();
       if ($leader) $sectionLeaders[] = $leader;
     }
+    // Get links
+    $links = Link::all();
     // Make view
     return View::make('pages.contacts.contacts', array(
         "unitLeaders" => $unitLeaders,
@@ -57,7 +85,11 @@ class ContactController extends BaseController {
         "webmaster" => array(
             "name" => "Julien Dupuis",
             "phone" => "+32 496 628 600",
-        )
+        ),
+        "links" => $links,
+        'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
+        'page_body' => $pageBody,
+
     ));
   }
   

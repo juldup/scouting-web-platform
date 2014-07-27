@@ -89,9 +89,8 @@ Route::get('gestion/page-section/{section_slug}', array("as" => "edit_section_pa
 Route::post('gestion/page-section/{section_slug}', array("as" => "edit_section_page_submit", "uses" => "SectionPageController@savePage"));
 
 // Addresses
-Route::get('adresses/{section_slug?}', array("as" => "addresses", "uses" => "AddressPageController@showPage"));
-Route::get('gestion/adresses/{section_slug?}', array("as" => "edit_address_page", "uses" => "AddressPageController@showEdit"));
-Route::post('gestion/adresses/{section_slug?}', array("as" => "edit_address_page_submit", "uses" => "AddressPageController@savePage"));
+Route::get('gestion/adresses/{section_slug?}', array("as" => "edit_address_page", "uses" => "ContactController@showEdit"));
+Route::post('gestion/adresses/{section_slug?}', array("as" => "edit_address_page_submit", "uses" => "ContactController@savePage"));
 
 // Contacts
 Route::get('contacts/{section_slug?}', array("as" => "contacts", "uses" => "ContactController@showPage"));
@@ -143,17 +142,17 @@ Route::get('gestion/uniforme/{section_slug}', array("as" => "edit_uniform_page",
 Route::post('gestion/uniforme/{section_slug}', array("as" => "edit_uniform_page_submit", "uses" => "UniformPageController@savePage"));
 
 // Links
-Route::get('liens/{section_slug?}', array("as" => "links", "uses" => "LinkController@showPage"));
 Route::get('gestion/liens/{section_slug?}', array("as" => "edit_links", "uses" => "LinkController@showEdit"));
 Route::post('gestion/liens/{section_slug?}', array("as" => "edit_links_submit", "uses" => "LinkController@submitLink"));
 Route::get('gestion/liens/delete/{link_id}/{section_slug?}', array("as" => "edit_links_delete", "uses" => "LinkController@deleteLink"));
 
 // News
-Route::get('nouvelles/archives/{section_slug?}', array("as" => "news_archives", "uses" => "NewsController@showArchives"));
-Route::get('nouvelles/{section_slug?}', array("as" => "news", "uses" => "NewsController@showPage"));
-Route::get('gestion/nouvelles/{section_slug?}', array("as" => "manage_news", "uses" => "NewsController@showEdit"));
-Route::post('gestion/nouvelles/submit/{section_slug}', array("as" => "manage_news_submit", "uses" => "NewsController@submitNews"));
-Route::get('gestion/nouvelles/delete/{news_id}', array("as" => "manage_news_delete", "uses" => "NewsController@deleteNews"));
+Route::get('actualites-de-lunite/{section_slug?}', array("as" => "global_news", "uses" => "NewsController@showGlobalNewsPage"));
+Route::get('actualites/archives/{section_slug?}', array("as" => "news_archives", "uses" => "NewsController@showArchives"));
+Route::get('actualites/{section_slug?}', array("as" => "news", "uses" => "NewsController@showPage"));
+Route::get('gestion/actualites/{section_slug?}', array("as" => "manage_news", "uses" => "NewsController@showEdit"));
+Route::post('gestion/actualites/submit/{section_slug}', array("as" => "manage_news_submit", "uses" => "NewsController@submitNews"));
+Route::get('gestion/actualites/delete/{news_id}', array("as" => "manage_news_delete", "uses" => "NewsController@deleteNews"));
 
 // Calendar
 Route::get('calendrier/{year}/{month}/{section_slug?}', array("as" => "calendar_month", "uses" => "CalendarController@showPage"));

@@ -19,13 +19,13 @@
 ?>
 
 @section('title')
-  Changements récents
+  Nouveautés
 @stop
 
 @section('content')
   <div class="row">
     <div class="col-md-12">
-      <h1>Changements récents sur le site</h1>
+      <h1>Nouveautés sur le site</h1>
     </div>
   </div>
   <div class="row">

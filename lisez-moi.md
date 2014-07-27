@@ -8,19 +8,17 @@ Liste des fonctionnalités présentes:
 
 * Une structure de site contenant les pages publiques suivantes :
   * Page d'accueil
-  * Page d'adresses
-  * Page de contacts
-  * Page "fête d'unité"
+  * Page d'adresses, de contacts et de liens
   * Page charte d'unité
   * Page d'inscription dans l'unité
-  * Page de liens utiles
   * Page d'aide
   * Page "boite à suggestions"
   * Livre d'or
+  * Actualités du site
 * Des pages spécifiques à chaque section :
   * Présentation de la section
   * Page présentant l'uniforme
-  * Nouvelles de la section
+  * Actualités de la section
   * Calendrier des activités de la section
   * Présentation des animateur de la section
   * Documents téléchargeables (publics/privés)

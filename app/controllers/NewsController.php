@@ -22,8 +22,13 @@
  */
 class NewsController extends BaseController {
   
-  protected $pagesAdaptToSections = true;
-  
+  public function currentPageAdaptToSections() {
+    $currentRoute = Route::current();
+    $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
+    $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
+    return ($currentRouteName != 'global_news');
+  }
+
   /**
    * [Route] Shows the news page
    * 
@@ -38,9 +43,7 @@ class NewsController extends BaseController {
     // Build query
     $oneYearAgo = Helper::oneYearAgo();
     $query = News::orderBy('id', 'DESC');
-    if ($this->section->id != 1) {
-      $query->where('section_id', '=', $this->section->id);
-    }
+    $query->where('section_id', '=', $this->section->id);
     if ($showArchives) {
       // Show archived news
       $pageSize = 30;
@@ -72,6 +75,33 @@ class NewsController extends BaseController {
         'has_archives' => $hasArchives,
         'showing_archives' => $showArchives,
         'next_page' => $page + 1,
+        'is_global_news_page' => false,
+    ));
+  }
+  
+  /**
+   * [Route] Shows the global news page, listing the news of all sections
+   */
+  public function showGlobalNewsPage() {
+    if (!Parameter::get(Parameter::$SHOW_NEWS)) {
+      return App::abort(404);
+    }
+    // Get all recent news
+    $oneYearAgo = Helper::oneYearAgo();
+    $query = News::orderBy('id', 'DESC');
+    $query->where('news_date', '>=', $oneYearAgo);
+    $news = $query->get();
+    // No archives show on global news page
+    $hasArchives = false;
+    // Make view
+    return View::make('pages.news.news', array(
+        'can_edit' => $this->user->can(Privilege::$EDIT_NEWS, $this->section),
+        'edit_url' => URL::route('manage_news', array('section_slug' => $this->section->slug)),
+        'page_url' => URL::route('news', array('section_slug' => $this->section->slug)),
+        'news' => $news,
+        'has_archives' => false, // Not showing archives on global news page
+        'showing_archives' => false,
+        'is_global_news_page' => true,
     ));
   }
   
@@ -155,7 +185,7 @@ class NewsController extends BaseController {
             Log::error($e);
             $success = false;
             $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
-            LogEntry::error("Nouvelles", "Erreur lors de l'enregistrement d'une nouvelle", array("Erreur" => $e->getMessage()));
+            LogEntry::error("Actualités", "Erreur lors de l'enregistrement d'une nouvelle", array("Erreur" => $e->getMessage()));
           }
         } else {
           $success = false;
@@ -177,7 +207,7 @@ class NewsController extends BaseController {
           Log::error($e);
           $success = false;
           $message = "Une erreur s'est produite. La nouvelle n'a pas été enregistrée.";
-          LogEntry::error("Nouvelles", "Erreur lors de l'enregistrement d'une nouvelle", array("Erreur" => $e->getMessage()));
+          LogEntry::error("Actualités", "Erreur lors de l'enregistrement d'une nouvelle", array("Erreur" => $e->getMessage()));
         }
       }
     }
@@ -186,7 +216,7 @@ class NewsController extends BaseController {
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) {
-      LogEntry::log("Nouvelles", $newsId ? "Modification d'une nouvelle" : "Ajout d'une nouvelle",
+      LogEntry::log("Actualités", $newsId ? "Modification d'une nouvelle" : "Ajout d'une nouvelle",
               array("Titre" => $title, "Contenu" => $body, "Date" => Helper::dateToHuman($news->news_date)));
       return $response;
     } else {
@@ -212,13 +242,13 @@ class NewsController extends BaseController {
       $news->delete();
       $success = true;
       $message = "La nouvelle a été supprimée.";
-      LogEntry::log("Nouvelles", "Suppression d'une nouvelle",
+      LogEntry::log("Actualités", "Suppression d'une nouvelle",
               array("Titre" => $news->title, "Contenu" => $news->body, "Date" => Helper::dateToHuman($news->news_date)));
     } catch (Illuminate\Database\QueryException $e) {
       Log::error($e);
       $success = false;
       $message = "Une erreur s'est produite. La nouvelle n'a pas été supprimée.";
-      LogEntry::error("Nouvelles", "Erreur lors de la suppression d'une nouvelle", array("Erreur" => $e->getMessage()));
+      LogEntry::error("Actualités", "Erreur lors de la suppression d'une nouvelle", array("Erreur" => $e->getMessage()));
     }
     // Redirect with status message
     return Redirect::route('manage_news', array(

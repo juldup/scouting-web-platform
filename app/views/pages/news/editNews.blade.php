@@ -19,7 +19,7 @@
 ?>
 
 @section('title')
-  Gestion des nouvelles
+  Gestion des actualités
 @stop
 
 @section('additional_javascript')
@@ -41,7 +41,7 @@
 @section('back_links')
   <p>
     <a href='{{ $page_url }}'>
-      Retour aux nouvelles
+      Retour aux actualités
     </a>
   </p>
 @stop
@@ -53,7 +53,7 @@
   <div class="row">
     <div class="col-lg-12">
   
-      <h1>Nouvelles {{{ $user->currentSection->de_la_section }}}</h1>
+      <h1>Actualités {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
   </div>

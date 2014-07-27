@@ -193,22 +193,24 @@ class ParameterController extends BaseController {
    */
   private function getPageList() {
     $pages = array(
-        // Welcome
         'page_sections' => array(
             'description' => 'Afficher les pages des sections',
             'parameter_name' => Parameter::$SHOW_SECTIONS
-        ),
-        'page_addresses' => array(
-            'description' => 'Afficher la page "adresses utiles',
-            'parameter_name' => Parameter::$SHOW_ADDRESSES
         ),
         'page_contacts' => array(
             'description' => 'Afficher la page de contacts',
             'parameter_name' => Parameter::$SHOW_CONTACTS
         ),
-        // General
+        'page_addresses' => array(
+            'description' => "Afficher l'adresse dans la page de contacts",
+            'parameter_name' => Parameter::$SHOW_ADDRESSES
+        ),
+        'page_links' => array(
+            'description' => "Afficher les liens dans la page de contacts",
+            'parameter_name' => Parameter::$SHOW_LINKS
+        ),
         'page_annual_feast' => array(
-            'description' => "Afficher la page d'inscription à la fête d'unité",
+            'description' => "Afficher la page de la fête d'unité",
             'parameter_name' => Parameter::$SHOW_ANNUAL_FEAST
         ),
         'page_registration' => array(
@@ -227,13 +229,21 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"uniformes\"",
             'parameter_name' => Parameter::$SHOW_UNIFORMS
         ),
-        'page_links' => array(
-            'description' => "Afficher la page \"liens utiles\"",
-            'parameter_name' => Parameter::$SHOW_LINKS
+        'page_suggestions' => array(
+            'description' => "Afficher la page \"suggestions\"",
+            'parameter_name' => Parameter::$SHOW_SUGGESTIONS
         ),
-        // Animation
+        'page_guest_book' => array(
+            'description' => "Afficher le livre d'or",
+            'parameter_name' => Parameter::$SHOW_GUEST_BOOK
+        ),
+        'page_help' => array(
+            'description' => "Afficher la page \"aide\"",
+            'parameter_name' => Parameter::$SHOW_HELP
+        ),
+        // Section
         'page_news' => array(
-            'description' => "Afficher la page \"nouvelles\"",
+            'description' => "Afficher la page \"actualités\"",
             'parameter_name' => Parameter::$SHOW_NEWS
         ),
         'page_calendar' => array(
@@ -263,20 +273,6 @@ class ParameterController extends BaseController {
         'page_listing' => array(
             'description' => "Afficher la page \"listing\"",
             'parameter_name' => Parameter::$SHOW_LISTING
-        ),
-        // Your opinion
-        'page_suggestions' => array(
-            'description' => "Afficher la page \"suggestions\"",
-            'parameter_name' => Parameter::$SHOW_SUGGESTIONS
-        ),
-        'page_guest_book' => array(
-            'description' => "Afficher le livre d'or",
-            'parameter_name' => Parameter::$SHOW_GUEST_BOOK
-        ),
-        // Help
-        'page_help' => array(
-            'description' => "Afficher la page \"aide\"",
-            'parameter_name' => Parameter::$SHOW_HELP
         ),
     );
     foreach ($pages as $page=>$pageData) {

@@ -19,16 +19,55 @@
 ?>
 
 @section('title')
-  Contacts
+  Contacts {{{ Parameter::get(Parameter::$SHOW_LINKS) ? "et liens" : "" }}}
 @stop
 
 @section('head')
   <meta name="robots" content="noindex">
 @stop
 
+@section('forward_links')
+  {{-- Link to management --}}
+  @if ($can_edit)
+    <p>
+      <a href='{{ URL::route('edit_address_page') }}'>
+        Modifier l'adresse
+      </a>
+    </p>
+  @endif
+  @if ($user->isLeader())
+    <p>
+      <a href='{{ URL::route('edit_leaders') }}'>
+        Modifier les animateurs
+      </a>
+    </p>
+  @endif
+  @if ($can_edit)
+    <p>
+      <a href='{{ URL::route('edit_links') }}'>
+        Modifier les liens
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('content')
   
-  <h1>Contacts</h1>
+  <h1>Contacts {{{ Parameter::get(Parameter::$SHOW_LINKS) ? "et liens" : "" }}}</h1>
+  
+  @if (Parameter::get(Parameter::$SHOW_ADDRESSES))
+    <h2>Adresse</h2>
+    
+    <div class="row page_body">
+      <div class="col-md-12">
+        {{ $page_body }}
+      </div>
+    </div>
+  @endif
+  
+  @if (Parameter::get(Parameter::$SHOW_ADDRESSES) || Parameter::get(Parameter::$SHOW_LINKS))
+    <h2>Contacts</h2>
+  @endif
   
   <div class="well">
     <legend>Contacter les animateurs d'unité</legend>
@@ -103,5 +142,28 @@
       </div>
     </div>
   </div>
+  
+  @if (Parameter::get(Parameter::$SHOW_LINKS))
+    <div class="row">
+      <div class="col-lg-12">
+        <h2>Liens</h2>
+      </div>
+    </div>
+
+    @foreach ($links as $link)
+      <div class="row">
+        <div class="col-md-12">
+          <div class="well clickable clickable-no-default">
+            <legend>
+              <a href="{{{ $link->url }}}" target="_blank">{{{ $link->title }}}</a>
+            </legend>
+            <div>
+              {{ Helper::rawToHTML($link->description) }}
+            </div>
+          </div>
+        </div>
+      </div>
+    @endforeach
+  @endif
   
 @stop

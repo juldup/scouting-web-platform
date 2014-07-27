@@ -17,26 +17,9 @@
  **/
 
 /**
- * Provides a page with useful links, and the means for the leaders to modify this list
+ * Edition of the links that are present in the contact page.
  */
 class LinkController extends BaseController {
-  
-  /**
-   * [Route] Displays the link page
-   */
-  public function showPage() {
-    // Make sure this page can be displayed
-    if (!Parameter::get(Parameter::$SHOW_LINKS)) {
-      return App::abort(404);
-    }
-    // Get links
-    $links = Link::all();
-    // Make view
-    return View::make('pages.links.links', array(
-        'links' => $links,
-        'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
-    ));
-  }
   
   /**
    * [Route] Displays the link management page

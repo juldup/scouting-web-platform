@@ -53,9 +53,9 @@ class LeaderCornerController extends BaseController {
                 'help' => 'edit-documents',
                 'condition' => Parameter::$SHOW_DOCUMENTS,
             ),
-            "Nouvelles" => array(
+            "Actualités" => array(
                 'url' => $this->user->can(Privilege::$EDIT_NEWS) ? URL::route('manage_news') : null,
-                'help-anchor' => 'nouvelles',
+                'help-anchor' => 'actualites',
                 'help' => 'edit-news',
                 'condition' => Parameter::$SHOW_NEWS,
             ),

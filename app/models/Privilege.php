@@ -71,7 +71,7 @@ class Privilege extends Eloquent {
   
   public static $EDIT_NEWS = array(
       'id' => "Edit news",
-      'text' => 'Poster des nouvelles pour #lasection',
+      'text' => 'Poster des nouvelles (actualités) pour #lasection',
       'section' => true,
       'predefined' => "RSU"
   );

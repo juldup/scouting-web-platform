@@ -19,14 +19,14 @@
 ?>
 
 @section('title')
-  Nouvelles {{{ $user->currentSection->de_la_section }}}
+  Actualités {{{ ($is_global_news_page) ? "de l'unité" : $user->currentSection->de_la_section }}}
 @stop
 
 @section('back_links')
   @if ($showing_archives)
     <p>
       <a href='{{ URL::route('news', array('section_slug' => $user->currentSection->slug)) }}'>
-        Retour aux nouvelles de cette année
+        Retour aux actualités de cette année
       </a>
     </p>
   @endif
@@ -36,7 +36,7 @@
   @if ($can_edit)
     <p>
       <a href='{{ $edit_url }}'>
-        Modifier les nouvelles
+        Modifier les actualités
       </a>
     </p>
   @endif
@@ -46,7 +46,7 @@
   
   <div class="row">
     <div class="col-lg-12">
-      <h1>Nouvelles {{{ $user->currentSection->de_la_section }}}</h1>
+      <h1>Actualités {{{ ($is_global_news_page) ? "de l'unité" : $user->currentSection->de_la_section }}}</h1>
       @if (count($news) == 0)
         <p>Aucune nouvelle.</p>
       @endif
@@ -58,7 +58,7 @@
       <div class="col-md-12">
         <div class="well">
           <legend>
-            @if ($user->currentSection->id == 1)
+            @if ($is_global_news_page)
               <span class="glyphicon glyphicon-certificate" style="color: {{ Section::find($newsItem->section_id)->color }}"></span>
               {{{ Section::find($newsItem->section_id)->name }}} :
             @endif

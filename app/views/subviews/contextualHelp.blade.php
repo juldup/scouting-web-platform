@@ -160,15 +160,12 @@
 
 @if ($help == 'edit-news')
   <p>
-    Indique dans les nouvelles tout ce que tu veux communiquer
+    Indique dans les actualités tout ce que tu veux communiquer
     (réunion spéciale qui s'est bien déroulée, produit en vente par la section, etc.)
   </p>
   <h3>Ajouter une nouvelle</h3>
   <p>
     Pour créer une nouvelle nouvelle, clique sur <strong><em>Ajouter une nouvelle</em></strong>.
-  </p>
-  <p>
-    Dans les nouvelles de l'unité apparaitront également les nouvelles de toutes les sections.
   </p>
   <p>
     La date d'une nouvelle est la date à laquelle la nouvelle est écrite.
@@ -400,7 +397,7 @@
 @endif
 
 @if ($help == 'edit-links')
-  <p>Tu peux modifier la liste des liens qui se trouvent à la page <a href="{{ URL::route('links') }}">Liens utiles</a>.
+  <p>Tu peux modifier la liste des liens qui se trouvent sur la page de <a href="{{ URL::route('contacts') }}">contacts</a>.
      La liste de liens est commune à toute l'unité.
   </p>
   <p>Tu peux <strong>ajouter</strong> un nouveau lien, <strong>modifier</strong> un lien existant ou <strong>supprimer</strong> un lien.

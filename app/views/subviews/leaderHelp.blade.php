@@ -52,7 +52,7 @@
 @endif
 
 @if ($help == 'edit-news')
-  <legend>Gérer les nouvelles @yield('back_to_top') </legend>
+  <legend>Gérer les actualités @yield('back_to_top') </legend>
   <p>
     Cette page te permet de publier toutes les nouvelles concernant ta section ou l'unité que tu souhaites partager.
     N'hésite pas faire vivre le site en postant régulièrement des nouvelles&nbsp;: une réunion qui s'est bien déroulée, une annonce d'un événement à venir, etc.

@@ -155,7 +155,7 @@ abstract class GenericPageController extends BaseController {
       $page = Page::create(array(
           "type" => $this->getPageType(),
           "section_id" => $sectionId,
-          "body_html" => "<p>Cette page n'existe pas encore.</p>",
+          "body_html" => "<p><span class='glyphicon glyphicon glyphicon-time'></span> En construction...</p>",
       ));
     }
     // Return the page

@@ -33,6 +33,7 @@
  *   - quali:                         The quali of the member (if any)
  *   - section_id:                    The section this member is currently in
  *   - year_in_section:               The year in the section
+ *   - year_in_section_last_update    The scout year in format YYYY-YYYY corresponding to the members' current year_in_section
  *   - subgroup:                      The subgroup in the section this member belongs to
  *   - family_in_other_units:         The number of direct relatives (same family) registered in other scout units
  *   - family_in_other_units_details: Explanation about the previous field
