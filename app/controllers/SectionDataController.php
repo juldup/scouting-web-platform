@@ -50,6 +50,7 @@ class SectionDataController extends BaseController {
     $sectionId = Input::get('section_id');
     $name = Input::get('section_name');
     $email = Input::get('section_email');
+    $sectionCategory = Input::get('section_category');
     $sectionType = Input::get('section_type');
     $sectionTypeNumber = Input::get('section_type_number');
     $color = Input::get('section_color');
@@ -112,6 +113,7 @@ class SectionDataController extends BaseController {
         if ($fullEdit) {
           $section->name = $name;
           $section->slug = $slug;
+          $section->section_category = $sectionCategory;
           $section->section_type = $sectionType;
           $section->section_type_number = $sectionTypeNumber;
           $section->color = $color;
@@ -149,6 +151,7 @@ class SectionDataController extends BaseController {
       $section->name = $name;
       $section->slug = $slug;
       $section->email = $email;
+      $section->section_category = $sectionCategory;
       $section->section_type = $sectionType;
       $section->section_type_number = $sectionTypeNumber;
       $section->color = $color;

@@ -24,7 +24,7 @@
 </p>
 <ul>
   <li><a target="_blank" href="{{ URL::route('home') }}">La page d'accueil du site</a></li>
-  <li><a target="_blank" href="{{ URL::route('addresses') }}">La page d'adresses utiles</a></li>
+  <li><a target="_blank" href="{{ URL::route('contacts') }}">La page d'adresses utiles</a></li>
   <li><a target="_blank" href="{{ URL::route('annual_feast') }}">La page de la fête d'unité</a></li>
   <li><a target="_blank" href="{{ URL::route('registration') }}">La page d'inscription</a> (déjà préremplie)</li>
   <li><a target="_blank" href="{{ URL::route('unit_policy') }}">La charte d'unité</a></li>

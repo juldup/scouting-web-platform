@@ -86,6 +86,7 @@ function createSection(sectionId) {
   $("#section_form [name='section_id']").val(0);
   $("#section_form [name='section_name']").val("");
   $("#section_form [name='section_email']").val("");
+  $("#section_form [name='section_category']").val("");
   $("#section_form [name='section_type']").val("");
   $("#section_form [name='section_type_number']").val("");
   $("#section_form [name='section_color']").val(defaultColor);
@@ -106,6 +107,7 @@ function editSection(sectionId) {
   $("#section_form [name='section_id']").val(sectionId);
   $("#section_form [name='section_name']").val(sections[sectionId].name);
   $("#section_form [name='section_email']").val(sections[sectionId].email);
+  $("#section_form [name='section_category']").val(sections[sectionId].category);
   $("#section_form [name='section_type']").val(sections[sectionId].type);
   $("#section_form [name='section_type_number']").val(sections[sectionId].type_number);
   $("#section_form [name='section_color']").val(sections[sectionId].color);

@@ -35,6 +35,50 @@ class Section extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
+  // Static list of section categories
+  private static $CATEGORIES = array(
+      "baladins" => array(
+          "name" => "Baladins",
+          "scouts" => "baladins",
+      ),
+      "louveteaux" => array(
+          "name" => "Louveteaux",
+          "scouts" => "louveteaux",
+      ),
+      "eclaireurs" => array(
+          "name" => "Éclaireurs",
+          "scouts" => "éclaireurs",
+      ),
+      "pionniers" => array(
+          "name" => "Pionniers",
+          "scouts" => "pionniers",
+      ),
+      "nutons" => array(
+          "name" => "Nutons",
+          "scouts" => "nutons",
+      ),
+      "lutins" => array(
+          "name" => "Lutins",
+          "scouts" => "lutins",
+      ),
+      "guides" => array(
+          "name" => "Guides",
+          "scouts" => "guides",
+      ),
+      "castors" => array(
+          "name" => "Castors",
+          "scouts" => "castors",
+      ),
+      "routiers" => array(
+          "name" => "Routiers",
+          "scouts" => "routiers",
+      ),
+      "scouts" => array(
+          "name" => "Scouts",
+          "scouts" => "scouts",
+      ),
+  );
+  
   /**
    * Returns the list of section for use in a html select
    * 
@@ -71,11 +115,21 @@ class Section extends Eloquent {
    * on the section type ('baladins', 'louveteaux', 'éclaireurs', etc.)
    */
   public function getScoutName() {
-    if ($this->section_type == 'B') return "baladins";
-    if ($this->section_type == 'L') return "louveteaux";
-    if ($this->section_type == 'E') return "éclaireurs";
-    if ($this->section_type == 'P') return "pionniers";
+    if (array_key_exists($this->section_category, self::$CATEGORIES)) {
+      return self::$CATEGORIES[$this->section_category]['scouts'];
+    }
     return "scouts";
+  }
+  
+  /**
+   * Returns the list of section categories for use in a html select
+   */
+  public static function categoriesForSelect() {
+    $categories = array();
+    foreach (self::$CATEGORIES as $category => $categoryData) {
+      $categories[$category] = $categoryData["name"];
+    }
+    return $categories;
   }
   
 }

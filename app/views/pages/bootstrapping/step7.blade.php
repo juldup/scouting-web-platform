@@ -31,7 +31,7 @@
   <script>
     $().ready(function() {
       // Add new section
-      $('#new-section').change(function() {
+      $('[name="new-section"]').change(function() {
         var value = $(this).val();
         $(this).val('');
         createSection(value);
@@ -65,38 +65,38 @@
       $('#section-row-prototype').before(newElement);
       newElement.attr('id', null);
       newElement.removeClass('invisible');
-      if (type === 'B') {
+      newElement.find("[name='category']").val(type);
+      if (type === 'baladins') {
         newElement.find("[name='name']").val('Baladins');
         newElement.find("[name='color']").val('#000099');
         newElement.find("[name='la_section']").val('la ribambelle');
         newElement.find("[name='de_la_section']").val('de la ribambelle');
         newElement.find("[name='subgroup']").val('Hutte');
-      }
-      if (type === 'L') {
+        newElement.find("[name='code']").val(codeForType("B", 1));
+      } else if (type === 'louveteaux') {
         newElement.find("[name='name']").val('Louveteaux');
         newElement.find("[name='color']").val('#00BB36');
         newElement.find("[name='la_section']").val('la meute');
         newElement.find("[name='de_la_section']").val('de la meute');
         newElement.find("[name='subgroup']").val('Sizaine');
-      }
-      if (type === 'E') {
+        newElement.find("[name='code']").val(codeForType("L", 1));
+      } else if (type === 'eclaireurs') {
         newElement.find("[name='name']").val('Éclaireurs');
         newElement.find("[name='color']").val('#3399FF');
         newElement.find("[name='la_section']").val('la troupe');
         newElement.find("[name='de_la_section']").val('de la troupe');
         newElement.find("[name='subgroup']").val('Patrouille');
-      }
-      if (type === 'P') {
+        newElement.find("[name='code']").val(codeForType("E", 1));
+      } else if (type === 'pionniers') {
         newElement.find("[name='name']").val('Pionniers');
         newElement.find("[name='color']").val('#FF0000');
         newElement.find("[name='la_section']").val('le poste');
         newElement.find("[name='de_la_section']").val('du poste');
         newElement.find("[name='subgroup']").val('Équipe');
-      }
-      if (type === 'custom') {
-        newElement.find("[name='color']").val("#999999");
+        newElement.find("[name='code']").val(codeForType("P", 1));
       } else {
-         newElement.find("[name='code']").val(codeForType(type));
+        newElement.find("[name='name']").val(type[0].toUpperCase() + type.substring(1));
+        newElement.find("[name='color']").val("#999999");
       }
       newElement.find(".color-sample").css('background-color', newElement.find("[name='color']").val());
     }
@@ -117,6 +117,7 @@
         var data = {
           name: $(this).find("[name='name']").val(),
           email: $(this).find("[name='email']").val(),
+          category: $(this).find("[name='category']").val(),
           code: $(this).find("[name='code']").val(),
           color: $(this).find("[name='color']").val(),
           la_section: $(this).find("[name='la_section']").val(),
@@ -162,7 +163,10 @@
           <tr id="section-row-prototype" class="section-row invisible">
             <td><input type='text' class="invisible-input" name="name"></td>
             <td><input type='text' class="invisible-input" name="email"></td>
-            <td><input type='text' class="invisible-input small" name="code"></td>
+            <td>
+              <input type="hidden" name="category">
+              <input type='text' class="invisible-input small" name="code">
+            </td>
             <td>
               <input type='hidden' name="color">
               <a class="color-sample"></a>
@@ -177,15 +181,8 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-4">
-      <select id="new-section" class="form-control large">
-        <option value="">Ajouter une section de type...</option>
-        <option value="B">Baladins / Ribambelle</option>
-        <option value="L">Louveteaux / Meute</option>
-        <option value="E">Éclaireurs / Troupe</option>
-        <option value="P">Pionniers / Poste</option>
-        <option value="custom">Libre</option>
-      </select>
+    <div class="col-sm-4"> 
+      {{ Form::select('new-section', array_merge(array("" => "Ajouter une section de type..."), Section::categoriesForSelect()), '', array('class' => "form-control large")) }}
     </div>
     <div class="col-sm-4">
       <button id="submit-sections" class="btn btn-primary">Valider les sections</button>

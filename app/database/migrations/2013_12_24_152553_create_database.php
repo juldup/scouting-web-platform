@@ -74,6 +74,7 @@ class CreateDatabase extends Migration {
       $table->string('name');
       $table->string('slug')->unique();
       $table->integer('position');
+      $table->string('section_category')->nullable();
       $table->string('section_type')->nullable();
       $table->string('section_type_number')->nullable();
       $table->string('color')->default("#000000");
@@ -90,6 +91,7 @@ class CreateDatabase extends Migration {
         'name' => 'Unité',
         'slug' => 'unite',
         'position' => 1,
+        'section_category' => 'scouts',
         'section_type' => 'U',
         'section_type_number' => 0,
         'color' => "#606363",

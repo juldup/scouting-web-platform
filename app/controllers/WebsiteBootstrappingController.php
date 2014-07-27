@@ -468,6 +468,7 @@ class WebsiteBootstrappingController extends Controller {
           $section->name = $data['name'];
           $section->slug = Helper::slugify($data['name']); // TODO manage collisions
           $section->email = $data['email'];
+          $section->section_category = $data['category'];
           $section->section_type = strlen($data['code'] >= 1) ? substr($data['code'], 0, 1) : '';
           $section->section_type_number = strlen($data['code'] >= 2) ? substr($data['code'], 1) : '';
           $section->color = $data['color'];

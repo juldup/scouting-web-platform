@@ -42,6 +42,7 @@
       sections[{{ $section->id }}] = {
         'name': "{{ Helper::sanitizeForJavascript($section->name) }}",
         'email': "{{ Helper::sanitizeForJavascript($section->email) }}",
+        'category': "{{ Helper::sanitizeForJavascript($section->section_category) }}",
         'type': "{{ Helper::sanitizeForJavascript($section->section_type) }}",
         'type_number': "{{ Helper::sanitizeForJavascript($section->section_type_number) }}",
         'color': "{{ Helper::sanitizeForJavascript($section->color) }}",
@@ -87,13 +88,19 @@
             </div>
           </div>
           <div class="form-group">
+            {{ Form::label('section_category', 'Type de section', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-7">
+              {{ Form::select('section_category', Section::categoriesForSelect(), '', array('class' => 'form-control')) }}
+            </div>
+          </div>
+          <div class="form-group">
             {{ Form::label('section_type', 'Sigle', array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-9">
               {{ Form::text('section_type', '', array('class' => 'form-control small', 'placeholder' => 'ex.: B')) }}
               {{ Form::text('section_type_number', '', array('class' => 'form-control small', 'placeholder' => 'ex.: 1')) }}
               <span class="horiz-divider"></span>
               <span class="form-side-note">
-                Le sigle fédaration de la section&nbsp;: symbole (B, L, E, P...) + numéro (1, 2, 3...)
+                Le sigle fédération de la section&nbsp;: symbole (B, L, E, P...) + numéro (1, 2, 3...)
               </span>
             </div>
           </div>
@@ -107,21 +114,31 @@
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('section_la_section', '"la section"', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-3 control-label">
+              {{ Form::label('section_la_section', '"la section"') }}
+              <p>Utilisé pour compléter certaines phrase du site</p>
+            </div>
             <div class="col-md-7">
-              {{ Form::text('section_la_section', '', array('class' => 'form-control', 'placeholder' => "Utilisé pour compléter certaines phrases sur le site (ex.: la troupe)")) }}
+              {{ Form::text('section_la_section', '', array('class' => 'form-control large', 'placeholder' => "ex.: la meute")) }}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('section_de_la_section', '"de la section"', array('class' => 'col-md-3 control-label')) }}
+            <div class="col-md-3 control-label">
+              {{ Form::label('section_de_la_section', '"de la section"') }}
+              <p>Utilisé pour compléter certaines phrase du site</p>
+            </div>
             <div class="col-md-7">
-              {{ Form::text('section_de_la_section', '', array('class' => 'form-control', 'placeholder' => "Utilisé pour compléter certaines phrases sur le site (ex.: du poste)")) }}
+              {{ Form::text('section_de_la_section', '', array('class' => 'form-control large', 'placeholder' => "ex: de la meute")) }}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('section_subgroup_name', 'Nom des sous-groupes', array('class' => 'col-md-3 control-label')) }}
+            <div class='col-md-3 control-label'>
+              {{ Form::label('section_subgroup_name', 'Nom des sous-groupes') }}
+              <br />
+              (au singulier)
+            </div>
             <div class="col-md-7">
-              {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'Patrouille, Sizaine, Hutte...')) }}
+              {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'ex.: Sizaine')) }}
             </div>
           </div>
           <div class="form-group">
@@ -214,7 +231,7 @@
                       "De la section" :
                     </div>
                     <div class="col-xs-9">
-                       "Voici les e-mails <strong>{{{ $section->de_la_section }}}</strong>."
+                       "Voici les actualités <strong>{{{ $section->de_la_section }}}</strong>."
                     </div>
                   </div>
                   <div class="row">
