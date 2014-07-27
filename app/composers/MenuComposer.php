@@ -26,12 +26,13 @@ class MenuComposer {
     // Get current route to set current menu item as active
     $currentRoute = Route::current();
     $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
+    $currentRouteParameters = $currentRoute->parameters();
     $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
     
     // Generate menus
     $mainMenu = $this->generateMainMenu($currentRouteName);
     $leaderMenu = $this->generateLeaderMenu($currentRouteName);
-    $sectionList = $this->generateSectionList($currentRouteName);
+    $sectionList = $this->generateSectionList($currentRouteName, $currentRouteParameters);
     $sectionMenuItems = $this->generateSectionMenu($currentRouteName);
     
     // Pass the menu arrays to the view
@@ -128,7 +129,7 @@ class MenuComposer {
   /**
    * Generate the top part of the section menu containing the section list
    */
-  private function generateSectionList($currentRouteName) {
+  private function generateSectionList($currentRouteName, $routeParameters) {
     // Get current section
     $user = View::shared('user');
     $selectedSectionId = $user->currentSection->id;
