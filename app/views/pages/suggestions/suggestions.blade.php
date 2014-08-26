@@ -72,7 +72,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-horizontal well">
-          {{ Form::open(array('url' => URL::route('suggestions_submit'))) }}
+          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('suggestions_submit'))) }}
             <legend>
               Nouvelle suggestion
             </legend>
@@ -87,7 +87,7 @@
                   Attention ! Votre suggestion sera visible publiquement. Pour envoyer un message privé, visitez
                   la <a href="{{ URL::route('contacts') }}">page de contacts</a>.
                 </p>
-                {{ Form::submit('Soumettre', array('class' => "btn btn-primary")) }}
+                {{ Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Soumettre', 'disabled')) }}
               </div>
             </div>
           {{ Form::close() }}

@@ -58,6 +58,31 @@ function checkEnter(e) {
   if (e.which === 13 || e.keyCode === 13) submitLogin();
 }
 
+// The following induces a delay on obfuscated forms to prevent bots from using them
+$().ready(function() {
+  var timeout = 3;
+  var updateSubmitButton = function() {
+    if (timeout === 0) {
+      $(".obfuscated-form").each(function() {
+        $(this).find('input[type="submit"], button[type="submit"]').prop('disabled', false);
+        $(this).find('input[type="submit"]').each(function() {
+          $(this).val($(this).data('text'));
+        });
+        $(this).find('button[type="submit"]').each(function() {
+          $(this).html($(this).data('text'));
+        });
+        $(this).prop('action', $(this).data('action-url'));
+      });
+    } else {
+      $('.obfuscated-form').find('button[type="submit"]').html(timeout + " secondes");
+      $('.obfuscated-form').find('input[type="submit"]').val(timeout + " secondes");
+      timeout--;
+      setTimeout(updateSubmitButton, 1000);
+    }
+  };
+  updateSubmitButton();
+});
+
 /**************************************************
  * CALENDAR
  **************************************************/

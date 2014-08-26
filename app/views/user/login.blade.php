@@ -103,7 +103,7 @@
     <a name="nouvel-utilisateur"></a>
     <div class="col-md-12">
       <div class="well">
-        {{ Form::open(array('route' => 'create_user', 'name' => 'create', 'class' => 'form-horizontal')) }}
+        {{ Form::open(array('name' => 'create', 'class' => 'form-horizontal new-user-account-form obfuscated-form', 'data-action-url' => URL::route('create_user') )) }}
           <legend>Créez votre compte d'utilisateur.</legend>
           <div class='form-group'>
             {{ Form::label('create_username', "Pseudo", array('class' => "col-md-2 control-label")) }}
@@ -171,7 +171,7 @@
           </div>
           <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-              <button class="btn btn-primary" type='submit'>Créer un compte</button>
+              {{ Form::submit('Activez le javascript pour créer un compte', array('class' => "btn btn-primary", 'data-text' => 'Créer un compte', 'disabled')) }}
             </div>
           </div>
         {{ Form::close() }}
