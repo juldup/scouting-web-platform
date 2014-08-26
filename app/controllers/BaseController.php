@@ -79,6 +79,7 @@ abstract class BaseController extends Controller {
         $user = User::getWithUsernameAndPassword($username, $password);
         if ($user) {
           $userId = $user->id;
+          Session::put('user_id', $userId);
         }
       }
     }
