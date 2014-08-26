@@ -165,7 +165,7 @@ class ParameterController extends BaseController {
     $verifiedSendersArray = Input::get('email_safe_list');
     $verifiedSenders = "";
     foreach ($verifiedSendersArray as $verifiedSender) {
-      if ($verifiedSender && strpos($verifiedSenders, ";") === false) {
+      if ($verifiedSender && strpos($verifiedSender, ";") === false) {
         if ($verifiedSenders) $verifiedSenders .= ";";
         $verifiedSenders .= strtolower($verifiedSender);
       }
