@@ -44,7 +44,7 @@ class PhotoController extends BaseController {
     }
     // Get the current album (if any)
     $albumId = Route::input('album_id');
-    $pageSize = 2;
+    $pageSize = 10;
     $currentAlbum = null;
     if ($albumId) {
       $currentAlbum = PhotoAlbum::where('id', '=', $albumId)
