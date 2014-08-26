@@ -233,7 +233,7 @@ class CreateDatabase extends Migration {
     Schema::create('privileges', function($table) {
       $table->increments('id');
       $table->string('operation');
-      $table->string('scope');
+      $table->string('scope', 5);
       $table->integer('member_id')->unsigned();
       $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
       $table->timestamps();

@@ -21,7 +21,7 @@
  */
 
 // Get base URL
-$baseURL = file_get_contents(__DIR__ . "/../app/storage/site_data/website-base-url.txt");
+$baseURL = trim(file_get_contents(dirname(__FILE__) . "/../app/storage/site_data/website-base-url.txt"));
 
 // Call job
 file_get_contents("$baseURL/cron/suppression-auto-fiches-sante");

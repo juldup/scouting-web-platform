@@ -203,6 +203,7 @@ class WebsiteBootstrappingController extends Controller {
             }
           }
         } catch (Exception $ex) {
+          Log::error($ex);
           // In case of error
           $databaseExists = false;
           $databaseConfigError = true;
