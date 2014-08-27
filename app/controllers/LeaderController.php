@@ -252,15 +252,15 @@ class LeaderController extends BaseController {
         $success = false;
         $message = $result ? $result : "Une erreur est survenue. L'animateur n'a pas été ajouté.";
       } else {
-        Privilege::addBasePrivilegesForLeader($result);
+        $leader = $result;
+        Privilege::addBasePrivilegesForLeader($leader);
         $success = true;
         $message = "L'animateur a été ajouté au listing.";
       }
     }
-    // Get section
-    $section = Section::find(Input::get('section'));
     // Redirect with status message
     if ($success) {
+      $section = $leader->getSection();;
       LogEntry::log("Animateurs", $memberId ? "Modification d'un animateur" : "Ajout d'un animateur",
               array("Nom" => Input::get('first_name') . " " . Input::get('last_name'), "Section" => $section->name));
       return Redirect::to(URL::route('edit_leaders', array('section_slug' => $section->slug)))

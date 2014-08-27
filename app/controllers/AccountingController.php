@@ -180,8 +180,11 @@ class AccountingController extends BaseController {
       if (!$year) throw new Exception("Year parameter is missing");
       if (!Input::has('data')) throw new Exception("There is no transaction data");
       $error = false;
+      // Get data and unescape it if necessary
+      $data = Input::get('data');
+      if (strpos($data, "[{\\\"") === 0) $data = str_replace("\\\"", "\"", $data);
       // Get the new list of transactions
-      $categories = json_decode(Input::get('data'));
+      $categories = json_decode($data);
       // Position to create the order of the transactions
       $position = 1;
       // Get current transactions

@@ -215,7 +215,7 @@
               @endif
               {{-- Events of the day --}}
               @foreach ($events[$day] as $event)
-              @if ($editing) <a href="javascript:editEvent({{ $event->id }})"> @endif
+              @if ($editing && ($event->section_id != 1 || $can_edit_unit)) <a href="javascript:editEvent({{ $event->id }})"> @endif
               <div class="calendar-event-wrapper {{ !$editing ? "clickable" : "" }}">
                 <p class="calendar-event" title="{{{ $event->description }}}" style="color: {{$event->getSection()->color}};">
                   <img src="{{ $event->getIcon() }}" class='calendar-event-icon' />

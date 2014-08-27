@@ -86,7 +86,11 @@ class CalendarController extends BaseController {
     }
     // Filter by the current section
     if ($this->section->id != 1) {
-      $query = $query->where('section_id', '=', $this->section->id);
+      $sectionId = $this->section->id;
+      $query = $query->where(function($query) use ($sectionId) {
+        $query->where('section_id', '=', $sectionId);
+        $query->orWhere('section_id', '=', 1);
+      });
     }
     // Get items
     $calendarItems = $query->get();
@@ -114,6 +118,7 @@ class CalendarController extends BaseController {
     // Return view
     return View::make('pages.calendar.calendar', array(
         'can_edit' => $this->user->can(Privilege::$EDIT_CALENDAR),
+        'can_edit_unit' => $this->user->can(Privilege::$EDIT_CALENDAR, 1),
         'edit_url' => URL::route('manage_calendar_month', array('year' => $year, 'month' => $month, 'section_slug' => $this->section->slug)),
         'page_url' => URL::route('calendar_month', array('year' => $year, 'month' => $month, 'section_slug' => $this->section->slug)),
         'route_month' => $editing ? 'manage_calendar_month' : 'calendar_month',
