@@ -483,6 +483,7 @@ class WebsiteBootstrappingController extends Controller {
         // Success, go to next step
         return Redirect::to(URL::route('bootstrapping_step', array('step' => 8)));
       } catch (Exception $e) {
+        Log::error($e);
         // Error, show error message
         return Redirect::to(URL::route('bootstrapping_step', array('step' => 7)))
               ->with('error_message', "Une erreur s'est produite");

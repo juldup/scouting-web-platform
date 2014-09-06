@@ -559,7 +559,7 @@ class CreateDatabase extends Migration {
 	}
   
   public static function dropAllTables() {
-    try { Schema::drop('log_entries'); } catch (Excetpion $e) {}
+    try { Schema::drop('log_entries'); } catch (Exception $e) {}
     try { Schema::drop('archived_leaders'); } catch (Exception $e) {}
     try { Schema::drop('banned_emails'); } catch (Exception $e) {}
     try { Schema::drop('accounting_locks'); } catch (Exception $e) {}
