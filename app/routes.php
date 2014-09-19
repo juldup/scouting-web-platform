@@ -39,16 +39,19 @@ View::composer('menu.tabs', "TabsComposer");
 
 // Cron tasks
 Route::get('cron/envoi-automatique-emails', array("as" => "cron_send_emails_automatically", "uses" => function() {
+  LogEntry::$isCronJobUser = true;
   ScoutMailer::sendPendingEmails();
   // Update cron job status
   Parameter::set(Parameter::$CRON_EMAIL_LAST_EXECUTION, time());
 }));
 Route::get('cron/suppression-auto-fiches-sante', array("as" => "cron_auto_delete_health_cards", "uses" => function() {
+  LogEntry::$isCronJobUser = true;
   HealthCard::autoReminderAndDelete();
   // Update cron job last execution time
   Parameter::set(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION, time());
 }));
 Route::get('cron/augmenter-annee-auto', array("as" => "cron_auto_increment_year_in_section", "uses" => function() {
+  LogEntry::$isCronJobUser = true;
   Member::updateYearInSectionAuto();
   // Update cron job last execution time
   Parameter::set(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION, time());

@@ -60,7 +60,7 @@ class LogController extends BaseController {
           'id' => $log->id,
           'date' => date('Y/m/d H:i:s', strtotime($log->created_at)),
           'userEmail' => $user ? $user->email : "",
-          'user' => $user ? $user->username : "Visiteur",
+          'user' => $user ? $user->username : ($log->user_id === "0" || $log->user_id === 0 ? "Cron job" : "Visiteur"),
           'category' => $log->category,
           'action' => $log->action,
           'data' => json_decode($log->data, true),

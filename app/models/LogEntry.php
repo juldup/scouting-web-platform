@@ -31,6 +31,9 @@ class LogEntry extends Eloquent {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
+  // False, unless the current task is a cron job
+  public static $isCronJobUser = false;
+  
   /**
    * Creates a new log entry for the current user and persists it to the database
    * 
@@ -73,7 +76,7 @@ class LogEntry extends Eloquent {
       }
       // Save log
       LogEntry::create(array(
-          'user_id' => Session::get('user_id'),
+          'user_id' => self::$isCronJobUser ? 0 : Session::get('user_id'),
           'section_id' => View::shared('user') ? View::shared('user')->currentSection->id : null,
           'category' => $category,
           'action' => $action,
