@@ -104,9 +104,9 @@
   @if ($members->count())
     <div class="row">
       <div class="col-lg-12">
-        <table class="table table-striped table-hover">
+        <table class="table table-striped table-hover sort-by-column">
           <thead>
-            <th></th>
+          <th class="parser-false"></th>
             <th>Nom</th>
             <th>Prénom</th>
             <th>Date de naissance</th>

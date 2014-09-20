@@ -105,9 +105,9 @@
     
       <div class="row">
         <div class="col-md-12">
-          <table class="table table-striped table-hover">
+          <table class="table table-striped table-hover sort-by-column">
             <thead>
-              <th></th>
+              <th class="parser-false"></th>
               <th>Nom</th>
               <th>Prénom</th>
               @if ($sct['show_totem'])
@@ -117,7 +117,7 @@
                 <th>{{{ $sct['section_data']->subgroup_name }}}</th>
               @endif
               <th>Téléphone</th>
-              <th>E-mail</th>
+              <th class="parser-false">E-mail</th>
             </thead>
             <tbody>
               @foreach ($sct['members'] as $member)

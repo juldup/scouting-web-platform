@@ -152,6 +152,33 @@ html {
   white-space: nowrap;
 }
 
+// Sort tables by columns
+.sort-by-column th:not(.parser-false) {
+  cursor: pointer;
+}
+
+.tablesorter-headerAsc {
+  div {
+    display: inline-block;
+  }
+  :after {
+    content: " \e113";
+    font-family: 'Glyphicons Halflings';
+    font-size: .95em;
+  }
+}
+
+.tablesorter-headerDesc {
+  div {
+    display: inline-block;
+  }
+  :after {
+    content: " \e114";
+    font-family: 'Glyphicons Halflings';
+    font-size: .95em;
+  }
+}
+
 /**************************************************
  * NAVIGATION BAR
  **************************************************/

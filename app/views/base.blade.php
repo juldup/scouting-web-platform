@@ -47,6 +47,10 @@
   <script src="{{ asset('js/libs/bootstrap.min.js') }}"></script>
   <script src="{{ asset('js/application.js') }}"></script>
   <script src="{{ asset('js/libs/bootstrap-switch.min.js') }}"></script>
+  <script src="{{ asset('js/libs/jquery.tablesorter.js') }}"></script>
+  <script>
+    $('.sort-by-column').tablesorter();
+  </script>
   @yield('additional_javascript')
 </body>
 </html>
