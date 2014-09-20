@@ -217,7 +217,12 @@ class RegistrationController extends GenericPageController {
     if ($success) {
       $member = $result;
       // E-mail to parents/member
-      $emailAddresses = $member->is_leader ? array($member->email_member) : $member->getParentsEmailAddresses();
+      if ($member->is_leader) {
+        $emailAddresses = $member->email_member ? array($member->email_member) : array();
+      } else {
+        $emailAddresses = $member->getParentsEmailAddresses();
+      }
+      
       foreach ($emailAddresses as $recipient) {
         $emailContent = Helper::renderEmail('registrationConfirmation', $recipient, array(
             'member' => $member,
