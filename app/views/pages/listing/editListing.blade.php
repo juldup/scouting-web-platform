@@ -125,7 +125,7 @@
                 </td>
                 <td>{{{ $member->last_name }}}</td>
                 <td>{{{ $member->first_name }}}</td>
-                <td>{{{ $member->getHumanBirthDate() }}}</td>
+                <td data-text="{{ $member->birth_date }}">{{{ $member->getHumanBirthDate() }}}</td>
                 <td>{{{ $member->year_in_section }}}</td>
               </tr>
             @endforeach
