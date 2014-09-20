@@ -88,6 +88,7 @@
             <span class="glyphicon glyphicon-certificate" style="color: {{ $sct['section_data']->color }}"></span>
           @endif
           Listing {{{ $sct['section_data']->de_la_section }}}
+          @if ($sct['members']->count() > 1) ({{ $sct['members']->count() }} membres) @endif
         </h2>
       </div>
     </div>
