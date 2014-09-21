@@ -210,6 +210,10 @@
               ATTENTION ! Les e-mails envoyés via cette page seront visibles sur le site par <strong>TOUS LES MEMBRES</strong> de l'unité.
               N'envoie pas d'e-mails à caractère personnel.
             </p>
+          @else
+            <p class="alert alert-danger">
+              Cet e-mail sera visibles sur le site par <strong>TOUS LES ANIMATEURS</strong> de l'unité.
+            </p>
           @endif
           <div class="form-group">
             <div class="col-md-8 col-md-offset-2">
