@@ -1,7 +1,7 @@
 # Une plateforme web pour votre unité scoute
 
 Ce projet vous propose une plateforme web clé-sur-porte pour votre unité scoute. Elle permet non seulement
-que votre unité scoute ait une présence sur le web, mais vous fournit en plus une série d'outil pour la gestion
+que votre unité scoute ait une présence sur le web, mais vous fournit en plus une série d'outils pour la gestion
 de l'unité.
 
 Liste des fonctionnalités présentes:
