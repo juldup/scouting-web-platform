@@ -393,7 +393,7 @@ class EmailController extends BaseController {
           'sent' => false,
       ));
     }
-    LogEntry::log("E-mails", "Envoi d'un e-mail de section", array("Sujet" => $subject));
+    LogEntry::log("E-mails", $target == 'leaders' ? "Envoi d'un e-mail aux animateurs" : "Envoi d'un e-mail de section", array("Sujet" => $subject));
     return Redirect::route($this->user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : 'emails')
             ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }

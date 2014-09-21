@@ -59,8 +59,9 @@ class RecentChangesController extends BaseController {
       );
     }
     // List recent e-mails
-    $emails = Email::where('created_at', '>=', $startDate)
-            ->where('archived', '=', false)
+    $emails = Email::where('created_at', '>=', $startDate);
+    if (!$this->user->isLeader()) $emails->where('target', '!=', 'leaders');
+    $emails = $emails->where('archived', '=', false)
             ->where('deleted', '=', false)
             ->orderBy('created_at', 'desc')
             ->get();
