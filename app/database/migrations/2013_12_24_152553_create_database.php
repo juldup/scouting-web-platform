@@ -384,6 +384,7 @@ class CreateDatabase extends Migration {
       $table->increments('id');
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+      $table->string('target')->nullable();
       $table->date('date');
       $table->time('time');
       $table->string('subject');

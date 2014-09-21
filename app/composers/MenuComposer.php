@@ -95,7 +95,8 @@ class MenuComposer {
       $leaderCategory['Gérer les actualités'] = $user->can(Privilege::$EDIT_NEWS) ? 'manage_news' : null;
     if (Parameter::get(Parameter::$SHOW_EMAILS))
       $leaderCategory['Gérer les e-mails'] = $user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : null;
-    $leaderCategory['Envoyer un e-mail'] = $user->can(Privilege::$SEND_EMAILS) ? 'send_section_email' : null;
+    $leaderCategory['Envoyer un e-mail aux parents'] = $user->can(Privilege::$SEND_EMAILS) ? 'send_section_email' : null;
+    $leaderCategory['Envoyer un e-mail aux animateurs'] = 'send_leader_email';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
       $leaderCategory['Gérer les fiches santé'] = $user->can(Privilege::$VIEW_HEALTH_CARDS) ? 'manage_health_cards' : null;
     $leaderCategory['Trésorerie'] = 'accounting';

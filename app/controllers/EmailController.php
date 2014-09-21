@@ -44,8 +44,9 @@ class EmailController extends BaseController {
       $emails = Email::where(function($query) {
                   $query->where('archived', '=', true);
                   $query->orWhere('date', '<', Helper::oneYearAgo());
-              })
-              ->where('deleted', '=', false)
+              });
+      if (!$this->user->isLeader()) $emails->where('target', '!=', 'leaders');
+      $emails = $emails->where('deleted', '=', false)
               ->where('section_id', '=', $this->section->id)
               ->orderBy('id', 'DESC')
               ->skip($page * $pageSize)
@@ -55,17 +56,22 @@ class EmailController extends BaseController {
       $hasArchives = Email::where(function($query) {
                   $query->where('archived', '=', true);
                   $query->orWhere('date', '<', Helper::oneYearAgo());
-              })
+              });
+      if (!$this->user->isLeader()) $hasArchives->where('target', '!=', 'leaders');
+      $hasArchives = $hasArchives->where('deleted', '=', false)
               ->where('deleted', '=', false)
               ->where('section_id', '=', $this->section->id)
               ->orderBy('id', 'DESC')
               ->skip(($page + 1) * $pageSize)
               ->take(1)
+              ->get()
               ->count();
     } else {
       // Showing non-archived e-mails
       // Get e-mails that are not archived nor too old
-      $emails = Email::where('archived', '=', false)
+      $emails = Email::where('archived', '=', false);
+      if (!$this->user->isLeader()) $emails = $emails->where('target', '!=', 'leaders');
+      $emails = $emails->where('deleted', '=', false)
               ->where('date', '>=', Helper::oneYearAgo())
               ->where('deleted', '=', false)
               ->where('section_id', '=', $this->section->id)
@@ -75,8 +81,9 @@ class EmailController extends BaseController {
       $hasArchives = Email::where(function($query) {
                   $query->where('archived', '=', true);
                   $query->orWhere('date', '<', Helper::oneYearAgo());
-              })
-              ->where('deleted', '=', false)
+              });
+      if (!$this->user->isLeader()) $hasArchives->where('target', '!=', 'leaders');
+      $hasArchives = $hasArchives->where('deleted', '=', false)
               ->where('section_id', '=', $this->section->id)
               ->orderBy('id', 'DESC')
               ->count();
@@ -195,6 +202,43 @@ class EmailController extends BaseController {
     return View::make('pages.emails.sendEmail', array(
         'default_subject' => $this->defaultSubject(),
         'recipients' => $recipients,
+        'target' => 'parents',
+    ));
+  }
+  
+  /**
+   * [Route] Shows the page to send an e-mail to the leaders of a section
+   */
+  public function sendLeaderEmail() {
+    // Make sure the user can send e-mails to the members of this section
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    // Construct list of recipient (sorting them in categories: parents, scouts, leaders)
+    $recipients = array();
+    if ($this->section->id == 1) {
+      // Section is unit, add all members to the list
+      $leaders = array();
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+      foreach ($sections as $section) {
+        $recipientList = $this->getRecipientsForSection($section->id);
+        if (array_key_exists('leaders', $recipientList)) $leaders['Animateurs ' . $section->de_la_section] = $recipientList['leaders'];
+      }
+      $recipientList = $this->getRecipientsForSection(1);
+      if (array_key_exists('leaders', $recipientList)) $leaders["Équipe d'unité"] = $recipientList['leaders'];
+      if (count($leaders)) $recipients['Animateurs actuels'] = $leaders;
+    } else {
+      // Non-unit section
+      $recipientList = $this->getRecipientsForSection($this->section->id);
+      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs actuels'] = $recipientList['leaders'];
+      $recipients = array($recipients);
+    }
+    return View::make('pages.emails.sendEmail', array(
+        'default_subject' => $this->defaultSubject(),
+        'recipients' => $recipients,
+        'target' => 'leaders',
     ));
   }
   
@@ -243,7 +287,16 @@ class EmailController extends BaseController {
    */
   public function submitSectionEmail() {
     // Make sure the current user can send e-mails to this section
-    if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
+    $target = Input::get('target'); // Target is either 'parents' or 'leaders'
+    if ($target == 'parents') {
+      if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
+        return Helper::forbiddenResponse();
+      }
+    } elseif ($target == 'leaders') {
+      if (!$this->user->isLeader()) {
+        return Helper::forbiddenResponse();
+      }
+    } else {
       return Helper::forbiddenResponse();
     }
     // Gather input
@@ -272,21 +325,25 @@ class EmailController extends BaseController {
     $recipientArray = array();
     $allInput = Input::all();
     foreach ($allInput as $key=>$value) {
-      if (strpos($key, "parent_") === 0) {
-        $memberId = substr($key, strlen("parent_"));
-        $member = Member::find($memberId);
-        if ($member) {
-          if ($member->email1 && !in_array($member->email1, $recipientArray)) $recipientArray[] = $member->email1;
-          if ($member->email2 && !in_array($member->email2, $recipientArray)) $recipientArray[] = $member->email2;
-          if ($member->email3 && !in_array($member->email3, $recipientArray)) $recipientArray[] = $member->email3;
+      if ($target == 'parents') {
+        if (strpos($key, "parent_") === 0) {
+          $memberId = substr($key, strlen("parent_"));
+          $member = Member::find($memberId);
+          if ($member) {
+            if ($member->email1 && !in_array($member->email1, $recipientArray)) $recipientArray[] = $member->email1;
+            if ($member->email2 && !in_array($member->email2, $recipientArray)) $recipientArray[] = $member->email2;
+            if ($member->email3 && !in_array($member->email3, $recipientArray)) $recipientArray[] = $member->email3;
+          }
         }
       }
       if (strpos($key, "member_") === 0) {
         $memberId = substr($key, strlen("member_"));
         $member = Member::find($memberId);
         if ($member) {
-          if ($member->email_member && !in_array($member->email_member, $recipientArray))
-                  $recipientArray[] = $member->email_member;
+          if ($target == 'parents' || $member->is_leader) {
+            if ($member->email_member && !in_array($member->email_member, $recipientArray))
+                    $recipientArray[] = $member->email_member;
+          }
         }
       }
     }
@@ -304,6 +361,7 @@ class EmailController extends BaseController {
     try {
       $email = Email::create(array(
           'section_id' => $this->section->id,
+          'target' => $target,
           'date' => date('Y-m-d'),
           'time' => date('H:i:s'),
           'subject' => $subject,
@@ -336,7 +394,7 @@ class EmailController extends BaseController {
       ));
     }
     LogEntry::log("E-mails", "Envoi d'un e-mail de section", array("Sujet" => $subject));
-    return Redirect::route('manage_emails')
+    return Redirect::route($this->user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : 'emails')
             ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }
   

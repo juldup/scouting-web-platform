@@ -36,9 +36,18 @@
   @if ($can_send_emails)
     <p>
       <a href="{{ URL::route('send_section_email') }}">
-        Envoyer un e-mail
+        Envoyer un e-mail aux parents
       </a>
     </p>
+  @endif
+  @if ($user->isLeader())
+    <p>
+      <a href="{{ URL::route('send_leader_email') }}">
+        Envoyer un e-mail aux animateurs
+      </a>
+    </p>
+  @endif
+  @if ($can_send_emails)
     <p>
       <a href="{{ URL::route('manage_emails') }}" >
         Gérer les e-mails
@@ -55,6 +64,8 @@
     </div>
   </div>
   
+  @include('subviews.flashMessages')
+  
   @if (count($emails) == 0)
     <div class="row">
       <div class="col-lg-12">
@@ -68,8 +79,11 @@
     @foreach($emails as $email)
       <div class="row">
         <div class="col-md-12">
-          <div class="well">
+          <div class="well @if ($email->target == 'leaders') email-only-leaders @endif">
             <legend>
+              @if ($email->target == 'leaders')
+                <p class="email-only-leaders">Cet e-mail n'est visible que par les animateurs</p>
+              @endif
               {{{ $email->subject }}} – {{ Helper::dateToHuman($email->date) }} à {{ Helper::timeToHuman($email->time) }}
             </legend>
             <p>
@@ -96,7 +110,7 @@
     @include('subviews.limitedAccess')
   @endif
   
-  @if ($has_archives)
+  @if ($has_archives && $user->isMember())
     <div class="vertical-divider"></div>
     @if ($showing_archives)
       <div class="row">

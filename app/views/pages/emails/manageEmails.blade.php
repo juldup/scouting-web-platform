@@ -33,7 +33,12 @@
 @section('forward_links')
   <p>
     <a href="{{ URL::route('send_section_email') }}">
-      Envoyer un e-mail
+      Envoyer un e-mail aux parents
+    </a>
+  </p>
+  <p>
+    <a href="{{ URL::route('send_leader_email') }}">
+      Envoyer un e-mail aux animateurs
     </a>
   </p>
 @stop
@@ -59,8 +64,11 @@
   @foreach($emails as $email)
     <div class="row">
       <div class="col-md-12">
-        <div class="well">
+        <div class="well @if ($email->target == 'leaders') email-only-leaders @endif">
           <legend>
+            @if ($email->target == 'leaders')
+              <p class="email-only-leaders">Cet e-mail n'est visible que par les animateurs</p>
+            @endif
             <div class="row">
               <div class="col-md-9">
                 {{{ $email->subject }}} – {{ Helper::dateToHuman($email->date) }} à {{ Helper::timeToHuman($email->time) }}

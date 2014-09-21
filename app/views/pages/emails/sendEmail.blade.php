@@ -24,9 +24,33 @@
 
 @section('back_links')
   @if (Parameter::get(Parameter::$SHOW_EMAILS))
+    @if ($user->can(Privilege::$SEND_EMAILS))
+      <p>
+        <a href="{{ URL::route('manage_emails') }}" >
+          Liste des e-mails
+        </a>
+      </p>
+    @else
+      <p>
+        <a href="{{ URL::route('emails') }}" >
+          Liste des e-mails
+        </a>
+      </p>
+    @endif
+  @endif
+@stop
+
+@section('forward_links')
+  @if ($target == 'parents')
     <p>
-      <a href="{{ URL::route('manage_emails') }}" >
-        Liste des e-mails
+      <a href="{{ URL::route('send_leader_email') }}" >
+        Envoyer un e-mail aux animateurs
+      </a>
+    </p>
+  @elseif ($user->can(Privilege::$SEND_EMAILS))
+    <p>
+      <a href="{{ URL::route('send_section_email') }}" >
+        Envoyer un e-mail aux parents
       </a>
     </p>
   @endif
@@ -52,7 +76,11 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Envoi d'un e-mail aux parents {{{ $user->currentSection->de_la_section }}}</h1>
+      @if ($target == 'leaders')
+        <h1>Envoi d'un e-mail <strong>aux animateurs</strong> {{{ $user->currentSection->de_la_section }}}</h1>
+      @else
+        <h1>Envoi d'un e-mail <strong>aux parents</strong> {{{ $user->currentSection->de_la_section }}}</h1>
+      @endif
       @include('subviews.flashMessages')
     </div>
   </div>
@@ -60,7 +88,9 @@
   <div class="row">
     <div class="col-md-12">
       <div class="form-horizontal well">
-        {{ Form::open(array('id' => "email-form", 'files' => true, 'url' => URL::route('send_section_email_submit', array('section_slug' => $user->currentSection->slug)))) }}
+        {{ Form::open(array('id' => "email-form", 'files' => true,
+                  'url' => URL::route('send_section_email_submit', array('section_slug' => $user->currentSection->slug)))) }}
+          {{ Form::hidden('target', $target) }}
           <legend>E-mail</legend>
           <div class="form-group">
             {{ Form::label('subject', "Sujet", array('class' => 'col-md-2 control-label')) }}
@@ -175,10 +205,12 @@
           </div>
           
           <legend>Envoyer</legend>
-          <p class="alert alert-danger">
-            ATTENTION ! Les e-mails envoyés via cette page seront visibles sur le site par <strong>TOUS LES MEMBRES</strong> de l'unité.
-            N'envoie pas d'e-mails à caractère personnel.
-          </p>
+          @if ($target != 'leaders')
+            <p class="alert alert-danger">
+              ATTENTION ! Les e-mails envoyés via cette page seront visibles sur le site par <strong>TOUS LES MEMBRES</strong> de l'unité.
+              N'envoie pas d'e-mails à caractère personnel.
+            </p>
+          @endif
           <div class="form-group">
             <div class="col-md-8 col-md-offset-2">
               {{ Form::submit('Envoyer maintenant', array('class' => 'btn btn-primary')) }}

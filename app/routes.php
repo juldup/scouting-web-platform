@@ -185,6 +185,7 @@ Route::get('gestion/envoi-e-mail/{section_slug?}', array("as" => "send_section_e
 Route::post('gestion/envoi-e-mail/submit/{section_slug}', array("as" => "send_section_email_submit", "uses" => "EmailController@submitSectionEmail"));
 Route::get('gestion/e-mails/supprimer/{email_id}', array("as" => "manage_emails_delete", "uses" => "EmailController@deleteEmail"));
 Route::get('gestion/e-mails/archiver/{section_slug}/{email_id}', array("as" => "manage_emails_archive", "uses" => "EmailController@archiveEmail"));
+Route::get('gestion/envoi-e-mail-animateurs/{section_slug?}', array("as" => "send_leader_email", "uses" => "EmailController@sendLeaderEmail"));
 
 // Photos
 Route::get('photos/archives/{section_slug?}', array("as" => "photo_archives", "uses" => "PhotoController@showArchives"));
