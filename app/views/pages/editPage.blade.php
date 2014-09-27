@@ -36,7 +36,6 @@
   <script>
     CKEDITOR.replace('page_body', {
       language: 'fr',
-      extraAllowedContent: 'img[!src,width,height]{max-width};h1;h2;h3',
       extraPlugins: 'divarea',
       height: '400px'
     });

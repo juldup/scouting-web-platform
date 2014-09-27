@@ -36,6 +36,14 @@
       };
     @endforeach
   </script>
+  <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
+  <script>
+    CKEDITOR.replace('news_body', {
+      language: 'fr',
+      extraPlugins: 'divarea',
+      height: '200px'
+    });
+  </script>
 @stop
 
 @section('back_links')
@@ -74,7 +82,7 @@
           </div>
           <div class="form-group">
             {{ Form::label('news_body', "Contenu", array("class" => "col-md-2 control-label")) }}
-            <div class="col-md-8">
+            <div class="col-md-10">
               {{ Form::textarea('news_body', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
             </div>
           </div>
@@ -121,7 +129,7 @@
           <p>
           </p>
           <div>
-            {{ Helper::rawToHTML($newsItem->body) }}
+            {{ $newsItem->body }}
           </div>
         </div>
       </div>
