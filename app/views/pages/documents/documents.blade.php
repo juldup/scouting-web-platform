@@ -64,8 +64,8 @@
     @foreach ($docs as $doc)
       <div class="row">
         <div class="col-lg-12">
-          <div class="well clickable-no-default clickable">
-            @if ($user->isMember() || $doc->public)
+          @if ($user->isMember() || $doc->public)
+            <div class="well clickable-no-default clickable">
               <legend>
                 <div class="row">
                   <div class="col-xs-8 col-sm-10">
@@ -84,7 +84,9 @@
               <p>
                 {{ Helper::rawToHTML($doc->description) }}
               </p>
-            @else
+            </div>
+          @else
+            <div class="well">
               <legend>
                 <div class="row">
                   <div class="col-xs-10">
@@ -95,8 +97,8 @@
               <p>
                 Document privé.
               </p>
-            @endif
-          </div>
+            </div>
+          @endif
         </div>
       </div>
     @endforeach
@@ -113,7 +115,7 @@
     <div class="row">
       <div class="col-lg-12">
         <p>
-          Vous pouvez également recevoir un document directement par e-mail :
+          Si vous êtes membre de l'unité, vous pouvez également recevoir un document directement par e-mail (donnez une adresse que nous connaissons) :
         </p>
         {{ Form::open(array('route' => 'send_document_by_email')) }}
           M'envoyer le document
