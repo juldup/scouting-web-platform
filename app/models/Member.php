@@ -585,4 +585,37 @@ class Member extends Eloquent {
     LogEntry::log("Inscription", "Augmentation automatique de l'année de tous les membres");
   }
   
+  /**
+   * Return whether this user can do the given action (privilege) for the given section
+   */
+  public function can($action, $section = "") {
+    // Find section id
+    if (!$section) {
+      $sectionId = $this->section_id;
+    } else if (is_numeric($section)) {
+      $sectionId = $section;
+    } else {
+      $sectionId = $section->id;
+    }
+    // Convert action to operation
+    $operation = $action;
+    if (!is_string($operation)) $operation = $action['id'];
+    // Search privileges
+    $privileges = Privilege::where('member_id', '=', $this->id)->where("operation", "=", $operation)->get();
+    foreach ($privileges as $privilege) {
+      if ($privilege->scope == 'U') {
+        // Unit-wide privilege found, access granted
+        return true;
+      } else if ($privilege->scope == 'S') {
+        // Section-wide privilege found
+        if ($sectionId == $this->section_id) {
+          // Sections match, access granted
+          return true;
+        }
+      }
+    }
+    // No associated leader or matching privilege
+    return false;
+  }
+  
 }

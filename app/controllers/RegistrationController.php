@@ -239,8 +239,8 @@ class RegistrationController extends GenericPageController {
         ));
         $email->send();
       }
-      // E-mail to unit's leader(s) in charge
-      foreach (self::getLeaderInChargeEmailAddresses() as $recipient) {
+      // E-mail to unit's leader(s) that are allowed to register
+      foreach (self::getLeadersWithRegistrationPrivilege($member->section) as $recipient) {
         $emailContent = Helper::renderEmail('registrationConfirmation', $recipient, array(
             'member' => $member,
             'to_leaders' => true,
@@ -273,15 +273,15 @@ class RegistrationController extends GenericPageController {
    * Returns an array containing the e-mail addresses of all the unit's leader in charge.
    * In general there, will be only one.
    */
-  private static function getLeaderInChargeEmailAddresses() {
-    $unitLeadersInCharge = Member::where('is_leader', '=', true)
-            ->where('section_id', '=', '1')
+  private static function getLeadersWithRegistrationPrivilege($section) {
+    $leaders = Member::where('is_leader', '=', true)
             ->where('validated', '=', true)
-            ->where('leader_in_charge', '=', true)
             ->get();
     $emailAddresses = array();
-    foreach ($unitLeadersInCharge as $leader) {
-      $emailAddresses[] = $leader->email_member;
+    foreach ($leaders as $leader) {
+      if (($leader->leader_in_charge && $leader->section_id == 1) || $leader->can(Privilege::$EDIT_LISTING_ALL, $section)) {
+        $emailAddresses[] = $leader->email_member;
+      }
     }
     return $emailAddresses;
   }
