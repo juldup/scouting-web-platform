@@ -196,7 +196,9 @@ class EmailController extends BaseController {
       $recipientList = $this->getRecipientsForSection($this->section->id);
       if (array_key_exists('parents', $recipientList)) $recipients['Parents'] = $recipientList['parents'];
       if (array_key_exists('scouts', $recipientList)) $recipients['Scouts'] = $recipientList['scouts'];
-      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs'] = $recipientList['leaders'];
+      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs ' . $this->section->de_la_section] = $recipientList['leaders'];
+      $recipientList = $this->getRecipientsForSection(1);
+      if (array_key_exists('leaders', $recipientList)) $recipients["Équipe d'unité"] = $recipientList['leaders'];
       $recipients = array($recipients);
     }
     return View::make('pages.emails.sendEmail', array(
@@ -232,7 +234,9 @@ class EmailController extends BaseController {
     } else {
       // Non-unit section
       $recipientList = $this->getRecipientsForSection($this->section->id);
-      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs actuels'] = $recipientList['leaders'];
+      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs ' . $this->section->de_la_section] = $recipientList['leaders'];
+      $recipientList = $this->getRecipientsForSection(1);
+      if (array_key_exists('leaders', $recipientList)) $recipients["Équipe d'unité"] = $recipientList['leaders'];
       $recipients = array($recipients);
     }
     return View::make('pages.emails.sendEmail', array(
