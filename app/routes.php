@@ -156,6 +156,7 @@ Route::get('actualites/{section_slug?}', array("as" => "news", "uses" => "NewsCo
 Route::get('gestion/actualites/{section_slug?}', array("as" => "manage_news", "uses" => "NewsController@showEdit"));
 Route::post('gestion/actualites/submit/{section_slug}', array("as" => "manage_news_submit", "uses" => "NewsController@submitNews"));
 Route::get('gestion/actualites/delete/{news_id}', array("as" => "manage_news_delete", "uses" => "NewsController@deleteNews"));
+Route::get('nouvelle/{news_id}', array("as" => "single_news", "uses" => "NewsController@showSingleNews"));
 
 // Calendar
 Route::get('calendrier/{year}/{month}/{section_slug?}', array("as" => "calendar_month", "uses" => "CalendarController@showPage"));

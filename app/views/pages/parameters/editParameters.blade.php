@@ -247,6 +247,26 @@
           <legend>
             <div class="row">
               <div class="col-sm-8">
+                Réseaux sociaux
+              </div>
+              <div class="col-sm-4 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('facebook_app_id', "Facebook App ID") }}
+              <p>Pour activer les fonctionnalités Facebook, <a href="https://developers.facebook.com/apps" target="_blank">créez une application Facebook</a> et entrez ici son ID.</p>
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('facebook_app_id', Parameter::get(Parameter::$FACEBOOK_APP_ID ), array("class" => "form-control")) }}
+            </div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-sm-8">
                 Paramètres avancés du site
               </div>
               <div class="col-sm-4 text-right">

@@ -80,6 +80,27 @@ class NewsController extends BaseController {
   }
   
   /**
+   * [Route] Shows a page containing a single news item
+   */
+  public function showSingleNews($news_id) {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_NEWS)) {
+      return App::abort(404);
+    }
+    // Build query
+    $newsItem = News::find($news_id);
+    if (!$newsItem) {
+      return App::abort(404);
+    }
+    // Make view
+    return View::make('pages.news.single-news', array(
+        'can_edit' => $this->user->can(Privilege::$EDIT_NEWS, $newsItem->section_id),
+        'edit_url' => URL::route('manage_news', array('section_slug' => $newsItem->getSection()->slug)),
+        'newsItem' => $newsItem
+    ));
+  }
+  
+  /**
    * [Route] Shows the global news page, listing the news of all sections
    */
   public function showGlobalNewsPage() {

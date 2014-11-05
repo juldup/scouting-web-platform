@@ -148,6 +148,13 @@ class ParameterController extends BaseController {
       Log::error($e);
       $error = true;
     }
+    // Save Facebook app id
+    try {
+      Parameter::set(Parameter::$FACEBOOK_APP_ID, Input::get('facebook_app_id'));
+    } catch (Exception $e) {
+      Log::error($e);
+      $error = true;
+    }
     // Save the advanced e-mail parameters
     try {
       Parameter::set(Parameter::$WEBMASTER_EMAIL, Input::get('webmaster_email'));

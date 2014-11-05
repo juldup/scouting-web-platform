@@ -42,6 +42,31 @@
   @endif
 @stop
 
+@section('body_top')
+  @if (Parameter::get(Parameter::$FACEBOOK_APP_ID))
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '{{{ Parameter::get(Parameter::$FACEBOOK_APP_ID) }}}',
+          xfbml      : true,
+          version    : 'v2.2'
+        });
+      };
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/fr_FR/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+  @endif
+@stop
+
+@section('additional_javascript')
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+@stop
+
 @section('content')
   
   <div class="row">
@@ -58,6 +83,23 @@
       <div class="col-md-12">
         <div class="well">
           <legend>
+            @if (Parameter::get(Parameter::$FACEBOOK_APP_ID))
+              <ul class='social-widgets'>
+                <li class="google-plus-widget">
+                  <div class="g-plusone" data-size="medium" data-href="{{ URL::route('single_news', array('news_id' => $newsItem->id)) }}"></div>
+                </li>
+                <li class="facebook-widget">
+                  <div
+                    class="fb-like"
+                    data-share="true"
+                    data-layout="button_count"
+                    data-show-faces="false"
+                    data-kid-directed-site="true"
+                    data-href="{{ URL::route('single_news', array('news_id' => $newsItem->id)) }}">
+                  </div>
+                </li>
+              </ul>
+            @endif
             @if ($is_global_news_page)
               <span class="glyphicon glyphicon-certificate" style="color: {{ Section::find($newsItem->section_id)->color }}"></span>
               {{{ Section::find($newsItem->section_id)->name }}} :

@@ -30,6 +30,7 @@
   {{ Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) }}
 </head>
 <body>
+  @yield('body_top')
   <div id="wrap">
     @include('menu.header')
     <div class="container">
