@@ -86,7 +86,7 @@
               <div class='col-md-7'>
                 <p class="form-side-note">
                   <span class="danger">
-                    Attention&nbsp;! Choisissez un mot de passe robuset, car quelqu'un qui devinerait ce mot de passe pourrait
+                    Attention&nbsp;! Choisissez un mot de passe robuste, car quelqu'un qui devinerait ce mot de passe pourrait
                     accéder à toutes les informations privées du site et des membres de l'unité.
                   </span>
                   Pourra être changé par la suite.

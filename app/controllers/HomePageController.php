@@ -78,6 +78,7 @@ class HomePageController extends GenericPageController {
       return Response::make(file_get_contents($path), 200, array(
           "Content-Type" => "image",
           "Content-Length" => filesize($path),
+          "Cache-control" => "public, max-age=3600"
       ));
     }
     return App::abort(204); // No content

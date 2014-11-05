@@ -14,6 +14,7 @@ The Belgian Scouting Web Platform is licensed under the [GNU General Public Lice
 
 1. Copy the whole project on your server
 1. Install composer at the root of the file hierarchy: `curl -sS https://getcomposer.org/installer | php`
+1. Ensure that mcrypt has been activated: `sudo php5enmod mcrypt && sudo service apache2 restart`
 1. Run composer to load libraries: `php composer.phar install`
 1. Make the base url **/** point to the **public/** folder
 1. Load the website's base url and follow the instructions to configure your website

@@ -46,7 +46,7 @@ Liste des fonctionnalités présentes:
 
 ### Démonstration
 
-Jetez un œil à la [démonstration du site](http://demo.sv20.be) pour savoir si cette plateforme vous convient.
+Jetez un œil à la [démonstration du site](http://scouts-demo.jdupuis.com) pour savoir si cette plateforme vous convient.
 
 ### Combien ça coute ?
 
@@ -62,6 +62,7 @@ Une fois que vous avez votre hébergement et votre système d'envoi d'e-mails, v
 
 1. Copiez toute la hiérarchie du projet sur votre serveur
 1. Installez composer à la racine du projet: `curl -sS https://getcomposer.org/installer | php`
+1. Assurez-vous que mcrypt est activé: `sudo php5enmod mcrypt && sudo service apache2 restart`
 1. Installez les librairies via composer: `php composer.phar install`
 1. Faites pointer l'URL de base **/** vers le répertoire **public/**
 1. Ouvrez l'URL de base dans un navigateur et suivez les étapes de configuration du site
