@@ -95,6 +95,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Changes the attendance status to an event for a member
    */
   $scope.toggle = function(member, event) {
+    if (!canEdit) return;
     member.status["event_" + event.id] = !member.status["event_" + event.id];
     $scope.uploadChanges();
   };
@@ -103,6 +104,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Set the attendance status of all members to the given value
    */
   $scope.setAll = function(event, status) {
+    if (!canEdit) return;
     // Check if there are members with different statuses
     var noneAttended = true;
     var allAttended = true;
@@ -164,6 +166,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Removes an event from the monitored list
    */
   $scope.remove = function(event) {
+    if (!canEdit) return;
     if (confirm("Supprimer l'activité \"" + event.title + "\" du " + $scope.formatDate(event.date) + " de la liste des présences ?")) {
       $scope.monitoredEvents.splice($scope.monitoredEvents.indexOf(event), 1);
       $scope.unmonitoredEvents.push(event);
@@ -179,6 +182,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Adds an event to the monitored list
    */
   $scope.addUnmonitoredEvent = function(eventId) {
+    if (!canEdit) return;
     for (var i = 0; i < $scope.unmonitoredEvents.length; i++) {
       var event = $scope.unmonitoredEvents[i];
       if (event.id == eventId) {
