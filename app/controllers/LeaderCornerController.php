@@ -41,6 +41,12 @@ class LeaderCornerController extends BaseController {
                 'help' => 'edit-calendar',
                 'condition' => Parameter::$SHOW_CALENDAR,
             ),
+            "Présences" => array(
+                'url' => URL::route('edit_attendance'),
+                'help-anchor' => 'attendance',
+                'help' => 'edit-attendance',
+                'condition' => Parameter::$SHOW_CALENDAR,
+            ),
             "Photos" => array(
                 'url' => $this->user->can(Privilege::$POST_PHOTOS) ? URL::route('edit_photos') : null,
                 'help-anchor' => 'photos',

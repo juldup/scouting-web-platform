@@ -85,7 +85,7 @@ html {
   float: left;
 }
 
-.clickable, .clickable-no-default, a, input[type='file'] {
+.clickable, .clickable-no-default, a, input[type='file'], .pointer-cursor {
   cursor: pointer;
 }
 
@@ -504,6 +504,44 @@ img.image_preview_edit_page {
   #download-calendar-button {
     margin-top: 15px;
   }
+}
+
+/**************************************************
+ * ATTENDANCE
+ **************************************************/
+
+#attendance-wrapper th.name-column {
+  min-width: 120px;
+}
+
+#attendance-wrapper th.count-column {
+  width: 80px;
+}
+
+#attendance-wrapper th.navigation-column {
+  width: 50px;
+}
+
+#attendance-wrapper th.attendance-column {
+  width: 80px;
+}
+
+#attendance-wrapper table.attendance-table {
+   width: auto;
+}
+
+#attendance-wrapper .attendance-present {
+  color: green;
+}
+
+#attendance-wrapper .attendance-absent {
+  color: @brand-danger;
+}
+
+#attendance-wrapper .remove-event .glyphicon-remove {
+  color: @gray-light;
+  position: relative;
+  top: 2px;
 }
 
 /**************************************************

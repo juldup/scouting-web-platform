@@ -41,7 +41,7 @@ class LogEntry extends Eloquent {
    * @param string $action    The action of this log (either a string or an array with 'text' and 'category' keys)
    * @param array $data       An array containing the data detailing the log
    */
-  public static function log($category, $action, $data = null) {
+  public static function log($category, $action, $data = array()) {
     self::createLog($category, $action, $data, false);
   }
   
@@ -52,7 +52,7 @@ class LogEntry extends Eloquent {
    * @param string $action    The action of this log (either a string or an array with 'text' and 'category' keys)
    * @param array $data       An array containing the data detailing the log
    */
-  public static function error($category, $action, $data = null) {
+  public static function error($category, $action, $data = array()) {
     self::createLog($category, $action, $data, true);
   }
   

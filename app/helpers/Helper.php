@@ -98,6 +98,7 @@ class Helper {
     $year = date('Y');
     if (date('m') < 8) $thisYear = ($year - 1) . "-" . $year;
     else $thisYear = $year . "-" . ($year + 1);
+    return $thisYear;
   }
   
   /**

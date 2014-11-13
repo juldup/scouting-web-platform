@@ -67,6 +67,20 @@
     Pour supprimer un événement, clique sur l'événement dans le calendrier, puis clique sur supprimer.</p>
 @endif
 
+@if ($help == 'attendance')
+  <p>Cette page permet de noter les présences des membres de la section aux activités du calendrier.</p>
+  <h3>Ajouter une activité</h3>
+  <p>Pour ajouter une activité, elle doit être présente dans le calendrier.</p>
+  <p>Si une activité est présente dans le calendrier, elle apparait dans la liste "Ajouter une activité à la liste des présences". La <strong>sélectionner</strong> l'ajoutera immédiatement.</p>
+  <p>On peut retirer une activité ajoutée par erreur en cliquant sur la croix à côté de la date</p>
+  <h3>Les informations de la grille</h3>
+  <p>Chaque ligne correspond à un membre de la section (les animateurs sont au bas de la liste).</p>
+  <p>Chaque colonne correspond à une activité (seule la date est indiquée).</p>
+  <p><strong>Cliquer sur une case</strong> change le status (absent &#8644; présent). Il est possible de noter tout le monde absent/présent d'un seul clic.</p>
+  <p>Le total de présences et d'absences par membre est affiché. Le total par activité est également affiché en bas.</p>
+  <p>S'il y a plus de 10 activités, seules les 10 dernières seront affichées. Il est alors possible de naviguer avec les flèches <strong>&lt;&lt;&lt;</strong> et <strong>&gt;&gt;&gt;</strong>.</p>
+@endif
+
 @if ($help == 'edit-photos')
   <h3>Créer un album</h3>
   <p>Tu peux créer un album via le bouton <strong><em>Créer un nouvel album</em></strong>. L'idéal est de créer un album par réunion ou activité.</p>

@@ -33,6 +33,13 @@
   </p>
 @endif
 
+@if ($help == 'edit-attendance')
+  <legend>Présences @yield('back_to_top')</legend>
+  <p>
+    Cet outil permet de cocher les présences des membres aux activités de l'année, une bonne manière de garder une trace.
+  </p>
+@endif
+
 @if ($help == 'edit-photos')
   <legend>Gérer les photos @yield('back_to_top')</legend>
   <p>

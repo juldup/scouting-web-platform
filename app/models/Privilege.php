@@ -69,6 +69,13 @@ class Privilege extends Eloquent {
       'predefined' => "ARSU"
   );
   
+  public static $MANAGE_ATTENDANCE = array(
+      'id' => "Manage attendance",
+      'text' => 'Cocher les présences aux activités #delasection',
+      'section' => true,
+      'predefined' => "ARSU"
+  );
+  
   public static $EDIT_NEWS = array(
       'id' => "Edit news",
       'text' => 'Poster des nouvelles (actualités) pour #lasection',
@@ -195,6 +202,7 @@ class Privilege extends Eloquent {
     return array(
         self::$UPDATE_OWN_LISTING_ENTRY,
         self::$EDIT_CALENDAR,
+        self::$MANAGE_ATTENDANCE,
         self::$POST_PHOTOS,
         self::$VIEW_HEALTH_CARDS,
         
