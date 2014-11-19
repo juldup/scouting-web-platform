@@ -10,7 +10,7 @@
     "michelf/php-markdown": "1.4.*",
     "tecnick.com/tcpdf": "dev-master",
     "phpoffice/phpexcel": "dev-master",
-    "setasign/fpdi": "dev-master"
+    "setasign/fpdi": "1.4.2"
   },
   "autoload": {
     "classmap": [
