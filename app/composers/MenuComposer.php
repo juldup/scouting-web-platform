@@ -25,9 +25,15 @@ class MenuComposer {
     
     // Get current route to set current menu item as active
     $currentRoute = Route::current();
-    $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
-    $currentRouteParameters = $currentRoute->parameters();
-    $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
+    if ($currentRoute) {
+      $currentRouteAction = $currentRoute ? $currentRoute->getAction() : "";
+      $currentRouteParameters = $currentRoute->parameters();
+      $currentRouteName = $currentRouteAction ? $currentRouteAction['as'] : "";
+    } else {
+      // On 404 error, there might be no route
+      $currentRouteName = "";
+      $currentRouteParameters = array();
+    }
     
     // Generate menus
     $mainMenu = $this->generateMainMenu($currentRouteName);
