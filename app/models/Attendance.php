@@ -22,10 +22,11 @@
  * Columns:
  *   - member_id:  The member that was present or absent to the event
  *   - event_id:   The event attended or not
+ *   - section_id: Id of the section this belongs to (usually the member's section for the current year)
  *   - attended:   Whether the event was attended by this member
  */
 class Attendance extends Eloquent {
   
-  protected $fillable = array('member_id', 'event_id', 'attended');
+  protected $fillable = array('member_id', 'event_id', 'section_id', 'attended');
   
 }

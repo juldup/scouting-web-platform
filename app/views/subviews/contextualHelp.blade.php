@@ -21,7 +21,7 @@
 
 <div class="help-wrapper">
   <div class="help-toggle-button">
-    <a class="help-badge" href=""></a>
+    <a class="help-badge" href="#"></a>
   </div>
   <div class="well help-content" style="display: none;">
 

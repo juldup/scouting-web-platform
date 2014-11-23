@@ -190,6 +190,11 @@ angularAttendance.controller('AttendanceController', function($scope) {
         $scope.monitoredEvents.push(event);
         $scope.sortEvents($scope.monitoredEvents);
         $scope.updateTimeframe();
+        $scope.members.forEach(function(member) {
+          // Make sur member.status is a non-array object
+          if (!member.status || Array.isArray(member.status)) member.status = {};
+          member.status["event_" + eventId] = false;
+        });
         $scope.$$phase || $scope.$apply();
         $scope.uploadChanges();
         // Reset select
@@ -208,6 +213,9 @@ angularAttendance.controller('AttendanceController', function($scope) {
   // Uploading status
   $scope.uploading = false;
   
+  // True if some changes are yet unsynchronized
+  $scope.unsynchronized = false;
+  
   // Change counter (to avoid uploading when more recent changes have been made)
   $scope.uploadId = 0;
   
@@ -223,6 +231,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
     $scope.uploadId++;
     // Show synchronization icon
     $("#pending-commit").show();
+    $scope.unsynchronized = true;
     // Don't upload now if an upload is already running
     if ($scope.uploading) {
       return;
@@ -262,6 +271,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
               } else {
                 // No more pending upload, hide the synchronization icon
                 $("#pending-commit").hide();
+                $scope.unsynchronized = false;
               }
             } else {
               // An error has occured
@@ -279,6 +289,18 @@ angularAttendance.controller('AttendanceController', function($scope) {
       }
     }, 1000); // Upload in 1 second
   };
+  
+  // Prevent leaving page before everything is synchronized
+  window.onbeforeunload = function() {
+    if ($scope.unsynchronized) {
+      return 'Les changements ne sont pas encore tous sauvés. Quitter quand même ?';
+    }
+  };
+  $('a').filter('[href!="#"]').on('click', function () {
+    if ($scope.unsynchronized) {
+      return confirm('Les changements ne sont pas encore tous sauvés. Quitter quand même ?');
+    }
+  });
   
 });
 

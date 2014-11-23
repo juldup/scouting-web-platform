@@ -36,15 +36,19 @@ class AttendanceController extends BaseController {
     }
     // Create list of events
     $years = explode('-', $year);
-    $eventList = CalendarItem::where('section_id', '=', $this->user->currentSection->id)
+    $eventList = CalendarItem::whereIn('section_id', array($this->user->currentSection->id, 1))
             ->where('start_date', '<=', $years[1] . "-7-31")
             ->where('end_date', '>=', $years[0] . "-8-1")
             ->orderBy('start_date')
             ->get();
+    // Sort events by monitored/unmonitored
     $monitoredEvents = array();
     $unmonitoredEvents = array();
     foreach ($eventList as $event) {
-      if ($event->attendance_monitored) {
+      $first = Attendance::where('section_id', '=', $this->user->currentSection->id)
+              ->where('event_id', '=', $event->id)
+              ->first();
+      if ($first) {
         $monitoredEvents[] = array("id" => $event->id, "date" => $event->start_date, "title" => $event->event);
       } else {
         $unmonitoredEvents[] = array("id" => $event->id, "date" => $event->start_date, "title" => $event->event);
@@ -68,20 +72,22 @@ class AttendanceController extends BaseController {
                 ->first();
         if ($attendance) {
           $status["event_" . $event['id']] = $attendance->attended ? true : false;
+        } else {
+          $status["event_" . $event['id']] = false;
         }
       }
       $member['status'] = $status;
       $members[] = $member;
     }
     // Render view
-    return View::make('pages.attendance.editAttendance', [
+    return View::make('pages.attendance.editAttendance', array(
         'year' => $year,
         'canEdit' => $this->user->can(Privilege::$MANAGE_ATTENDANCE),
         'members' => $members,
         'monitoredEvents' => $monitoredEvents,
         'unmonitoredEvents' => $unmonitoredEvents,
         'previousYear' => (substr($year, 0, 4)-1) . "-" . substr($year, 0, 4),
-    ]);
+    ));
   }
   
   /**
@@ -93,21 +99,10 @@ class AttendanceController extends BaseController {
         throw new Exception("Attendance edition unauthorized for this user");
       }
       // Get input
+      Log::info("Events: " . Input::get('events'));
+      Log::info("Data: " . Input::get('data') . "\n\n\n");
       $data = json_decode(Input::get('data'));
       $events = json_decode(Input::get('events'));
-      // Update events with monitoring status
-      foreach ($events as $event) {
-        $calendarItem = CalendarItem::find($event->id);
-        if ($calendarItem) {
-          // Make sure the event belongs to the same section, for security reasons
-          if ($calendarItem->section_id != $this->user->currentSection->id) {
-            throw new Exception("Attendance edition unauthorized for this user: wrong section " . $calendarItem->section_id . " != " . $this->user->currentSection->id);
-          }
-          // Update event
-          $calendarItem->attendance_monitored = $event->monitored;
-          $calendarItem->save();
-        }
-      }
       // Update members' attendance status
       foreach ($data as $memberData) {
         foreach ($events as $event) {
@@ -121,12 +116,14 @@ class AttendanceController extends BaseController {
             // Get attendance object for this member and event
             $attendance = Attendance::where('member_id', '=', $memberData->id)
                     ->where('event_id', '=', $event->id)
+                    ->where('section_id', '=', $this->user->currentSection->id)
                     ->first();
             if (!$attendance) {
               // Create new attendance instance
               $attendance = Attendance::create(array(
                   'member_id' => $memberData->id,
                   'event_id' => $event->id,
+                  'section_id' => $this->user->currentSection->id,
                   'attended' => $attended ? true : false,
               ));
             } else {
@@ -136,6 +133,11 @@ class AttendanceController extends BaseController {
                 $attendance->save();
               }
             }
+          } else {
+            // Remove all corresponding attendance entries
+            Attendance::where('event_id', '=', $event->id)
+                    ->where('section_id', '=', $this->user->currentSection->id)
+                    ->delete();
           }
         }
       }

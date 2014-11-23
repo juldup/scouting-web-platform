@@ -34,16 +34,14 @@ class AddAttendance extends Migration {
       $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
       $table->integer('event_id')->unsigned();
       $table->foreign('event_id')->references('id')->on('calendar_items')->onDelete('cascade');
+      $table->integer('section_id')->unsigned();
+      $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->boolean('attended')->default(false);
       $table->timestamps();
       
       $table->index('member_id');
       $table->index('event_id');
-    });
-    
-    // Add attendance_monitored in calendar_items table
-    Schema::table('calendar_items', function(Blueprint $table) {
-      $table->boolean('attendance_monitored')->default(false);
+      $table->index('section_id');
     });
 	}
   
@@ -53,11 +51,6 @@ class AddAttendance extends Migration {
 	 * @return void
 	 */
 	public function down() {
-		try {
-      Schema::table('calendar_items', function(Blueprint $table) {
-        $table->dropColumn('attendance_monitored');
-      });
-    } catch (Exception $e) {}
     try { Schema::drop('attendances'); } catch (Exception $e) {}
 	}
   
