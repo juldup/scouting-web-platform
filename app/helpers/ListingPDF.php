@@ -27,12 +27,34 @@ class ListingPDF {
    * @param array $sections  The list of sections to include
    * @param string $output  The output format ('pdf', 'csv' or 'excel')
    * @param boolean $exportPrivateData  Whether the private data must be included in the listing (csv and pdf only)
+   * @param boolean $includeScouts  Whether non-leader members are included in the listing
+   * @param boolean $includeLeaders  Whether leaders are included in the listing
+   * @param boolean $groupBySection  If true, each section will have a separate page/sheet for itself
    */
-  public static function downloadListing($sections, $output = 'pdf', $exportPrivateData = false) {
+  public static function downloadListing($sections, $output = 'pdf', $exportPrivateData = false, $includeScouts = true, $includeLeaders = false, $groupBySection = true) {
+    $sections = self::reorderSections($sections);
+    if (count($sections) == 1) $groupBySection = true;
     if ($output != "excel" && $output != "csv") $output = "pdf";
     if ($output == "pdf" && $exportPrivateData) $exportPrivateData = false;
     $listingExcel = new ListingPDF();
-    $listingExcel->doDownloadListing($sections, $output, $exportPrivateData);
+    $listingExcel->doDownloadListing($sections, $output, $exportPrivateData, $includeScouts, $includeLeaders, $groupBySection);
+  }
+  
+  /**
+   * Reorders a list of sections by placing the Unit section at the end
+   */
+  private static function reorderSections($sections) {
+    $newSections = array();
+    $unit = null;
+    foreach ($sections as $section) {
+      if ($section->id == 1) {
+        $unit = $section;
+      } else {
+        $newSections[] = $section;
+      }
+    }
+    if ($unit) $newSections[] = $unit;
+    return $newSections;
   }
   
   // The output format
@@ -40,6 +62,21 @@ class ListingPDF {
   
   // Whether the private data must be included
   protected $exportPrivateData;
+  
+  // Whether non-leader members must be included
+  protected $includeScouts;
+  
+  // Whether leader members must be included
+  protected $includeLeaders;
+  
+  // Whether members are grouped by section or mixed all together
+  protected $groupBySection;
+  
+  // Member counter
+  protected $memberCounter = 1;
+  
+  // Array containing the ids of all the selected sections
+  protected $sectionIds;
   
   // PDF styles
   protected $normalStyle = null;
@@ -49,9 +86,17 @@ class ListingPDF {
   /**
    * Outputs the listing for download
    */
-  protected function doDownloadListing($sections, $output, $exportPrivateData) {
+  protected function doDownloadListing($sections, $output, $exportPrivateData, $includeScouts, $includeLeaders, $groupBySection) {
     $this->output = $output;
     $this->exportPrivateData = $exportPrivateData;
+    $this->includeScouts = $includeScouts;
+    $this->includeLeaders = $includeLeaders;
+    $this->groupBySection = $groupBySection;
+    // Create sectionIds array
+    $this->sectionIds = array();
+    foreach ($sections as $section) {
+      $this->sectionIds[] = $section->id;
+    }
     // Determine title part
     if (count($sections) == 1) {
       $delasection = $sections[0]->de_la_section;
@@ -65,8 +110,9 @@ class ListingPDF {
       $excelDocument = $this->createExcelFile($delasection);
       // Create a sheet for each section
       $currentSheet = 0;
+      if (!$this->groupBySection) $sections = array(null);
       foreach ($sections as $section) {
-        $this->fillInSheetForSection($excelDocument, $currentSheet, $section);
+        $this->fillInSheetForSection($excelDocument, $currentSheet, $section, false, $includeScouts, $includeLeaders);
         $currentSheet++;
       }
       // Set active sheet index to the first sheet, so Excel opens this as the first sheet
@@ -79,9 +125,13 @@ class ListingPDF {
     } else if ($this->output == 'csv') {
       $excelDocument = $this->createExcelFile($delasection);
       // Create a sheet for each section
-      foreach ($sections as $section) {
-        // Create excel document
-        $this->fillInSheetForSection($excelDocument, 0, $section, true);
+      if ($this->groupBySection) {
+        foreach ($sections as $section) {
+          // Create excel document
+          $this->fillInSheetForSection($excelDocument, 0, $section, true, $includeScouts, $includeLeaders);
+        }
+      } else {
+        $this->fillInSheetForSection($excelDocument, 0, null, true, $includeScouts, $includeLeaders);
       }
       // Export to csv
       $objWriter = PHPExcel_IOFactory::createWriter($excelDocument, 'CSV');
@@ -103,10 +153,13 @@ class ListingPDF {
       $pdfDocument->setPrintHeader(false);
       $pdfDocument->setPrintFooter(false);
       // Add each section data to the pdf
+      if (!$groupBySection) {
+        $sections = array(null);
+      }
       foreach ($sections as $section) {
         // Create excel document
-        $excelDocument = $this->createExcelFile($section->de_la_section);
-        $this->fillInSheetForSection($excelDocument, 0, $section);
+        $excelDocument = $this->createExcelFile("xxx");
+        $this->fillInSheetForSection($excelDocument, 0, $section, false, $includeScouts, $includeLeaders);
         $excelDocument->getActiveSheet()->setShowGridLines(false);
         // Output excel document to a temporary pdf
         $objWriter = new PHPExcel_Writer_PDF($excelDocument);
@@ -136,9 +189,9 @@ class ListingPDF {
     // Set properties
     $excelDocument->getProperties()->setCreator("Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME));
     $excelDocument->getProperties()->setLastModifiedBy("Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME));
-    $excelDocument->getProperties()->setTitle(Parameter::get(Parameter::$UNIT_SHORT_NAME) . " - Listing $delasection");
-    $excelDocument->getProperties()->setSubject(Parameter::get(Parameter::$UNIT_SHORT_NAME) . " - Listing $delasection");
-    $excelDocument->getProperties()->setDescription("Listing des scouts $delasection");
+    $excelDocument->getProperties()->setTitle(utf8_decode(Parameter::get(Parameter::$UNIT_SHORT_NAME) . " - Listing " . (!$this->includeScouts ? "des animateurs " : "") . $delasection));
+    $excelDocument->getProperties()->setSubject(utf8_decode(Parameter::get(Parameter::$UNIT_SHORT_NAME) . " - Listing " . (!$this->includeScouts ? "des animateurs " : "") . $delasection));
+    $excelDocument->getProperties()->setDescription("Listing des " . ($this->includeScouts ? "scouts " : "animateurs ") . $delasection);
     // Define styles
     if (!$this->normalStyle) {
       $this->normalStyle = new PHPExcel_Style();
@@ -191,9 +244,12 @@ class ListingPDF {
    * @param type $excelDocument  The document to fill in
    * @param type $sheetIndex  The index of the sheet to create
    * @param type $section  The section
-   * @param type $csvMode  Whether the output will be CSV
+   * @param boolean $csvMode  Whether the output will be CSV
+   * @param boolean $includeScouts  Whether non-leader members are included
+   * @param boolean $includeLeaders  Whether leaders are included
    */
-  protected function fillInSheetForSection($excelDocument, $sheetIndex, $section, $csvMode = false) {
+  protected function fillInSheetForSection($excelDocument, $sheetIndex, $section, $csvMode = false, $includeScouts, $includeLeaders) {
+    $sectionIds = $section ? array($section->id) : $this->sectionIds;
     // Create sheet(s) to match index
     while ($excelDocument->getSheetCount() < $sheetIndex + 1) {
       $excelDocument->createSheet();
@@ -206,35 +262,37 @@ class ListingPDF {
     $row = 1;
     if ($csvMode) {
       $row = $excelDocument->getActiveSheet()->getHighestRow();
-      if ($row != 1) $row++;
+      if ($row != 1) {
+        $row += 2;
+      }
     }
     // Check whether this section has subgroups and/or totems
     $hasSubgroup = $csvMode ? true :
-      $hasSubgroup = Member::where('validated', '=', 1)
+      Member::where('validated', '=', 1)
               ->where('is_leader', '=', false)
-              ->where('section_id', '=', $section->id)
+              ->whereIn('section_id', $sectionIds)
               ->whereNotNull('subgroup')
               ->where('subgroup', '!=', '')
               ->first() ? true : false;
     $hasTotem = $csvMode ? true :
       Member::where('validated', '=', 1)
               ->where('is_leader', '=', false)
-              ->where('section_id', '=', $section->id)
+              ->whereIn('section_id', $sectionIds)
               ->whereNotNull('totem')
               ->where('totem', '!=', '')
               ->first() ? true : false;
     $hasQuali = $csvMode ? true :
       Member::where('validated', '=', 1)
               ->where('is_leader', '=', false)
-              ->where('section_id', '=', $section->id)
+              ->whereIn('section_id', $sectionIds)
               ->whereNotNull('quali')
               ->where('quali', '!=', '')
               ->first() ? true : false;
     // Columns
-    $subgroupName = ($csvMode ? "Sous-groupe" : $section->subgroup_name);
+    $subgroupName = ($csvMode || !$section ? "Sous-groupe" : $section->subgroup_name);
     $titles = array();
     $titles[] = "N°";
-    if ($csvMode) {
+    if ($csvMode || (!$this->groupBySection && $this->output != 'pdf')) {
       $titles[] = "Section";
     }
     $titles[] = "Nom";
@@ -295,7 +353,7 @@ class ListingPDF {
     $lastColumn = chr(64 + count($titles));
     // Title in the pdf
     if ($this->output == "pdf") {
-      $excelDocument->getActiveSheet()->setCellValue("A$row", "Listing " . $section->de_la_section);
+      $excelDocument->getActiveSheet()->setCellValue("A$row", "Listing " . (!$includeScouts ? "des animateurs " : "") . ($section ? $section->de_la_section : ""));
       $excelDocument->getActiveSheet()->setSharedStyle($this->titleStyle, "A$row");
       $excelDocument->getActiveSheet()->mergeCells("A$row:$lastColumn$row");
       $row++;
@@ -312,23 +370,36 @@ class ListingPDF {
       $row++;
     }
     // Get listing
-    $members = Member::where('validated', '=', true)
-            ->where('is_leader', '=', false)
-            ->where('section_id', '=', $section->id)
+    $query = Member::where('validated', '=', true)
+            ->whereIn('section_id', $sectionIds)
+            ->orderBy('is_leader', 'ASC')
             ->orderBy('last_name')
-            ->orderBy('first_name')
-            ->get();
+            ->orderBy('first_name');
+    if (!$includeLeaders || !$includeScouts) {
+      $query->where('is_leader', '=', $includeLeaders ? true : false);
+    }
+    $members = $query->get();
     // Write member rows
-    $counter = 1;
-    if ($csvMode) $counter = $row - 1;
+    $nowShowingLeaders = !$includeScouts; // Becomes true when passing from scouts to leaders, to leave a blank line
+    if (!$csvMode) $this->memberCounter = 1;
     foreach ($members as $member) {
+      if (!$nowShowingLeaders && $member->is_leader) {
+        $nowShowingLeaders = true;
+        $row++;
+        if ($this->output == 'pdf') {
+          $excelDocument->getActiveSheet()->setCellValue("A$row", "Animateurs");
+          $excelDocument->getActiveSheet()->mergeCells("A$row:$lastColumn$row");
+          $excelDocument->getActiveSheet()->setSharedStyle($this->headerStyle, "A$row");
+          $row++;
+        }
+      }
       $letter = 'A';
       // Print column information
       foreach ($titles as $title) {
         if ($title == "N°")
-          $excelDocument->getActiveSheet()->setCellValue("A$row", $counter++);
+          $excelDocument->getActiveSheet()->setCellValue("A$row", $this->memberCounter++);
         elseif ($title == "Section")
-          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $section->name);
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getSection()->name);
         elseif($title == "Nom")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->last_name);
         elseif($title == "Prénom")
@@ -384,7 +455,9 @@ class ListingPDF {
     $excelDocument->getActiveSheet()->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
     $excelDocument->getActiveSheet()->getPageSetup()->setPaperSize(PHPExcel_Worksheet_PageSetup::PAPERSIZE_A4);
     // Rename sheet
-    $excelDocument->getActiveSheet()->setTitle($section->name);
+    if ($section) {
+      $excelDocument->getActiveSheet()->setTitle($section->name);
+    }
   }
   
 }

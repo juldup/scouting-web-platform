@@ -317,6 +317,21 @@
   </p>
 @endif
 
+@if ($help == 'download-listing')
+  <p>Cette page offre diverses options pour télécharger le listing de l'unité.</p>
+  <h3>Choix des sections</h3>
+  <p>Chaque section peut être incluse ou non dans le listing à télécharger</p>
+  <p><strong>Grouper par section</strong> : Si cette option est cochée, le listing sera séparé par section. Sinon, tous les membres seront mélangés.</p>
+  <h3>Membres à inclure</h3>
+  <p>Tu peux choisir d'inclure ou non les scouts et/ou les animateurs dans le listing téléchargé.</p>
+  <p>Si les scouts et les animateurs sont sélectionnés, ils sont séparés par une ligne vide dans la liste.</p>
+  <h3>Format</h3>
+  <p><strong>PDF</strong> : listing au format PDF, seules les données de base seront incluses.</p>
+  <p><strong>Excel</strong> : listing au format Excel, une feuille par section (sauf si <em>Grouper par section</em> est désélectionné).</p>
+  <p><strong>CSV</strong> : "Comma Separated Values", un format texte simple reconnu par Excel, OpenOffice, etc.</p>
+  <p><strong>Inclure toutes les données</strong> : si cette case est décochées, seuls quelques champs seront exportés.</p>
+@endif
+
 @if ($help == 'edit-page')
   <p>
     Cet outil te permet de modifier la page {{ $page_title ? "<strong>" . $page_title . "</strong>" : " d'accueil" }}.

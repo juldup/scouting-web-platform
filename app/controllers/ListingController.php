@@ -107,7 +107,7 @@ class ListingController extends BaseController {
     // Log
     LogEntry::log("Listing", "Téléchargement du listing", array("Section" => $this->section->name, "Format" => $format));
     // Output listing
-    ListingPDF::downloadListing($sections, $format);
+    ListingPDF::downloadListing($sections, $format, false, true, $this->user->isLeader() ? true : false);
   }
   
   /**
@@ -154,7 +154,7 @@ class ListingController extends BaseController {
   }
   
   /**
-   * [Render] Updates the database with the modified data of a member
+   * [Route] Updates the database with the modified data of a member
    */
   public function submit() {
     // Get member
@@ -259,7 +259,26 @@ class ListingController extends BaseController {
       $sections = array($this->section);
     }
     LogEntry::log("Listing", "Téléchargement du listing complet", array("Section" => $this->section->name, "Format" => $format));
-    ListingPDF::downloadListing($sections, $format, true);
+    ListingPDF::downloadListing($sections, $format, true, true, true);
+  }
+  
+  /**
+   * [Route] Outputs the listing of leaders to download (for leaders only)
+   * 
+   * @param string $format  The output format: "excel" or "csv"
+   */
+  public function downloadLeaderListing($section_slug, $format) {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->section->id == 1) {
+      $sections = Section::orderBy('position')
+              ->get();
+    } else {
+      $sections = array($this->section);
+    }
+    LogEntry::log("Listing", "Téléchargement du listing des animateurs", array("Section" => $this->section->name, "Format" => $format));
+    ListingPDF::downloadListing($sections, $format, $format != 'pdf', false, true);
   }
   
   /**
@@ -283,6 +302,42 @@ class ListingController extends BaseController {
     LogEntry::log("Listing", "Téléchargement des enveloppes", array("Section" => $this->section->name, "Format" => $format));
     // Generate and output envelops
     EnvelopsPDF::downloadEnvelops($sections, $format);
+  }
+  
+  /**
+   * [Route] Shows the listing download page
+   */
+  public function showDownloadListingPage() {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    return View::make('pages.listing.downloadListing');
+  }
+  
+  /**
+   * [Route] Post request to download the listing with options
+   */
+  public function DownloadListingWithOptions() {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    // Get sections to include
+    $sections = Section::all();
+    $selectedSections = array();
+    foreach ($sections as $section) {
+      if (Input::get('section_' . $section->id)) {
+        $selectedSections[] = $section;
+      }
+    }
+    // Get members to include
+    $includeScouts = Input::get('include_scouts');
+    $includeLeaders = Input::get('include_leaders');
+    // Get format
+    $format = Input::get('format');
+    $full = Input::get('full');
+    $groupBySection = Input::get('group_by_section');
+    // Download the listing
+    ListingPDF::downloadListing($selectedSections, $format, $full, $includeScouts, $includeLeaders, $groupBySection);
   }
   
 }

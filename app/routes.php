@@ -232,8 +232,11 @@ Route::post('gestion/listing/submit/{section_slug?}', array("as" => "manage_list
 Route::post('listing/submit/{section_slug?}', array("as" => "listing_submit", "uses" => "ListingController@submit"));
 Route::get('gestion/listing/delete/{member_id}/{section_slug?}', array("as" => "manage_listing_delete", "uses" => "ListingController@deleteMember"));
 Route::get('listing/telecharger/{section_slug}/{format?}', array("as" => "download_listing", "uses" => "ListingController@downloadListing"));
+Route::get('gestion/animateurs/listing/telecharger/{section_slug}/{format}', array("as" => "download_listing_leaders", "uses" => "ListingController@downloadLeaderListing"));
 Route::get('gestion/listing/telecharger/{format}/{section_slug}', array("as" => "download_full_listing", "uses" => "ListingController@downloadFullListing"));
 Route::get('gestion/listing/enveloppes/{format}/{section_slug}', array("as" => "download_envelops", "uses" => "ListingController@downloadEnvelops"));
+Route::get('gestion/listing/telechargement/{section_slug?}', array("as" => "download_listing_options", "uses" => "ListingController@showDownloadListingPage"));
+Route::post('gestion/listing/telechargement-options', array("as" => "download_listing_with_options", "uses" => "ListingController@downloadListingWithOptions"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));

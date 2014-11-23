@@ -67,6 +67,23 @@
     </div>
   </div>
   
+  <div class="row">
+    <div class="col-md-12 text-right">
+      <p>
+        <label>Télécharger le listing des animateurs {{{ $user->currentSection->de_la_section }}} :</label>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing_leaders', array('section_slug' => $user->currentSection->slug, 'format' => 'pdf')) }}">
+          PDF
+        </a>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing_leaders', array('section_slug' => $user->currentSection->slug, 'format' => 'excel')) }}">
+          Excel
+        </a>
+        <a class="btn-sm btn-default" href="{{ URL::route('download_listing_options', array('section_slug' => $user->currentSection->slug)) }}">
+          Plus d'options
+        </a>
+      </p>
+    </div>
+  </div>
+  
   @include('subviews.editMemberForm', array('form_legend' => "Modifier un animateur", 'submit_url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => true, 'edit_identity' => $can_edit_all, 'edit_totem' => $can_edit_limited, 'edit_leader' => $can_edit_limited, 'edit_section' => $can_change_section, 'edit_others' => $can_edit_limited, 'edit_contact' => $can_edit_limited))
   @include('subviews.editMemberForm', array('form_legend' => "Modifier mes données personnelles", 'submit_url' => URL::route('edit_leaders_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => true, 'edit_identity' => $can_edit_own_data, 'edit_totem' => $can_edit_own_data,'edit_leader' => $can_edit_own_data, 'edit_section' => $can_change_section, 'form_id' => 'own-data-form', 'edit_others' => $can_edit_own_data, 'edit_contact' => $can_edit_own_data))
   
