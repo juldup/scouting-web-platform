@@ -576,13 +576,15 @@ class Member extends Eloquent {
     if ($month < 8) $startYear--;
     $currentYear = $startYear . "-" . ($startYear + 1);
     // Update members' year in section where needed
-    Member::where('validated', '=', true)
+    $count = Member::where('validated', '=', true)
             ->where('year_in_section_last_update', '<', $currentYear)
             ->increment('year_in_section');
     Member::where('validated', '=', true)
             ->where('year_in_section_last_update', '<', $currentYear)
             ->update(array('year_in_section_last_update' => $currentYear));
-    LogEntry::log("Inscription", "Augmentation automatique de l'année de tous les membres");
+    if ($count) {
+      LogEntry::log("Inscription", "Augmentation automatique de l'année de tous les membres");
+    }
   }
   
   /**

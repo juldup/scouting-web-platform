@@ -99,8 +99,6 @@ class AttendanceController extends BaseController {
         throw new Exception("Attendance edition unauthorized for this user");
       }
       // Get input
-      Log::info("Events: " . Input::get('events'));
-      Log::info("Data: " . Input::get('data') . "\n\n\n");
       $data = json_decode(Input::get('data'));
       $events = json_decode(Input::get('events'));
       // Update members' attendance status
