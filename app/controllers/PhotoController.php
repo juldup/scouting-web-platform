@@ -202,6 +202,7 @@ class PhotoController extends BaseController {
     if (!count($photos)) {
       return App::abort(404, "Cet album est vide.");
     }
+    $outputFileName = "Photos-$first_photo-$last_photo.zip";
     // Create zip file in temporary folder
     $filename = tempnam(storage_path("site_data/tmp/"), "photos.zip");
     $zip = new ZipArchive();
@@ -234,7 +235,7 @@ class PhotoController extends BaseController {
     if (file_exists($filename)) {
       LogEntry::log("Photos", "Téléchargement d'un album", array("Album" => PhotoAlbum::find($album_id)->name));
       // Output file
-      Helper::outputBigFile($filename, "photos.zip");
+      Helper::outputBigFile($filename, $outputFileName);
       // Delete file
       unlink($filename);
       // Output has already be made, end script
