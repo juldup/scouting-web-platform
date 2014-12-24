@@ -1,7 +1,10 @@
 <?php
 
 return array(
-
+  
+  // Number of photos to put in each photo album download chunk
+  'photoAlbumDownloadPartSize' => 40,
+  
 	/*
 	|--------------------------------------------------------------------------
 	| Application Debug Mode

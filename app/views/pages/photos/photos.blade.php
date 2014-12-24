@@ -72,9 +72,19 @@
                 </td>
                 <td>{{ $album->photo_count }} {{{ $album->photo_count > 1 ? "photos" : "photo" }}}</td>
                 <td>
-                  <a class="btn-sm btn-default" href="{{ URL::route('download_photo_album', array('album_id' => $album->id)) }}">
-                    <span class="glyphicon glyphicon-download-alt"></span> Télécharger l'album
-                  </a>
+                  @if ($album->photo_count <= $downloadPartSize)
+                    <a class="btn-sm btn-default" href="{{ URL::route('download_photo_album', array('album_id' => $album->id, 'first_photo' => 1, 'last_photo' => 50)) }}">
+                      <span class="glyphicon glyphicon-download-alt"></span> Télécharger l'album
+                    </a>
+                  @else
+                    @for ($i = 0; $i <= ($album->photo_count - 1) / $downloadPartSize; $i++)
+                      <a class="btn-sm btn-default"
+                         href="{{ URL::route('download_photo_album', array('album_id' => $album->id, 'first_photo' => $i * $downloadPartSize + 1,
+                                             'last_photo' => ($i + 1) * $downloadPartSize)) }}">
+                        <span class="glyphicon glyphicon-download-alt"></span> Partie {{ $i + 1 }}
+                      </a>
+                    @endfor
+                  @endif
                 </td>
               </tr>
             @endforeach

@@ -139,6 +139,7 @@ class PhotoController extends BaseController {
         'showing_archives' => $showArchives,
         'has_archives' => $hasArchives,
         'next_page' => $page + 1,
+        'downloadPartSize' => Config::get('app.photoAlbumDownloadPartSize'),
     ));
   }
   
@@ -189,7 +190,7 @@ class PhotoController extends BaseController {
   /**
    * [Route] Downloads a full photo album in a zip archive
    */
-  public function downloadAlbum($album_id) {
+  public function downloadAlbum($album_id, $first_photo, $last_photo) {
     // Check that the user is allowed to download photos
     if (!$this->user->isMember() && !$this->isFormerLeader()) {
       return Helper::forbiddenResponse();
@@ -208,12 +209,23 @@ class PhotoController extends BaseController {
     // Add each photo in the zip file
     $totalSize = 0;
     foreach ($photos as $photo) {
+      // Only add up to last photo
+      $last_photo--;
+      if ($last_photo < 0) {
+        break;
+      }
+      // Only start at first photo
+      $first_photo--;
+      if ($first_photo > 0) {
+        continue;
+      }
+      // Add photo
       $photoFilename = $photo->getPhotoPath(Photo::$FORMAT_ORIGINAL);
       if (file_exists($photoFilename)) {
         $totalSize += filesize($photoFilename);
         $zip->addFile($photoFilename, $photo->filename);
-        if ($totalSize >= 262144000) {
-          // Bigger than 250 MB, stop adding files
+        if ($totalSize >= 314572800) {
+          // Bigger than 300 MB, stop adding files
           break;
         }
       }
