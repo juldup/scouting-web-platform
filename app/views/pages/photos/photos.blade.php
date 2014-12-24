@@ -70,21 +70,27 @@
                   <a class="photo-album-link" href='{{ URL::route('photo_album', array('album_id' => $album->id, 'section_slug' => $user->currentSection->slug)) }}'>{{ $album->name }}</a>
                   @endif
                 </td>
-                <td>{{ $album->photo_count }} {{{ $album->photo_count > 1 ? "photos" : "photo" }}}</td>
-                <td>
-                  @if ($album->photo_count <= $downloadPartSize)
-                    <a class="btn-sm btn-default" href="{{ URL::route('download_photo_album', array('album_id' => $album->id, 'first_photo' => 1, 'last_photo' => $album->photo_count)) }}">
-                      <span class="glyphicon glyphicon-download-alt"></span> Télécharger l'album
-                    </a>
-                  @else
-                    @for ($i = 0; $i <= ($album->photo_count - 1) / $downloadPartSize; $i++)
-                      <a class="btn-sm btn-default"
-                         href="{{ URL::route('download_photo_album', array('album_id' => $album->id, 'first_photo' => $i * $downloadPartSize + 1,
-                                             'last_photo' => min(($i + 1) * $downloadPartSize, $album->photo_count))) }}">
-                        <span class="glyphicon glyphicon-download-alt"></span> Photos {{ $i * $downloadPartSize + 1 }}–{{ min(($i + 1) * $downloadPartSize, $album->photo_count) }}
-                      </a>
-                    @endfor
-                  @endif
+                <td class="photo-album-count">{{ $album->photo_count }} {{{ $album->photo_count > 1 ? "photos" : "photo" }}}</td>
+                <td class="download-photos-column">
+                  <div>
+                    @if ($album->photo_count <= $downloadPartSize)
+                      <div class='download-photos-button-wrapper'>
+                        <a class="btn-sm btn-default" href="{{ URL::route('download_photo_album', array('album_id' => $album->id, 'first_photo' => 1, 'last_photo' => $album->photo_count)) }}">
+                          <span class="glyphicon glyphicon-download-alt"></span> Télécharger l'album
+                        </a>
+                      </div>
+                    @else
+                      @for ($i = 0; $i <= ($album->photo_count - 1) / $downloadPartSize; $i++)
+                        <div class='download-photos-button-wrapper'>
+                          <a class="btn-sm btn-default"
+                             href="{{ URL::route('download_photo_album', array('album_id' => $album->id, 'first_photo' => $i * $downloadPartSize + 1,
+                                                 'last_photo' => min(($i + 1) * $downloadPartSize, $album->photo_count))) }}">
+                            <span class="glyphicon glyphicon-download-alt"></span> Photos {{ $i * $downloadPartSize + 1 }}–{{ min(($i + 1) * $downloadPartSize, $album->photo_count) }}
+                          </a>
+                        </div>
+                      @endfor
+                    @endif
+                  </div>
                 </td>
               </tr>
             @endforeach
