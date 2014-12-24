@@ -122,7 +122,7 @@ class WebsiteBootstrappingController extends Controller {
       // Make sure the other folders are writable
       foreach (array('site_data/database', 'site_data/documents', 'site_data/email_attachments',
           'site_data/leader_pictures', 'site_data/website_logo', 'site_data/photos', 'site_data/images',
-          'site_data/images/pages', 'cache', 'logs', 'meta', 'sessions', 'views') as $folder) {
+          'site_data/images/pages', 'cache', 'logs', 'meta', 'sessions', 'views', 'tmp') as $folder) {
         if (!file_exists("$siteDataRoot/$folder")) mkdir("$siteDataRoot/$folder", 0777, true);
         touch("$siteDataRoot/$folder/test");
         file_get_contents("$siteDataRoot/$folder/test");

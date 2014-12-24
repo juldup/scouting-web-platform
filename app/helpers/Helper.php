@@ -333,4 +333,33 @@ class Helper {
     );
   }
   
+  /**
+   * Outputs a big file. Returns whether it was successful.
+   */
+  static function outputBigFile($path, $filename) {
+    // Send header
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Transfer-Encoding: binary');
+    header('Content-Length: ' . filesize($path));
+    ob_clean();
+    flush();
+    // Output file chunk by chunk
+    $chunksize = 1*(1024*1024);
+    $buffer = '';
+    $handle = fopen($path, 'rb');
+    if (!$handle) {
+      return false;
+    }
+    while (!feof($handle)) {
+      $buffer = fread($handle, $chunksize);
+      echo $buffer;
+      ob_flush();
+      flush();
+    }
+    $status = fclose($handle);
+    return $status;
+  }
+  
 }

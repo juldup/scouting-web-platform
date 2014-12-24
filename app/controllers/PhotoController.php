@@ -202,24 +202,31 @@ class PhotoController extends BaseController {
       return App::abort(404, "Cet album est vide.");
     }
     // Create zip file in temporary folder
-    $filename = tempnam(sys_get_temp_dir(), "photos.zip.");
+    $filename = tempnam(storage_path("site_data/tmp/"), "photos.zip");
     $zip = new ZipArchive();
     $zip->open($filename);
     // Add each photo in the zip file
+    $totalSize = 0;
     foreach ($photos as $photo) {
-      $zip->addFile($photo->getPhotoPath(Photo::$FORMAT_ORIGINAL), $photo->filename);
+      $photoFilename = $photo->getPhotoPath(Photo::$FORMAT_ORIGINAL);
+      if (file_exists($photoFilename)) {
+        $totalSize += filesize($photoFilename);
+        $zip->addFile($photoFilename, $photo->filename);
+        if ($totalSize >= 262144000) {
+          // Bigger than 250 MB, stop adding files
+          break;
+        }
+      }
     }
     $zip->close();
     if (file_exists($filename)) {
-      // Output file
-      $response = Illuminate\Http\Response::create(file_get_contents($filename), 200, array(
-          "Content-Type" => "application/octet-stream",
-          "Content-Length" => filesize($filename),
-          "Content-Disposition" => 'attachment; filename="photos.zip"',
-      ));
-      unlink($filename);
       LogEntry::log("Photos", "Téléchargement d'un album", array("Album" => PhotoAlbum::find($album_id)->name));
-      return $response;
+      // Output file
+      Helper::outputBigFile($filename, "photos.zip");
+      // Delete file
+      unlink($filename);
+      // Output has already be made, end script
+      exit();
     } else {
       // An error has occured
       LogEntry::error("Photos", "Erreur lors du téléchargement d'un album", "Le fichier n'a pas pu être créé");
