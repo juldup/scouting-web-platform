@@ -30,6 +30,9 @@ class News extends Eloquent {
   
   protected $fillable = array('title', 'body', 'news_date', 'section_id');
   
+  // The list of comment of this news item (to avoid fetching it multiple times)
+  protected $comments = null;
+  
   /**
    * Returns the section this piece of news belongs to
    */
@@ -42,6 +45,16 @@ class News extends Eloquent {
    */
   public function getHumanDate() {
     return date('d/m/Y', strtotime($this->news_date));
+  }
+  
+  /**
+   * Returns the list of comments on this item
+   */
+  public function getComments() {
+    if (!$this->comments) {
+      $this->comments = Comment::listFor("news", $this->id);
+    }
+    return $this->comments;
   }
   
 }

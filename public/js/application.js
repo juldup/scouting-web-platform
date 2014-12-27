@@ -159,3 +159,58 @@ $().ready(function() {
     return false;
   });
 });
+
+/**************************************************
+ * COMMENTS
+ **************************************************/
+
+$().ready(function() {
+  $(".add-comment-button").click(function() {
+    // Add comment form
+    var referentId = $(this).data('referent');
+    var referentType = $(this).data('referent-type');
+    var $commentForm = $($("#comment-prototype").html());
+    $(this).before($commentForm);
+    $commentForm.attr('action', $commentForm.attr('action').replace('REFERENT_ID', referentId).replace('REFERENT_TYPE', referentType));
+    $commentForm.find('textarea').focus();
+    // Remove this button
+    var $addCommentButton = $(this)
+    $addCommentButton.hide();
+    // Set submit action
+    $commentForm.submit(function() {
+      var body = $commentForm.find('textarea[name=body]').val().trim();
+      if (!body) return false;
+      // Disable submit button
+      $commentForm.find('input[type=submit]').prop('disabled', true);
+      $.ajax({
+        url: $commentForm.attr('action'),
+        type: 'POST',
+        data: {
+          body: body,
+        },
+        success: function(data) {
+          // Add comment to list of comments
+          $commentForm.after('<div class="comment"><span class="comment-meta">À l\'instant, <span class="comment-username">' + currentUserName + '</span> a écrit &nbsp;:</span> <span class="comment-body">' + body + '</span></div>');
+          // Remove form
+          $commentForm.remove();
+          // Show comment button again
+          $addCommentButton.show();
+        },
+        error: function() {
+          // Show error message
+          alert("Une erreur est servenue. Votre commentaire n'a pas été enregistré.");
+          // Re-enable submit button
+          $commentForm.find('input[type=submit]').prop('disabled', false);
+        }
+      });
+      return false;
+    });
+    return false;
+  });
+  
+  // Set show hidden comment action
+  $(".show-hidden-comments").click(function() {
+    $(this).parent().find(".comment").show();
+    $(this).remove();
+  });
+});
