@@ -171,6 +171,12 @@ Route::post('calendrier/telecharger', array("as" => "download_calendar", "uses" 
 Route::get('gestion/presences/{section_slug?}/{year?}', array("as" => "edit_attendance", "uses" => "AttendanceController@editAttendance"));
 Route::post('gestion/presences/upload/{section_slug}/{year}', array("as" => "upload_attendance", "uses" => "AttendanceController@upload"));
 
+// Payment
+Route::get('gestion/paiement/{section_slug?}/{year?}', array("as" => "edit_payment", "uses" => "PaymentController@editPayment"));
+Route::post('ajax/gestion/paiement/{section_slug}/{year}', array("as" => "upload_payment", "uses" => "PaymentController@upload"));
+Route::post('ajax/gestion/paiement/nouvelle-activite/{section_slug}/{year}', array("as" => "add_payment_event", "uses" => "PaymentController@addNewEvent"));
+Route::post('ajax/gestion/paiement/supprimer-activite/{section_slug}/{year}', array("as" => "delete_payment_event", "uses" => "PaymentController@deleteEvent"));
+
 // Documents
 Route::get('telecharger/archives/{section_slug?}', array("as" => "document_archives", "uses" => "DocumentController@showArchives"));
 Route::get('telecharger/{section_slug?}', array("as" => "documents", "uses" => "DocumentController@showPage"));

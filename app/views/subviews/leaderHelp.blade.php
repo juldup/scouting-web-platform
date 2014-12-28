@@ -40,6 +40,13 @@
   </p>
 @endif
 
+@if ($help == 'edit-payment')
+  <legend>Paiements @yield('back_to_top')</legend>
+  <p>
+    Cet outil permet de cocher le paiement des membres aux diverses activités de la section.
+  </p>
+@endif
+
 @if ($help == 'edit-photos')
   <legend>Gérer les photos @yield('back_to_top')</legend>
   <p>

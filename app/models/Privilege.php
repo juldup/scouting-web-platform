@@ -76,6 +76,13 @@ class Privilege extends Eloquent {
       'predefined' => "ARSU"
   );
   
+  public static $MANAGE_EVENT_PAYMENTS = array(
+      'id' => "Manage event payments",
+      'text' => 'Cocher le paiement des membres pour les activités #delasection',
+      'section' => true,
+      'predefined' => "ARSU"
+  );
+  
   public static $EDIT_NEWS = array(
       'id' => "Edit news",
       'text' => 'Poster des nouvelles (actualités) pour #lasection',
@@ -203,6 +210,7 @@ class Privilege extends Eloquent {
         self::$UPDATE_OWN_LISTING_ENTRY,
         self::$EDIT_CALENDAR,
         self::$MANAGE_ATTENDANCE,
+        self::$MANAGE_EVENT_PAYMENTS,
         self::$POST_PHOTOS,
         self::$VIEW_HEALTH_CARDS,
         

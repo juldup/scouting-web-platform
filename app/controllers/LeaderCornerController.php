@@ -43,7 +43,7 @@ class LeaderCornerController extends BaseController {
             ),
             "Présences" => array(
                 'url' => URL::route('edit_attendance'),
-                'help-anchor' => 'attendance',
+                'help-anchor' => 'presences',
                 'help' => 'edit-attendance',
                 'condition' => Parameter::$SHOW_CALENDAR,
             ),
@@ -80,6 +80,12 @@ class LeaderCornerController extends BaseController {
                 'url' => URL::route('accounting'),
                 'help-anchor' => 'tresorerie',
                 'help' => 'accounting',
+            ),
+            "Paiements" => array(
+                'url' => URL::route('edit_payment'),
+                'help-anchor' => 'paiements',
+                'help' => 'edit-payment',
+                'condition' => Parameter::$SHOW_CALENDAR,
             ),
         ),
         "Opérations annuelles" => array(

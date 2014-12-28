@@ -95,6 +95,7 @@ class MenuComposer {
       $leaderCategory['Gérer le calendrier'] = $user->can(Privilege::$EDIT_CALENDAR) ? 'manage_calendar' : null;
       $leaderCategory[$user->can(Privilege::$MANAGE_ATTENDANCE) ? 'Gérer les présences' : 'Voir les présences'] = 'edit_attendance';
     }
+    $leaderCategory[$user->can(Privilege::$MANAGE_EVENT_PAYMENTS) ? 'Gérer les paiements' : 'Voir les paiements'] = 'edit_payment';
     if (Parameter::get(Parameter::$SHOW_PHOTOS))
       $leaderCategory['Gérer les photos'] = $user->can(Privilege::$POST_PHOTOS) ? 'edit_photos' : null;
     if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
