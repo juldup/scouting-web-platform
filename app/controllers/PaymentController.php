@@ -175,6 +175,7 @@ class PaymentController extends BaseController {
         'section_id' => $this->user->currentSection->id,
         'year' => $year,
     ));
+    LogEntry::log("Paiements", "Ajout d'une activité", array("Nom de l'activité" => $event->name, "Année" => $year));
     return JsonResponse::create(array(
         'id' => $event->id,
     ), 200);
@@ -204,6 +205,7 @@ class PaymentController extends BaseController {
     }
     // Delete event
     $event->delete();
+    LogEntry::log("Paiements", "Suppression d'une activité", array("Activité" => $event->name, "Année" => $year));
     return JsonResponse::create(array(), 200);
   }
   
