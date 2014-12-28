@@ -223,8 +223,12 @@ angularPayment.controller('PaymentController', function($scope) {
       success: function(data) {
         $("#new-event-form input[type=submit]").prop('disabled', false);
         $("#new-event-input").val("");
-        console.log(data);
         $scope.events.push({id: data.id, name: newEventName});
+        $scope.members.forEach(function(member) {
+          // Make sur member.status is a non-array object
+          if (!member.status || Array.isArray(member.status)) member.status = {};
+          member.status["event_" + data.id] = false;
+        });
         $scope.updateTimeframe();
         $scope.$$phase || $scope.$apply();
       },
