@@ -36,9 +36,17 @@ class BanEmailAddressController extends BaseController {
     if (!$banned) {
       return App::abort(404);
     }
+    if (Helper::emailIsInListing($banned->email)) {
+      return View::make('pages.banEmailAddress.emailInListing', array(
+          'email' => $banned->email,
+      ));
+    }
     if ($banned->banned) {
-      // The e-mail address is already banned, show confirmation page
-      return $this->confirmBanEmailAddress($ban_code);
+      // The e-mail address is already banned, show unban page
+      return View::make('pages.banEmailAddress.unbanEmailAddress', array(
+          'email' => $banned->email,
+          'ban_code' => $ban_code,
+      ));
     }
     return View::make('pages.banEmailAddress.banEmailAddress', array(
         'email' => $banned->email,
@@ -47,7 +55,7 @@ class BanEmailAddressController extends BaseController {
   }
   
   /**
-   * [Route] Called when the user confirm the ban of the e-mail address.
+   * [Route] Called when the user confirms the ban of the e-mail address.
    * Returns a confirmation page.
    * 
    * @param string $ban_code  The code associated to the e-mail address to ban
@@ -65,6 +73,30 @@ class BanEmailAddressController extends BaseController {
     // Return view
     return View::make('pages.banEmailAddress.confirmBan', array(
         'email' => $banned->email,
+        'ban_code' => $ban_code,
+    ));
+  }
+  
+  /**
+   * [Route] Called when the user cancels the ban of the e-mail address.
+   * Returns a confirmation page.
+   * 
+   * @param string $ban_code  The code associated to the e-mail address to ban
+   */
+  public function cancelBanEmailAddress($ban_code) {
+    $banned = BannedEmail::where('ban_code', '=', $ban_code)->first();
+    if (!$banned) {
+      return App::abort(404);
+    }
+    // Mark e-mail address as unbanned
+    $banned->banned = false;
+    $banned->save();
+    // Save log
+    LogEntry::log("Ban", "Annulation", array('Adresse e-mail' => $banned->email));
+    // Return view
+    return View::make('pages.banEmailAddress.confirmUnban', array(
+        'email' => $banned->email,
+        'ban_code' => $ban_code,
     ));
   }
   

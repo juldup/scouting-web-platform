@@ -54,6 +54,18 @@ class PendingEmail extends Eloquent {
    * Tries sending this e-mail
    */
   public function send() {
+    // Check that the recipient's e-mail address is not banned
+    if (BannedEmail::isBanned($this->recipient) && !Helper::emailIsInListing($this->recipient)) {
+      // Recipient is banned and not in the listing, cancel sending
+      $this->priority = self::$MAX_PRIORITY;
+      $this->save();
+      LogEntry::log("Ban", "E-mail non envoyé car adresse bannie", array(
+            "Sujet" => $this->subject,
+            "Destinataire" => $this->recipient,
+            "Expéditeur" => $this->sender_name ? $this->sender_name . " (" . $this->sender_email . ")" : $this->sender_email));
+      return;
+    }
+    // Send e-mail
     try {
       // Create Swift message to encapsulate this e-mail
       $message = Swift_Message::newInstance();

@@ -19,26 +19,26 @@
 ?>
 
 @section('title')
-  Merci!
+  Réinscrire votre adresse e-mail
 @stop
 
 @section('content')
   <div class="row">
     <div class="col-md-12">
-      <h1>Vous ne serez plus importuné</h1>
-      <div class="alert alert-success">
+      <h1>Vous n'êtes plus dans notre liste de destinataires</h1>
+      <div class="alert alert-danger">
         <p>
-          Vous ne recevrez plus d'e-mails envoyés depuis ce site à l'adresse <strong>{{{ $email }}}</strong>.
-        </p>
-        <p>
-          Si vous changez d'avis, cliquez à nouveau sur le lien de désinscription ou contactez le webmaster.
+          Souhaitez-vous remettre l'adresse <strong>{{{ $email }}}</strong> dans notre liste de destinataires&nbsp;?
         </p>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-6">
-      <a class="btn btn-primary" href="{{ URL::route('home') }}">Retour au site</a>
+      <a class="btn btn-primary" href="{{ URL::route('confirm_unban_email', array('ban_code' => $ban_code)) }}">Confirmer</a>
+    </div>
+    <div class="col-xs-6 text-right">
+      <a class="btn btn-default" href="{{ URL::route('home') }}">Annuler</a>
     </div>
   </div>
 @stop

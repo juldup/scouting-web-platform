@@ -19,26 +19,26 @@
 ?>
 
 @section('title')
-  Merci!
+  Désinscrire votre adresse e-mail
 @stop
 
 @section('content')
   <div class="row">
     <div class="col-md-12">
-      <h1>Vous ne serez plus importuné</h1>
-      <div class="alert alert-success">
+      <h1>Vous êtes membre de l'unité</h1>
+      <div class="alert alert-danger">
         <p>
-          Vous ne recevrez plus d'e-mails envoyés depuis ce site à l'adresse <strong>{{{ $email }}}</strong>.
+          L'adresse e-mail <strong>{{{ $email }}}</strong> fait partie de notre listing et ne peut être supprimée de la liste des destinataires.
         </p>
         <p>
-          Si vous changez d'avis, cliquez à nouveau sur le lien de désinscription ou contactez le webmaster.
+          Si vous ne souhaitez plus recevoir d'e-mails à cette adresse, veuillez <a href="{{ URL::route('contacts') }}">contacter l'animateur d'unité</a>.
         </p>
       </div>
     </div>
   </div>
   <div class="row">
     <div class="col-xs-6">
-      <a class="btn btn-primary" href="{{ URL::route('home') }}">Retour au site</a>
+      <a class="btn btn-default" href="{{ URL::route('home') }}">Retour au site</a>
     </div>
   </div>
 @stop

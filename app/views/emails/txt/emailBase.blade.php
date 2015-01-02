@@ -22,6 +22,11 @@
 
 
 ------------------------------------------------
+@if ($email_is_in_listing)
+Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} dont vous êtes membre.
+Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez contacter l'animateur d'unité : {{ URL::route('contacts') }}
+@else
 Cet e-mail a été envoyé depuis le site de l'unité {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}}. Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis notre site, veuillez cliquer sur le lien suivant.
 This e-mail was sent because you are a member of our scout group. To unsubscribe, please click on the following link.
 {{ URL::route('ban_email', array("code" => $ban_email_code)) }}
+@endif

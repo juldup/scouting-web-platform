@@ -28,11 +28,6 @@ class ScoutMailer {
    * Sends the given e-mail. Returns whether the e-mail was sent.
    */
   public static function send(Swift_Message $message) {
-    // Check that the recipient's e-mail address is not banned
-    $to = $message->getTo();
-    foreach (array_keys($to) as $email) {
-      if (BannedEmail::isBanned($email)) return false;
-    }
     // Try sending e-mail
     $mailer = self::getMailer();
     return $mailer->send($message);

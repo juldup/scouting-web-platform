@@ -79,6 +79,7 @@ Route::get('renvoyer-lien-validation', array("as" => "user_resend_validation_lin
 // Ban e-mail address
 Route::get('desinscrire-addresse-email/{ban_code}', array("as" => "ban_email", "uses" => "BanEmailAddressController@banEmailAddress"));
 Route::get('desinscrire-addresse-email/confirmer/{ban_code}', array("as" => "confirm_ban_email", "uses" => "BanEmailAddressController@confirmBanEmailAddress"));
+Route::get('desinscrire-addresse-email/annuler/{ban_code}', array("as" => "confirm_unban_email", "uses" => "BanEmailAddressController@cancelBanEmailAddress"));
 
 // Images
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));

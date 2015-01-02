@@ -318,6 +318,20 @@ class Helper {
   }
   
   /**
+   * Returns whether the given e-mail address is in the listing
+   */
+  public static function emailIsInListing($email) {
+    $member = Member::where(function($query) use ($email) {
+      $query->where('email1', '=', $email);
+      $query->orWhere('email2', '=', $email);
+      $query->orWhere('email3', '=', $email);
+      $query->orWhere('email_member', '=', $email);
+    })->where('validated', '=', true)
+            ->first();
+    return $member != null;
+  }
+  
+  /**
    * Renders an e-mail and returns an array with two elements: 'html' and 'txt'
    * for the html and the raw versions of the e-mail's body
    * 
@@ -327,6 +341,7 @@ class Helper {
    */
   public static function renderEmail($templateName, $recipientEmail, $parameters) {
     $parameters['ban_email_code'] = BannedEmail::getCodeForEmail($recipientEmail);
+    $parameters['email_is_in_listing'] = self::emailIsInListing($recipientEmail);
     return array(
         "html" => View::make("emails.html.$templateName", $parameters)->render(),
         "txt" => View::make("emails.txt.$templateName", $parameters)->render(),
