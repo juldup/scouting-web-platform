@@ -43,7 +43,7 @@
         </th>
         <th ng-repeat="event in monitoredEvents" class="attendance-column" ng-if="event.date <= maxDate && event.date >= minDate">
           <span title="{{ event.title }}">{{ formatDate(event.date) }}
-            <a href="#" class="remove-event" ng-click="remove(event)"><span class="glyphicon glyphicon-remove"></span></a>
+            <a href="#" class="remove-event" ng-click="remove(event)" ng-if="canEdit"><span class="glyphicon glyphicon-remove"></span></a>
           </span>
         </th>
         <th ng-click="shiftRight()" class="navigation-column">

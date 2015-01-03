@@ -86,28 +86,59 @@ class MenuComposer {
     $user = View::shared('user');
     if (!$user->isLeader()) return null;
     
+    // Get current user's section
+    $userMembers = $user->getAssociatedLeaderMembers();
+    if (count($userMembers)) {
+      $leader = $userMembers[0];
+      $section = $leader->getSection();
+    } else {
+      // User not member (e.g. webmaster), use default section
+      $section = Section::find(1);
+    }
+    
     $leaderCategory = array();
     $leaderCategory["Coin des animateurs"] = 'leader_corner';
 //      $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
     
     $leaderCategory["Opérations courantes"] = 'title';
     if (Parameter::get(Parameter::$SHOW_CALENDAR)) {
-      $leaderCategory['Gérer le calendrier'] = $user->can(Privilege::$EDIT_CALENDAR) ? 'manage_calendar' : null;
+      $leaderCategory['Gérer le calendrier'] = array(
+          'routeName' => $user->can(Privilege::$EDIT_CALENDAR, $section) ? 'manage_calendar' : null,
+          'routeParameters' => $user->can(Privilege::$EDIT_CALENDAR, 1) ? null : array('section_slug' => $section->slug),
+      );
       $leaderCategory[$user->can(Privilege::$MANAGE_ATTENDANCE) ? 'Gérer les présences' : 'Voir les présences'] = 'edit_attendance';
     }
     $leaderCategory[$user->can(Privilege::$MANAGE_EVENT_PAYMENTS) ? 'Gérer les paiements' : 'Voir les paiements'] = 'edit_payment';
     if (Parameter::get(Parameter::$SHOW_PHOTOS))
-      $leaderCategory['Gérer les photos'] = $user->can(Privilege::$POST_PHOTOS) ? 'edit_photos' : null;
+      $leaderCategory['Gérer les photos'] = array(
+          'routeName' => $user->can(Privilege::$POST_PHOTOS, $section) ? 'edit_photos' : null,
+          'routeParameters' => $user->can(Privilege::$POST_PHOTOS, 1) ? null : array('section_slug' => $section->slug),
+      );
     if (Parameter::get(Parameter::$SHOW_DOCUMENTS))
-      $leaderCategory['Gérer les documents'] = $user->can(Privilege::$EDIT_DOCUMENTS) ? 'manage_documents' : null;
+      $leaderCategory['Gérer les documents'] = array(
+          'routeName' => $user->can(Privilege::$EDIT_DOCUMENTS, $section) ? 'manage_documents' : null,
+          'routeParameters' => $user->can(Privilege::$EDIT_DOCUMENTS, 1) ? null : array('section_slug' => $section->slug),
+      );
     if (Parameter::get(Parameter::$SHOW_NEWS))
-      $leaderCategory['Gérer les actualités'] = $user->can(Privilege::$EDIT_NEWS) ? 'manage_news' : null;
+      $leaderCategory['Gérer les actualités'] = array(
+          'routeName' => $user->can(Privilege::$EDIT_NEWS, $section) ? 'manage_news' : null,
+          'routeParameters' => $user->can(Privilege::$EDIT_NEWS, 1) ? null : array('section_slug' => $section->slug),
+      );
     if (Parameter::get(Parameter::$SHOW_EMAILS))
-      $leaderCategory['Gérer les e-mails'] = $user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : null;
-    $leaderCategory['Envoyer un e-mail aux parents'] = $user->can(Privilege::$SEND_EMAILS) ? 'send_section_email' : null;
+      $leaderCategory['Gérer les e-mails'] = array(
+          'routeName' => $user->can(Privilege::$SEND_EMAILS, $section) ? 'manage_emails' : null,
+          'routeParameters' => $user->can(Privilege::$SEND_EMAILS, 1) ? null : array('section_slug' => $section->slug),
+      );
+    $leaderCategory['Envoyer un e-mail aux parents'] = array(
+          'routeName' => $user->can(Privilege::$SEND_EMAILS, $section) ? 'send_section_email' : null,
+          'routeParameters' => $user->can(Privilege::$SEND_EMAILS, 1) ? null : array('section_slug' => $section->slug),
+      );
     $leaderCategory['Envoyer un e-mail aux animateurs'] = 'send_leader_email';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
-      $leaderCategory['Gérer les fiches santé'] = $user->can(Privilege::$VIEW_HEALTH_CARDS) ? 'manage_health_cards' : null;
+      $leaderCategory['Gérer les fiches santé'] = array(
+          'routeName' => $user->can(Privilege::$VIEW_HEALTH_CARDS, $section) ? 'manage_health_cards' : null,
+          'routeParameters' => $user->can(Privilege::$VIEW_HEALTH_CARDS, 1) ? null : array('section_slug' => $section->slug),
+      );
     $leaderCategory['Trésorerie'] = 'accounting';
     
     $leaderCategory['Opérations annuelles'] = 'title';
@@ -115,8 +146,10 @@ class MenuComposer {
             $user->can(Privilege::$EDIT_LISTING_ALL) || $user->can(Privilege::$EDIT_LISTING_LIMITED) ||
             $user->can(Privilege::$SECTION_TRANSFER || $user->can(Privilege::$MANAGE_ACCOUNTING))
             ? 'manage_registration' : null;
-    $leaderCategory['Gérer le listing'] =
-            $user->can(Privilege::$EDIT_LISTING_ALL) || $user->can(Privilege::$EDIT_LISTING_LIMITED) ? 'manage_listing' : null;
+    $leaderCategory['Gérer le listing'] = array(
+          'routeName' => $user->can(Privilege::$EDIT_LISTING_ALL, $section) || $user->can(Privilege::$EDIT_LISTING_LIMITED, $section) ? 'manage_listing' : null,
+          'routeParameters' => $user->can(Privilege::$EDIT_LISTING_ALL, 1) || $user->can(Privilege::$EDIT_LISTING_LIMITED, 1) ? null : array('section_slug' => $section->slug),
+      );
     $leaderCategory['Gérer les animateurs'] = 'edit_leaders';
     $leaderCategory['Privilèges des animateurs'] = 'edit_privileges';
     $leaderCategory['Gérer les sections'] = 'section_data';
@@ -196,10 +229,17 @@ class MenuComposer {
     $submenuActive = false;
     foreach ($menuItems as $itemName => $itemData) {
       $route = $itemData != 'divider' && $itemData != 'title' ? $itemData : null;
+      if (is_array($route)) {
+        $url = URL::route($route['routeName'], $route['routeParameters']);
+      } else if ($route) {
+        $url = URL::route($route);
+      } else {
+        $url = null;
+      }
       $active = $route == $currentRouteName;
       if ($active) $submenuActive = true;
       $items[$itemName] = array(
-          'url' => $route ? URL::route($route) : null,
+          'url' => $url,
           'active' => $active,
           'is_divider' => $itemData == "divider",
           'is_title' => $itemData == 'title',
