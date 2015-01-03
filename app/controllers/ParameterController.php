@@ -164,6 +164,10 @@ class ParameterController extends BaseController {
       Parameter::set(Parameter::$SMTP_USERNAME, Input::get('smtp_username'));
       Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
       Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
+      // Save unit e-mail address
+      $unitSection = Section::find(1);
+      $unitSection->email = Input::get('unit_email_address');
+      $unitSection->save();
     } catch (Exception $e) {
       Log::error($e);
       $error = true;

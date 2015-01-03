@@ -313,10 +313,18 @@
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('default_email_from_address', "Adresse e-mail du site") }}
+              {{ Form::label('default_email_from_address', "Adresse e-mail du site") }} <br />(pour l'envoi des e-mails personnels)
             </div>
             <div class="col-sm-5">
               {{ Form::text('default_email_from_address', Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), array("class" => "form-control")) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('unit_email_address', "Adresse e-mail de l'unité") }} <br />(pour l'envoi des e-mails d'unité)
+            </div>
+            <div class="col-sm-5">
+              {{ Form::text('unit_email_address', Section::find(1)->email, array("class" => "form-control")) }}
             </div>
           </div>
           <div class="form-group">
