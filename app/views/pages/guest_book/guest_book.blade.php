@@ -72,7 +72,7 @@
         <div class="form-horizontal well guest-book-form"
              @if (!Session::has('_old_input')) style="display: none;" @endif
              >
-          {{ Form::open(array('url' => URL::route('guest_book_submit'))) }}
+          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('guest_book_submit'))) }}
             <legend>
               Nouveau message pour le livre d'or
             </legend>
@@ -90,7 +90,7 @@
             </div>
             <div class="form-group">
               <div class="col-md-8 col-md-offset-2">
-                {{ Form::submit('Soumettre', array('class' => 'btn btn-primary')) }}
+                {{ Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Soumettre', 'disabled')) }}
                 <a href="" class="btn btn-default guest-book-cancel">
                   Annuler
                 </a>
