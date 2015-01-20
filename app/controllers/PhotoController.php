@@ -192,7 +192,7 @@ class PhotoController extends BaseController {
    */
   public function downloadAlbum($album_id, $first_photo, $last_photo) {
     // Check that the user is allowed to download photos
-    if (!$this->user->isMember() && !$this->isFormerLeader()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
       return Helper::forbiddenResponse();
     }
     // Gather photos
@@ -202,7 +202,9 @@ class PhotoController extends BaseController {
     if (!count($photos)) {
       return App::abort(404, "Cet album est vide.");
     }
-    $outputFileName = "Photos-$first_photo-$last_photo.zip";
+    $album = PhotoAlbum::find($album_id);
+    $albumName = Helper::removeSpecialCharacters($album->name);
+    $outputFileName = "$albumName (photos $first_photo-$last_photo).zip";
     // Create zip file in temporary folder
     $filename = tempnam(storage_path("site_data/tmp/"), "photos.zip");
     $zip = new ZipArchive();
