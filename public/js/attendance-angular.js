@@ -96,7 +96,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    */
   $scope.toggle = function(member, event) {
     if (!canEdit) return;
-    member.status["event_" + event.id] = !member.status["event_" + event.id];
+    member.status["event_" + event.id] = (member.status["event_" + event.id] + 1) % 3;
     $scope.uploadChanges();
   };
   
@@ -109,10 +109,12 @@ angularAttendance.controller('AttendanceController', function($scope) {
     var noneAttended = true;
     var allAttended = true;
     $scope.members.forEach(function(member) {
-      if (member.status["event_" + event.id])
+      if (member.status["event_" + event.id] != 0) {
         noneAttended = false;
-      else
+      }
+      if (member.status["event_" + event.id] != 1) {
         allAttended = false;
+      }
     });
     if (!noneAttended && !allAttended) {
       if (!confirm("Il y a déjà des présences/absences encodées pour cet événement. Les effacer ?")) {
@@ -132,8 +134,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
   $scope.countWithStatus = function(event, status) {
     var total = 0;
     $scope.members.forEach(function(member) {
-      if ((member.status["event_" + event.id] && status) || (!member.status["event_" + event.id] && !status))
-        total++;
+      if (member.status["event_" + event.id] == status) total++;
     });
     return total;
   };
@@ -144,8 +145,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
   $scope.countMemberStatus = function(member, status) {
     var total = 0;
     $scope.monitoredEvents.forEach(function(event) {
-      if ((member.status["event_" + event.id] && status) || (!member.status["event_" + event.id] && !status))
-        total++;
+      if (member.status["event_" + event.id] == status) total++;
     });
     return total;
   };
@@ -193,7 +193,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
         $scope.members.forEach(function(member) {
           // Make sur member.status is a non-array object
           if (!member.status || Array.isArray(member.status)) member.status = {};
-          member.status["event_" + eventId] = false;
+          member.status["event_" + eventId] = 0;
         });
         $scope.$$phase || $scope.$apply();
         $scope.uploadChanges();

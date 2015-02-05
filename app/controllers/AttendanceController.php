@@ -71,9 +71,9 @@ class AttendanceController extends BaseController {
                 ->where('event_id', '=', $event['id'])
                 ->first();
         if ($attendance) {
-          $status["event_" . $event['id']] = $attendance->attended ? true : false;
+          $status["event_" . $event['id']] = $attendance->attended;
         } else {
-          $status["event_" . $event['id']] = false;
+          $status["event_" . $event['id']] = 0;
         }
       }
       $member['status'] = $status;
@@ -107,7 +107,7 @@ class AttendanceController extends BaseController {
           if ($event->monitored) {
             $propertyName = "event_" . $event->id;
             // Get whether the member attended the event
-            $attended = false;
+            $attended = 0;
             if ($memberData->status && property_exists($memberData->status, $propertyName)) {
               $attended = $memberData->status->$propertyName;
             }
@@ -122,7 +122,7 @@ class AttendanceController extends BaseController {
                   'member_id' => $memberData->id,
                   'event_id' => $event->id,
                   'section_id' => $this->user->currentSection->id,
-                  'attended' => $attended ? true : false,
+                  'attended' => $attended,
               ));
             } else {
               // Update existing attendance instance

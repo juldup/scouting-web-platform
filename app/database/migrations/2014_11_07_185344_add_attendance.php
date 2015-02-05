@@ -36,7 +36,7 @@ class AddAttendance extends Migration {
       $table->foreign('event_id')->references('id')->on('calendar_items')->onDelete('cascade');
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
-      $table->boolean('attended')->default(false);
+      $table->tinyInteger('attended')->default(0);
       $table->timestamps();
       
       $table->index('member_id');

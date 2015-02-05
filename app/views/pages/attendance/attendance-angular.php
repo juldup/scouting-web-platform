@@ -55,9 +55,9 @@
         <td></td>
         <td></td>
         <td ng-repeat="event in monitoredEvents" ng-if="event.date <= maxDate && event.date >= minDate">
-          <span class="glyphicon glyphicon-check pointer-cursor attendance-present" ng-click="setAll(event, true)" title="Tous présents"></span>
+          <span class="glyphicon glyphicon-check pointer-cursor attendance-present" ng-click="setAll(event, 1)" title="Tous présents"></span>
           –
-          <span class="glyphicon glyphicon-unchecked pointer-cursor attendance-absent" ng-click="setAll(event, false)" title="Tous absents"></span>
+          <span class="glyphicon glyphicon-unchecked pointer-cursor attendance-absent" ng-click="setAll(event, 0)" title="Tous absents"></span>
         </td>
         <td></td>
       </tr>
@@ -66,14 +66,17 @@
           {{ member.name }}
         </td>
         <td>
-          <span class="attendance-present">{{ countMemberStatus(member, true) }}</span>
+          <span class="attendance-present">{{ countMemberStatus(member, 1) }}</span>
           –
-          <span class="attendance-absent">{{ countMemberStatus(member, false) }}</span>
+          <span class="attendance-excused">{{ countMemberStatus(member, 2) }}</span>
+          –
+          <span class="attendance-absent">{{ countMemberStatus(member, 0) }}</span>
         </td>
         <td></td>
         <td ng-repeat="event in monitoredEvents" ng-click="toggle(member, event)" class="pointer-cursor" ng-if="event.date <= maxDate && event.date >= minDate">
-          <span ng-if="member.status['event_' + event.id]" class="attendance-present">Présent<span ng-if="member.isFemale">e</span></span>
-          <span ng-if="!member.status['event_' + event.id]" class="attendance-absent">Absent<span ng-if="member.isFemale">e</span></span>
+          <span ng-if="member.status['event_' + event.id] == 0" class="attendance-absent">Absent<span ng-if="member.isFemale">e</span></span>
+          <span ng-if="member.status['event_' + event.id] == 1" class="attendance-present">Présent<span ng-if="member.isFemale">e</span></span>
+          <span ng-if="member.status['event_' + event.id] == 2" class="attendance-excused">Excusé<span ng-if="member.isFemale">e</span></span>
         </td>
         <td></td>
       </tr>
@@ -89,9 +92,11 @@
         <td></td>
         <td></td>
         <td ng-repeat="event in monitoredEvents" ng-if="event.date <= maxDate && event.date >= minDate">
-          <span class="attendance-present">{{ countWithStatus(event, true) }}</span>
+          <span class="attendance-present">{{ countWithStatus(event, 1) }}</span>
           –
-          <span class="attendance-absent">{{ countWithStatus(event, false) }}</span>
+          <span class="attendance-excused">{{ countWithStatus(event, 2) }}</span>
+          –
+          <span class="attendance-absent">{{ countWithStatus(event, 0) }}</span>
         </td>
         <td></td>
       </tr>

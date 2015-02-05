@@ -23,7 +23,7 @@
  *   - member_id:  The member that was present or absent to the event
  *   - event_id:   The event attended or not
  *   - section_id: Id of the section this belongs to (usually the member's section for the current year)
- *   - attended:   Whether the event was attended by this member
+ *   - attended:   Attendance status by this member (0 = absent, 1 = present, 2 = excused)
  */
 class Attendance extends Eloquent {
   

@@ -46,8 +46,7 @@ Log::useFiles(storage_path().'/logs/laravel.log');
 |
 */
 
-App::error(function(Exception $exception, $code)
-{
+App::error(function(Exception $exception, $code) {
 	Log::error($exception);
   if ($exception instanceof PDOException || $exception->getMessage() == "Database [] not configured.") {
     // There is no connection to the database yet, this means the website needs to be bootstrapped
@@ -75,9 +74,8 @@ App::missing(function(Exception $exception) {
 |
 */
 
-App::down(function()
-{
-	return Response::make("Be right back!", 503);
+App::down(function() {
+	return Response::make("<p style='margin-top: 5%; text-align: center;'>Site en cours de maintenance. Veuillez r&eacute;essayer dans quelques minutes.", 503);
 });
 
 /*
