@@ -230,7 +230,11 @@ class MenuComposer {
     foreach ($menuItems as $itemName => $itemData) {
       $route = $itemData != 'divider' && $itemData != 'title' ? $itemData : null;
       if (is_array($route)) {
-        $url = URL::route($route['routeName'], $route['routeParameters']);
+        if ($route['routeName']) {
+          $url = URL::route($route['routeName'], $route['routeParameters']);
+        } else {
+          $url = null;
+        }
       } else if ($route) {
         $url = URL::route($route);
       } else {
