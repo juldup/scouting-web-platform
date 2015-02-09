@@ -76,6 +76,14 @@
       </a>
     </li>
   @endif
+  <!-- Daily photo -->
+  @if (Parameter::get(Parameter::$SHOW_DAILY_PHOTOS))
+    <li class="{{ $daily_photos_selected ? "active" : "" }}">
+      <a href="{{ URL::route('daily_photos') }}">
+        Photos du jour
+      </a>
+    </li>
+  @endif
 </ul>
 
 <!-- Leader menu -->

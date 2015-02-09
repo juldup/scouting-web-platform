@@ -281,6 +281,10 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"animateurs\"",
             'parameter_name' => Parameter::$SHOW_LEADERS
         ),
+        'page_daily_photos' => array(
+            'description' => "Afficher la photo du jour",
+            'parameter_name' => Parameter::$SHOW_DAILY_PHOTOS
+        ),
         'page_listing' => array(
             'description' => "Afficher la page \"listing\"",
             'parameter_name' => Parameter::$SHOW_LISTING

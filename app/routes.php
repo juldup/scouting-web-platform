@@ -199,6 +199,9 @@ Route::get('gestion/e-mails/supprimer/{email_id}', array("as" => "manage_emails_
 Route::get('gestion/e-mails/archiver/{section_slug}/{email_id}', array("as" => "manage_emails_archive", "uses" => "EmailController@archiveEmail"));
 Route::get('gestion/envoi-e-mail-animateurs/{section_slug?}', array("as" => "send_leader_email", "uses" => "EmailController@sendLeaderEmail"));
 
+// Daily photo
+Route::get('photos-du-jour/{date?}', array("as" => "daily_photos", "uses" => "DailyPhotoController@showPage"));
+
 // Photos
 Route::get('photos/archives/{section_slug?}', array("as" => "photo_archives", "uses" => "PhotoController@showArchives"));
 Route::get('photos/{section_slug?}', array("as" => "photos", "uses" => "PhotoController@showPage"));
