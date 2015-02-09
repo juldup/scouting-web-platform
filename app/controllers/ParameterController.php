@@ -282,7 +282,7 @@ class ParameterController extends BaseController {
             'parameter_name' => Parameter::$SHOW_LEADERS
         ),
         'page_daily_photos' => array(
-            'description' => "Afficher la photo du jour",
+            'description' => "Afficher les photos du jour",
             'parameter_name' => Parameter::$SHOW_DAILY_PHOTOS
         ),
         'page_listing' => array(
