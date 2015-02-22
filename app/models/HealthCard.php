@@ -126,7 +126,7 @@ class HealthCard extends Eloquent {
         // Mark reminder as sent
         $healthCard->reminder_sent = true;
         $healthCard->save();
-        LogEntry::log("Fiche santé", "Envoi d'une e-mail de rappel", array("Membre" => $member->getFullName(), "Destinataires" => $recipients));
+        LogEntry::log("Fiche santé", "Envoi d'un e-mail de rappel", array("Membre" => $member->getFullName(), "Destinataires" => $recipients));
       }
     }
     // Send e-mails

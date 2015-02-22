@@ -25,7 +25,7 @@ $().ready(function() {
     event.stopPropagation();
     var help = $(this).closest(".leader-help-item").data('leader-help');
     $(".leader-corner-help:visible").hide();
-    $(".leader-corner-help[data-leader-help='" + help + "'").show();
+    $(".leader-corner-help[data-leader-help='" + help + "']").show();
     $(".leader-help-general").hide();
   });
   // Hide help when clicking on the back-to-top icon

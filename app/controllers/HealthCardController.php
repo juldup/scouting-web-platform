@@ -208,7 +208,7 @@ class HealthCardController extends BaseController {
     // Get health card
     $healthCard = HealthCard::where('member_id', '=', $member_id)->first();
     // Log
-    LogEntry::log("Fiche santé", "Télachargement d'une fiche santé", array("Membre" => $member->getFullName()));
+    LogEntry::log("Fiche santé", "Téléchargement d'une fiche santé", array("Membre" => $member->getFullName()));
     // Output the health card in PDF format
     HealthCardPDF::healthCardToPDF($healthCard);
   }

@@ -397,7 +397,7 @@ class UserController extends BaseController {
         ));
         $pendingEmail->send();
         // Redirect with success message
-        LogEntry::log("Utilisateur", "Envoi d'une e-mail pour récupérer son mot de passe", array("Adresse e-mail" => $email));
+        LogEntry::log("Utilisateur", "Envoi d'un e-mail pour récupérer son mot de passe", array("Adresse e-mail" => $email));
         return Redirect::to(URL::current())
                 ->with('success_message', "Un e-mail a été envoyé à $email.");
       } else {
