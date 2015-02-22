@@ -57,8 +57,8 @@
     <div class="col-md-12">
       @if (count($albums))
         <h2>Albums</h2>
-        <table class="table table-striped table-hover draggable-table">
-          <tbody>
+        <table class="table table-striped table-hover">
+          <tbody class="draggable-tbody">
             @foreach($albums as $album)
               <tr class="draggable-row" data-draggable-id="{{ $album->id }}">
                 <td class="photo-album-name-column">
@@ -93,6 +93,8 @@
                 </td>
               </tr>
             @endforeach
+          </tbody>
+          <tbody>
             <tr>
               <td colspan="2"></td>
               <td>

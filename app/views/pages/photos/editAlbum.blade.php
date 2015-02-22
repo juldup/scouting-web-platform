@@ -54,8 +54,8 @@
   
   <div class="row">
     <div class="col-md-12">
-      <table class="table table-striped table-hover draggable-table" id="photo-table">
-        <tbody>
+      <table class="table table-striped table-hover" id="photo-table">
+        <tbody class="draggable-tbody photos-uploaded">
           @foreach($photos as $photo)
             <tr class="photo-row draggable-row" id="photo-{{ $photo->id }}" data-draggable-id="{{ $photo->id }}" data-photo-id="{{ $photo->id }}">
               <td class="photo-thumnail-column">
@@ -89,6 +89,10 @@
               </td>
             </tr>
           @endforeach
+        </tbody>
+        <tbody class="photos-uploading">
+        </tbody>
+        <tbody>
           <tr style="display: none;" id="upload-row-prototype" class="photo-row">
             <td class="photo-thumnail-column">
               <div class="photo-thumbnail">

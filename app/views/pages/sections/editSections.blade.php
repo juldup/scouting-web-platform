@@ -183,7 +183,7 @@
 
   <div class="row">
     <div class="col-md-12">
-      <table class="table table-striped table-hover draggable-table">
+      <table class="table table-striped table-hover">
         <thead>
           <tr>
             <th colspan="5">
@@ -197,7 +197,7 @@
             </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class="draggable-tbody">
           @foreach ($sections as $section)
             <tr data-section-id="{{ $section->id}}" data-draggable-id="{{ $section->id }}" class="draggable-row">
               <td>
@@ -254,7 +254,9 @@
               </td>
             </tr>
           @endforeach
-          @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
+        </tbody>
+        @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
+          <tbody>
             <tr>
               <td>
                 <a class="btn-sm btn-primary add-button" href="">
@@ -262,10 +264,9 @@
                 </a>
               </td>
             </tr>
-          @endif
-        </tbody>
+          </tbody>
+        @endif
       </table>
     </div>
   </div>
-  
 @stop

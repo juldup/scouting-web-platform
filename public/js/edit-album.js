@@ -153,7 +153,8 @@ function addPicturesFromList(files) {
       var rowId = "photo_row_new_" + newPictureCount;
       var prototype = $("#upload-row-prototype");
       var newRow = prototype.clone();
-      prototype.before(newRow);
+//      prototype.before(newRow);
+      $(".photos-uploading").append(newRow);
       newRow.show();
       newRow.attr('id', rowId);
       // Add picture to upload queue
@@ -204,11 +205,10 @@ function uploadNextPicture() {
         newRow.attr('id', "photo-" + data.photo_id);
         newRow.data('draggable-id', data.photo_id);
         newRow.data('photo-id', data.photo_id);
-        newRow.initDraggableRow();
         newRow.find('.editable-text').data('editable-id', data.photo_id);
         newRow.find('.editable-text').initEditableText();
         newRow.show();
-        $("#photo_row_new_" + data.id).before(newRow);
+        $(".photos-uploaded").append(newRow);
         initRotateButtons(newRow);
       } else {
         // Upload failed
