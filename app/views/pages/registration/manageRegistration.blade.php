@@ -90,6 +90,8 @@
   
   @include('pages.registration.manageRegistrationMenu', array('selected' => 'registration'))
   
+  @include('subviews.flashMessages')
+  
   <?php echo $__env->make('subviews.editMemberForm', array(
       'form_legend' => "Inscription d'un membre",
       'submit_url' => URL::route('manage_registration_submit', array('section_slug' => $user->currentSection->slug)),
@@ -101,9 +103,8 @@
   <div class="row">
     <div class="col-md-12">
       <h1>Nouvelles inscriptions en attente pour {{{ $user->currentSection->la_section }}}</h1>
-      @include('subviews.flashMessages')
       @if (count($registrations))
-      <table class="table table-striped table-hover wide-table">
+        <table class="table table-striped table-hover wide-table">
           <thead>
             <tr>
               <th></th>

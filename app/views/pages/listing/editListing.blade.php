@@ -88,7 +88,10 @@
       <div class="col-lg-12">
         <table class="table table-striped table-hover sort-by-column">
           <thead>
-          <th class="parser-false"></th>
+            <th class="parser-false"></th>
+            @if ($user->currentSection->id == 1)
+              <th>Section</th>
+            @endif
             <th>Nom</th>
             <th>Prénom</th>
             <th>Date de naissance</th>
@@ -105,6 +108,11 @@
                     Supprimer
                   </a>
                 </td>
+                @if ($user->currentSection->id == 1)
+                  <td data-text="{{ $member->getSection()->position }}">
+                    {{{ $member->getSection()->name }}}
+                  </td>
+                @endif
                 <td>{{{ $member->last_name }}}</td>
                 <td>{{{ $member->first_name }}}</td>
                 <td data-text="{{ $member->birth_date }}">{{{ $member->getHumanBirthDate() }}}</td>
@@ -120,7 +128,11 @@
     
     <div class="row">
       <div class="col-lg-12">
-        <p>Il n'y a aucun membre dans cette section.</p>
+        @if ($user->currentSection->id == 1)
+          <p>Il n'y a auncun scout dans l'unité.</p>
+        @else
+          <p>Il n'y a aucun membre dans cette section.</p>
+        @endif
       </div>
     </div>
     

@@ -484,6 +484,10 @@ class Member extends Eloquent {
     // Set default value for $familyMembers
     if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
       $familyMembers = 0;
+    // Make sure the member is not a non-leader in the "Unit" section
+    if (!$isLeader && $sectionId == 1) {
+      $errorMessage .= "Il est impossible d'inscrire un membre non animateur dans la section \"Unité\". ";
+    }
     // Return error message or array containing the data
     if ($errorMessage) {
       return $errorMessage;

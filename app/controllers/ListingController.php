@@ -119,12 +119,20 @@ class ListingController extends BaseController {
       return Helper::forbiddenResponse();
     }
     // Gather members
-    $members = Member::where('validated', '=', true)
-            ->where('section_id', '=', $this->section->id)
-            ->where('is_leader', '=', false)
-            ->orderBy('last_name')
-            ->orderBy('first_name')
-            ->get();
+    if ($this->user->currentSection->id == 1) {
+      $members = Member::where('validated', '=', true)
+              ->where('is_leader', '=', false)
+              ->orderBy('last_name')
+              ->orderBy('first_name')
+              ->get();
+    } else {
+      $members = Member::where('validated', '=', true)
+              ->where('section_id', '=', $this->section->id)
+              ->where('is_leader', '=', false)
+              ->orderBy('last_name')
+              ->orderBy('first_name')
+              ->get();
+    }
     // Make view
     return View::make('pages.listing.editListing', array(
         'members' => $members,
