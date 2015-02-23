@@ -283,6 +283,19 @@
               {{ Form::textarea('additional_head_html', Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML), array("class" => "form-control", "rows" => 3)) }}
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('photos_public', "Photos publiques") }}
+              <p>
+                <span class="glyphicon glyphicon-warning-sign danger"></span>
+                Si oui, toutes les photos de tous les albums seront visibles par tous les internautes. <br />
+                <a target="_blank" href="http://www.lesscouts.be/organiser/les-scouts-20/droit-a-limage/">Plus d'infos sur le droit à l'image.</a>
+              </p>
+            </div>
+            <div class="col-sm-7">
+              {{ Form::checkbox('photos_public', 1, Parameter::get(Parameter::$PHOTOS_PUBLIC), array("class" => "photos-public-checkbox")) }}
+            </div>
+          </div>
           
           <legend>
             <div class="row">

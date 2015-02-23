@@ -53,4 +53,12 @@ $().ready(function() {
     newElement.removeClass('safe-email-row-prototype');
     newElement.show();
   });
+  // Add confirmation on photos public option
+  $('.photos-public-checkbox').on('switch-change', function () {
+    if ($(this).is(":checked")) {
+      if (!confirm("Attention à la question du droit à l'image. Es-tu sûr de vouloir continuer ?")) {
+        $(this).prop("checked",false).trigger("change");
+      }
+    }
+  });
 });

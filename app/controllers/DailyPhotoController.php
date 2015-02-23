@@ -30,7 +30,7 @@ class DailyPhotoController extends BaseController {
       return App::abort(404);
     }
     // Make sure the current user has access to the photos
-    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader() && !Parameter::get(Parameter::$PHOTOS_PUBLIC)) {
       return Helper::forbiddenNotMemberResponse();
     }
     $photos = $this->selectDailyPhotos($date);

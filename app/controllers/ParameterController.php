@@ -144,6 +144,7 @@ class ParameterController extends BaseController {
     // Save the advanced site parameters
     try {
       Parameter::set(Parameter::$ADDITIONAL_HEAD_HTML, Input::get('additional_head_html'));
+      Parameter::set(Parameter::$PHOTOS_PUBLIC, Input::get('photos_public'));
     } catch (Exception $e) {
       Log::error($e);
       $error = true;

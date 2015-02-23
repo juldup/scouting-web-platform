@@ -39,7 +39,7 @@ class PhotoController extends BaseController {
       return App::abort(404);
     }
     // Make sure the current user has access to the photos
-    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader() && !Parameter::get(Parameter::$PHOTOS_PUBLIC)) {
       return Helper::forbiddenNotMemberResponse();
     }
     // Get the current album (if any)
@@ -167,7 +167,7 @@ class PhotoController extends BaseController {
    */
   public function getPhoto($format, $photo_id) {
     // Make sure the user has access to photos
-    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader() && !Parameter::get(Parameter::$PHOTOS_PUBLIC)) {
       return Helper::forbiddenResponse();
     }
     // Get photo object
@@ -192,7 +192,7 @@ class PhotoController extends BaseController {
    */
   public function downloadAlbum($album_id, $first_photo, $last_photo) {
     // Check that the user is allowed to download photos
-    if (!$this->user->isMember() && !$this->user->isFormerLeader()) {
+    if (!$this->user->isMember() && !$this->user->isFormerLeader() && !Parameter::get(Parameter::$PHOTOS_PUBLIC)) {
       return Helper::forbiddenResponse();
     }
     // Gather photos
