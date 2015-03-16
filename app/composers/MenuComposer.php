@@ -201,6 +201,7 @@ class MenuComposer {
   private function generateSectionMenu($currentRouteName) {
     // Section category
     $sectionMenuItems = array();
+    $sectionMenuItems["Page d'accueil"] = 'section';
     if (Parameter::get(Parameter::$SHOW_NEWS))
       $sectionMenuItems["Actualités de la section"] = 'news';
     if (Parameter::get(Parameter::$SHOW_CALENDAR))
