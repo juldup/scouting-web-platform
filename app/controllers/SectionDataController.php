@@ -54,6 +54,7 @@ class SectionDataController extends BaseController {
     $sectionType = Input::get('section_type');
     $sectionTypeNumber = Input::get('section_type_number');
     $color = Input::get('section_color');
+    $calendarShortname = Input::get('section_calendar_shortname');
     $la_section = Input::get('section_la_section');
     $de_la_section = Input::get('section_de_la_section');
     $subgroup_name = Input::get('section_subgroup_name');
@@ -117,6 +118,7 @@ class SectionDataController extends BaseController {
           $section->section_type = $sectionType;
           $section->section_type_number = $sectionTypeNumber;
           $section->color = $color;
+          $section->calendar_shortname = $calendarShortname;
           $section->la_section = $la_section;
           $section->de_la_section = $de_la_section;
         }

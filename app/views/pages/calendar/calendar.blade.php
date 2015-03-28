@@ -219,6 +219,9 @@
               <div class="calendar-event-wrapper {{ !$editing ? "clickable" : "" }}">
                 <p class="calendar-event" title="{{{ $event->description }}}" style="color: {{$event->getSection()->color}};">
                   <img src="{{ $event->getIcon() }}" class='calendar-event-icon' />
+                  @if ($user->currentSection->id == 1)
+                    <strong>{{{ $event->getSection()->calendar_shortname . ($event->getSection()->calendar_shortname ? " :" : "") }}}</strong>
+                  @endif
                   {{{ $event->event }}}
                 </p>
                 @if (!$editing)

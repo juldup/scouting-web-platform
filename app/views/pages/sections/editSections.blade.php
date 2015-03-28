@@ -49,7 +49,8 @@
         'la_section': "{{ Helper::sanitizeForJavascript($section->la_section) }}",
         'de_la_section': "{{ Helper::sanitizeForJavascript($section->de_la_section) }}",
         'subgroup_name': "{{ Helper::sanitizeForJavascript($section->subgroup_name) }}",
-        'delete_url': "{{ URL::route('edit_section_delete', array('section_id' => $section->id)) }}"
+        'delete_url': "{{ URL::route('edit_section_delete', array('section_id' => $section->id)) }}",
+        'calendar_shortname': "{{ Helper::sanitizeForJavascript($section->calendar_shortname) }}"
       };
     @endforeach
   </script>
@@ -111,6 +112,15 @@
               <p class="form-side-note">
                 <a class="color-sample"></a>
               </p>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-md-3 control-label">
+              {{ Form::label('section_calendar_shortname', 'Préfixe pour le calendrier') }}
+              <p>Précédera le nom de l'activité dans le calendrier d'unité</p>
+            </div>
+            <div class="col-md-7">
+              {{ Form::text('section_calendar_shortname', '', array('class' => 'form-control large', 'placeholder' => "ex.: LOU")) }}
             </div>
           </div>
           <div class="form-group">
@@ -226,6 +236,14 @@
                   <div class="col-xs-1"><span style="background-color: {{ $section->color }}" class="color-sample"></span></div>
                 </div>
                 <div class="details_section" data-section-id="{{ $section->id}}" style="display: none;">
+                  <div class="row">
+                    <div class="col-xs-3 member-detail-label">
+                      Préfixe pour le calendrier :
+                    </div>
+                    <div class="col-xs-9">
+                      {{{ $section->calendar_shortname }}}
+                    </div>
+                  </div>
                   <div class="row">
                     <div class="col-xs-3 member-detail-label">
                       "De la section" :
