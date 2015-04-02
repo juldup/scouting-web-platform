@@ -53,7 +53,12 @@
           @foreach ($users as $userInstance)
             <tr>
               <td>{{{ $userInstance->username }}}</td>
-              <td>{{{ $userInstance->email }}}</td>
+              <td>
+                {{{ $userInstance->email }}}
+                @if (!$userInstance->verified)
+                  <span class='unverified-user-account'>(non vérifiée)</span>
+                @endif
+              </td>
               <td>{{ date('d/m/Y', $userInstance->last_visit) }}</td>
               @if ($can_delete)
                 <td>
