@@ -12,3 +12,4 @@
 */
 
 Artisan::add(new AutomaticEmailSenderCommand);
+Artisan::add(new ImportOldSiteDatabaseCommand);
