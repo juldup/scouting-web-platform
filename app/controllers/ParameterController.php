@@ -298,4 +298,66 @@ class ParameterController extends BaseController {
     return $pages;
   }
   
+  /**
+   * [Route] Shows the edit CSS page
+   */
+  function showEditCSS() {
+    // Check that the user can edit the parameters
+    if (!$this->user->can(Privilege::$EDIT_STYLE, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    // Make view
+    $additionalCSS = Parameter::get(Parameter::$ADDITIONAL_CSS);
+    $additionalCSSBuffer = Parameter::get(Parameter::$ADDITIONAL_CSS_BUFFER);
+    if (!$additionalCSSBuffer) $additionalCSSBuffer = "/* Il n'y a pas de CSS. */";
+    return View::make('pages.parameters.editCSS', array(
+        'additional_CSS' => $additionalCSSBuffer,
+    ));
+  }
+  
+  /**
+   * [Route] Updates the CSS. Depending on the action, applies it to the public site or enter test mode.
+   */
+  function submitCSS() {
+    // Check that the user can edit the parameters
+    if (!$this->user->can(Privilege::$EDIT_STYLE, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    // Get input
+    $newCSS = Input::get('newCSS');
+    $action = Input::get('action');
+    if (!$newCSS) $newCSS = "";
+    $cssFile = Input::file('cssFile');
+    $error = false;
+    try {
+      if ($cssFile) {
+        $newCSS = file_get_contents($cssFile->getRealPath());
+      }
+    } catch (Exception $e) {
+      Log::error($e);
+      $error = true;
+    }
+    // Save CSS
+    Parameter::set(Parameter::$ADDITIONAL_CSS_BUFFER, $newCSS);
+    if ($action == 'apply') {
+      // Apply to public website
+      Parameter::set(Parameter::$ADDITIONAL_CSS, $newCSS);
+      // Quit testing mode
+      Session::remove('testing-css');
+    }
+    if ($action == 'test') {
+      // Enter testing mode
+      Session::set('testing-css', true);
+    }
+    // Redirect
+    if ($error) return Redirect::route('edit_css')->with('error_message', "Une erreur est survenue lors de l'upload du fichier.");
+    elseif ($action == 'apply') return Redirect::route('edit_css')->with('success_message', "Le nouveau style a été enregistré et appliqué au site public.");
+    else return Redirect::route('edit_css')->with('success_message', "Le nouveau style a été enregistré mais pas appliqué au site public.");
+  }
+  
+  public function exitCSSTestMode() {
+    Session::remove('testing-css');
+    return Redirect::route('edit_css');
+  }
+  
 }

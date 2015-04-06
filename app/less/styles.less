@@ -671,22 +671,22 @@ ul.social-widgets > li {
  * FORMS
  **************************************************/
 
-input[type=text].small, input[type=password].small, select.small, .small {
+input[type=text].small, input[type=password].small, input[type=file].small, select.small, .small {
   width: 70px;
   display: inline-block;
 }
 
-input[type=text].medium, input[type=password].medium, select.medium, .medium {
+input[type=text].medium, input[type=password].medium, input[type=file].medium, select.medium, .medium {
   width: 150px;
   display: inline-block;
 }
 
-input[type=text].large, input[type=password].large, select.large, .large {
+input[type=text].large, input[type=password].large, input[type=file].large, select.large, .large {
   width: 250px;
   display: inline-block;
 }
 
-input[type=text].very-large, input[type=password].very-large, select.very-large, .very-large {
+input[type=text].very-large, input[type=password].very-large,input[type=file].very-large, select.very-large, .very-large {
   width: 350px;
   display: inline-block;
 }
@@ -1183,6 +1183,15 @@ input[type="text"].document-category {
 .document-category-add, .safe-email-add {
   color: green;
   cursor: pointer;
+}
+
+/**************************************************
+ * EDIT CSS
+ **************************************************/
+
+textarea.form-control.edit-css-textarea {
+  height: 500px;
+  font-family: monospace;
 }
 
 /**************************************************

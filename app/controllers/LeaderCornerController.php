@@ -170,6 +170,11 @@ class LeaderCornerController extends BaseController {
                 'help-anchor' => 'parametres',
                 'help' => 'edit-parameters',
             ),
+            "Style du site" => array(
+                'url' => $this->user->can(Privilege::$EDIT_STYLE) ? URL::route('edit_css') : null,
+                'help-anchor' => 'style',
+                'help' => 'edit-style',
+            ),
         ),
         "Supervision" => array(
 //            "Changements récents" => array(

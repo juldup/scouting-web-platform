@@ -181,6 +181,13 @@ class Privilege extends Eloquent {
       'predefined' => "U"
   );
   
+  public static $EDIT_STYLE = array(
+      'id' => "Edit style",
+      'text' => "Modifier le style du site",
+      'section' => false,
+      'predefined' => "U"
+  );
+  
   public static $MANAGE_SECTIONS = array(
       'id' => "Manage sections",
       'text' => "Créer, modifier et supprimer les sections",
@@ -230,6 +237,7 @@ class Privilege extends Eloquent {
         
         self::$EDIT_LISTING_ALL,
         self::$EDIT_GLOBAL_PARAMETERS,
+        self::$EDIT_STYLE,
         self::$MANAGE_SECTIONS,
         self::$DELETE_GUEST_BOOK_ENTRIES,
         self::$DELETE_USERS,

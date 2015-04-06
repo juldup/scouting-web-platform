@@ -175,7 +175,6 @@
   <p>Cet outil permet de modifier la liste de liens vers d'autres sites de la page "Liens utiles".</p>
 @endif
 
-
 @if ($help == 'edit-parameters')
   <legend>Paramètres du site @yield('back_to_top')</legend>
   <p>Sur cette page, tu peux paramétriser le site&nbsp;:
@@ -188,6 +187,11 @@
       <li>Modifier les paramètres pour l'envoi d'e-mails</li>
     </ul>
   </p>
+@endif
+
+@if ($help == 'edit-style')
+  <legend>Style du site @yield('back_to_top')</legend>
+  <p>Sur cette page, tu peux modifier le style visuel global du site en ajoutant des règles CSS.</p>
 @endif
 
 @if ($help == 'recent-changes')

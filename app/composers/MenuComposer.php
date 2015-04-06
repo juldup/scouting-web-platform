@@ -157,6 +157,7 @@ class MenuComposer {
     
     $leaderCategory['Contenu du site'] = 'title';
     $leaderCategory["Paramètres du site"] = $user->can(Privilege::$EDIT_GLOBAL_PARAMETERS) ? 'edit_parameters' : null;
+    $leaderCategory["Style du site"] = $user->can(Privilege::$EDIT_STYLE) ? 'edit_css' : null;
     
     $leaderCategory['Supervision'] = 'title';
 //      $leaderCategory['Changements récents'] = 'view_private_recent_changes';

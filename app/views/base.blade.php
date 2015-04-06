@@ -26,6 +26,7 @@
     {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}} - @yield('title')
   </title>
   {{ Less::to('styles') }}
+  <link media="all" type="text/css" rel="stylesheet" href="{{ URL::route('additional_css') }}">
   @yield('head')
   {{ Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) }}
 </head>

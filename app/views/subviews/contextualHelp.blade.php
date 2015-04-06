@@ -543,6 +543,27 @@
   </p>
 @endif
 
+@if ($help == 'style')
+  <p>
+    Cette page permet de modifier le style (CSS) du site. Le CSS introduit ici s'ajoutera au CSS de base, et permet de donner un style plus personnalisé au site.
+  </p>
+  <p>Pour modifier le style du site, tu dois maitriser le CSS. Si tu ne maitrises pas le CSS, demande de l'aide à un webdesigner.</p>
+  <p>Il y a deux manières de modifier le css</p>
+  <ul>
+    <li>En le modifiant directement dans la zone de texte</li>
+    <li>En uploadant un fichier contenant le CSS (<strong>attention</strong>, ceci écrasera le contenu le la zone de texte)</li>
+  </ul>
+  <p>Il y a 3 options de publication&nbsp;:</p>
+  <ul>
+    <li><strong>Enregistrer</strong>&nbsp;: enregistre les changements sans les appliquer au site.</li>
+    <li>
+      <strong>Tester</strong>&nbsp;: enregistre les changement et te fait passer en <strong>mode test</strong>.
+      Tu peux alors te balader sur le site et tester le nouveau style sans que les visiteurs ne le voient.
+    </li>
+    <li><strong>Appliquer</strong>&nbsp;: ceci applique le nouveau style au site public.</li>
+  </ul>
+@endif
+
 @if ($help == 'user-list')
   <p>Cette page affiche tous les membres inscrits sur le site, avec leur statut et leur dernière date de visite.
   <p>Il est possible de supprimer un membre, mais pas d'en modifier les paramètres.

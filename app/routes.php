@@ -60,6 +60,10 @@ Route::get('cron/augmenter-annee-auto', array("as" => "cron_auto_increment_year_
 // General
 Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));
 Route::get('session/keepalive', array("as" => "session_keepalive", "uses" => function() {}));
+Route::get('css-unite.css', array("as" => "additional_css", "uses" => function() {
+  if (Session::get('testing-css')) return Response::make(Parameter::get(Parameter::$ADDITIONAL_CSS_BUFFER))->header('Content-Type', 'text/css');
+  return Response::make(Parameter::get(Parameter::$ADDITIONAL_CSS))->header('Content-Type', 'text/css');
+}));
 
 // Users
 Route::get('login/{section_slug?}', array("as" => "login", "uses" => "UserController@login"));
@@ -287,6 +291,9 @@ Route::get('gestion/donnees-section/supprimer/{section_id}', array("as" => "edit
 Route::post('ajax/gestion/donnees-section/changer-ordre-sections', array("as" => "ajax_change_section_order", "uses" => "SectionDataController@changeSectionOrder"));
 
 // Parameters
+Route::get('gestion/parametres/css/{section_slug?}', array("as" => "edit_css", "uses" => "ParameterController@showEditCSS"));
+Route::get('gestion/parametres/css-quitter-mode-test', array("as" => "edit_css_stop_testing", "uses" => "ParameterController@exitCSSTestMode"));
+Route::post('gestion/parametres/css/submit', array("as" => "edit_css_submit", "uses" => "ParameterController@submitCSS"));
 Route::get('gestion/parametres/{section_slug?}', array("as" => "edit_parameters", "uses" => "ParameterController@showEdit"));
 Route::post('gestion/parametres/submit', array("as" => "edit_parameters_submit", "uses" => "ParameterController@submitParameters"));
 

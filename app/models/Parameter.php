@@ -74,6 +74,8 @@ class Parameter extends Eloquent {
   public static $WEBSITE_META_KEYWORDS = "Website meta keywords";
   public static $ADDITIONAL_HEAD_HTML = "Additional head html";
   public static $FACEBOOK_APP_ID = "Facebook app id";
+  public static $ADDITIONAL_CSS = "Additional CSS";
+  public static $ADDITIONAL_CSS_BUFFER = "Additional CSS buffer";
   // Subscription fees
   public static $PRICE_1_CHILD = "Price for one child";
   public static $PRICE_2_CHILDREN = "Price for two children";
