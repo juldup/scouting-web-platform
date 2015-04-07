@@ -133,7 +133,7 @@ abstract class GenericPageController extends BaseController {
     } else {
       $sectionSlugParameter = array();
     }
-    LogEntry::log("Page", "Modification d'une page", array("Page" => $this->getPageTitle() ?: "Page d'accueil"));
+    LogEntry::log("Page", "Modification d'une page", array("Page" => $this->getPageTitle() ?: "Page d'accueil")); // TODO improve log message
     return Redirect::route($this->getShowRouteName(), $sectionSlugParameter);
   }
   

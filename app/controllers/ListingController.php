@@ -211,7 +211,7 @@ class ListingController extends BaseController {
     }
     // Redirect with status message
     if ($success) {
-      LogEntry::log("Listing", "Modification d'un membre", array("Membre" => $member->getFullName()));
+      LogEntry::log("Listing", "Modification d'un membre", array("Membre" => $member->getFullName())); // TODO improve log message
       return Redirect::to(URL::to(URL::previous()))
               ->with($success ? 'success_message' : 'error_message', $message);
     } else {
@@ -242,7 +242,7 @@ class ListingController extends BaseController {
                         . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
       } catch (Exception $ex) {
         Log::error($ex);
-        LogEntry::log("Listing", "Erreur lors de la suppression d'un membre", array("Membre" => $member->getFullName(), "Erreur" => $ex->getMessage()));
+        LogEntry::error("Listing", "Erreur lors de la suppression d'un membre", array("Membre" => $member->getFullName(), "Erreur" => $ex->getMessage()));
       }
     }
     // An error has occurred

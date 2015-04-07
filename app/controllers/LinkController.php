@@ -111,7 +111,7 @@ class LinkController extends BaseController {
     $redirect = Redirect::route('edit_links')
             ->with($success ? "success_message" : "error_message", $message);
     if ($success) {
-      LogEntry::log("Liens", $linkId ? "Modification d'un lien" : "Ajout d'un nouveau lien", array("Title" => $title, "Description" => $description, "URL" => $url));
+      LogEntry::log("Liens", $linkId ? "Modification d'un lien" : "Ajout d'un nouveau lien", array("Title" => $title, "Description" => $description, "URL" => $url)); // TODO improve log message
       return $redirect;
     } else {
       return $redirect->withInput();

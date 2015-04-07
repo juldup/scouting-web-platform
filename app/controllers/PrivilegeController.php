@@ -121,10 +121,10 @@ class PrivilegeController extends BaseController {
       }
     }
     // Log
-    LogEntry::log("Privilèges", "Changement des privilèges", $logChanges);
+    LogEntry::log("Privilèges", "Changement des privilèges", $logChanges); // TODO improve log message
     // Return response
     if ($error) return json_encode(array("result" => "Failure"));
     else return json_encode(array("result" => "Success"));
   }
-    
+  
 }

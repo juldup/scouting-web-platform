@@ -259,7 +259,7 @@ class RegistrationController extends GenericPageController {
     }
     // Redirect with status message
     if ($success) {
-      LogEntry::log("Inscription", "Nouvelle demande d'inscription", array("Nom" => Input::get('first_name') . " " . Input::get('last_name')));
+      LogEntry::log("Inscription", "Nouvelle demande d'inscription", array("Nom" => Input::get('first_name') . " " . Input::get('last_name'))); // TODO improve log message
       return Redirect::to(URL::route('registration_form'))
             ->with('success_message', $message);
     } else {
@@ -373,7 +373,7 @@ class RegistrationController extends GenericPageController {
         } else {
           $message = "$name est à présent inscrit.";
         }
-        LogEntry::log("Inscription", "Validation d'une demande d'inscription", array("Membre" => $member->getFullName()));
+        LogEntry::log("Inscription", "Validation d'une demande d'inscription", array("Membre" => $member->getFullName())); // TODO improve log message
       } else {
         $success = false;
         $message = $result ? $result : "Une erreur est survenue. Le nouveau membre n'a pas été inscrit.";
@@ -570,7 +570,7 @@ class RegistrationController extends GenericPageController {
       try {
         $member->year_in_section = $yearInSection;
         $member->save();
-        LogEntry::log("Inscription", "Changement de l'année dans la section", array("Membre" => $member->getFullName(), "Année" => $yearInSection));
+        LogEntry::log("Inscription", "Changement de l'année dans la section", array("Membre" => $member->getFullName(), "Année" => $yearInSection)); // TODO improve log message
         return json_encode(array('result' => 'Success'));
       } catch (Exception $ex) {
         Log::error($ex);
@@ -730,7 +730,7 @@ class RegistrationController extends GenericPageController {
         $message .= "Member $memberId does not exist. ";
       }
     }
-    LogEntry::log("Inscription", "Mise à jour du statut de paiement de cotisation", array("Membres" => $members));
+    LogEntry::log("Inscription", "Mise à jour du statut de paiement de cotisation", array("Membres" => $members)); // TODO improve log message
     // Redirect with status message
     return json_encode(array('result' => $error ? "Failure" : "Success", 'message' => $message));
   }

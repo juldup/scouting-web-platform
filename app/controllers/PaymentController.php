@@ -123,7 +123,7 @@ class PaymentController extends BaseController {
           }
         }
       }
-      LogEntry::log("Paiements", "Liste des paiements modifiée");
+      LogEntry::log("Paiements", "Liste des paiements modifiée"); // TODO improve log message
       // Return response
       return json_encode(array(
           "result" => "Success",

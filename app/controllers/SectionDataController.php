@@ -127,7 +127,7 @@ class SectionDataController extends BaseController {
         // Save and redirect with success message
         try {
           $section->save();
-          LogEntry::log("Sections", "Modification des données d'une section", array("Section" => $section->name));
+          LogEntry::log("Sections", "Modification des données d'une section", array("Section" => $section->name)); // TODO improve log message
           return Redirect::route('section_data')->with('success_message', "Les changements ont été enregistrés.");
         } catch (Exception $e) {
           // An error has occured while saving
@@ -166,7 +166,7 @@ class SectionDataController extends BaseController {
         $section->position = $section->id;
         $section->save();
         // Log
-        LogEntry::log("Sections", "Création d'une nouvelle section", array("Section" => $name));
+        LogEntry::log("Sections", "Création d'une nouvelle section", array("Section" => $name)); // TODO improve log message
         // Redirect with success message
         return Redirect::route('section_data')->with('success_message', "La section a été créée avec succès. N'oublie pas de mettre à jour l'ordre des sections.");
       } catch (Exception $ex) {
@@ -231,7 +231,7 @@ class SectionDataController extends BaseController {
       }
     }
     // Log
-    LogEntry::log("Sections", "Réordonnancement des sections");
+    LogEntry::log("Sections", "Réordonnancement des sections"); // TODO improve log message
     // Return success message
     return json_encode(array('result' => "Success"));
   }

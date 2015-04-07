@@ -238,7 +238,7 @@ class NewsController extends BaseController {
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) {
       LogEntry::log("Actualités", $newsId ? "Modification d'une nouvelle" : "Ajout d'une nouvelle",
-              array("Titre" => $title, "Contenu" => $body, "Date" => Helper::dateToHuman($news->news_date)));
+              array("Titre" => $title, "Contenu" => $body, "Date" => Helper::dateToHuman($news->news_date))); // TODO improve log message
       return $response;
     } else {
       return $response->withInput();

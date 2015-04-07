@@ -248,7 +248,7 @@ class UserController extends BaseController {
           ));
           $pendingEmail->send();
           // Redirect with success message
-          LogEntry::log("Utilisateur", "Changement d'adresse e-mail", array("Utilisateur" => $this->user->username, "E-mail" => $email));
+          LogEntry::log("Utilisateur", "Changement d'adresse e-mail", array("Utilisateur" => $this->user->username, "E-mail" => $email)); // TODO improve log message
           return Redirect::route('edit_user')
                   ->with('success_message', 'Votre adresse e-mail a été modifiée avec succès. Un lien de validation vous a été envoyé par e-mail.');
         } elseif ($action == 'password') {
@@ -288,7 +288,7 @@ class UserController extends BaseController {
           // Update user default section
           $this->user->changeDefaultSection($defaultSection);
           // Redirect with success message
-          LogEntry::log("Utilisateur", "Changement de section par défaut", array("Utilisateur" => $this->user->username, "Section" => Section::find($defaultSection)->name));
+          LogEntry::log("Utilisateur", "Changement de section par défaut", array("Utilisateur" => $this->user->username, "Section" => Section::find($defaultSection)->name)); // TODO improve log message
           return Redirect::route('edit_user')
                   ->with('success_message', 'Votre section par défaut a été modifiée avec succès.');
         }

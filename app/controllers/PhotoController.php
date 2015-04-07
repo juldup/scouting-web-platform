@@ -365,7 +365,7 @@ class PhotoController extends BaseController {
       }
     }
     // Log
-    LogEntry::log("Photos", "Réordonnancement des albums");
+    LogEntry::log("Photos", "Réordonnancement des albums"); // TODO improve log message
     // Return success response
     return json_encode(array('result' => "Success"));
   }
@@ -451,7 +451,7 @@ class PhotoController extends BaseController {
     try {
       $album->name = $newName;
       $album->save();
-      LogEntry::log("Photos", "Renommage d'un album", array("Album" => $album->name));
+      LogEntry::log("Photos", "Renommage d'un album", array("Album" => $album->name)); // TODO improve log message
     } catch (Exception $ex) {
       // Error
       Log::error($ex);
@@ -686,7 +686,7 @@ class PhotoController extends BaseController {
     try {
       $photo->caption = $newCaption;
       $photo->save();
-      LogEntry::log("Photos", "Changement de la description d'une photo", array("Album" => $album->name, "Photo" => $photo->filename, "Description" => $newCaption));
+      LogEntry::log("Photos", "Changement de la description d'une photo", array("Album" => $album->name, "Photo" => $photo->filename, "Description" => $newCaption)); // TODO improve log message
     } catch (Exception $ex) {
       // Error
       Log::error($ex);

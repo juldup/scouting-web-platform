@@ -202,7 +202,7 @@ class ParameterController extends BaseController {
     }
     // Return to parameter page
     if (!$error) {
-      LogEntry::log("Paramètres", "Modification des paramètres du site");
+      LogEntry::log("Paramètres", "Modification des paramètres du site"); // TODO improve log message
       return Redirect::route('edit_parameters')
               ->with('success_message', 'Les paramètres ont été enregistrés avec succès.');
     } else {

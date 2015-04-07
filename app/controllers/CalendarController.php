@@ -262,7 +262,7 @@ class CalendarController extends BaseController {
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) {
-      LogEntry::log("Calendrier", $eventId ? "Modification d'une événement du calendrier" : "Ajout d'un événement dans le calendrier", $eventData);
+      LogEntry::log("Calendrier", $eventId ? "Modification d'une événement du calendrier" : "Ajout d'un événement dans le calendrier", $eventData); // TODO improve log message
       return $redirect;
     } else {
       LogEntry::error("Calendrier", "Erreur lors de l'enregistrement d'un événement du calendrier");
@@ -291,7 +291,7 @@ class CalendarController extends BaseController {
       $calendarItem->delete();
       $success = true;
       $message = "L'événement a été supprimé.";
-      LogEntry::log("Calendrier", "Suppression d'un événement du calendrier", array("Événement" => $calendarItem->event, "Date" => $calendarItem->start_date));
+      LogEntry::log("Calendrier", "Suppression d'un événement du calendrier", array("Événement" => $calendarItem->event, "Date" => $calendarItem->start_date)); // TODO improve log message
     } catch (Illuminate\Database\QueryException $e) {
       Log::error($e);
       $success = false;

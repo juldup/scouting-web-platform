@@ -139,7 +139,7 @@ class AttendanceController extends BaseController {
           }
         }
       }
-      LogEntry::log("Présences", "Liste des présences modifiée");
+      LogEntry::log("Présences", "Liste des présences modifiée"); // TODO improve log message
       // Return response
       return json_encode(array(
           "result" => "Success",

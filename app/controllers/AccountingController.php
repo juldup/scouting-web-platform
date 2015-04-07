@@ -264,7 +264,7 @@ class AccountingController extends BaseController {
       LogEntry::error("Comptes", "Erreur lors de l'enregistrement des comptes", array('Erreur' => $error));
       return json_encode(array("result" => "Failure", "message" => "Une erreur est survenue lors de l'enregistrement des comptes."));
     } else {
-      LogEntry::log("Comptes", "Comptes modifiés");
+      LogEntry::log("Comptes", "Comptes modifiés"); // TODO improve log message
       return json_encode(array("result" => "Success", "new_transactions" => $newTransactions));
     }
   }

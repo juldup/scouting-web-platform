@@ -391,7 +391,7 @@ class DocumentController extends BaseController {
         Log::error($e);
         $success = false;
         $message = "Une erreur s'est produite. Le document n'a pas été supprimé.";
-        LogEntry::log("Documents", "Erreur lors de la suppression d'un document", array("Erreur" => $e->getMessage()));
+        LogEntry::error("Documents", "Erreur lors de la suppression d'un document", array("Erreur" => $e->getMessage()));
       }
     }
     // Redirect to previous page with success or error message

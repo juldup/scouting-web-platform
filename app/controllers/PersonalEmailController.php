@@ -137,7 +137,7 @@ class PersonalEmailController extends BaseController {
         ));
       $confirmationEmail->send();
       // Log
-      LogEntry::log("E-mail personnel", "Envoi d'un e-mail personnel", array("De" => $senderEmail, "Type" => $contact_type, "Destinataire" => $member_id));
+      LogEntry::log("E-mail personnel", "Envoi d'un e-mail personnel", array("De" => $senderEmail, "Type" => $contact_type, "Destinataire" => $member_id)); // TODO improve log message
       // Redirect with success message
       return Redirect::route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
               ->with('success_message', "Votre e-mail a bien été envoyé.");
