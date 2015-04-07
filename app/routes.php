@@ -59,6 +59,7 @@ Route::get('cron/augmenter-annee-auto', array("as" => "cron_auto_increment_year_
 
 // General
 Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));
+Route::get('icon-image', array("as" => "website_icon", "uses" => "HomePageController@websiteIcon"));
 Route::get('session/keepalive', array("as" => "session_keepalive", "uses" => function() {}));
 Route::get('css-unite.css', array("as" => "additional_css", "uses" => function() {
   if (Session::get('testing-css')) return Response::make(Parameter::get(Parameter::$ADDITIONAL_CSS_BUFFER))->header('Content-Type', 'text/css');

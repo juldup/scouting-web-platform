@@ -34,7 +34,7 @@
           <div class='row'>
             <div class='col-sm-9'>
               Tu es en <strong>mode test</strong>. Il n'y a que toi qui vois le site de cette manière et tu peux visiter les autres pages pour voir l'effet du nouveau style. <br />
-              Pour appliquer les changements, clique sur <strong>Appliquer au site</strong> en base de la page.
+              Pour appliquer les changements, clique sur <strong>Appliquer au site</strong> en bas de la page.
             </div>
             <div class='col-sm-3 text-right'>
               <a href='{{ URL::route('edit_css_stop_testing') }}' class='btn btn-default'>Quitter le mode test</a>

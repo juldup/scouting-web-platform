@@ -133,6 +133,18 @@ class ParameterController extends BaseController {
       Log::error($e);
       $error = true;
     }
+    // Save the icon
+    $iconFile = Input::file('icon');
+    try {
+      if ($iconFile) {
+        $filename = $iconFile->getClientOriginalName();
+        $iconFile->move(storage_path() . "/" . Parameter::$ICON_IMAGE_FOLDER, $filename);
+        Parameter::set(Parameter::$ICON_IMAGE, $filename);
+      }
+    } catch (Exception $e) {
+      Log::error($e);
+      $error = true;
+    }
     // Save the search engine parameters
     try {
       Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, Input::get('website_meta_description'));

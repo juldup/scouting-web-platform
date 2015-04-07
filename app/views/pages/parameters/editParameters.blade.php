@@ -216,6 +216,15 @@
               {{ Form::checkbox('logo_two_lines', 1, $logo_two_lines) }}
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('icon', "Icône du site") }}
+            </div>
+            <div class="col-sm-8">
+              <img src="{{ URL::route('website_icon') }}" class="website-icon-preview" />
+              {{ Form::file('icon', array('class' => 'btn btn-default website-logo-file-selector')) }}
+            </div>
+          </div>
           
           <legend>
             <div class="row">

@@ -84,4 +84,20 @@ class HomePageController extends GenericPageController {
     return App::abort(204); // No content
   }
   
+  /**
+   * [Route] Returns the website's icon image
+   */
+  public function websiteIcon() {
+    $iconName = Parameter::get(Parameter::$ICON_IMAGE);
+    if ($iconName) {
+      $path = storage_path(Parameter::$ICON_IMAGE_FOLDER . $iconName);
+      return Response::make(file_get_contents($path), 200, array(
+          "Content-Type" => "image",
+          "Content-Length" => filesize($path),
+          "Cache-control" => "public, max-age=3600"
+      ));
+    }
+    return App::abort(204); // No content
+  }
+  
 }

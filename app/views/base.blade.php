@@ -19,7 +19,7 @@
 <!doctype html>
 <html lang="fr" @yield('html_parameters')>
 <head>
-  <link rel="SHORTCUT ICON" href="{{ URL::to('') }}/favicon.ico">
+  <link rel="SHORTCUT ICON" href="{{ URL::route('website_icon') }}">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>

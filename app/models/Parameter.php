@@ -31,6 +31,7 @@ class Parameter extends Eloquent {
   
   // Folder (relative to storage folder) where the website logo is stored
   public static $LOGO_IMAGE_FOLDER = "site_data/website_logo/";
+  public static $ICON_IMAGE_FOLDER = "site_data/website_icon/";
   
   /**
    *  Parameter names
@@ -68,6 +69,7 @@ class Parameter extends Eloquent {
   public static $DEFAULT_EMAIL_FROM_ADDRESS = "Default e-mail from address";
   public static $LOGO_IMAGE = "Logo image";
   public static $LOGO_TWO_LINES = "Logo displayed on two lines";
+  public static $ICON_IMAGE = "Icon image";
   // Website metadata
   public static $BOOTSTRAPPING_DONE = "Website bootstrapping done";
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
