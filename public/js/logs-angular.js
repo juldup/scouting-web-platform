@@ -69,14 +69,17 @@ angularLogs.controller('LogsController', function ($scope) {
           // Update category filter list
           if ($scope.categories.indexOf(newLog.category) === -1 && newLog.category) {
             $scope.categories.push(newLog.category);
+            $scope.categories.sort();
           }
           // Update user filter list
           if ($scope.users.indexOf(newLog.user) === -1 && newLog.user) {
             $scope.users.push(newLog.user);
+            $scope.users.sort();
           }
           // Update section filter list
           if ($scope.sections.indexOf(newLog.section) === -1 && newLog.section) {
             $scope.sections.push(newLog.section);
+            $scope.sections.sort();
           }
           // Check if this log is visible under the current filters
           if (!atLeastOneVisible && $scope.showLog(newLog)) {
