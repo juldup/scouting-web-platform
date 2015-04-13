@@ -72,4 +72,49 @@ class AccountingItem extends Eloquent {
     return Helper::formatCashAmount($this->bankout_cents / 100.0);
   }
   
+  public function tupleRepresentation() {
+    return "(Année&nbsp;: <strong>" . $this->year . "</strong>" .
+            ", Catégorie&nbsp;: <strong>" . $this->category_name . "</strong>" .
+            ", Date&nbsp;: <strong>" . Helper::dateToHuman($this->date) . "</strong>" .
+            ", Motif&nbsp;: " . ($this->object ? "<strong>" . $this->object . "</strong>" : "<em>pas de motif</em>") .
+            ", Rentrée liquide&nbsp;: <strong>" . $this->cashin_cents / 100 . "&nbsp;€</strong>" .
+            ", Dépense liquide&nbsp;: <strong>" . $this->cashout_cents / 100 . "&nbsp;€</strong>" .
+            ", Rentrée banque&nbsp;: <strong>" . $this->bankin_cents / 100 . "&nbsp;€</strong>" .
+            ", Dépense banque&nbsp;: <strong>" . $this->bankout_cents / 100 . "&nbsp;€</strong>" .
+            ", Commentaire&nbsp;: " . ($this->comment ? "<strong>" . $this->comment . "</strong>" : "<em>pas de commentaire</em>").
+            ", Reçus&nbsp;: " . ($this->receipt ? "<strong>" . $this->receipt. "</strong>" : "<em>aucun</em>") .
+            ")";
+  }
+  
+  public function diffRepresentation($categoryName, $date, $object, $cashin, $cashout, $bankin, $bankout, $comment, $receipt) {
+    return "(Année&nbsp;: <strong>" . $this->year . "</strong>" .
+            ", Catégorie&nbsp;: <strong>" . ($this->category_name == $categoryName ? $categoryName : "<del>" . $this->category_name . "</del> <ins>" . $categoryName . "</ins>") . "</strong>" .
+            ", Date&nbsp;: <strong>" . ($this->date == $date ? Helper::dateToHuman($date) : "<del>" . Helper::dateToHuman($this->date) . "</del> <ins>" . Helper::dateToHuman($date) . "</ins>") . "</strong>" .
+            ", Motif&nbsp;: " . 
+                    ($this->object == $object ? ($this->object ? "<strong>" . $this->object . "</strong>" : "<em>pas de motif</em>") :
+                     "<del>" . ($this->object ? "<strong>" . $this->object . "</strong>" : "<em>pas de motif</em>") . "</del> <ins>" .
+                    ($object ? "<strong>" . $object . "</strong>" : "<em>pas de motif</em>") . "</ins>") .
+            ", Rentrée liquide&nbsp;: <strong>" .
+                    ($this->cashin_cents == $cashin ? $this->cashin_cents / 100 . "&nbsp;€" :
+                    "<del>" . $this->cashin_cents / 100 . "&nbsp;€</del> <ins>" . $cashin / 100 . "&nbsp;€</ins>" ) ."</strong>" .
+            ", Dépense liquide&nbsp;: <strong>" .
+                    ($this->cashout_cents == $cashout ? $this->cashout_cents / 100 . "&nbsp;€" :
+                    "<del>" . $this->cashout_cents / 100 . "&nbsp;€</del> <ins>" . $cashout / 100 . "&nbsp;€</ins>" ) ."</strong>" .
+            ", Rentrée banque&nbsp;: <strong>" .
+                    ($this->bankin_cents == $bankin ? $this->bankin_cents / 100 . "&nbsp;€" :
+                    "<del>" . $this->bankin_cents / 100 . "&nbsp;€</del> <ins>" . $bankin / 100 . "&nbsp;€</ins>" ) ."</strong>" .
+            ", Dépense banque&nbsp;: <strong>" .
+                    ($this->bankout_cents == $bankout ? $this->bankout_cents / 100 . "&nbsp;€" :
+                    "<del>" . $this->bankout_cents / 100 . "&nbsp;€</del> <ins>" . $bankout / 100 . "&nbsp;€</ins>" ) ."</strong>" .
+            ", Commentaire&nbsp;: " .
+                    ($this->comment == $comment ? ($this->comment ? "<strong>" . $this->comment . "</strong>" : "<em>pas de commentaire</em>") :
+                     "<del>" . ($this->comment ? "<strong>" . $this->comment . "</strong>" : "<em>pas de commentaire</em>") . "</del> <ins>" .
+                    ($comment ? "<strong>" . $comment . "</strong>" : "<em>pas de commentaire</em>") . "</ins>") .
+            ", Reçus&nbsp;: " .
+                    ($this->receipt == $receipt ? ($this->receipt ? "<strong>" . $this->receipt . "</strong>" : "<em>aucun</em>") :
+                     "<del>" . ($this->receipt ? "<strong>" . $this->receipt . "</strong>" : "<em>aucun</em>") . "</del> <ins>" .
+                    ($receipt ? "<strong>" . $receipt . "</strong>" : "<em>aucun</em>") . "</ins>") .
+            ")";
+  }
+  
 }

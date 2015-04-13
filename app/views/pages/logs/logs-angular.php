@@ -71,21 +71,31 @@
             <td>{{ log.action }} {{ log.data.multiple ? "(" + log.data.multiple.length + ")" : "" }}</td>
             <td>{{ log.section }}</td>
           </tr>
-          <tr ng-show="displayDetails == log.id" ng-click="toggleDetails(log.id)">
+          <tr ng-show="displayDetails == log.id" ng-click="toggleDetails(log.id)" class="log-details">
             <td></td>
             <td colspan="5">
               <div ng-if="log.data.multiple">
                 <div ng-repeat="item in log.data.multiple.slice().reverse()" class="log-multiple-data">
-                  <p ng-repeat="info in item">
-                    <strong>{{ info.key }}&nbsp;:</strong> <span ng-bind-html="html(info.value)"></span>
-                  </p>
+                  <div ng-repeat="info in item" class="row">
+                    <div class="col-sm-2 text-right">
+                      <strong>{{ info.key }}&nbsp;:&nbsp;</strong>
+                    </div>
+                    <div class="col-sm-10">
+                      <span ng-bind-html="html(info.value)"></span>
+                    </div>
+                  </div>
                   <hr>
                 </div>
               </div>
               <div ng-if="!log.data.multiple">
-                <p ng-repeat="info in log.data">
-                  <strong>{{ info.key }}&nbsp;:</strong> {{ info.value }}
-                </p>
+                <div ng-repeat="info in log.data" class="row">
+                  <div class="col-sm-2 text-right">
+                    <strong>{{ info.key }}&nbsp;:&nbsp;</strong>
+                  </div>
+                  <div class="col-sm-10">
+                    <span ng-bind-html="html(info.value)"></span>
+                  </div>
+                </div>
                 <p ng-if="!log.data">Pas de détails</p>
               </div>
             </td>

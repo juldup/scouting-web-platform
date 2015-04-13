@@ -180,6 +180,7 @@ class AccountingController extends BaseController {
       if (!$year) throw new Exception("Year parameter is missing");
       if (!Input::has('data')) throw new Exception("There is no transaction data");
       $error = false;
+      $changesMade = "";
       // Get data and unescape it if necessary
       $data = Input::get('data');
       if (strpos($data, "[{\\\"") === 0) $data = str_replace("\\\"", "\"", $data);
@@ -194,28 +195,43 @@ class AccountingController extends BaseController {
       // List of deleted transactions (undeleted transactions will be removed from this list)
       $oldTransactions = array();
       foreach ($transactions as $transaction) {
-        $oldTransactions[$transaction->id] = $transaction;
+        if ($transaction->category_name != AccountingItem::$INHERIT) {
+          $oldTransactions[$transaction->id] = $transaction;
+        }
       }
       // Container for the new transactions (to pass the new ids to the page)
       $newTransactions = array();
       // Update and create transactions
       foreach ($categories as $category) {
         $categoryName = $category->name;
+        $orderModified = false;
         foreach ($category->transactions as $transaction) {
           $accountingItem = AccountingItem::find($transaction->id);
           $date = $this->humanDateToSql($transaction->date);
           if ($accountingItem) {
+            if (!$date) $date = $accountingItem->date;
+            $cashinCents = $this->cashAmountToCents($transaction->cashin);
+            $cashoutCents = $this->cashAmountToCents($transaction->cashout);
+            $bankinCents = $this->cashAmountToCents($transaction->bankin);
+            $bankoutCents = $this->cashAmountToCents($transaction->bankout);
+            if ($categoryName != $accountingItem->category_name || $date != $accountingItem->date || $transaction->object != $accountingItem->object ||
+                    $cashinCents != $accountingItem->cashin_cents || $cashoutCents != $accountingItem->cashout_cents ||
+                    $bankinCents != $accountingItem->bankin_cents || $bankoutCents != $accountingItem->bankout_cents ||
+                    $transaction->comment != $accountingItem->comment || $transaction->receipt != $accountingItem->receipt) {
+              $changesMade .= "- Modification " . $accountingItem->diffRepresentation($categoryName, $date,
+                      $transaction->object, $cashinCents, $cashoutCents, $bankinCents, $bankoutCents,
+                      $transaction->comment, $transaction->receipt) . "<br>" ;
+            }
+            if ($accountingItem->position != $position) $orderModified = true;
             // Update transaction
             unset($oldTransactions[$transaction->id]);
             $accountingItem->category_name = $categoryName;
-            if ($date) {
-              $accountingItem->date = $date;
-            }
+            $accountingItem->date = $date;
             $accountingItem->object = $transaction->object;
-            $accountingItem->cashin_cents = $this->cashAmountToCents($transaction->cashin);
-            $accountingItem->cashout_cents = $this->cashAmountToCents($transaction->cashout);
-            $accountingItem->bankin_cents = $this->cashAmountToCents($transaction->bankin);
-            $accountingItem->bankout_cents = $this->cashAmountToCents($transaction->bankout);
+            $accountingItem->cashin_cents = $cashinCents;
+            $accountingItem->cashout_cents = $cashoutCents;
+            $accountingItem->bankin_cents = $bankinCents;
+            $accountingItem->bankout_cents = $bankoutCents;
             $accountingItem->comment = $transaction->comment;
             $accountingItem->receipt = $transaction->receipt;
             $accountingItem->position = $position++;
@@ -244,15 +260,18 @@ class AccountingController extends BaseController {
               ));
               // Record new transaction id for sending back to the page
               $newTransactions[$transaction->id] = $accountingItem->id;
+              $changesMade .= "- Ajout <ins>" . $accountingItem->tupleRepresentation() . "</ins><br>";
             } catch (Exception $e) {
               Log::error($e);
               $error = $e->getMessage();
             }
           }
         }
+        if ($orderModified) $changesMade = "- L'ordre des transactions de la catégorie <strong>$categoryName</strong> a été modifié<br>";
       }
       // Delete unexisting transactions
       foreach ($oldTransactions as $transaction) {
+        $changesMade .= "- Suppression <del>" . $transaction->tupleRepresentation() . "</del><br>";
         $transaction->delete();
       }
     } catch (Exception $e) {
@@ -264,7 +283,9 @@ class AccountingController extends BaseController {
       LogEntry::error("Comptes", "Erreur lors de l'enregistrement des comptes", array('Erreur' => $error));
       return json_encode(array("result" => "Failure", "message" => "Une erreur est survenue lors de l'enregistrement des comptes."));
     } else {
-      LogEntry::log("Comptes", "Comptes modifiés"); // TODO improve log message
+      if ($changesMade) {
+        LogEntry::log("Comptes", "Comptes modifiés", ["Changements" => $changesMade], true);
+      }
       return json_encode(array("result" => "Success", "new_transactions" => $newTransactions));
     }
   }
@@ -357,7 +378,7 @@ class AccountingController extends BaseController {
   private function humanDateToSql($humanDate) {
     try {
       $split = explode("/", $humanDate);
-      return $split[2] . "-" . $split[1] . "-" . $split[0];
+      return $split[2] . "-" . ($split[1] <= 9 ? "0" : "") . (0 + $split[1]) . "-" . ($split[0] <= 9 ? "0" : "") . (0 + $split[0]);
     } catch (Exception $e) {
       Log::error($e);
       return false;
