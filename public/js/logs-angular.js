@@ -23,7 +23,7 @@
 var angularLogs = angular.module('logs', []);
 
 // The angular controller
-angularLogs.controller('LogsController', function ($scope) {
+angularLogs.controller('LogsController', function ($scope, $sce) {
 	
   // Current list of logs in reverse order
 	$scope.logs = [];
@@ -46,6 +46,13 @@ angularLogs.controller('LogsController', function ($scope) {
   $scope.sectionFilter = "";
   $scope.loading = false;
   $scope.actionFilter = "";
+  
+  $scope.html = function(value) {
+    console.log(value);
+    return $sce.trustAsHtml(value);
+  };
+  
+  $scope.test = $sce.trustAsHtml("<strong>Hello world</strong>");
   
   /**
    * Fetches the next logs from the server

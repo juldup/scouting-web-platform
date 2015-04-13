@@ -68,16 +68,26 @@
             <td>{{ log.date }}</td>
             <td title="{{ log.userEmail }}">{{ log.user }}</td>
             <td>{{ log.category }}</td>
-            <td>{{ log.action }}</td>
+            <td>{{ log.action }} {{ log.data.multiple ? "(" + log.data.multiple.length + ")" : "" }}</td>
             <td>{{ log.section }}</td>
           </tr>
           <tr ng-show="displayDetails == log.id" ng-click="toggleDetails(log.id)">
             <td></td>
             <td colspan="5">
-              <p ng-repeat="info in log.data">
-                <strong>{{ info.key }}&nbsp;:</strong> {{ info.value }}
-              </p>
-              <p ng-if="!log.data">Pas de détails</p>
+              <div ng-if="log.data.multiple">
+                <div ng-repeat="item in log.data.multiple.slice().reverse()" class="log-multiple-data">
+                  <p ng-repeat="info in item">
+                    <strong>{{ info.key }}&nbsp;:</strong> <span ng-bind-html="html(info.value)"></span>
+                  </p>
+                  <hr>
+                </div>
+              </div>
+              <div ng-if="!log.data.multiple">
+                <p ng-repeat="info in log.data">
+                  <strong>{{ info.key }}&nbsp;:</strong> {{ info.value }}
+                </p>
+                <p ng-if="!log.data">Pas de détails</p>
+              </div>
             </td>
           </tr>
         </tbody>
