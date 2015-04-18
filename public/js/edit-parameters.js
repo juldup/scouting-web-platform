@@ -33,6 +33,19 @@ $().ready(function() {
     }(file);
     reader.readAsDataURL(file);
   });
+  // Icon preview
+  $("input[type='file'][name='icon']").change(function(event) {
+    // Put selected image in logo preview
+    var file = event.target.files[0];
+    var reader = new FileReader();
+    reader.onload = function(theFile) {
+      return function(event) {
+        var src = event.target.result;
+        $("img.website-icon-preview").attr('src', src);
+      };
+    }(file);
+    reader.readAsDataURL(file);
+  });
   // Document categories delete/add
   $('.document-category-remove').click(function() {
     $(this).closest(".document-category-row").remove();
