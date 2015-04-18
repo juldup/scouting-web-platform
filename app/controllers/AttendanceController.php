@@ -132,6 +132,11 @@ class AttendanceController extends BaseController {
                     'section_id' => $this->user->currentSection->id,
                     'attended' => $attended,
                 ));
+                if ($attended != 0) {
+                  $eventChanged = true;
+                  $changeStrings[0] .= ($changeStrings[0] ? ", " : "") . "<del>" . $member->getFullName() . "</del>";
+                  $changeStrings[$attended] .= ($changeStrings[$attended] ? ", " : "") . "<ins>" . $member->getFullName() . "</ins>";
+                }
               } else {
                 // Update existing attendance instance
                 if ($attendance->attended != $attended) {
@@ -149,7 +154,7 @@ class AttendanceController extends BaseController {
           if ($isNewEvent) {
             $changesMade .= "- Ajout de l'événement <strong><ins>" . $calendarEvent->stringRepresentation() . "</ins></strong><br />";
           } elseif ($eventChanged) {
-            $changesMade .= "- Modification des présences de l'événement <strong><ins>" . $calendarEvent->stringRepresentation() . "</ins></strong><br />";
+            $changesMade .= "- Modification des présences de l'événement <strong>" . $calendarEvent->stringRepresentation() . "</strong><br />";
             if ($changeStrings[1]) $changesMade .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Présent&nbsp;: " . $changeStrings[1] . "<br />";
             if ($changeStrings[2]) $changesMade .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Excusé&nbsp;: " . $changeStrings[2] . "<br />";
             if ($changeStrings[0]) $changesMade .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Absent&nbsp;: " . $changeStrings[0] . "<br />";
@@ -165,7 +170,7 @@ class AttendanceController extends BaseController {
         }
       }
       if ($changesMade) {
-        LogEntry::log("Présences", "Liste des présences modifiée", ["Changements" => $changesMade], true); // TODO improve log message
+        LogEntry::log("Présences", "Liste des présences modifiée", ["Changements" => $changesMade], true);
       }
       // Return response
       return json_encode(array(

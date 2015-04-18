@@ -95,8 +95,12 @@ class PaymentController extends BaseController {
             ->orderBy('id')
             ->get();
       // Update members' payment status
-      foreach ($data as $memberData) {
-        foreach ($eventList as $event) {
+      $changesMade = "";
+      foreach ($eventList as $event) {
+        $eventChanged = false;
+        $paidList = "";
+        $unpaidList = "";
+        foreach ($data as $memberData) {
           $propertyName = "event_" . $event->id;
           // Get whether the member paid for this event
           $paid = false;
@@ -107,23 +111,47 @@ class PaymentController extends BaseController {
           $payment = Payment::where('member_id', '=', $memberData->id)
                   ->where('event_id', '=', $event->id)
                   ->first();
-          if (!$payment) {
-            // Create new payment instance
-            $payment = Payment::create(array(
-                'member_id' => $memberData->id,
-                'event_id' => $event->id,
-                'paid' => $paid ? true : false,
-            ));
-          } else {
-            // Update existing payment instance
-            if ($payment->paid != $paid) {
-              $payment->paid = $paid;
-              $payment->save();
+          // Get member
+          $member = Member::find($memberData->id);
+          if ($member) {
+            if (!$payment) {
+              // Create new payment instance
+              $payment = Payment::create(array(
+                  'member_id' => $memberData->id,
+                  'event_id' => $event->id,
+                  'paid' => $paid ? true : false,
+              ));
+              if ($paid) {
+                $paidList .= ($paidList ? ", " : "") . "<ins>" . $member->getFullName() . "</ins>";
+                $unpaidList .= ($unpaidList ? ", " : "") . "<del>" . $member->getFullName() . "</del>";
+              }
+              $eventChanged = true;
+            } else {
+              // Update existing payment instance
+              if ($payment->paid != $paid) {
+                $payment->paid = $paid;
+                $payment->save();
+                $eventChanged = true;
+                if ($paid) {
+                  $paidList .= ($paidList ? ", " : "") . "<ins>" . $member->getFullName() . "</ins>";
+                  $unpaidList .= ($unpaidList ? ", " : "") . "<del>" . $member->getFullName() . "</del>";
+                } else {
+                  $paidList .= ($paidList ? ", " : "") . "<del>" . $member->getFullName() . "</del>";
+                  $unpaidList .= ($unpaidList ? ", " : "") . "<ins>" . $member->getFullName() . "</ins>";
+                }
+              }
             }
           }
         }
+        if ($eventChanged) {
+          $changesMade .= "- Modification de <strong>" . $event->name . " (" . $event->year . ")</strong><br />" . 
+                  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Payé&nbsp;: " . $paidList . "<br />" .
+                  "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Non payé&nbsp;: " . $unpaidList . "<br />";
+        }
       }
-      LogEntry::log("Paiements", "Liste des paiements modifiée"); // TODO improve log message
+      if ($changesMade) {
+        LogEntry::log("Paiements", "Liste des paiements modifiée", ["Changements" => $changesMade], true);
+      }
       // Return response
       return json_encode(array(
           "result" => "Success",
@@ -175,7 +203,8 @@ class PaymentController extends BaseController {
         'section_id' => $this->user->currentSection->id,
         'year' => $year,
     ));
-    LogEntry::log("Paiements", "Ajout d'une activité", array("Nom de l'activité" => $event->name, "Année" => $year));
+    LogEntry::log("Paiements", "Liste des paiements modifiée",
+            ["Changements" => "- Ajout de l'activité <strong><ins>" . $event->name . " (" . $year . ")</ins></strong>"], true);
     return JsonResponse::create(array(
         'id' => $event->id,
     ), 200);
@@ -205,7 +234,8 @@ class PaymentController extends BaseController {
     }
     // Delete event
     $event->delete();
-    LogEntry::log("Paiements", "Suppression d'une activité", array("Activité" => $event->name, "Année" => $year));
+    LogEntry::log("Paiements", "Liste des paiements modifiée",
+            ["Changements" => "- Suppression de l'activité <strong><del>" . $event->name . " (" . $year . ")</del></strong>"], true);
     return JsonResponse::create(array(), 200);
   }
   

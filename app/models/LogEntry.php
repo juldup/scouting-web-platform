@@ -80,7 +80,7 @@ class LogEntry extends Eloquent {
       // Check if this log can be merged with the previous log
       if ($mergeWithPreviousSimilar) {
         $lastLog = LogEntry::orderBy("id", "desc")->first();
-        if ($lastLog->category == $category && $lastLog->user_id == $userId && $lastLog->section_id == $sectionId) {
+        if ($lastLog->category == $category && $lastLog->action == $action && $lastLog->user_id == $userId && $lastLog->section_id == $sectionId) {
           // Merge log with the previous log
           $data = json_decode($lastLog->data, true);
           if (!array_key_exists("multiple", $data)) {
