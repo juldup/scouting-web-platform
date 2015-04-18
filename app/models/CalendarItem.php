@@ -97,4 +97,17 @@ class CalendarItem extends Eloquent {
             ->where('type', '!=', 'cleaning');
   }
   
+  /**
+   * Return a human string representation of this event
+   * Output format: "Date&nbsp;: title"
+   */
+  public function stringRepresentation() {
+    if ($this->start_date == $this->end_date) {
+      $date = Helper::dateToHuman($this->start_date);
+    } else {
+      $date = "du " . Helper::dateToHuman($this->start_date) . " au " . Helper::dateToHuman($this->end_date);
+    }
+    return $date . "&nbsp;: " . $this->event;
+  }
+  
 }

@@ -41,15 +41,12 @@
               <center>
                 <span style="font-size: .8em; color: #333333;">
                   @if ($email_is_in_listing)
-                    Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} dont vous êtes membre.
-                    <br />
+                    Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} dont vous êtes membre.<br />
                     Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez contacter l'animateur d'unité&nbsp;: <a href='{{ URL::route('contacts') }}'>{{ URL::route('contacts') }}</a>
                   @else
                     Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}.
-                    Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis notre site, veuillez cliquer sur le lien suivant.
-                    <br />
-                    This e-mail was sent because you are a member of our scout group. To unsubscribe, please click on the following link.
-                    <br />
+                    Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis notre site, veuillez cliquer sur le lien suivant.<br />
+                    This e-mail was sent because you are a member of our scout group. To unsubscribe, please click on the following link.<br />
                     <a href='{{ URL::route('ban_email', array("code" => $ban_email_code)) }}'>{{ URL::route('ban_email', array("code" => $ban_email_code)) }}</a>
                   @endif
                 </span>

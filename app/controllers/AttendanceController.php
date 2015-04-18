@@ -102,9 +102,14 @@ class AttendanceController extends BaseController {
       $data = json_decode(Input::get('data'));
       $events = json_decode(Input::get('events'));
       // Update members' attendance status
-      foreach ($data as $memberData) {
-        foreach ($events as $event) {
-          if ($event->monitored) {
+      $changesMade = "";
+      foreach ($events as $event) {
+        $calendarEvent = CalendarItem::find($event->id);
+        if ($event->monitored) {
+          $changeStrings = [0 => "", 1 => "", 2 => ""];
+          $eventChanged = false;
+          $isNewEvent = true;
+          foreach ($data as $memberData) {
             $propertyName = "event_" . $event->id;
             // Get whether the member attended the event
             $attended = 0;
@@ -116,30 +121,52 @@ class AttendanceController extends BaseController {
                     ->where('event_id', '=', $event->id)
                     ->where('section_id', '=', $this->user->currentSection->id)
                     ->first();
-            if (!$attendance) {
-              // Create new attendance instance
-              $attendance = Attendance::create(array(
-                  'member_id' => $memberData->id,
-                  'event_id' => $event->id,
-                  'section_id' => $this->user->currentSection->id,
-                  'attended' => $attended,
-              ));
-            } else {
-              // Update existing attendance instance
-              if ($attendance->attended != $attended) {
-                $attendance->attended = $attended;
-                $attendance->save();
+            // Get member
+            $member = Member::find($memberData->id);
+            if ($member) {
+              if (!$attendance) {
+                // Create new attendance instance
+                $attendance = Attendance::create(array(
+                    'member_id' => $memberData->id,
+                    'event_id' => $event->id,
+                    'section_id' => $this->user->currentSection->id,
+                    'attended' => $attended,
+                ));
+              } else {
+                // Update existing attendance instance
+                if ($attendance->attended != $attended) {
+                  $eventChanged = true;
+                  $changeStrings[$attendance->attended] .= ($changeStrings[$attendance->attended] ? ", " : "") . "<del>" . $member->getFullName() . "</del>";
+                  $changeStrings[$attended] .= ($changeStrings[$attended] ? ", " : "") . "<ins>" . $member->getFullName() . "</ins>";
+                  $attendance->attended = $attended;
+                  $attendance->save();
+                }
+                $isNewEvent = false;
               }
             }
-          } else {
-            // Remove all corresponding attendance entries
-            Attendance::where('event_id', '=', $event->id)
-                    ->where('section_id', '=', $this->user->currentSection->id)
-                    ->delete();
+          }
+          // Update change list
+          if ($isNewEvent) {
+            $changesMade .= "- Ajout de l'événement <strong><ins>" . $calendarEvent->stringRepresentation() . "</ins></strong><br />";
+          } elseif ($eventChanged) {
+            $changesMade .= "- Modification des présences de l'événement <strong><ins>" . $calendarEvent->stringRepresentation() . "</ins></strong><br />";
+            if ($changeStrings[1]) $changesMade .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Présent&nbsp;: " . $changeStrings[1] . "<br />";
+            if ($changeStrings[2]) $changesMade .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Excusé&nbsp;: " . $changeStrings[2] . "<br />";
+            if ($changeStrings[0]) $changesMade .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Absent&nbsp;: " . $changeStrings[0] . "<br />";
+          }
+        } else {
+          // Remove all corresponding attendance entries
+          $deletedRows = Attendance::where('event_id', '=', $event->id)
+                  ->where('section_id', '=', $this->user->currentSection->id)
+                  ->delete();
+          if ($deletedRows) {
+            $changesMade .= "- Suppression de l'événement <strong><del>" . $calendarEvent->stringRepresentation() . "</del></strong><br />";
           }
         }
       }
-      LogEntry::log("Présences", "Liste des présences modifiée"); // TODO improve log message
+      if ($changesMade) {
+        LogEntry::log("Présences", "Liste des présences modifiée", ["Changements" => $changesMade], true); // TODO improve log message
+      }
       // Return response
       return json_encode(array(
           "result" => "Success",
