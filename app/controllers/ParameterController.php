@@ -58,39 +58,30 @@ class ParameterController extends BaseController {
     if (!$this->user->can(Privilege::$EDIT_GLOBAL_PARAMETERS, 1)) {
       return Helper::forbiddenResponse();
     }
-    // Save new prices
-    try {
-      Parameter::set(Parameter::$PRICE_1_CHILD, Helper::formatCashAmount(Input::get('price_1_child')));
-      Parameter::set(Parameter::$PRICE_1_LEADER, Helper::formatCashAmount(Input::get('price_1_leader')));
-      Parameter::set(Parameter::$PRICE_2_CHILDREN, Helper::formatCashAmount(Input::get('price_2_children')));
-      Parameter::set(Parameter::$PRICE_2_LEADERS, Helper::formatCashAmount(Input::get('price_2_leaders')));
-      Parameter::set(Parameter::$PRICE_3_CHILDREN, Helper::formatCashAmount(Input::get('price_3_children')));
-      Parameter::set(Parameter::$PRICE_3_LEADERS, Helper::formatCashAmount(Input::get('price_3_leaders')));
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save active registration parameter
-    $registration_active = Input::get('registration_active');
-    try {
-      Parameter::set(Parameter::$REGISTRATION_ACTIVE, $registration_active ? "true" : "false");
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save the page parameters
-    $pages = $this->getPageList();
+    $changesMade = "";
     $error = false;
-    foreach ($pages as $page=>$pageData) {
-      $pageInput = Input::get($page);
-      try {
-        Parameter::set($pageData['parameter_name'], $pageInput ? "true" : "false");
-      } catch (Exception $e) {
-        Log::error($e);
-        $error = true;
-      }
+    $parameterNewValues = [
+        // Prices
+        ["name" => "Prix un membre - enfant", "key" => Parameter::$PRICE_1_CHILD, "value" => Helper::formatCashAmount(Input::get('price_1_child'))],
+        ["name" => "Prix un membre - animateur", "key" => Parameter::$PRICE_1_LEADER, "value" => Helper::formatCashAmount(Input::get('price_1_leader'))],
+        ["name" => "Prix deux membres - enfant", "key" => Parameter::$PRICE_2_CHILDREN, "value" => Helper::formatCashAmount(Input::get('price_2_children'))],
+        ["name" => "Prix deux membres - animateur", "key" => Parameter::$PRICE_2_LEADERS, "value" => Helper::formatCashAmount(Input::get('price_2_leaders'))],
+        ["name" => "Prix trois membres ou plus - enfant", "key" => Parameter::$PRICE_3_CHILDREN, "value" => Helper::formatCashAmount(Input::get('price_3_children'))],
+        ["name" => "Prix trois membres ou plus - animateur", "key" => Parameter::$PRICE_3_LEADERS, "value" => Helper::formatCashAmount(Input::get('price_3_leaders'))],
+        // Registration
+        ["name" => "Inscriptions", "key" => Parameter::$REGISTRATION_ACTIVE, "value" => (Input::get('registration_active') ? "true" : "false"),
+            "valueNames" => ["true" => "actives", "false" => "désactivées"]],
+    ];
+    // Pages
+    foreach ($this->getPageList() as $page => $pageData) {
+      $parameterNewValues[] = [
+          "name" => $pageData['description'],
+          "key" => $pageData['parameter_name'],
+          "value" => Input::get($page) ? "true" : "false",
+          "valueNames" => ["true" => "oui", "false" => "non"],
+      ];
     }
-    // Save document categories
+    // Document categories
     $documentCategoryArray = Input::get('document_categories');
     $documentCategories = "";
     foreach ($documentCategoryArray as $categoryName) {
@@ -99,20 +90,63 @@ class ParameterController extends BaseController {
         $documentCategories .= str_replace(";", ",", $categoryName);
       }
     }
-    try {
-      Parameter::set(Parameter::$DOCUMENT_CATEGORIES, $documentCategories);
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
+    $parameterNewValues = array_merge($parameterNewValues, [
+        ["name" => "Catégories de documents", "key" => Parameter::$DOCUMENT_CATEGORIES, "value" => $documentCategories],
+        // Unit parameters
+        ["name" => "Nom de l'unité", "key" => Parameter::$UNIT_LONG_NAME, "value" => Input::get('unit_long_name')],
+        ["name" => "Sigle de l'unité", "key" => Parameter::$UNIT_SHORT_NAME, "value" => Input::get('unit_short_name')],
+        ["name" => "N° de compte", "key" => Parameter::$UNIT_BANK_ACCOUNT, "value" => Input::get('unit_bank_account')],
+        ["name" => "Logo", "key" => Parameter::$LOGO_TWO_LINES, "value" => Input::get('logo_two_lines') ? 1 : 0,
+            "valueNames" => ["1" => "sur deux lignes", "0" => "sur une ligne"]],
+        // Search engine
+        ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],
+        ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => Input::get('website_meta_keywords')],
+        // Facebook app id
+        ["name" => "Facebook App ID", "key" => Parameter::$FACEBOOK_APP_ID, "value" => Input::get('facebook_app_id')],
+        // Save the advanced site parameters
+        ["name" => "Contenu additionnel &lt;head&gt;", "key" => Parameter::$ADDITIONAL_HEAD_HTML, "value" => Input::get('additional_head_html')],
+        ["name" => "Photos", "key" => Parameter::$PHOTOS_PUBLIC, "value" => Input::get('photos_public') ? "true" : "false",
+            "valueNames" => ["true" => "publiques", "false" => "privées"]],
+        // E-mail parameters
+        ["name" => "Adresse e-mail du webmaster", "key" => Parameter::$WEBMASTER_EMAIL, "value" => Input::get('webmaster_email')],
+        ["name" => "Adresse e-mail du site", "key" => Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, "value" => Input::get('default_email_from_address')],
+        ["name" => "Hôte SMTP", "key" => Parameter::$SMTP_HOST, "value" => Input::get('smtp_host')],
+        ["name" => "Port SMTP", "key" => Parameter::$SMTP_PORT, "value" => Input::get('smtp_port')],
+        ["name" => "Login SMTP", "key" => Parameter::$SMTP_USERNAME, "value" => Input::get('smtp_username')],
+        ["name" => "Mot de passe SMTP", "key" => Parameter::$SMTP_PASSWORD, "value" => Input::get('smtp_password')],
+        ["name" => "Sécurité SMTP", "key" => Parameter::$SMTP_SECURITY, "value" => Input::get('smtp_security')],
+    ]);
+    // Verified e-mail sender list
+    $verifiedSendersArray = Input::get('email_safe_list');
+    $verifiedSenders = "";
+    foreach ($verifiedSendersArray as $verifiedSender) {
+      if ($verifiedSender && strpos($verifiedSender, ";") === false) {
+        if ($verifiedSenders) $verifiedSenders .= ";";
+        $verifiedSenders .= strtolower($verifiedSender);
+      }
     }
-    // Save the unit parameters
-    try {
-      Parameter::set(Parameter::$UNIT_LONG_NAME, Input::get('unit_long_name'));
-      Parameter::set(Parameter::$UNIT_SHORT_NAME, Input::get('unit_short_name'));
-      Parameter::set(Parameter::$UNIT_BANK_ACCOUNT, Input::get('unit_bank_account'));
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
+    $parameterNewValues = array_merge($parameterNewValues, [
+        ["name" => "Adresse e-mail vérifiées", "key" => Parameter::$VERIFIED_EMAIL_SENDERS, "value" => $verifiedSenders],
+    ]);
+    
+    // Update parameter values in database
+    foreach ($parameterNewValues as $parameterData) {
+      try {
+        $oldValue = Parameter::get($parameterData['key'], false);
+        if ($oldValue != $parameterData['value']) {
+          Parameter::set($parameterData['key'], $parameterData['value']);
+          if (array_key_exists("valueNames", $parameterData)) {
+            $changesMade .= "- " . $parameterData['name'] . "&nbsp;: <del>" . str_replace("<", "&lt;", $parameterData['valueNames'][$oldValue]) .
+                    "</del> <ins>" . str_replace("<", "&lt;", $parameterData['valueNames'][$parameterData['value']]) . "</ins><br>";
+          } else {
+            $changesMade .= "- " . $parameterData['name'] . "&nbsp;: <del>" . str_replace("<", "&lt;", $oldValue) .
+                    "</del> <ins>" . str_replace("<", "&lt;", $parameterData['value']) . "</ins><br>";
+          }
+        }
+      } catch (Exception $e) {
+        Log::error($e);
+        $error = true;
+      }
     }
     // Save the logo
     $logoFile = Input::file('logo');
@@ -121,14 +155,8 @@ class ParameterController extends BaseController {
         $filename = $logoFile->getClientOriginalName();
         $logoFile->move(storage_path() . "/" . Parameter::$LOGO_IMAGE_FOLDER, $filename);
         Parameter::set(Parameter::$LOGO_IMAGE, $filename);
+        $changesMade .= "- Remplacement du logo de l'unité<br />";
       }
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save the logo on two lines option
-    try {
-      Parameter::set(Parameter::$LOGO_TWO_LINES, Input::get('logo_two_lines') ? 1 : 0);
     } catch (Exception $e) {
       Log::error($e);
       $error = true;
@@ -140,73 +168,34 @@ class ParameterController extends BaseController {
         $filename = $iconFile->getClientOriginalName();
         $iconFile->move(storage_path() . "/" . Parameter::$ICON_IMAGE_FOLDER, $filename);
         Parameter::set(Parameter::$ICON_IMAGE, $filename);
+        $changesMade .= "- Remplacement de l'icône du site<br />";
       }
     } catch (Exception $e) {
       Log::error($e);
       $error = true;
     }
-    // Save the search engine parameters
+    // Save unit e-mail address
     try {
-      Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, Input::get('website_meta_description'));
-      Parameter::set(Parameter::$WEBSITE_META_KEYWORDS, Input::get('website_meta_keywords'));
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save the advanced site parameters
-    try {
-      Parameter::set(Parameter::$ADDITIONAL_HEAD_HTML, Input::get('additional_head_html'));
-      Parameter::set(Parameter::$PHOTOS_PUBLIC, Input::get('photos_public') ? "true" : "false");
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save Facebook app id
-    try {
-      Parameter::set(Parameter::$FACEBOOK_APP_ID, Input::get('facebook_app_id'));
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save the advanced e-mail parameters
-    try {
-      Parameter::set(Parameter::$WEBMASTER_EMAIL, Input::get('webmaster_email'));
-      Parameter::set(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, Input::get('default_email_from_address'));
-      Parameter::set(Parameter::$SMTP_HOST, Input::get('smtp_host'));
-      Parameter::set(Parameter::$SMTP_PORT, Input::get('smtp_port'));
-      Parameter::set(Parameter::$SMTP_USERNAME, Input::get('smtp_username'));
-      Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
-      Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
-      // Save unit e-mail address
       $unitSection = Section::find(1);
-      $unitSection->email = Input::get('unit_email_address');
-      $unitSection->save();
-    } catch (Exception $e) {
-      Log::error($e);
-      $error = true;
-    }
-    // Save verified e-mail sender list
-    $verifiedSendersArray = Input::get('email_safe_list');
-    $verifiedSenders = "";
-    foreach ($verifiedSendersArray as $verifiedSender) {
-      if ($verifiedSender && strpos($verifiedSender, ";") === false) {
-        if ($verifiedSenders) $verifiedSenders .= ";";
-        $verifiedSenders .= strtolower($verifiedSender);
+      $unitEmail = Input::get('unit_email_address');
+      if ($unitSection->email != $unitEmail) {
+        $changesMade .= "- Adresse e-mail de l'unité&nbsp;: <del>" . $unitSection->email . "</del> <ins>$unitEmail</ins><br />";
+        $unitSection->email = $unitEmail;
+        $unitSection->save();
       }
-    }
-    try {
-      Parameter::set(Parameter::$VERIFIED_EMAIL_SENDERS, $verifiedSenders);
     } catch (Exception $e) {
       Log::error($e);
       $error = true;
     }
     // Return to parameter page
     if (!$error) {
-      LogEntry::log("Paramètres", "Modification des paramètres du site"); // TODO improve log message
+      if ($changesMade) {
+        LogEntry::log("Paramètres", "Modification des paramètres du site", ["Changements" => $changesMade], true);
+      }
       return Redirect::route('edit_parameters')
               ->with('success_message', 'Les paramètres ont été enregistrés avec succès.');
     } else {
-      LogEntry::error("Paramètres", "Erreur lors de la modification des paramètres du site");
+      LogEntry::error("Paramètres", "Erreur lors de la modification des paramètres du site", ["Changements" => $changesMade]);
       return Redirect::route('edit_parameters')
               ->with('error_message', 'Une erreur est survenue. Tous les paramètres n\'ont peut-être pas été enregistrés.');
     }

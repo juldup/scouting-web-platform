@@ -118,13 +118,15 @@ class Parameter extends Eloquent {
    * Returns the value of the given parameter.
    * If the parameter is not set, returns "".
    */
-  public static function get($parameterName) {
+  public static function get($parameterName, $formatBoolean = true) {
     if (self::$parameters == null) {
       self::fetchParameters();
     }
     if (array_key_exists($parameterName, self::$parameters)) {
-      if (self::$parameters[$parameterName] == "false") return false;
-      if (self::$parameters[$parameterName] == "true") return true;
+      if ($formatBoolean) {
+        if (self::$parameters[$parameterName] == "false") return false;
+        if (self::$parameters[$parameterName] == "true") return true;
+      }
       return self::$parameters[$parameterName];
     } else {
       return "";
