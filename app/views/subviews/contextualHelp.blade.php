@@ -510,6 +510,7 @@
           <li><strong>N° de compte</strong>&nbsp;: Le numéro de compte en banque de l'unité pour les paiements de cotisation</li>
           <li><strong>Logo du site</strong>&nbsp;: Le logo qui apparaitra en haut du site</li>
           <li><strong>Logo sur deux lignes</strong>&nbsp;: Le logo peut apparaitre en petit à côté du titre (NON), ou en plus grand sur les deux lignes du menu (OUI) </li>
+          <li><strong>Icône du site</strong>&nbsp;: L'icône qui représente le site dans les onglets et les favoris des navigateurs</li>
         </ul>
       </li>
       <li>
@@ -524,6 +525,9 @@
       <li>
         Pour les utilisateurs avertis, il est possible de rajouter du contenu html sur toutes les pages du sites, avant la fermeture de la balise &lt;head&gt;.
         Cela permet par exemple d'insérer le code de google analytics.
+      </li>
+      <li>
+        Il est possible de rendre publiques les photos postées sur le site par les animateurs. Attention, ceci n'est pas recommandé pour des questions de respect de la vie privée.
       </li>
       <li>
         Modifier l'adresse e-mail du webmaster et la configuration de l'envoi d'e-mails&nbsp;:
