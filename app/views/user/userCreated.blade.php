@@ -36,8 +36,8 @@
           Votre compte d'utilisateur <strong>{{{ $user->username }}}</strong> a été créé.
         </p>
         <p>
-          Un e-mail vous a été envoyé à l'adresse <strong>{{{ $user->email }}}</strong>.
-          Cliquez sur le lien de validation dans l'e-mail pour valider votre compte.</strong>
+          Un e-mail vous a été envoyé à l'adresse "{{{ $user->email }}}".
+          <strong>Cliquez sur le lien d'activation</strong> dans l'e-mail pour activer votre compte.
         </p>
       </div>
       <p class="alert alert-danger">
