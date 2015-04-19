@@ -143,10 +143,19 @@ class UserController extends BaseController {
       Cookie::queue(User::getCookiePasswordName(), $cookiePassword, 365 * 24 * 60);
     }
     // Redirect to previous page
-    $referrer = Session::get('login_referrer', URL::route('home'));
-    Session::forget('login_referrer');
     LogEntry::log("Utilisateur", "Nouvel utilisateur", array("Nom d'utilisateur" => $username, "E-mail" => $email));
-    return Redirect::to($referrer);
+    return Redirect::route('user_created');
+  }
+  
+  /**
+   * [Route] Shows a page confirming that the user account has been created
+   */
+  public function userCreated() {
+    $referrer = Session::get('login_referrer', null);
+    Session::forget('login_referrer');
+    return View::make('user.userCreated', array(
+        'referrer' => $referrer,
+    ));
   }
   
   /**
