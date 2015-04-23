@@ -237,7 +237,7 @@ class RegistrationController extends GenericPageController {
             'recipient' => $recipient,
             'priority' => PendingEmail::$ACCOUNT_EMAIL_PRIORITY,
         ));
-        $email->send();
+        // Don't send e-mail right away
       }
       // E-mail to unit's leader(s) that are allowed to register
       foreach (self::getLeadersWithRegistrationPrivilege($member->section) as $recipient) {
@@ -393,7 +393,6 @@ class RegistrationController extends GenericPageController {
               'recipient' => $recipient,
               'priority' => PendingEmail::$ACCOUNT_EMAIL_PRIORITY,
           ));
-          $email->send();
         }
       } else {
         $success = false;
