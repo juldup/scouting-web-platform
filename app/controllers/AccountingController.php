@@ -215,8 +215,8 @@ class AccountingController extends BaseController {
             $bankinCents = $this->cashAmountToCents($transaction->bankin);
             $bankoutCents = $this->cashAmountToCents($transaction->bankout);
             if ($categoryName != $accountingItem->category_name || $date != $accountingItem->date || $transaction->object != $accountingItem->object ||
-                    $cashinCents != $accountingItem->cashin_cents || $cashoutCents != $accountingItem->cashout_cents ||
-                    $bankinCents != $accountingItem->bankin_cents || $bankoutCents != $accountingItem->bankout_cents ||
+                    round($cashinCents) != round($accountingItem->cashin_cents) || round($cashoutCents) != round($accountingItem->cashout_cents) ||
+                    round($bankinCents) != round($accountingItem->bankin_cents) || round($bankoutCents) != round($accountingItem->bankout_cents) ||
                     $transaction->comment != $accountingItem->comment || $transaction->receipt != $accountingItem->receipt) {
               $changesMade .= "- Modification " . $accountingItem->diffRepresentation($categoryName, $date,
                       $transaction->object, $cashinCents, $cashoutCents, $bankinCents, $bankoutCents,

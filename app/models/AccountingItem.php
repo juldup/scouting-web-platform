@@ -95,16 +95,16 @@ class AccountingItem extends Eloquent {
                      "<del>" . ($this->object ? "<strong>" . $this->object . "</strong>" : "<em>pas de motif</em>") . "</del> <ins>" .
                     ($object ? "<strong>" . $object . "</strong>" : "<em>pas de motif</em>") . "</ins>") .
             ", Rentrée liquide&nbsp;: <strong>" .
-                    ($this->cashin_cents == $cashin ? $this->cashin_cents / 100 . "&nbsp;€" :
+                    (round($this->cashin_cents) == round($cashin) ? $this->cashin_cents / 100 . "&nbsp;€" :
                     "<del>" . $this->cashin_cents / 100 . "&nbsp;€</del> <ins>" . $cashin / 100 . "&nbsp;€</ins>" ) ."</strong>" .
             ", Dépense liquide&nbsp;: <strong>" .
-                    ($this->cashout_cents == $cashout ? $this->cashout_cents / 100 . "&nbsp;€" :
+                    (round($this->cashout_cents) == round($cashout) ? $this->cashout_cents / 100 . "&nbsp;€" :
                     "<del>" . $this->cashout_cents / 100 . "&nbsp;€</del> <ins>" . $cashout / 100 . "&nbsp;€</ins>" ) ."</strong>" .
             ", Rentrée banque&nbsp;: <strong>" .
-                    ($this->bankin_cents == $bankin ? $this->bankin_cents / 100 . "&nbsp;€" :
+                    (round($this->bankin_cents) == round($bankin) ? $this->bankin_cents / 100 . "&nbsp;€" :
                     "<del>" . $this->bankin_cents / 100 . "&nbsp;€</del> <ins>" . $bankin / 100 . "&nbsp;€</ins>" ) ."</strong>" .
             ", Dépense banque&nbsp;: <strong>" .
-                    ($this->bankout_cents == $bankout ? $this->bankout_cents / 100 . "&nbsp;€" :
+                    (round($this->bankout_cents) == round($bankout) ? $this->bankout_cents / 100 . "&nbsp;€" :
                     "<del>" . $this->bankout_cents / 100 . "&nbsp;€</del> <ins>" . $bankout / 100 . "&nbsp;€</ins>" ) ."</strong>" .
             ", Commentaire&nbsp;: " .
                     ($this->comment == $comment ? ($this->comment ? "<strong>" . $this->comment . "</strong>" : "<em>pas de commentaire</em>") :
