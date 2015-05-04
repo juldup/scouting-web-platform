@@ -125,8 +125,8 @@
                     Supprimer
                   </a>
                 </td>
-                <td class="space-on-right">{{{ $member->first_name }}}</td>
                 <td class="space-on-right">{{{ $member->last_name }}}</td>
+                <td class="space-on-right">{{{ $member->first_name }}}</td>
                 <td>{{{ $member->is_leader ? "Oui" : "Non" }}}</td>
               </tr>
             @endforeach

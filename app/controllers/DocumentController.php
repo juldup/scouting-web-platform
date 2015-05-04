@@ -355,7 +355,7 @@ class DocumentController extends BaseController {
               array("Titre" => $title, "Description" => $description, "Categorie" => $category, "Public" => $public ? "Oui" : "Non"));
       return $response;
     } else {
-      LogEntry::error("Documents", "Erreur lors de la sauvegarde d'un document");
+      LogEntry::error("Documents", "Erreur lors de la sauvegarde d'un document"); // TODO improve log message
       return $response->withInput();
     }
   }
