@@ -17,7 +17,9 @@
 <div id="footer">
   <div class="container">
     <p class="text-muted">
-      Site <a href="https://github.com/juldup/scouting-web-platform/blob/master/lisez-moi.md">open source</a> réalisé par Julien Dupuis.
+      Site <a target='_blank' href="https://github.com/juldup/scouting-web-platform/blob/master/lisez-moi.md">open source</a>
+      réalisé par
+      <a target='_blank' href='http://www.jdupuis.com'>Julien Dupuis</a>.
     </p>
   </div>
 </div>

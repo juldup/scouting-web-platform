@@ -87,6 +87,15 @@ Route::get('desinscrire-addresse-email/{ban_code}', array("as" => "ban_email", "
 Route::get('desinscrire-addresse-email/confirmer/{ban_code}', array("as" => "confirm_ban_email", "uses" => "BanEmailAddressController@confirmBanEmailAddress"));
 Route::get('desinscrire-addresse-email/annuler/{ban_code}', array("as" => "confirm_unban_email", "uses" => "BanEmailAddressController@cancelBanEmailAddress"));
 
+// Custom pages
+Route::get('gestion/pages/{section_slug?}', array("as" => "edit_pages", "uses" => "CustomPageController@showPageList"));
+Route::get('gestion/page/{page_slug}/{section_slug?}', array("as" => "edit_custom_page", "uses" => "CustomPageController@showEdit"));
+Route::get('page/{page_slug}/{section_slug?}', array("as" => "custom_page", "uses" => "CustomPageController@showPage"));
+Route::post('gestion/page/{page_slug}/{section_slug?}', array("as" => "edit_custom_page_submit", "uses" => "CustomPageController@savePage"));
+Route::get('gestion/pages/supprimer-page/{page_slug}', array("as" => "delete_custom_page", "uses" => "CustomPageController@deletePage"));
+Route::post('gestion/pages/nouvelle-page', array("as" => "add_custom_page", "uses" => "CustomPageController@addCustomPage"));
+Route::post('gestion/pages/nouvel-ordre', array("as" => "ajax_change_custom_page_order", "uses" => "CustomPageController@saveCustomPageOrder"));
+
 // Images
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
 Route::post('ajax/images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));

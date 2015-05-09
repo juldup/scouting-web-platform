@@ -593,6 +593,23 @@
   </p>
 @endif
 
+@if ($help == 'custom-page-list')
+  <p>
+    Voici la liste de toutes les pages éditables du site. Elles sont divisées en 3 catégories :
+  </p>
+  <ul>
+    <li>Les <strong>pages standards</strong>&nbsp;: pages liées à la structure du site, qui ne peuvent être supprimées.</li>
+    <li>Les <strong>pages de section</strong>&nbsp;: pages propres à chaque section.</li>
+    <li>Les <strong>pages libres</strong>&nbsp;: ces pages peuvent être créées et supprimées librement.</li>
+  </ul>
+  <p>
+    Les boutons <span class='btn btn-default btn-sm'><span class='glyphicon glyphicon-eye-open'></span></span> permettent de visiter les pages.
+    Les boutons <span class='btn btn-primary btn-sm'><span class='glyphicon glyphicon-edit'></span></span> permettent de modifier les pages.
+  </p>
+  <p>Les pages libres apparaissent dans le menu <strong>Unité</strong>. Tu peux les réordonner en les faisant glisser. L'ordre affiché ici est l'ordre dans lequel elles apparaitront dans le menu.
+  </p>
+@endif
+
 @if ($help == 'monitoring')
   <p>
     Cette page liste les tâches cron du site, avec leur statut.

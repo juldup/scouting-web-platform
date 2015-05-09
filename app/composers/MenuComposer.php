@@ -69,9 +69,13 @@ class MenuComposer {
       $homeCategory["Inscription"] = 'registration';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
       $homeCategory["Fiches santé"] = 'health_card';
+    $homeCategory["divider_2"] = 'divider';
     if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
       $homeCategory["Fête d'unité"] = 'annual_feast';
-    $homeCategory["divider_2"] = 'divider';
+    foreach (Page::where('type', '=', 'custom')->orderBy('position')->get() as $page) {
+      $homeCategory[$page->title] = array('routeName' => 'custom_page', 'routeParameters' => array('page_slug' => $page->slug));
+    }
+    if (end($homeCategory) != 'divider') $homeCategory["divider_3"] = 'divider';
     $homeCategory["Nouveautés"] = 'view_recent_changes';
     if (Parameter::get(Parameter::$SHOW_SUGGESTIONS))
       $homeCategory["Suggestions"] = 'suggestions';
@@ -156,6 +160,7 @@ class MenuComposer {
     $leaderCategory['Gérer les sections'] = 'section_data';
     
     $leaderCategory['Contenu du site'] = 'title';
+    $leaderCategory["Pages du site"] = 'edit_pages';
     $leaderCategory["Paramètres du site"] = $user->can(Privilege::$EDIT_GLOBAL_PARAMETERS) ? 'edit_parameters' : null;
     $leaderCategory["Style du site"] = $user->can(Privilege::$EDIT_STYLE) ? 'edit_css' : null;
     

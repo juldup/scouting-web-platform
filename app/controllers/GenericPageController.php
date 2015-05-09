@@ -31,9 +31,23 @@ abstract class GenericPageController extends BaseController {
   protected abstract function getShowRouteName();
   
   /**
+   * Returns a list of parameters that will be given to the show route
+   */
+  protected function getShowRouteParameters() {
+    return array();
+  }
+  
+  /**
    * Returns the name of the route that shows the page in edition mode
    */
   protected abstract function getEditRouteName();
+  
+  /**
+   * Returns a list of parameters that will be given to the edit route
+   */
+  protected function getEditRouteParameters() {
+    return array();
+  }
   
   /**
    * Returns whether the page belongs to a section or is common to all sections
@@ -73,13 +87,14 @@ abstract class GenericPageController extends BaseController {
     // Get the page
     $page = $this->getPage();
     // Generate edit route
+    $routeParameters = $this->getEditRouteParameters();
     if ($this->isSectionPage()) {
       // For section pages, add the section slug in the route parameters
-      $sectionSlugParameter = array("section_slug" => $this->user->currentSection->slug);
+      $routeParameters["section_slug"] = $this->user->currentSection->slug;
     } else {
-      $sectionSlugParameter = array("section_slug" => 'unite');
+      $routeParameters["section_slug"] = 'unite';
     }
-    $editURL = URL::route($this->getEditRouteName(), $sectionSlugParameter);
+    $editURL = URL::route($this->getEditRouteName(), $routeParameters);
     // Make view
     return View::make('pages.page', array(
         'page_body' => $page->body_html,
@@ -111,7 +126,7 @@ abstract class GenericPageController extends BaseController {
             ->with('page_title', $this->getPageTitle())
             ->with('page_id', $page->id)
             ->with('images', $images)
-            ->with('original_page_url', URL::route($this->getShowRouteName()));
+            ->with('original_page_url', URL::route($this->getShowRouteName(), $this->getShowRouteParameters()));
   }
   
   /**
@@ -128,13 +143,12 @@ abstract class GenericPageController extends BaseController {
     $page->body_html = $newBody;
     $page->save();
     // Redirect back to page
+    $routeParameters = $this->getShowRouteParameters();
     if ($this->isSectionPage()) {
-      $sectionSlugParameter = array("section_slug" => View::shared('user')->currentSection->slug);;
-    } else {
-      $sectionSlugParameter = array();
+      $routeParameters["section_slug"] = View::shared('user')->currentSection->slug;
     }
     LogEntry::log("Page", "Modification d'une page", array("Page" => $this->getPageTitle() ?: "Page d'accueil")); // TODO improve log message
-    return Redirect::route($this->getShowRouteName(), $sectionSlugParameter);
+    return Redirect::route($this->getShowRouteName(), $routeParameters);
   }
   
   /**

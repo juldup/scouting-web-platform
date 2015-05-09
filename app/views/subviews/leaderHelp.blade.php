@@ -168,6 +168,7 @@
       <li>La page d'aide</li>
     </ul>
   </p>
+  <p>Il est également possible de créer des pages libres</p>
 @endif
 
 @if ($help == 'edit-links')

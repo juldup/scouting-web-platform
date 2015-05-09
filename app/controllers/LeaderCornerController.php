@@ -112,52 +112,11 @@ class LeaderCornerController extends BaseController {
             ),
         ),
         "Contenu du site" => array(
-            "Page d'accueil" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_home_page') : null,
+            "Pages du site" => array(
+                'url' => URL::route('edit_pages'),
                 'help-anchor' => 'pages',
                 'help' => 'edit-pages',
-            ),
-            "Page d'accueil de la section" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES) ? URL::route('edit_section_page', array('section_slug' => $this->user->currentSection->slug)) : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_SECTIONS,
-            ),
-            "Page d'adresses utiles" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_address_page') : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_ADDRESSES,
-            ),
-            "Page de la fête d'unité" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_annual_feast_page') : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_ANNUAL_FEAST,
-            ),
-            "Page d'inscription" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_registration_page') : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_REGISTRATION,
-            ),
-            "Page de la charte d'unité" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_unit_policy_page') : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_UNIT_POLICY,
-            ),
-            "Page d'uniforme" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES) ? URL::route('edit_uniform_page') : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_UNIFORMS,
-            ),
-            "Page d'aide" => array(
-                'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_help_page') : null,
-                'help-anchor' => 'pages',
-                'help' => 'edit-pages',
-                'condition' => Parameter::$SHOW_HELP,
+                'condition' => Parameter::$SHOW_LINKS,
             ),
             "Liens utiles" => array(
                 'url' => $this->user->can(Privilege::$EDIT_PAGES, 1) ? URL::route('edit_links') : null,
