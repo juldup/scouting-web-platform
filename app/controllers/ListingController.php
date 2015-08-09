@@ -352,6 +352,9 @@ class ListingController extends BaseController {
    * [Route] Show the Desk listing page
    */
   public function showDeskPage() {
+    if (!$this->user->isLeader() || !$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
+      return Helper::forbiddenResponse();
+    }
     ini_set("auto_detect_line_endings", true);
     // Save uploaded file
     if (Request::isMethod('post')) {
