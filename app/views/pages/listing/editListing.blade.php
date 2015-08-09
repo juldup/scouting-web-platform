@@ -44,6 +44,16 @@
   </p>
 @stop
 
+@section('forward_links')
+  @if ($user->can(Privilege::$EDIT_LISTING_ALL, 1))
+    <p>
+      <a href='{{ URL::route('desk_listing') }}'>
+        Listing Desk
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('content')
   
   @include('subviews.contextualHelp', array('help' => 'edit-listing'))

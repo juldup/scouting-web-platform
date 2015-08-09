@@ -773,6 +773,46 @@ img.leader_picture {
   font-weight: bold;
 }
 
+.listing-comparison del {
+  color: red;
+}
+
+.listing-comparison ins {
+  color: #36a41e;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.listing-comparison .deleted-member {
+  background: #fbaaaa;
+}
+
+.listing-comparison .added-member {
+  background: #aadd99;
+}
+
+.listing-comparison .deleted-member del {
+  color: black;
+  text-decoration: none;
+}
+
+.listing-comparison .added-member ins {
+  color: black;
+  text-decoration: none;
+}
+
+.listing-comparison .member-data:not(.deleted-member):not(.added-member) .modified-member-data {
+  background: #ffeeaa;
+}
+
+.listing-comparison .legend {
+  text-align: right;
+}
+
+.listing-comparison .legend span {
+  padding: 5px 10px;
+}
+
 /**************************************************
  * PHOTOS
  **************************************************/

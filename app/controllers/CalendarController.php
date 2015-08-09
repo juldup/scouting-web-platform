@@ -262,7 +262,7 @@ class CalendarController extends BaseController {
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) {
-      LogEntry::log("Calendrier", $eventId ? "Modification d'une événement du calendrier" : "Ajout d'un événement dans le calendrier", $eventData); // TODO improve log message
+      LogEntry::log("Calendrier", $eventId ? "Modification d'un événement du calendrier" : "Ajout d'un événement dans le calendrier", $eventData); // TODO improve log message
       return $redirect;
     } else {
       LogEntry::error("Calendrier", "Erreur lors de l'enregistrement d'un événement du calendrier");

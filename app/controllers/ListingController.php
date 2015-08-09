@@ -325,7 +325,7 @@ class ListingController extends BaseController {
   /**
    * [Route] Post request to download the listing with options
    */
-  public function DownloadListingWithOptions() {
+  public function downloadListingWithOptions() {
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
@@ -346,6 +346,99 @@ class ListingController extends BaseController {
     $groupBySection = Input::get('group_by_section');
     // Download the listing
     ListingPDF::downloadListing($selectedSections, $format, $full, $includeScouts, $includeLeaders, $groupBySection);
+  }
+  
+  /**
+   * [Route] Show the Desk listing page
+   */
+  public function showDeskPage() {
+    ini_set("auto_detect_line_endings", true);
+    // Save uploaded file
+    if (Request::isMethod('post')) {
+      $file = Input::file('listingFile');
+      if ($file) {
+        $dirname = storage_path("site_data/tmp/");
+        $filename = "deskListing_" . date("Y-m-d_H-i-s") . "_" . substr(sha1(time() . rand(0, 999999999)), 0, 8) . ".csv";
+        $file->move($dirname, $filename);
+        // Remember file name in session
+        Session::put('desk_listing_file', $dirname . $filename);
+      }
+      // Remember option
+      Session::put('desk_listing_case_insensitive', Input::get('caseInsensitive'));
+      // Redirect to page with listing
+      return Redirect::route('desk_listing');
+    }
+    // Get file and options
+    $filename = Session::get('desk_listing_file');
+    $caseInsensitive = Session::get('desk_listing_case_insensitive', false);
+    if ($filename && file_exists($filename)) {
+      $separator = "\t";
+      // File exists
+      $fileDate = date("d/m/Y à H\hi", filemtime($filename));
+      // Convert file CSV content to array
+      $fileHandle = fopen($filename, 'r');
+      $headers = fgetcsv($fileHandle, 0, $separator);
+      $csv = array();
+      while (($line = fgets($fileHandle)) !== false) {
+        $csv[] = str_getcsv($line, $separator);
+      }
+      $deskListing = array();
+      foreach ($csv as $memberRawData) {
+        if (count($memberRawData) != count($headers)) {
+          continue;
+        }
+        $memberData = array();
+        foreach ($headers as $index => $fieldName) {
+          if (strcasecmp($fieldName, 'Nom') == 0) {
+            $memberData['last_name'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Prenom') == 0) {
+            $memberData['first_name'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Sexe') == 0) {
+            $memberData['gender'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Date de naissance') == 0) {
+            $memberData['birth_date'] = Helper::dateToSql(trim($memberRawData[$index]));
+          } elseif (strcasecmp($fieldName, 'Tél') == 0) {
+            $memberData['phone1'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'GSM') == 0) {
+            $memberData['phone2'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Email Tiers') == 0) {
+            $memberData['email'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Rue') == 0) {
+            $memberData['street'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'No') == 0) {
+            $memberData['number'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Bte') == 0) {
+            $memberData['mailbox'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Code Postal') == 0) {
+            $memberData['postcode'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Ville') == 0) {
+            $memberData['city'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Section') == 0) {
+            $memberData['section'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Handicap') == 0) {
+            $memberData['handicap'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Totem') == 0) {
+            $memberData['totem'] = trim($memberRawData[$index]);
+          } elseif (strcasecmp($fieldName, 'Quali') == 0) {
+            $memberData['quali'] = trim($memberRawData[$index]);
+          }
+        }
+        $deskListing[] = $memberData;
+      }
+      // Compare Desk listing with current listing
+      $modifications = (new ListingComparison())->compareDeskListing($deskListing, !$caseInsensitive);
+      // Return comparison view
+      return View::make('pages.listing.deskPage', array(
+          'fileDate' => $fileDate,
+          'modifications' => $modifications,
+          'caseInsensitive' => $caseInsensitive,
+      ));
+    } else {
+      // File not uploaded yet, show default page
+      return View::make('pages.listing.deskPage', array(
+          'caseInsensitive' => $caseInsensitive,
+      ));
+    }
   }
   
 }

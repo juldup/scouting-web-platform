@@ -136,11 +136,30 @@ class Helper {
   }
   
   /**
-   * Transforms a 'YYYY-MM-DD' sql date in D/M/YYYY' format
+   * Transforms a 'YYYY-MM-DD' sql date in 'D/M/YYYY' format
    */
   public static function dateToHuman($sqlDate) {
     if ($sqlDate == "0000-00-00" || $sqlDate == "0" || !$sqlDate) return "";
     return date('j/n/Y', strtotime($sqlDate));
+  }
+  
+  /**
+   * Transforms a 'YYYY-MM-DD' sql date in 'DD/MM/YYYY' format
+   */
+  public static function dateToHumanLeadingZeros($sqlDate) {
+    if ($sqlDate == "0000-00-00" || $sqlDate == "0" || !$sqlDate) return "";
+    return date('d/m/Y', strtotime($sqlDate));
+  }
+  
+  /**
+   * Transforms a 'D/M/YYYY' date in 'YYYY-MM-DD' sql format
+   */
+  public static function dateToSql($date) {
+    $dateArray = explode("/", $date);
+    if (count($dateArray) != 3) return "0000-00-00";
+    if (strlen($dateArray[0]) == 1) $dateArray[0] = "0" . $dateArray[0];
+    if (strlen($dateArray[1]) == 1) $dateArray[1] = "0" . $dateArray[1];
+    return $dateArray[2] . "-" . $dateArray[1] . "-" . $dateArray[0];
   }
   
   /**

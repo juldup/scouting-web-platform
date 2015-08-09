@@ -262,6 +262,7 @@ Route::get('gestion/listing/telecharger/{format}/{section_slug}', array("as" => 
 Route::get('gestion/listing/enveloppes/{format}/{section_slug}', array("as" => "download_envelops", "uses" => "ListingController@downloadEnvelops"));
 Route::get('gestion/listing/telechargement/{section_slug?}', array("as" => "download_listing_options", "uses" => "ListingController@showDownloadListingPage"));
 Route::post('gestion/listing/telechargement-options', array("as" => "download_listing_with_options", "uses" => "ListingController@downloadListingWithOptions"));
+Route::any('gestion/listing-desk/{section_slug?}', array("as" => "desk_listing", "uses" => "ListingController@showDeskPage"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));
