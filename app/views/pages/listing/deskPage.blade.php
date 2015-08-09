@@ -54,10 +54,18 @@
       <h1>Listing Desk</h1>
       {{ Form::open(array('route' => 'desk_listing', 'files' => true, 'class' => 'form-horizontal well')) }}
         <legend>Comparer le listing du site au listing Desk</legend>
-        <p>Rendez-vous sur Desk et exportez le listing au format CSV.</p>
+        <p>Rends-toi sur Desk et exporte le listing au format TXT.</p>
+        <div class='alert alert-info'>
+          <p>Pour récupérer le listing dans le bon format sur Desk&nbsp;:</p>
+          <ol>
+            <li>Dans le menu de gauche, sélectionne <strong>Gestion des personnes &rarr; Export des membres (Unité)</strong></li>
+            <li>Au-dessus du listing qui s'est affiché, clique sur l'icône <strong>Export</strong></li>
+            <li>Dans la liste des format, sélectionne le format <strong>TXT - Fichier Texte</strong></li>
+          </ol>
+        </div>
         <div class="form-group">
           <div class="col-sm-5 control-label">
-            <label for='listingFile'>Ficher CSV&nbsp;:</label>
+            <label for='listingFile'>Ficher TXT&nbsp;:</label>
           </div>
           <div class="col-sm-4 upload-desk-listing" @if (isset($fileDate)) style="display: none;" @endif>
             {{ Form::file("listingFile", array('class' => 'form-control')) }}
@@ -98,6 +106,9 @@
           </div>
         </div>
         <h2>Liste des modifications à apporter dans Desk</h2>
+        <p class='alert alert-info'>
+          NOTE&nbsp;: la comparaison du listing ne tient pas encore compte des champs <strong>téléphone</strong>, <strong>e-mail</strong>, <strong>adresse</strong> et <strong>handicap</strong>.
+        </p>
         
         <table class='table listing-comparison'>
           <thead>
@@ -106,11 +117,11 @@
               <th>Prénom</th>
               <th>Sexe</th>
               <th>DDN</th>
-              <th>Téléphone</th>
-              <th>E-mail</th>
-              <th>Adresse</th>
+              <th>(Téléphone)</th>
+              <th>(E-mail)</th>
+              <th>(Adresse)</th>
               <th>Section</th>
-              <th>Handicap</th>
+              <th>(Handicap)</th>
               <th>Totem</th>
               <th>Quali</th>
             </tr>

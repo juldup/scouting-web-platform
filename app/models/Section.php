@@ -132,4 +132,11 @@ class Section extends Eloquent {
     return $categories;
   }
   
+  /**
+   * Returns the code of the section (section_type + section_type_number)
+   */
+  public function getSectionCode() {
+    return $this->section_type . $this->section_type_number;
+  }
+  
 }

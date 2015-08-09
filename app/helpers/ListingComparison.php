@@ -67,7 +67,7 @@ class ListingComparison {
         'phone' => array('before' => '', 'after' => $member->phone1),
         'email' => array('before' => '', 'after' => $member->email1),
         'address' => array('before' => '', 'after' => $member->address . " ; " . $member->postcode . " " . $member->city),
-        'section' => array('before' => '', 'after' => $member->section),
+        'section' => array('before' => '', 'after' => Section::find($member->section_id)->getSectionCode()),
         'handicap' => array('before' => '', 'after' => ''),
         'totem' => array('before' => '', 'after' => $member->totem),
         'quali' => array('before' => '', 'after' => $member->quali),
@@ -123,13 +123,26 @@ class ListingComparison {
     // Address
     $comparedMember['address'] = array('value' => '');
     // Section
-    $comparedMember['section'] = array('value' => '');
+    $localSectionName = Section::find($localMember->section_id)->getSectionCode();
+    if (Helper::endsWith($deskMember['section'], $localSectionName) || ($localSectionName == "U0" && $deskMember['section'] == "")) {
+      $comparedMember['section'] = array('value' => $localSectionName);
+    } else {
+      $comparedMember['section'] = array('before' => $deskMember['section'], 'after' => $localSectionName);
+    }
     // Handicap
     $comparedMember['handicap'] = array('value' => '');
     // Totem
-    $comparedMember['totem'] = array('value' => '');
+    if ($this->stringsEqual(trim($localMember->totem), $deskMember['totem'])) {
+      $comparedMember['totem'] = array('value' => $localMember->totem);
+    } else {
+      $comparedMember['totem'] = array('before' => $deskMember['totem'], 'after' => $localMember->totem);
+    }
     // Quali
-    $comparedMember['quali'] = array('value' => '');
+    if ($this->stringsEqual(trim($localMember->quali), $deskMember['quali'])) {
+      $comparedMember['quali'] = array('value' => $localMember->quali);
+    } else {
+      $comparedMember['quali'] = array('before' => $deskMember['quali'], 'after' => $localMember->quali);
+    }
     // Add to array
     $this->comparedListing[] = $comparedMember;
   }
