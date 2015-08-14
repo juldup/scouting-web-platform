@@ -43,6 +43,8 @@
 
 @section('content')
   
+  @include('subviews.contextualHelp', array('help' => 'desk-listing'))
+  
   <div class="row">
     <div class="col-md-12">
       @include('subviews.flashMessages')

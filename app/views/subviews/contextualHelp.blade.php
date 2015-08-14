@@ -330,6 +330,40 @@
   </p>
 @endif
 
+@if ($help == 'desk-listing')
+  <p>
+    Cet outil te permet de comparer le listing du site au listing Desk de ton unité. Il sert à faire la mise à jour du listing dans Desk.
+    Il peut aussi servir à vérifier qu'aucune erreur d'encodage n'a été faite dans Desk.
+  </p>
+  <p>
+    Cet ne produit aucune modification ni au listing du site, ni au listing Desk. Les changement dans Desk sont à faire manuellement.
+  </p>
+  <h3>Options</h3>
+  <ul>
+    <li><strong>Ficher TXT</strong>&nbsp;: le listing Desk au format TXT (valeurs séparées par des tabs). Si tu uploades un fichier, il restera quelques heures en mémoire.
+      Tu peux uploader une nouvelle version à tout moment.</li>
+    <li><strong>Ignorer les différences de majuscules/minuscules</strong>&nbsp;: si cette option est cochée, les différences de majuscules
+      ne seront pas montrées (par exemple, "Dupont" est considéré comme égal à "DUPONT").</li>
+    <li><strong>Ignorer les erreurs d'accents</strong>&nbsp;: si cette option est cochée, une entrée qui ne diffère que par les accents
+      ne sera pas montrée comme à corriger (par exemple, "Rene" est considéré comme égal à "René").</li>
+  </ul>
+  <p></p>
+  <h3>Tableau de différences</h3>
+  <p>
+    Le tableau contient les différences du listing.
+  </p>
+  <p>
+    Les données à modifier dans Desk sont sur fond jaune. La valeur actuellement présente sur
+    Desk est en rouge et barrée. La valeur à encoder dans Desk est en vert.
+  </p>
+  <p>
+    Les nouveaux membres à inscrire dans Desk sont sur fond vert.
+  </p>
+  <p>
+    Les membres à supprimer de Desk sont sur fond rouge.
+  </p>
+@endif
+
 @if ($help == 'download-listing')
   <p>Cette page offre diverses options pour télécharger le listing de l'unité.</p>
   <h3>Choix des sections</h3>

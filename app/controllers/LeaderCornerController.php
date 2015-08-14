@@ -100,6 +100,11 @@ class LeaderCornerController extends BaseController {
                 'help-anchor' => 'listing',
                 'help' => 'edit-listing',
             ),
+            "Listing Desk" => array(
+                'url' => $this->user->can(Privilege::$EDIT_LISTING_ALL) || $this->user->can(Privilege::$EDIT_LISTING_LIMITED) ? URL::route('desk_listing') : null,
+                'help-anchor' => 'listing-desk',
+                'help' => 'desk-listing',
+            ),
             "Les animateurs" => array(
                 'url' => URL::route('edit_leaders'),
                 'help-anchor' => 'animateurs',

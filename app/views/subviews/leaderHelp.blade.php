@@ -129,6 +129,15 @@
   </p>
 @endif
 
+@if ($help == 'desk-listing')
+  <legend>Mise à jour du listing Desk @yield('back_to_top')</legend>
+  <p>
+    Cette page offre la possibilité de comparer le listing du site au listing Desk.
+    Elle montre la liste des différences qu'il faut apporter manuellement dans Desk.
+    Elle sert aussi à vérifier que l'encodage dans Desk a été fait sans erreurs.
+  </p>
+@endif
+
 @if ($help == 'edit-leaders')
   <legend>Les animateurs @yield('back_to_top')</legend>
   <p>
