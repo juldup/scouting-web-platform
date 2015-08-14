@@ -202,6 +202,17 @@ class Member extends Eloquent {
   }
   
   /**
+   * Returns the list of parent's public phone numbers
+   */
+  public function getParentsPublicPhones() {
+    $phones = array();
+    if ($this->phone1 && !$this->phone1_private) $phones[] = $this->phone1;
+    if ($this->phone2 && !$this->phone2_private) $phones[] = $this->phone2;
+    if ($this->phone3 && !$this->phone3_private) $phones[] = $this->phone3;
+    return $phones;
+  }
+  
+  /**
    * Returns whether there exists at least the e-mail address of one parent
    */
   public function hasParentsEmailAddress() {

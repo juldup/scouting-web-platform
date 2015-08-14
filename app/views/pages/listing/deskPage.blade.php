@@ -117,8 +117,8 @@
               <th>Prénom</th>
               <th>Sexe</th>
               <th>DDN</th>
-              <th>(Téléphone)</th>
-              <th>(E-mail)</th>
+              <th>Téléphone</th>
+              <th>E-mail</th>
               <th>(Adresse)</th>
               <th>Section</th>
               <th>(Handicap)</th>
@@ -138,6 +138,7 @@
                   @if (array_key_exists('after', $member[$field]))
                     <td class='modified-member-data'>
                       <del>{{ $member[$field]['before'] }}</del>
+                      {{ array_key_exists('keep', $member[$field]) ? $member[$field]['keep'] : "" }}
                       <ins>{{ $member[$field]['after'] }}</ins>
                     </td>
                   @else

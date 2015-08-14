@@ -117,10 +117,11 @@ class ListingComparison {
       $comparedMember['birth_date'] = array('before' => Helper::dateToHumanLeadingZeros($deskMember['birth_date']), 'after' => Helper::dateToHumanLeadingZeros($localMember->birth_date));
     }
     // Phone
-    $comparedMember['phone'] = array('value' => '');
+    $comparedMember['phone'] = $this->comparePhones($localMember, $deskMember);
     // E-mail
-    $comparedMember['email'] = array('value' => '');
+    $comparedMember['email'] = $this->compareEmails($localMember, $deskMember);
     // Address
+    // TODO Compare address
     $comparedMember['address'] = array('value' => '');
     // Section
     $localSectionName = Section::find($localMember->section_id)->getSectionCode();
@@ -152,6 +153,81 @@ class ListingComparison {
       return $str1 == $str2;
     } else {
       return strcasecmp($str1, $str2) == 0;
+    }
+  }
+  
+  function compareEmails($localMember, $deskMember) {
+    if ($localMember->is_leader) {
+      $localEmail = $localMember->email_member;
+      if ($this->stringsEqual(trim($localEmail), $deskMember['email'])) {
+        return array('value' => $localEmail);
+      } else {
+        return array('before' => $deskMember['email'], 'after' => $localEmail);
+      }
+    } else {
+      $localEmails = $localMember->getParentsEmailAddresses();
+      foreach ($localEmails as $localEmail) {
+        if ($this->stringsEqual(trim($localEmail), $deskMember['email'])) {
+          return array('value' => $localEmail);
+        }
+      }
+      return array('before' => $deskMember['email'], 'after' => count($localEmails) ? $localEmails[0] : "");
+    }
+  }
+  
+  function comparePhones($localMember, $deskMember) {
+    // List of Desk phones
+    $deskPhones = [];
+    if ($deskMember['phone1']) $deskPhones[] = Helper::formatPhoneNumber($deskMember['phone1']);
+    if ($deskMember['phone2']) $deskPhones[] = Helper::formatPhoneNumber($deskMember['phone2']);
+    // List of local phones
+    if ($localMember->is_leader) {
+      $localPhones = [];
+      if ($localMember->phone_member) $localPhones[] = Helper::formatPhoneNumber($localMember->phone_member);
+    } else {
+      $localPhones = $localMember->getParentsPublicPhones();
+      foreach ($localPhones as $index => $localPhone) {
+        $localPhones[$index] = Helper::formatPhoneNumber($localPhone);
+      }
+      if ($localMember->phone_member) $localPhones[] = Helper::formatPhoneNumber($localMember->phone_member);
+    }
+    // List phone numbers in Desk but not in local listing
+    $inDeskButNotInListing = "";
+    $inBoth = "";
+    $phoneCount = 0;
+    foreach ($deskPhones as $deskPhone) {
+      $inListing = false;
+      foreach ($localPhones as $localPhone) {
+        if ($this->stringsEqual($deskPhone, $localPhone)) {
+          $inListing = true;
+        }
+      }
+      if (!$inListing) {
+        $inDeskButNotInListing .= ($inDeskButNotInListing ? ", " : "") . $deskPhone;
+      } else {
+        $inBoth .= ($inBoth ? ", " : "") . $deskPhone;
+        $phoneCount++;
+      }
+    }
+    // List phone numbers in local listing but not in Desk
+    $inListingButNotInDesk = "";
+    foreach ($localPhones as $localPhone) {
+      $inDesk = false;
+      foreach ($deskPhones as $deskPhone) {
+        if ($this->stringsEqual($deskPhone, $localPhone)) {
+          $inDesk = true;
+        }
+      }
+      if (!$inDesk && $phoneCount < 2) {
+        $inListingButNotInDesk .= ($inListingButNotInDesk ? ", " : "") . $localPhone;
+        $phoneCount++;
+      }
+    }
+    // Return
+    if ($inDeskButNotInListing || $inListingButNotInDesk) {
+      return array('before' => $inDeskButNotInListing, 'after' => $inListingButNotInDesk, 'keep' => $inBoth);
+    } else {
+      return array('value' => $inBoth);
     }
   }
   
