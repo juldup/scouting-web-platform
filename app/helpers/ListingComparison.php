@@ -4,13 +4,16 @@ class ListingComparison {
   
   protected $comparedListing;
   protected $caseSensitiveCompare;
+  protected $ignoreAccentErrors;
   
   /**
    * Returns a comparison between the desk listing of the current listing
    */
-  function compareDeskListing($deskMembers, $caseSensitiveCompare = false) {
+  function compareDeskListing($deskMembers, $caseSensitiveCompare = true, $ignoreAccentErrors = false) {
     $this->comparedListing = array();
     $this->caseSensitiveCompare = $caseSensitiveCompare;
+    $this->ignoreAccentErrors = $ignoreAccentErrors;
+//    dd($ignoreAccentErrors);
     usort($deskMembers, array('ListingComparison', 'compareMembers'));
     $localMembers = Member::where('validated', '=', true)->orderBy('last_name')->orderBy('first_name')->get();
     $deskIndex = 0;
@@ -68,7 +71,7 @@ class ListingComparison {
         'email' => array('before' => '', 'after' => $member->email1),
         'address' => array('before' => '', 'after' => $member->address . " ; " . $member->postcode . " " . $member->city),
         'section' => array('before' => '', 'after' => Section::find($member->section_id)->getSectionCode()),
-        'handicap' => array('before' => '', 'after' => ''),
+        'handicap' => array('before' => '', 'after' => $member->has_handicap ? "Oui" : "Non"),
         'totem' => array('before' => '', 'after' => $member->totem),
         'quali' => array('before' => '', 'after' => $member->quali),
     );
@@ -84,7 +87,7 @@ class ListingComparison {
         'email' => array('before' => $member['email'], 'after' => ''),
         'address' => array('before' => '', 'after' => ''),
         'section' => array('before' => $member['section'], 'after' => ''),
-        'handicap' => array('before' => '', 'after' => ''),
+        'handicap' => array('before' => $member['handicap'] == "true" ? "Oui" : "Non", 'after' => ''),
         'totem' => array('before' => $member['totem'], 'after' => ''),
         'quali' => array('before' => $member['quali'], 'after' => ''),
     );
@@ -121,8 +124,7 @@ class ListingComparison {
     // E-mail
     $comparedMember['email'] = $this->compareEmails($localMember, $deskMember);
     // Address
-    // TODO Compare address
-    $comparedMember['address'] = array('value' => '');
+    $comparedMember['address'] = $this->compareAddresses($localMember, $deskMember);
     // Section
     $localSectionName = Section::find($localMember->section_id)->getSectionCode();
     if (Helper::endsWith($deskMember['section'], $localSectionName) || ($localSectionName == "U0" && $deskMember['section'] == "")) {
@@ -131,7 +133,13 @@ class ListingComparison {
       $comparedMember['section'] = array('before' => $deskMember['section'], 'after' => $localSectionName);
     }
     // Handicap
-    $comparedMember['handicap'] = array('value' => '');
+    if ($deskMember['handicap'] == "true" && !$localMember->has_handicap) {
+      $comparedMember['handicap'] = array('before' => 'Oui', 'after' => 'Non');
+    } elseif ($deskMember['handicap'] == "false" && $localMember->has_handicap) {
+      $comparedMember['handicap'] = array('before' => 'Non', 'after' => 'Oui');
+    } else {
+      $comparedMember['handicap'] = array('value' => ($localMember->has_handicap ? "Oui" : "Non"));
+    }
     // Totem
     if ($this->stringsEqual(trim($localMember->totem), $deskMember['totem'])) {
       $comparedMember['totem'] = array('value' => $localMember->totem);
@@ -149,6 +157,10 @@ class ListingComparison {
   }
   
   function stringsEqual($str1, $str2) {
+    if ($this->ignoreAccentErrors) {
+      $str1 = Helper::removeSpecialCharacters($str1);
+      $str2 = Helper::removeSpecialCharacters($str2);
+    }
     if ($this->caseSensitiveCompare) {
       return $str1 == $str2;
     } else {
@@ -227,8 +239,33 @@ class ListingComparison {
     if ($inDeskButNotInListing || $inListingButNotInDesk) {
       return array('before' => $inDeskButNotInListing, 'after' => $inListingButNotInDesk, 'keep' => $inBoth);
     } else {
-      return array('value' => $inBoth);
+      return array('value' => substr($inBoth, 0, 12) . '…', 'title' => $inBoth);
     }
+  }
+  
+  public function compareAddresses($localMember, $deskMember) {
+    if ($deskMember['street']) {
+      $deskAddresses = [
+        $deskMember['street'] . ", " . $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "") . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['street'] . " " . $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "")  . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['street'] . "," . $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "")  . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['street'] . ", " . $deskMember['number'] . ($deskMember['mailbox'] ? " bte" . $deskMember['mailbox'] : "")  . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['street'] . " " . $deskMember['number'] . ($deskMember['mailbox'] ? " bte" . $deskMember['mailbox'] : "") . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['street'] . "," . $deskMember['number'] . ($deskMember['mailbox'] ? " bte" . $deskMember['mailbox'] : "") . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "") . ", " . $deskMember['street'] . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "") . "," . $deskMember['street'] . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "") . " " . $deskMember['street'] . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+      ];
+    } else {
+      $deskAddresses = [""];
+    }
+    $localAddress = trim($localMember->address) . " ; " . trim($localMember->postcode) . " " . trim($localMember->city);
+    foreach ($deskAddresses as $deskAddress) {
+      if ($this->stringsEqual($deskAddress, $localAddress)) {
+        return array('value' => substr($localAddress, 0, 15) . '…', 'title' => $localAddress);
+      }
+    }
+    return array('before' => $deskAddresses[0], 'after' => $localAddress);
   }
   
 }

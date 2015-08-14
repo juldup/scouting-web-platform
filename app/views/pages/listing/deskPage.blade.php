@@ -86,6 +86,14 @@
           </div>
         </div>
         <div class="form-group">
+          <div class='col-sm-5 control-label'>
+            <label for='caseInsensisive'>Ignorer les erreurs d'accents&nbsp;:</label>
+          </div>
+          <div class="col-sm-2">
+            {{ Form::checkbox('ignoreAccentErrors', 1, $ignoreAccentErrors) }}
+          </div>
+        </div>
+        <div class="form-group">
           <div class="col-sm-6 col-sm-offset-5">
             {{ Form::submit("Afficher la liste de différences", array('class' => 'btn btn-primary')) }}
           </div>
@@ -106,9 +114,6 @@
           </div>
         </div>
         <h2>Liste des modifications à apporter dans Desk</h2>
-        <p class='alert alert-info'>
-          NOTE&nbsp;: la comparaison du listing ne tient pas encore compte des champs <strong>téléphone</strong>, <strong>e-mail</strong>, <strong>adresse</strong> et <strong>handicap</strong>.
-        </p>
         
         <table class='table listing-comparison'>
           <thead>
@@ -119,7 +124,7 @@
               <th>DDN</th>
               <th>Téléphone</th>
               <th>E-mail</th>
-              <th>(Adresse)</th>
+              <th>Adresse</th>
               <th>Section</th>
               <th>(Handicap)</th>
               <th>Totem</th>
@@ -142,7 +147,7 @@
                       <ins>{{ $member[$field]['after'] }}</ins>
                     </td>
                   @else
-                    <td>
+                    <td @if (array_key_exists('title', $member[$field])) title="{{ $member[$field]['title'] }}" @endif>
                       {{ $member[$field]['value'] }}
                     </td>
                   @endif
