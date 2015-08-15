@@ -5,14 +5,16 @@ class ListingComparison {
   protected $comparedListing;
   protected $caseSensitiveCompare;
   protected $ignoreAccentErrors;
+  protected $fuzzyAddressComparison;
   
   /**
    * Returns a comparison between the desk listing of the current listing
    */
-  function compareDeskListing($deskMembers, $caseSensitiveCompare = true, $ignoreAccentErrors = false) {
+  function compareDeskListing($deskMembers, $caseSensitiveCompare = true, $ignoreAccentErrors = false, $fuzzyAddressComparison = true) {
     $this->comparedListing = array();
     $this->caseSensitiveCompare = $caseSensitiveCompare;
     $this->ignoreAccentErrors = $ignoreAccentErrors;
+    $this->fuzzyAddressComparison = $fuzzyAddressComparison;
 //    dd($ignoreAccentErrors);
     usort($deskMembers, array('ListingComparison', 'compareMembers'));
     $localMembers = Member::where('validated', '=', true)->orderBy('last_name')->orderBy('first_name')->get();
@@ -244,6 +246,9 @@ class ListingComparison {
   }
   
   public function compareAddresses($localMember, $deskMember) {
+    if ($this->fuzzyAddressComparison && $deskMember['street'] && $localMember->address) {
+      return $this->compareAddressesFuzzy($localMember, $deskMember);
+    }
     if ($deskMember['street']) {
       $deskAddresses = [
         $deskMember['street'] . ", " . $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "") . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
@@ -262,10 +267,47 @@ class ListingComparison {
     $localAddress = trim($localMember->address) . " ; " . trim($localMember->postcode) . " " . trim($localMember->city);
     foreach ($deskAddresses as $deskAddress) {
       if ($this->stringsEqual($deskAddress, $localAddress)) {
-        return array('value' => substr($localAddress, 0, 15) . '…', 'title' => $localAddress);
+        return array('value' => mb_substr($localAddress, 0, 12) . '…', 'title' => $localAddress);
       }
     }
     return array('before' => $deskAddresses[0], 'after' => $localAddress);
+  }
+  
+  public function compareAddressesFuzzy($localMember, $deskMember) {
+    // Format Desk street
+    $deskStreet = $deskMember['street'];
+    $deskStreet = preg_replace('/^([^,]*).*$/', '$1', $deskStreet); // Remove everything after first comma
+    $deskStreet = preg_replace("/\([^)]+\)/","", $deskStreet); // Remove parentheses and their content
+    $deskStreet = Helper::slugifyNoException($deskStreet); // Slugify to remove special characters
+    $deskStreet = preg_replace('/saint/', 'st', $deskStreet); // Replace "saint" with "st"
+    $deskStreet = preg_replace('/avenue/', 'av', $deskStreet); // Replace "avenue" with "av"
+    // Get Desk number
+    $deskNumber = Helper::slugifyNoException(preg_replace('/\\ /', '', $deskMember['number'] . "/" . $deskMember['mailbox'])); // Remove spaces and to lower case (e.g. "57 A" => "57a")
+    // Format local address
+    $localAddress = Helper::slugifyNoException(trim($localMember->address));
+    $localAddress = preg_replace('/saint/', 'st', $localAddress); // Replace "saint" with "st"
+    $localAddress = preg_replace('/avenue/', 'av', $localAddress); // Replace "avenue" with "av"
+    // Compare street, number and postcode
+    $leven1 = levenshtein($deskStreet . "-" . $deskNumber, $localAddress);
+    $leven2 = levenshtein($deskNumber . "-" . $deskStreet, $localAddress);
+    $leven3 = levenshtein($deskStreet . $deskNumber, $localAddress);
+    $leven4 = levenshtein($deskNumber . $deskStreet, $localAddress);
+    $leven = min([$leven1, $leven2, $leven3, $leven4]);
+    $streetMatches = $leven <= 3 || strpos($localAddress, $deskStreet) !== false;
+    if ($deskNumber) {
+      $numberMatches = strpos($localAddress, $deskNumber) !== false;
+    } else {
+      $numberMatches = true;
+    }
+    $postcodeMatches = $this->stringsEqual($deskMember['postcode'], trim($localMember->postcode));
+    if ($streetMatches && $numberMatches && $postcodeMatches) {
+      $localAddress = $localMember->address . " ; " . $localMember->postcode . " " . $localMember->city;
+      return array('value' => mb_substr($localAddress, 0, 12) . '…', 'title' => $localAddress);
+    }
+    return array(
+        'before' => $deskMember['street'] . ", " . $deskMember['number'] . ($deskMember['mailbox'] ? "/" . $deskMember['mailbox'] : "") . " ; " . $deskMember['postcode'] . " " . $deskMember['city'],
+        'after' => $localMember->address . " ; " . $localMember->postcode . " " . $localMember->city
+    );
   }
   
 }

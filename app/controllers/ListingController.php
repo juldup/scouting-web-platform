@@ -369,6 +369,7 @@ class ListingController extends BaseController {
       // Remember option
       Session::put('desk_listing_case_insensitive', Input::get('caseInsensitive'));
       Session::put('desk_listing_ignore_accent_errors', Input::get('ignoreAccentErrors'));
+      Session::put('desk_listing_fuzzy_address_comparison', Input::get('fuzzyAddressComparison'));
       // Redirect to page with listing
       return Redirect::route('desk_listing');
     }
@@ -376,6 +377,7 @@ class ListingController extends BaseController {
     $filename = Session::get('desk_listing_file');
     $caseInsensitive = Session::get('desk_listing_case_insensitive', false);
     $ignoreAccentErrors = Session::get('desk_listing_ignore_accent_errors', false);
+    $fuzzyAddressComparison = Session::get('desk_listing_fuzzy_address_comparison', true);
     if ($filename && file_exists($filename)) {
       $separator = "\t";
       // File exists
@@ -431,19 +433,21 @@ class ListingController extends BaseController {
         $deskListing[] = $memberData;
       }
       // Compare Desk listing with current listing
-      $modifications = (new ListingComparison())->compareDeskListing($deskListing, !$caseInsensitive, $ignoreAccentErrors);
+      $modifications = (new ListingComparison())->compareDeskListing($deskListing, !$caseInsensitive, $ignoreAccentErrors, $fuzzyAddressComparison);
       // Return comparison view
       return View::make('pages.listing.deskPage', array(
           'fileDate' => $fileDate,
           'modifications' => $modifications,
           'caseInsensitive' => $caseInsensitive,
           'ignoreAccentErrors' => $ignoreAccentErrors,
+          'fuzzyAddressComparison' => $fuzzyAddressComparison,
       ));
     } else {
       // File not uploaded yet, show default page
       return View::make('pages.listing.deskPage', array(
           'caseInsensitive' => $caseInsensitive,
           'ignoreAccentErrors' => $ignoreAccentErrors,
+          'fuzzyAddressComparison' => $fuzzyAddressComparison,
       ));
     }
   }

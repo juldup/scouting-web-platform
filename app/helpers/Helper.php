@@ -325,6 +325,17 @@ class Helper {
   }
   
   /**
+   * Slugifies, but allows for empty result
+   */
+  public static function slugifyNoException($text) {
+    try {
+      return self::slugify($text);
+    } catch (Exception $ex) {
+      return "";
+    }
+  }
+  
+  /**
    * Returns the given cash amount (float) in format '0,00'
    */
   public static function formatCashAmount($amount) {

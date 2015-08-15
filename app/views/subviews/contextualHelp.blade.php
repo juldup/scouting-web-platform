@@ -346,6 +346,9 @@
       ne seront pas montrées (par exemple, "Dupont" est considéré comme égal à "DUPONT").</li>
     <li><strong>Ignorer les erreurs d'accents</strong>&nbsp;: si cette option est cochée, une entrée qui ne diffère que par les accents
       ne sera pas montrée comme à corriger (par exemple, "Rene" est considéré comme égal à "René").</li>
+    <li><strong>Comparer les adresses de manière approximative</strong>&nbsp;: il arrive que l'adresse soit orthographiée
+      légèrement différemment (trait d'union/espace, faute d'orthographe, commune/ville/village, etc.). Si cette option est cochée, la tolérance
+      aux erreurs sera plus élevée.</li>
   </ul>
   <p></p>
   <h3>Tableau de différences</h3>

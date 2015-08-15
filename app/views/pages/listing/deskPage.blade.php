@@ -96,6 +96,14 @@
           </div>
         </div>
         <div class="form-group">
+          <div class='col-sm-5 control-label'>
+            <label for='caseInsensisive'>Comparer les adresses de manière approximative&nbsp;:</label>
+          </div>
+          <div class="col-sm-2">
+            {{ Form::checkbox('fuzzyAddressComparison', 1, $fuzzyAddressComparison) }}
+          </div>
+        </div>
+        <div class="form-group">
           <div class="col-sm-6 col-sm-offset-5">
             {{ Form::submit("Afficher la liste de différences", array('class' => 'btn btn-primary')) }}
           </div>
