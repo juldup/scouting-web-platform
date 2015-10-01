@@ -71,6 +71,7 @@ class LeaderController extends BaseController {
     $archives = ArchivedLeader::select('year')
             ->distinct()
             ->where('section_id', '=', $this->section->id)
+            ->orderBy('year', 'desc')
             ->get();
     $archiveYears = array();
     foreach ($archives as $year) {
@@ -78,7 +79,6 @@ class LeaderController extends BaseController {
         $archiveYears[] = $year->year;
       }
     }
-    sort($archiveYears);
     // Make view
     return View::make('pages.leader.leaders', array(
         'is_leader' => $this->user->isLeader(),

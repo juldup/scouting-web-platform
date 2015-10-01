@@ -156,9 +156,12 @@
         <h2>Animateurs des années précédentes</h2>
       </div>
     </div>
-    @foreach ($archives as $archive)
+    @foreach ($archives as $index => $archive)
       <div class="row">
         <div class="col-md-12">
+          @if ($index != 0 && substr($archive,5,4) != substr($archives[$index - 1],0,4))
+            <div class="vertical-divider-small"></div>
+          @endif
           <p>
             <a href="{{ URL::route('archived_leaders', array('section_slug' => $user->currentSection->slug, 'year' => $archive)) }}" class="btn-sm btn-default">
               Voir les animateurs de l'année {{{ $archive }}}
