@@ -297,10 +297,13 @@ class ListingPDF {
     }
     $titles[] = "Nom";
     $titles[] = "Prénom";
+    $titles[] = "Sexe";
     if ($hasTotem) $titles[] = "Totem";
     if ($this->output != 'pdf' && $hasQuali) $titles[] = "Quali";
     if ($hasSubgroup) $titles[] = $subgroupName;
+    if ($this->output != 'pdf') $titles[] = "Nationalité";
     $titles[] = "DDN";
+    if ($this->output != 'pdf') $titles[] = "Année";
     $titles[] = "Adresse";
     $titles[] = "CP";
     $titles[] = "Localité";
@@ -313,18 +316,22 @@ class ListingPDF {
       $titles[] = "Téléphone personnel";
       $titles[] = "E-mail du scout";
       $titles[] = "E-mail";
+    }
+    if ($this->output != 'pdf' && $this->exportPrivateData) $titles[] = "Cotisation payée";
+    if ($this->exportPrivateData) {
       $titles[] = "Handicap";
     }
+    if ($this->output != 'pdf' && $this->exportPrivateData) $titles[] = "Date d'inscription";
     if ($this->output == 'pdf') {
       // Special column sizes for pdf output
       if (!$hasTotem && !$hasSubgroup) {
-        $colSizes = Array(4,25,20,13,40,6,22,17);
+        $colSizes = Array(4,25,20,8,13,40,6,22,17);
       } elseif ($hasSubgroup && !$hasTotem) {
-        $colSizes = Array(4,22,18,20,13,30,6,22,17);
+        $colSizes = Array(4,22,18,8,20,13,30,6,22,17);
       } elseif ($hasSubgroup && $hasTotem) {
-        $colSizes = Array(4,18,17,15,15,13,32,6,22,17);
+        $colSizes = Array(4,16,16,8,14,15,13,32,6,22,17);
       } elseif ($hasTotem && !$hasSubgroup) {
-        $colSizes = Array(4,20,18,15,13,35,6,22,17);
+        $colSizes = Array(4,20,18,8,15,13,35,6,22,17);
       }
     } else {
       $colSizes = array();
@@ -333,9 +340,12 @@ class ListingPDF {
         elseif ($title == "Section") $colSizes[] = 10;
         elseif ($title == "Nom") $colSizes[] = 25;
         elseif ($title == "Prénom") $colSizes[] = 20;
+        elseif ($title == "Sexe") $colSizes[] = 6;
+        elseif ($title == "Nationalité") $colSizes[] = 12;
         elseif ($title == "Totem") $colSizes[] = 15;
         elseif ($title == $subgroupName) $colSizes[] = 15;
         elseif ($title == "DDN") $colSizes[] = 13;
+        elseif ($title == "Année") $colSizes[] = 7;
         elseif ($title == "Adresse") $colSizes[] = 40;
         elseif ($title == "CP") $colSizes[] = 6;
         elseif ($title == "Localité") $colSizes[] = 22;
@@ -345,7 +355,9 @@ class ListingPDF {
         elseif ($title == "Téléphone personnel") $colSizes[] = 17;
         elseif ($title == "E-mail du scout") $colSizes[] = 25;
         elseif ($title == "E-mail") $colSizes[] = 60;
+        elseif ($title == "Cotisation payée") $colSizes[] = 16;
         elseif ($title == "Handicap") $colSizes[] = 50;
+        elseif ($title == "Date d'inscription") $colSizes[] = 18;
         else throw new Exception("Unknown column $title");
       }
     }
@@ -404,12 +416,18 @@ class ListingPDF {
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->last_name);
         elseif($title == "Prénom")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->first_name);
+        elseif ($title == "Sexe")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->gender);
+        elseif ($title == "Nationalité")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->nationality);
         elseif($title == "Totem")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->totem);
         elseif($title == $subgroupName)
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->subgroup);
         elseif($title == "DDN")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", Helper::dateToHuman($member->birth_date));
+        elseif ($title == "Année")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->year_in_section);
         elseif($title == "Adresse")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->address);
         elseif($title == "CP")
@@ -432,8 +450,12 @@ class ListingPDF {
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->email_member);
         elseif($title == "E-mail")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getAllEmailAddresses(", ", false));
+        elseif ($title == "Cotisation payée")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->subscription_paid ? "Oui" : "Non");
         elseif ($title == "Handicap")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->has_handicap ? $member->handicap_details : "");
+        elseif ($title == "Date d'inscription")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", Helper::dateToHuman($member->created_at));
         else throw new Exception("Unknown title " . $title);
         $letter++;
       }
