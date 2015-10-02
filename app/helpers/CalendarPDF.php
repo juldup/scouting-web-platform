@@ -180,6 +180,8 @@ class CalendarPDF {
     // Generate PDF document with a title and a table header
     $pdf = self::generatePDFWithTitle($month, $year, $sections, $margin, $cellWidth, $cellHeight);
     $pdf->setFillColor(255);
+    // Reduce bottom margin (default is 56.7) to avoid page break
+    $pdf->SetAutoPageBreak(true, 20);
     // Draw borders and text, date by date
     foreach ($usedDates as $date=>$val) {
       $positionY = $dateStartingPosition[$date] + ($dateEndingPosition[$date] - $dateStartingPosition[$date] - $cellHeight) / 2.0;
