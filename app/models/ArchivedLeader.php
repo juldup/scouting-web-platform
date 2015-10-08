@@ -92,7 +92,7 @@ class ArchivedLeader extends Eloquent {
   /**
    * Returns the 'YYYY-YYYY' string representation of the previous scouting year
    */
-  private static function getLastYear() {
+  public static function getLastYear() {
     $month = date('m');
     $startYear = date('Y') - 1;
     if ($month <= 6) $startYear--;
@@ -109,8 +109,118 @@ class ArchivedLeader extends Eloquent {
   /**
    * Returns the path of the picture in the file system
    */
-  public function getPicturePath() {
-    return storage_path(Member::$PICTURE_FOLDER_PATH) . $this->picture_filename;
+  public function getPicturePath($pictureFilename = null) {
+    if (!$pictureFilename) $pictureFilename = $this->picture_filename;
+    return storage_path(Member::$PICTURE_FOLDER_PATH) . $pictureFilename;
+  }
+  
+  /**
+   * Checks whether the input data is valid. If it is valid, returns
+   * the an array containg the data. If it is invalid, returns a string
+   * containing an error message.
+   */
+  public static function checkInputData($canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
+    // Get data from input
+    $firstName = Input::get('first_name');
+    $lastName = Input::get('last_name');
+    $gender = Input::get('gender');
+    $leaderName = Input::get('leader_name');
+    $leaderInCharge = Input::get('leader_in_charge') ? true : false;
+    $leaderDescription = Input::get('leader_description');
+    $leaderRole = Input::get('leader_role');
+    $sectionId = Input::get('section');
+    $phoneMemberUnformatted = Input::get('phone_member');
+    $phoneMemberPrivate = Input::get('phone_member_private');
+    $emailMember = strtolower(Input::get('email_member'));
+    $totem = Input::get('totem');
+    $quali = Input::get('quali');
+    // Error message is initially empty
+    $errorMessage = "";
+    // Check all fields for errors
+    // First name
+    if (!$firstName)
+      $errorMessage .= "Il manque le prénom. ";
+    elseif (!Helper::hasCorrectCapitals($firstName, true))
+      $errorMessage .= "L'usage des majuscules dans le prénom n'est pas correct. ";
+    // Last name
+    if (!$lastName)
+      $errorMessage .= "Il manque le nom de famille. ";
+    elseif (!Helper::hasCorrectCapitals($lastName, false))
+      $errorMessage .= "L'usage des majuscules dans le nom de famille n'est pas correct. ";
+    // Gender
+    if ($gender != 'M' && $gender != 'F')
+      $errorMessage .= "Le sexe n'est pas une entrée valide. ";
+    // Phone number
+    $phoneMember = Helper::formatPhoneNumber($phoneMemberUnformatted);
+    if ($phoneMemberUnformatted && !$phoneMember)
+      $errorMessage .= "Le numéro de GSM du scout \"$phoneMemberUnformatted\" n'est pas correct. ";
+    // E-mail address
+    if ($emailMember && !filter_var($emailMember, FILTER_VALIDATE_EMAIL))
+      $errorMessage .= "L'adresse e-mail du scout \"$emailMember\" n'est pas valide. ";
+    // Totem
+    if ($totem && !Helper::hasCorrectCapitals($totem))
+      $errorMessage .= "L'usage des majuscules dans le totem n'est pas correct (il doit commencer par une majuscule). ";
+    // Leader name
+    if (!$leaderName)
+      $errorMessage .= "Il manque le nom d'animateur. ";
+    elseif (!Helper::hasCorrectCapitals ($leaderName, true))
+      $errorMessage .= "L'usage des majuscule dans le nom d'animateur n'est pas correct. ";
+    // Return error message or array containing the data
+    if ($errorMessage) {
+      return $errorMessage;
+    } else {
+      return array(
+          'first_name' => $firstName,
+          'last_name' => $lastName,
+          'gender' => $gender,
+          'leader_name' => $leaderName,
+          'leader_in_charge' => $leaderInCharge,
+          'leader_description' => $leaderDescription,
+          'leader_role' => $leaderRole,
+          'section_id' => $sectionId,
+          'phone_member' => $phoneMember,
+          'phone_member_private' => $phoneMemberPrivate,
+          'email_member' => $emailMember,
+          'totem' => $totem,
+          'quali' => $quali,
+      );
+    }
+  }
+  
+  /**
+   * Saves the uploaded picture to the file system and updates the member
+   * to mark it as having a leader picture. Returns this member instance, or
+   * a string in case of error.
+   */
+  public function uploadPictureFromInput() {
+    // Get picture file
+    $pictureFile = Input::file('picture');
+    if ($pictureFile) {
+      if (!$pictureFile->getSize()) {
+        // An upload error has occured
+        return false;
+      } else {
+        try {
+          // Resize image
+          $image = new Resizer($pictureFile->getRealPath());
+          $image->resizeImage(256, 256, "crop");
+          // Save image
+          $pictureFilename =  "archive-" . $this->id . ".picture";
+          $image->saveImage($this->getPicturePath($pictureFilename));
+          // Update member
+          $this->has_picture = true;
+          $this->picture_filename = $pictureFilename;
+          $this->save();
+          return $this;
+        } catch (Exception $e) {
+          Log::error($e);
+          // An error has occured while saving the picture
+          return false;
+        }
+      }
+    }
+    // There is no picture file
+    return true;
   }
   
 }

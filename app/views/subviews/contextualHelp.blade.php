@@ -460,6 +460,37 @@
      L'animateur supprimé restera dans les archives (sauf s'il a été ajouté puis supprimé au cours d'une même année).
 @endif
 
+@if ($help == 'edit-archived-leaders')
+  <p>
+    Il est possible de modifier et compléter la liste des anciens animateurs. Ceux-ci apparaissent publiquement dans la
+    liste des anciens animateurs de chaque section, année par année.
+  </p>
+  <p>
+    Il est important de noter que si une adresse e-mail est donnée pour un ancien animateur, cela lui donne accès à toutes les photos publiées sur le site.
+  </p>
+  <h3>Modifier les données d'un ancien animateur</h3>
+  <p>
+    Clique sur le bouton en vis-à-vis d'un animateur pour le modifier.
+  </p>
+  <p>
+    Pour ajouter ou modifier la photo de l'animateur, utilise le champ approprié.
+  </p>
+  <h3>Supprimer un animateur</h3>
+  <p>
+    Pour supprimer un animateur qui est erronément inscrit dans une année et une section, il suffit de 
+    cliquer sur le bouton <strong><em>Supprimer</em></strong> devant son nom.
+  </p>
+  <h3>Ajouter un animateur manquant</h3>
+  <p>
+    Si un ancien animateur d'une section n'est pas repris dans la liste, il est possible d'ajouter un animateur
+    en cliquant sur <strong><em>Ajouter un animateur pour l'année {{{ isset($archive) ? $archive : "XXX" }}}</em></strong>.
+  </p>
+  <h3>Années antérieures</h3>
+  <p>
+    Il est possible de modifier les animateurs d'années plus anciennes que l'année dernière. Les liens vers les années antérieures se trouvent en bas de la page.
+  </p>
+@endif
+
 @if ($help == 'edit-privileges')
   <h3>Privilèges des animateurs</h3>
   <p>Chaque animateur a un certains nombre d'actions qu'il peut faire et qu'il ne peut pas faire sur le site.

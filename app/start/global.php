@@ -53,6 +53,7 @@ App::error(function(Exception $exception, $code) {
     // Redirecting to bootstrapping page
     return Redirect::route('bootstrapping', array('db_safe' => true));
   }
+  Log::error($exception);
   return Response::view('errors.generic_error', array(), $code);
 });
 

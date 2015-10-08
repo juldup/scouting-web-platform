@@ -155,6 +155,16 @@
   </p>
 @endif
 
+@if ($help == 'edit-archived-leaders')
+  <legend>Les anciens animateurs @yield('back_to_top')</legend>
+  <p>
+    Il est possible de mettre à jour la liste des anciens animateurs. Ceux-ci apparaissent dans la page publique listant les anciens animateurs.
+  </p>
+  <p>
+    Les anciens animateurs ont accès à toutes les photos publiées sur le site.
+  </p>
+@endif
+
 @if ($help == 'manage-sections')
   <legend>Modification des sections @yield('back_to_top')</legend>
   <p>

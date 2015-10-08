@@ -249,6 +249,9 @@ Route::post('gestion/animateurs/submit/{section_slug?}', array("as" => "edit_lea
 Route::get('gestion/animateurs/supprimer/{member_id}/{section_slug}', array("as" => "edit_leaders_delete", "uses" => "LeaderController@deleteLeader"));
 Route::get('gestion/privileges/{section_slug?}', array("as" => "edit_privileges", "uses" => "PrivilegeController@showEdit"));
 Route::post('ajax/gestion/privileges/change', array("as" => "ajax_change_privileges", "uses" => "PrivilegeController@updatePrivileges"));
+Route::get('gestion/anciens-animateurs/{section_slug}/{archive?}', array("as" => "edit_archived_leaders", "uses" => "ArchivedLeaderController@showPage"));
+Route::post('gestion/anciens-animateurs/submit/{archive}/{section_slug?}', array("as" => "edit_archived_leaders_submit", "uses" => "ArchivedLeaderController@submitLeader"));
+Route::get('gestion/anciens-animateurs/supprimer/{member_id}/{section_slug}/{archive}', array("as" => "edit_archived_leaders_delete", "uses" => "ArchivedLeaderController@deleteLeader"));
 
 // Listing
 Route::get('listing/{section_slug?}', array("as" => "listing", "uses" => "ListingController@showPage"));

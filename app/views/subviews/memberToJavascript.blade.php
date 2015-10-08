@@ -54,7 +54,7 @@
   'email_member': "{{ Helper::sanitizeForJavascript($member->email_member) }}",
   'totem': "{{ Helper::sanitizeForJavascript($member->totem) }}",
   'quali': "{{ Helper::sanitizeForJavascript($member->quali) }}",
-  'family_in_other_units': {{{ $member->family_in_other_units }}},
+  'family_in_other_units': {{{ $member->family_in_other_units ? $member->family_in_other_units : 0 }}},
   'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($member->family_in_other_units_details) }}",
   'has_picture': {{ $member->has_picture ? "true" : "false" }},
   'picture_url': "{{ $member->has_picture ? $member->getPictureURL() : "" }}"

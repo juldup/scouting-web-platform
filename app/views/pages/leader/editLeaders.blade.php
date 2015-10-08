@@ -46,6 +46,13 @@
       Modifier les privilèges des animateurs
     </a>
   </p>
+  @if ($user->can(Privilege::$EDIT_LISTING_ALL, 1))
+    <p>
+      <a href='{{ URL::route('edit_archived_leaders', array('section_slug' => $user->currentSection->slug)) }}'>
+        Gérer les anciens animateurs
+      </a>
+    </p>
+  @endif
 @stop
 
 @section('back_links')

@@ -110,6 +110,11 @@ class LeaderCornerController extends BaseController {
                 'help-anchor' => 'animateurs',
                 'help' => 'edit-leaders',
             ),
+            "Les anciens animateurs" => array(
+                'url' => URL::route('edit_archived_leaders', $this->section->slug),
+                'help-anchor' => 'anciens-animateurs',
+                'help' => 'edit-archived-leaders',
+            ),
             "Gérer les sections" => array(
                 'url' => URL::route('section_data'),
                 'help-anchor' => 'sections',

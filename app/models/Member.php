@@ -542,7 +542,7 @@ class Member extends Eloquent {
           'family_in_other_units_details' => $familyDetails,
           'is_leader' => $isLeader,
           'validated' => false,
-        );
+      );
     }
   }
   

@@ -260,7 +260,7 @@ class LeaderController extends BaseController {
     }
     // Redirect with status message
     if ($success) {
-      $section = $leader->getSection();;
+      $section = $leader->getSection();
       LogEntry::log("Animateurs", $memberId ? "Modification d'un animateur" : "Ajout d'un animateur",
               array("Nom" => Input::get('first_name') . " " . Input::get('last_name'), "Section" => $section->name)); // TODO improve log message
       return Redirect::to(URL::route('edit_leaders', array('section_slug' => $section->slug)))
