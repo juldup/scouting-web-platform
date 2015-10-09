@@ -181,12 +181,12 @@ class EmailController extends BaseController {
               ->orderBy('position')
               ->get();
       foreach ($sections as $section) {
-        $recipientList = $this->getRecipientsForSection($section->id);
+        $recipientList = $this->getRecipientsForSection($section->id, Session::has("subscriptionFeeEmail"));
         if (array_key_exists('parents', $recipientList)) $parents['Parents ' . $section->de_la_section] = $recipientList['parents'];
         if (array_key_exists('scouts', $recipientList)) $scouts['Scouts ' . $section->de_la_section] = $recipientList['scouts'];
         if (array_key_exists('leaders', $recipientList)) $leaders['Animateurs ' . $section->de_la_section] = $recipientList['leaders'];
       }
-      $recipientList = $this->getRecipientsForSection(1);
+      $recipientList = $this->getRecipientsForSection(1, Session::has("subscriptionFeeEmail"));
       if (array_key_exists('leaders', $recipientList)) $leaders["Équipe d'unité"] = $recipientList['leaders'];
       if (count($parents)) $recipients['Parents'] = $parents;
       if (count($scouts)) $recipients['Scouts'] = $scouts;
@@ -205,7 +205,16 @@ class EmailController extends BaseController {
         'default_subject' => $this->defaultSubject(),
         'recipients' => $recipients,
         'target' => 'parents',
+        'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
     ));
+  }
+  
+  /**
+   * [Route] Redirects to the e-mail sending page with the list of unpaid members preselected
+   */
+  public function sendUnpaidSubscriptionFeeEmail() {
+    Session::flash("subscriptionFeeEmail", true);
+    return Redirect::route("send_section_email", ["section_slug" => 'unite']);
   }
   
   /**
@@ -251,7 +260,7 @@ class EmailController extends BaseController {
    * of an array (with the keys being 'parents', 'scouts', 'leaders') of arrays with the keys
    * being the member ids and the elements being arrays containing {'member'=>{the Member object}, 'type'=>{'parent' or 'member'}}
    */
-  private function getRecipientsForSection($sectionId) {
+  private function getRecipientsForSection($sectionId, $preselectUnpaidFee = false) {
     $parents = array();
     $scouts = array();
     $leaders = array();
@@ -262,13 +271,13 @@ class EmailController extends BaseController {
             ->get();
     foreach ($members as $member) {
       if ($member->is_leader) {
-        $leaders[] = array('member' => $member, 'type' => 'member');
+        $leaders[] = array('member' => $member, 'type' => 'member', "preselected" => ($preselectUnpaidFee && !$member->subscription_paid ? true : false));
       } else {
         if ($member->email1 || $member->email2 || $member->email3) {
-          $parents[$member->id] = array('member' => $member, 'type' => 'parent');
+          $parents[$member->id] = array('member' => $member, 'type' => 'parent', "preselected" => ($preselectUnpaidFee && !$member->subscription_paid ? true : false));
         }
         if ($member->email_member) {
-          $scouts[$member->id] = array('member' => $member, 'type' => 'member');
+          $scouts[$member->id] = array('member' => $member, 'type' => 'member', 'preselected' => false);
         }
       }
     }

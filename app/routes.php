@@ -209,6 +209,7 @@ Route::get('e-mails/{section_slug?}', array("as" => "emails", "uses" => "EmailCo
 Route::get('e-mails/piece-jointe/{attachment_id}', array("as" => "download_attachment", "uses" => "EmailController@downloadAttachment"));
 Route::get('gestion/e-mails/{section_slug?}', array("as" => "manage_emails", "uses" => "EmailController@showManage"));
 Route::get('gestion/envoi-e-mail/{section_slug?}', array("as" => "send_section_email", "uses" => "EmailController@sendSectionEmail"));
+Route::get('gestion/envoi-e-mail-cotisation-impayee/{section_slug?}', array("as" => "send_unpaid_subscription_fee_email", "uses" => "EmailController@sendUnpaidSubscriptionFeeEmail"));
 Route::post('gestion/envoi-e-mail/submit/{section_slug}', array("as" => "send_section_email_submit", "uses" => "EmailController@submitSectionEmail"));
 Route::get('gestion/e-mails/supprimer/{email_id}', array("as" => "manage_emails_delete", "uses" => "EmailController@deleteEmail"));
 Route::get('gestion/e-mails/archiver/{section_slug}/{email_id}', array("as" => "manage_emails_archive", "uses" => "EmailController@archiveEmail"));

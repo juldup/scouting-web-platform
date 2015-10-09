@@ -111,6 +111,8 @@
       <li>de gérer les réinscriptions</li>
       <li>de gérer l'année des scouts dans la section</li>
       <li>de gérer les passages d'une section à une autre</li>
+      <li>de gérer la liste des membres ayant payé la cotisation</li>
+    </ul>
   </p>
 @endif
 

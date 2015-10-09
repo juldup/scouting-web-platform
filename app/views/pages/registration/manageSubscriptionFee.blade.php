@@ -47,6 +47,11 @@
   
   <div class="row">
     <div class="col-md-12">
+      <p class='float-right'>
+          <a href="{{ URL::route('send_unpaid_subscription_fee_email') }}" class="btn-sm btn-default">
+            Envoyer un e-mail aux parents et animateurs qui n'ont pas encore payé la cotisation
+          </a>
+        </p>
       <h1>Paiement des cotisations</h1>
     </div>
   </div>
@@ -55,10 +60,6 @@
     <div class="row">
       <div class="col-md-12">
         @include('subviews.flashMessages')
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
       </div>
     </div>
     <div class="form-horizontal">

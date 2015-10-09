@@ -303,6 +303,15 @@
   </p>
 @endif
 
+@if ($help == 'edit-subscription-fee')
+  <p>Cet outil permet d'établir la liste des membres ayant payé leur cotisation. Il suffit de cliquer sur la flèche pour faire passer un membre d'une colonne à l'autre.</p>
+  <p>
+    Il est possible d'envoyer un e-mail aux membres qui ne sont pas en ordre de cotisation via le bouton
+    <strong><em>Envoyer un e-mail aux parents et animateurs qui n'ont pas encore payé la cotisation</em></strong>.
+    Ce bouton redirige vers la page classique d'envoi d'e-mail avec les destinataires concernés présélectionnés.
+  </p>
+@endif
+
 @if ($help == 'edit-listing')
   <p>
     Le listing du site web est le listing officiel de l'unité.

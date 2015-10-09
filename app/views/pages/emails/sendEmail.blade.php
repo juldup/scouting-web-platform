@@ -179,7 +179,7 @@
                             @foreach ($members as $member)
                               <div class="col-md-4">
                                 <p>
-                                  {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, true, array('class' => 'recipient-checkbox')) }}
+                                  {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, $preselectedRecipients ? $member['preselected'] : true, array('class' => 'recipient-checkbox')) }}
                                   &nbsp;&nbsp;
                                   {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
                                 </p>
