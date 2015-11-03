@@ -87,7 +87,7 @@
         <div class='form-group'>
           {{ Form::label('format', "Format du fichier", array('class' => 'col-sm-3 col-md-2 control-label')) }}
           <div class="col-sm-2">
-            {{ Form::select('format', array('pdf' => "PDF", 'excel' => "Excel", 'csv' => "CSV"), null, array('class' => 'form-control')) }}
+            {{ Form::select('format', array('pdf' => "PDF", 'excel' => "Excel", 'csv' => "CSV"), 'excel', array('class' => 'form-control')) }}
           </div>
           {{ Form::label('full', "Inclure toutes les données", array('class' => 'col-sm-4 col-md-4 control-label')) }}
           <div class="col-sm-2">
