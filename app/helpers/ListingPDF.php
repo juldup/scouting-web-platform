@@ -317,7 +317,10 @@ class ListingPDF {
       $titles[] = "E-mail du scout";
       $titles[] = "E-mail";
     }
-    if ($this->output != 'pdf' && $this->exportPrivateData) $titles[] = "Cotisation payée";
+    if ($this->output != 'pdf' && $this->exportPrivateData) {
+      $titles[] = "Cotisation payée";
+      $titles[] = "Fiche santé";
+    }
     if ($this->exportPrivateData) {
       $titles[] = "Handicap";
     }
@@ -356,6 +359,7 @@ class ListingPDF {
         elseif ($title == "E-mail du scout") $colSizes[] = 25;
         elseif ($title == "E-mail") $colSizes[] = 60;
         elseif ($title == "Cotisation payée") $colSizes[] = 16;
+        elseif ($title == "Fiche santé") $colSizes[] = 12;
         elseif ($title == "Handicap") $colSizes[] = 50;
         elseif ($title == "Date d'inscription") $colSizes[] = 18;
         else throw new Exception("Unknown column $title");
@@ -452,6 +456,10 @@ class ListingPDF {
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getAllEmailAddresses(", ", false));
         elseif ($title == "Cotisation payée")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->subscription_paid ? "Oui" : "Non");
+        elseif ($title == "Fiche santé") {
+          $healthCard = HealthCard::where('member_id', '=', $member->id)->first();
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $healthCard ? "Oui" : "Non");
+        }
         elseif ($title == "Handicap")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->has_handicap ? $member->handicap_details : "");
         elseif ($title == "Date d'inscription")
