@@ -39,7 +39,8 @@ class PageImageController extends BaseController {
   /**
    * [Route] Adds an image to the image library of a page
    */
-  public function uploadImage($page_id) {
+  public function uploadImage() {
+    if (!$this->user->isLeader()) return;
     try {
       // Get file input data
       $file = Input::file('upload');
@@ -53,14 +54,13 @@ class PageImageController extends BaseController {
       }
       // Create the image object in the database
       $image = PageImage::create(array(
-          'page_id' => $page_id,
           'original_name' => $file->getClientOriginalName(),
       ));
       // Save the image in the filesystem
       $file->move($image->getPathFolder(), $image->getPathFilename());
 
       // Log
-      LogEntry::log("Page", "Ajout d'une image à la librairie d'images d'une page", array("Image" => $image->original_name, "Page" => $page_id));
+      LogEntry::log("Page", "Ajout d'une image à la librairie d'images", array("Image" => $image->original_name));
       // Return the response
       return View::make('pages.customPage.uploadImageCKEditor', [
           'funcNum' => Request::get('CKEditorFuncNum'),
@@ -68,39 +68,13 @@ class PageImageController extends BaseController {
           'error' => null,
       ]);
     } catch (Exception $e) {
+      Log::error($e);
       return View::make('pages.customPage.uploadImageCKEditor', [
           'funcNum' => Request::get('CKEditorFuncNum'),
           'imageURL' => null,
           'error' => "Une erreur est survenue.",
       ]);
     }
-  }
-  
-  /**
-   * [Route] Deletes an image from a page's library
-   * 
-   * Note: this method is no longer used, but could be useful later if a
-   * tool for deleting unused images is created.
-   */
-  public function removeImage($image_id) {
-    // Get the image to delete
-    $image = PageImage::find($image_id);
-    if (!$image) {
-      App::abort(404, "Image does not exist");
-    }
-    // Remove the image from the filesystem
-    if (file_exists($image->getPath())) {
-      unlink($image->getPath());
-    }
-    // Delete the image object from the database
-    $image->delete();
-    // Log
-    LogEntry::log("Page", "Suppression d'une image de la librairie d'images d'une page", array("Image" => $image->original_name, "Page" => $image->page_id));
-    // Return response
-    return json_encode(array(
-        "result" => "OK",
-        "image_id" => $image_id,
-    ));
   }
   
 }

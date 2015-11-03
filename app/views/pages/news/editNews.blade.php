@@ -40,8 +40,9 @@
   <script>
     CKEDITOR.replace('news_body', {
       language: 'fr',
-      extraPlugins: 'divarea',
-      height: '200px'
+      extraPlugins: 'divarea,mediaembed',
+      height: '200px',
+      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
     });
   </script>
 @stop

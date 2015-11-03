@@ -22,7 +22,6 @@
  * 
  * Columns:
  *   - original_name: Filename of the image
- *   - page_id:       Page this image belongs to
  */
 class PageImage extends Eloquent {
   

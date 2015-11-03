@@ -38,7 +38,7 @@
       language: 'fr',
       extraPlugins: 'divarea,mediaembed',
       height: '400px',
-      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image', array('page_id' => $page_id)) }}",
+      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
       on: {
         save: function(event) {
           // Cancel warning before leaving page

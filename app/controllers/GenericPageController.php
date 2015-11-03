@@ -119,13 +119,11 @@ abstract class GenericPageController extends BaseController {
     }
     // Get the page and its images
     $page = $this->getPage();
-    $images = PageImage::where('page_id', '=', $page->id)->get()->all();
     // Make view
     return View::make('pages.customPage.editPage')
             ->with('page_body', $page->body_html)
             ->with('page_title', $this->getPageTitle())
             ->with('page_id', $page->id)
-            ->with('images', $images)
             ->with('original_page_url', URL::route($this->getShowRouteName(), $this->getShowRouteParameters()));
   }
   

@@ -98,8 +98,7 @@ Route::post('gestion/pages/nouvel-ordre', array("as" => "ajax_change_custom_page
 
 // Images
 Route::get('images/{image_id}', array("as" => "get_page_image", "uses" => "PageImageController@getImage"));
-Route::post('ajax/images/upload/{page_id}', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
-Route::get('ajax/images/remove/{image_id}', array("as" => "ajax_remove_image", "uses" => "PageImageController@removeImage"));
+Route::post('ajax/images/upload', array("as" => "ajax_upload_image", "uses" => "PageImageController@uploadImage"));
 
 // Section pages
 Route::get('unite', array("as" => "section_unit", "uses" => "SectionPageController@showUnitPage"));
