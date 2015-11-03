@@ -252,6 +252,7 @@ class EmailController extends BaseController {
         'default_subject' => $this->defaultSubject(),
         'recipients' => $recipients,
         'target' => 'leaders',
+        'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
     ));
   }
   
