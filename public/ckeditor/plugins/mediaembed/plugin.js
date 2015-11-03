@@ -53,9 +53,9 @@
                 { allowedContent: 'iframe[*]' }
             ) );
 
-            editor.ui.addButton( 'Vidéo',
+            editor.ui.addButton( 'MediaEmbed',
             {
-                label: 'Embed Media',
+                label: 'Vidéo',
                 command: 'MediaEmbed',
                 toolbar: 'mediaembed'
             } );
