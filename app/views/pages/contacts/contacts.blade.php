@@ -124,24 +124,26 @@
     @endforeach
   </div>
   
-  <div class='well'>
-    <a name='webmaster'></a>
-    <legend>Contacter le webmaster (Julien Dupuis)</legend>
-    <div class='row'>
-      <div class="col-md-3">
-        <p><strong>Webmaster</strong></p>
-      </div>
-      <div class="col-md-3">
-        <p>{{{ $webmaster['name'] }}}</p>
-      </div>
-      <div class="col-md-2">
-        <p>{{{ $webmaster['phone'] }}}</p>
-      </div>
-      <div class="col-md-4">
-        <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_WEBMASTER, 'member_id' => 0)) }}'>Contacter {{ $webmaster['name'] }} par e-mail</a>
+  @if ($user->isLeader())
+    <div class='well'>
+      <a name='webmaster'></a>
+      <legend>Contacter le webmaster (Julien Dupuis)</legend>
+      <div class='row'>
+        <div class="col-md-3">
+          <p><strong>Webmaster</strong></p>
+        </div>
+        <div class="col-md-3">
+          <p>{{{ $webmaster['name'] }}}</p>
+        </div>
+        <div class="col-md-2">
+          <p>{{{ $webmaster['phone'] }}}</p>
+        </div>
+        <div class="col-md-4">
+          <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_WEBMASTER, 'member_id' => 0)) }}'>Contacter {{ $webmaster['name'] }} par e-mail</a>
+        </div>
       </div>
     </div>
-  </div>
+  @endif
   
   @if (Parameter::get(Parameter::$SHOW_LINKS))
     <div class="row">

@@ -84,7 +84,7 @@ class ContactController extends GenericPageController {
         "sectionLeaders" => $sectionLeaders,
         "webmaster" => array(
             "name" => "Julien Dupuis",
-            "phone" => "+32 496 628 600",
+            "phone" => "",
         ),
         "links" => $links,
         'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
