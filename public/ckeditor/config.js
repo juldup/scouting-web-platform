@@ -14,7 +14,7 @@ CKEDITOR.editorConfig = function( config ) {
     { name: 'editing', groups: [ 'find', 'selection', 'spellchecker' ], items: [ 'Find', 'Replace', '-', 'SelectAll', '-', 'Scayt' ] },
   	{ name: 'forms', items: [ ] },
     { name: 'links', items: [ 'Link', 'Unlink', 'Anchor' ] },
-    { name: 'insert', items: [ 'Image', 'Table', 'HorizontalRule', 'Smiley', 'PageBreak', 'Iframe' ] },
+    { name: 'insert', items: [ 'Image', 'MediaEmbed', 'Table', 'HorizontalRule', 'Smiley', 'PageBreak', 'Iframe' ] },
     { name: 'tools', items: [ 'Maximize', 'ShowBlocks' ] },
     '/',
     { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ], items: [ 'Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat' ] },

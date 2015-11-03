@@ -36,7 +36,7 @@
   <script>
     CKEDITOR.replace('page_body', {
       language: 'fr',
-      extraPlugins: 'divarea',
+      extraPlugins: 'divarea,mediaembed',
       height: '400px'
     });
     var image_upload_url = "{{ URL::route('ajax_upload_image', array('page_id' => $page_id)) }}";
