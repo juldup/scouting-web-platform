@@ -96,7 +96,7 @@ abstract class GenericPageController extends BaseController {
     }
     $editURL = URL::route($this->getEditRouteName(), $routeParameters);
     // Make view
-    return View::make('pages.page', array(
+    return View::make('pages.customPage.page', array(
         'page_body' => $page->body_html,
         'page_title' => $this->getPageTitle(),
         'edit_url' => $editURL,
@@ -121,7 +121,7 @@ abstract class GenericPageController extends BaseController {
     $page = $this->getPage();
     $images = PageImage::where('page_id', '=', $page->id)->get()->all();
     // Make view
-    return View::make('pages.editPage')
+    return View::make('pages.customPage.editPage')
             ->with('page_body', $page->body_html)
             ->with('page_title', $this->getPageTitle())
             ->with('page_id', $page->id)

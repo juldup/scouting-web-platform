@@ -25,29 +25,40 @@
 @section('back_links')
   <p>
     <a href='{{ $original_page_url }}'>
-      Retour à la page
+      Retour sans enregistrer
     </a>
   </p>
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-page.js') }}"></script>
   <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
   <script>
+    // Init CKEditor
     CKEDITOR.replace('page_body', {
       language: 'fr',
       extraPlugins: 'divarea,mediaembed',
-      height: '400px'
+      height: '400px',
+      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image', array('page_id' => $page_id)) }}",
+      on: {
+        save: function(event) {
+          // Cancel warning before leaving page
+          cancelCheckDirty();
+        }
+      }
     });
-    var image_upload_url = "{{ URL::route('ajax_upload_image', array('page_id' => $page_id)) }}";
-    var image_remove_url = "{{ URL::route('ajax_remove_image', array('image_id' => 'image_id')) }}";
-    var initial_images = [
-      @foreach ($images as $image)
-        {'image_id': {{ $image->id }}, 'url': '{{ $image->getURL() }}' },
-      @endforeach
-    ];
+    // Warning when exiting the page with unsaved modifications
+    function checkDirty(event) {
+      if (CKEDITOR.instances['page_body'].checkDirty()) {
+        event.returnValue = "Tu n'as pas sauvé les modifications effectuées sur la page.";
+      }
+    }
+    function cancelCheckDirty() {
+      window.removeEventListener('beforeunload', checkDirty);
+    }
+    window.addEventListener('beforeunload', checkDirty);
+    // Disable leave page warning on submit
+    document.getElementById("edit_page_form").onsubmit = cancelCheckDirty;
   </script>
-  <script src="{{ asset('js/libs/upclick.js') }}"></script>
 @stop
 
 @section('content')
@@ -63,15 +74,7 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="control-label col-md-2">Images</label>
         <div class="col-md-10">
-          <input type="button" id="uploader" value="Ajouter" class="btn btn-default" />
-          <span class="horiz-divider"></span>
-          <span id="image_list"></span>
-        </div>
-      </div>
-      <div class="form-group">
-        <div class="col-md-10 col-md-offset-2">
           <button class="btn btn-primary" type="submit">Enregistrer</button>
         </div>
       </div>

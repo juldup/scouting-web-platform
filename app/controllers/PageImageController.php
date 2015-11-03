@@ -40,35 +40,47 @@ class PageImageController extends BaseController {
    * [Route] Adds an image to the image library of a page
    */
   public function uploadImage($page_id) {
-    // Get file input data
-    $file = Input::file('Filedata');
-    // Make sure the file has been uploaded
-    if (!$file->getSize()) {
-      return json_encode(array(
-          "result" => "KO",
-          "message" => "Le fichier est trop gros et n'a pas pu être ajouté.'"
+    try {
+      // Get file input data
+      $file = Input::file('upload');
+      // Make sure the file has been uploaded
+      if (!$file->getSize()) {
+        return View::make('pages.customPage.uploadImageCKEditor', [
+            'funcNum' => Request::get('CKEditorFuncNum'),
+            'imageURL' => null,
+            'error' => "Le fichier est trop gros et n'a pas pu être ajouté.",
+        ]);
+      }
+      // Create the image object in the database
+      $image = PageImage::create(array(
+          'page_id' => $page_id,
+          'original_name' => $file->getClientOriginalName(),
       ));
+      // Save the image in the filesystem
+      $file->move($image->getPathFolder(), $image->getPathFilename());
+
+      // Log
+      LogEntry::log("Page", "Ajout d'une image à la librairie d'images d'une page", array("Image" => $image->original_name, "Page" => $page_id));
+      // Return the response
+      return View::make('pages.customPage.uploadImageCKEditor', [
+          'funcNum' => Request::get('CKEditorFuncNum'),
+          'imageURL' => $image->getURL(),
+          'error' => null,
+      ]);
+    } catch (Exception $e) {
+      return View::make('pages.customPage.uploadImageCKEditor', [
+          'funcNum' => Request::get('CKEditorFuncNum'),
+          'imageURL' => null,
+          'error' => "Une erreur est survenue.",
+      ]);
     }
-    // Create the image object in the database
-    $image = PageImage::create(array(
-        'page_id' => $page_id,
-        'original_name' => $file->getClientOriginalName(),
-    ));
-    // Save the image in the filesystem
-    $file->move($image->getPathFolder(), $image->getPathFilename());
-    
-    // Log
-    LogEntry::log("Page", "Ajout d'une image à la librairie d'images d'une page", array("Image" => $image->original_name, "Page" => $page_id));
-    // Return the response
-    return json_encode(array(
-        "result" => "OK",
-        "image_id" => $image->id,
-        "url" => $image->getURL(),
-    ));
   }
   
   /**
    * [Route] Deletes an image from a page's library
+   * 
+   * Note: this method is no longer used, but could be useful later if a
+   * tool for deleting unused images is created.
    */
   public function removeImage($image_id) {
     // Get the image to delete

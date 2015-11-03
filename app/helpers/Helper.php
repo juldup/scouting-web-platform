@@ -291,14 +291,14 @@ class Helper {
    * Returns a forbidden 'access denied' HTTP response
    */
   public static function forbiddenResponse() {
-    return Illuminate\Http\Response::create(View::make('forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+    return Illuminate\Http\Response::create(View::make('errors.forbidden'), Illuminate\Http\Response::HTTP_FORBIDDEN);
   }
   
   /**
    * Returns a forbidden 'you are not a member' HTTP response
    */
   public static function forbiddenNotMemberResponse() {
-    return Illuminate\Http\Response::create(View::make('forbiddenNotMember'), Illuminate\Http\Response::HTTP_FORBIDDEN);
+    return Illuminate\Http\Response::create(View::make('errors.forbiddenNotMember'), Illuminate\Http\Response::HTTP_FORBIDDEN);
   }
   
   /**
