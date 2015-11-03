@@ -62,8 +62,9 @@
   <script>
     CKEDITOR.replace('body', {
       language: 'fr',
-      extraPlugins: 'divarea',
-      height: '250px'
+      extraPlugins: 'divarea,mediaembed',
+      height: '250px',
+      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
     });
     var defaultSubject = "{{ Helper::sanitizeForJavascript($default_subject) }}";
   </script>
