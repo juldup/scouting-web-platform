@@ -53,6 +53,7 @@ class ListingController extends BaseController {
     $editableMembers = array();
     foreach ($sections as $section) {
       $members = Member::where('validated', '=', true)
+              ->where('is_extern', '=', false)
               ->where('section_id', '=', $section->id)
               ->where('is_leader', '=', false)
               ->orderBy('last_name')
@@ -121,12 +122,14 @@ class ListingController extends BaseController {
     // Gather members
     if ($this->user->currentSection->id == 1) {
       $members = Member::where('validated', '=', true)
+              ->where('is_extern', '=', false)
               ->where('is_leader', '=', false)
               ->orderBy('last_name')
               ->orderBy('first_name')
               ->get();
     } else {
       $members = Member::where('validated', '=', true)
+              ->where('is_extern', '=', false)
               ->where('section_id', '=', $this->section->id)
               ->where('is_leader', '=', false)
               ->orderBy('last_name')

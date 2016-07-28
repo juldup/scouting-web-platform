@@ -357,6 +357,7 @@ class Helper {
       $query->orWhere('email3', '=', $email);
       $query->orWhere('email_member', '=', $email);
     })->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->first();
     return $member != null;
   }

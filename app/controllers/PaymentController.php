@@ -46,6 +46,7 @@ class PaymentController extends BaseController {
     }
     // Create list of members
     $memberList = Member::where('validated', '=', 1)
+            ->where('is_extern', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('is_leader', 'ASC')
             ->orderBy('last_name')

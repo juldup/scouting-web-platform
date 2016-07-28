@@ -42,6 +42,7 @@ class LeaderController extends BaseController {
       $leaders = Member::where('is_leader', '=', true)
               ->where('section_id', '=', $this->section->id)
               ->where('validated', '=', true)
+              ->where('is_extern', '=', false)
               ->orderBy('leader_in_charge', 'DESC')
               ->orderBy('leader_name', 'ASC')
               ->get();
@@ -115,13 +116,22 @@ class LeaderController extends BaseController {
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
             ->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
+            ->get();
+    // List externs
+    $externs = Member::where('section_id', '=', $this->section->id)
+            ->where('validated', '=', true)
+            ->where('is_extern', '=', true)
+            ->orderBy('last_name', 'ASC')
+            ->orderBy('first_name', 'ASC')
             ->get();
     // List scouts that could be turned into a leader
     $fifteenYearsAgo = date('Y-m-d', strtotime("-15 years"));
     $scouts = Member::where('is_leader', '=', false)
             ->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('birth_date', '<', $fifteenYearsAgo)
             ->orderBy('last_name', 'ASC')
             ->orderBy('first_name', 'ASC')
@@ -134,6 +144,7 @@ class LeaderController extends BaseController {
     if ($memberId) {
       $memberToTurnLeader = Member::where('is_leader', '=', false)
               ->where('validated', '=', true)
+              ->where('is_extern', '=', false)
               ->where('id', '=', $memberId)
               ->first();
       if ($memberToTurnLeader) $leaders[] = $memberToTurnLeader;
@@ -141,6 +152,7 @@ class LeaderController extends BaseController {
     // Make view
     return View::make('pages.leader.editLeaders', array(
         'leaders' => $leaders,
+        'externs' => $externs,
         'scouts' => $scoutsForSelect,
         'scout_to_leader' => $memberId,
         'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),

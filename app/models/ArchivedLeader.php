@@ -64,6 +64,7 @@ class ArchivedLeader extends Eloquent {
    */
   private static function archiveLeaders($lastYear) {
     $leaders = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('is_leader', '=', true)
             ->get();
     foreach ($leaders as $leader) {

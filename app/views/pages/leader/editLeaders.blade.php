@@ -28,7 +28,7 @@
     var currentSection = {{ $user->currentSection->id }};
     var leaders = new Array();
     var ownedLeaders = new Array();
-    @foreach ($leaders as $leader)
+    @foreach (array_merge($leaders->all(), $externs->all()) as $leader)
       leaders[{{ $leader->id }}] = @include('subviews.memberToJavascript', array('member' => $leader));
       @if ($user->isOwnerOfMember($leader->id))
         ownedLeaders.push("{{ $leader->id }}");
@@ -153,6 +153,52 @@
               </tr>
             @endif
           @endforeach
+          @if (true)
+            <tr>
+              <th colspan="7">Externes :</th>
+            </tr>
+            @foreach ($externs as $extern)
+              <tr>
+                <td>
+                  @if ($user->isOwnerOfMember($extern->id))
+                    <a class="btn-sm btn-primary" href="javascript:editOwnData({{ $extern->id }})">
+                      @if ($can_edit_own_data)
+                        Modifier
+                      @else
+                        Voir
+                      @endif
+                    </a>
+                  @else
+                    <a class="btn-sm btn-primary" href="javascript:editLeader({{ $extern->id }})">
+                      @if ($can_edit_limited || $can_edit_all)
+                        Modifier
+                      @else
+                        Voir
+                      @endif
+                    </a>
+                  @endif
+                  @if ($can_delete)
+                    <a class="btn-sm btn-danger warning-delete"
+                       href="{{ URL::route('edit_leaders_delete', array('member_id' => $extern->id, 'section_slug' => $user->currentSection->slug)) }}">
+                      Supprimer
+                    </a>
+                  @endif
+                </td>
+                <td></td>
+                <td>{{{ $extern->last_name }}}</td>
+                <td>{{{ $extern->first_name }}}</td>
+                <td>
+                  @if ($extern->has_picture)
+                    <img class="leader_picture_mini" alt="Photo de {{{ $extern->leader_name }}}" src="{{ $extern->getPictureURL() }}" />
+                  @else
+                    Pas de photo
+                  @endif
+                </td>
+                <td>{{{ $extern->phone_member }}}</td>
+                <td>{{{ $extern->email_member }}}</td>
+              </tr>
+            @endforeach
+          @endif
         </tbody>
       </table>
     </div>

@@ -60,6 +60,7 @@ class ContactController extends GenericPageController {
     $unitLeaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', '1')
             ->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->orderBy('leader_in_charge', 'desc')
             ->orderBy('leader_name')
             ->get();
@@ -72,6 +73,7 @@ class ContactController extends GenericPageController {
       $leader = Member::where('is_leader', '=', true)
               ->where('leader_in_charge', '=', true)
               ->where('validated', '=', true)
+              ->where('is_extern', '=', false)
               ->where('section_id', '=', $section->id)
               ->first();
       if ($leader) $sectionLeaders[] = $leader;

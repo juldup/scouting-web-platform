@@ -266,6 +266,7 @@ class EmailController extends BaseController {
     $scouts = array();
     $leaders = array();
     $members = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('section_id', '=', $sectionId)
             ->orderBy('last_name')
             ->orderBy('first_name')

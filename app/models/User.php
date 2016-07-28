@@ -300,6 +300,7 @@ class User extends Eloquent {
             $query->where('is_leader', '=', true);
           });
         })->where('validated', '=', true)
+                ->where('is_extern', '=', false)
                 ->get();
       } else {
         $this->associatedMembers = array();

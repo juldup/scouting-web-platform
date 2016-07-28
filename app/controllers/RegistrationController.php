@@ -276,6 +276,7 @@ class RegistrationController extends GenericPageController {
   private static function getLeadersWithRegistrationPrivilege($section) {
     $leaders = Member::where('is_leader', '=', true)
             ->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->get();
     $emailAddresses = array();
     foreach ($leaders as $leader) {
@@ -421,6 +422,7 @@ class RegistrationController extends GenericPageController {
     }
     // List scouts
     $query = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('is_leader', '=', false)
             ->orderBy('last_name')
             ->orderBy('first_name');
@@ -523,6 +525,7 @@ class RegistrationController extends GenericPageController {
     }
     // List scouts
     $activeMembers = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('is_leader', '=', false)
             ->orderBy('year_in_section', 'DESC')
             ->orderBy('birth_date')
@@ -553,11 +556,13 @@ class RegistrationController extends GenericPageController {
       try {
         // Update year for each member of the section
         Member::where('validated', '=', true)
+                ->where('is_extern', '=', false)
                 ->where('is_leader', '=', false)
                 ->where('section_id', '=', $sectionId)
                 ->increment('year_in_section');
         // Retrieve members
         $members = Member::where('validated', '=', true)
+                ->where('is_extern', '=', false)
                 ->where('is_leader', '=', false)
                 ->where('section_id', '=', $sectionId)
                 ->get();
@@ -610,6 +615,7 @@ class RegistrationController extends GenericPageController {
     }
     // List scouts
     $activeMembers = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('is_leader', '=', false)
             ->orderBy('year_in_section', 'DESC')
             ->orderBy('birth_date')
@@ -701,6 +707,7 @@ class RegistrationController extends GenericPageController {
     }
     // List scouts
     $members = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->orderBy('last_name', 'ASC')
             ->orderBy('first_name', 'ASC')
             ->get();

@@ -252,13 +252,14 @@ class SectionDataController extends BaseController {
     }
     // Check that this section does not have any members
     $memberCount = Member::where("validated", '=', true)
+            ->where('is_extern', '=', false)
             ->where('section_id', '=', $section_id)
             ->where('is_leader', '=', false)
             ->count();
     if ($memberCount) {
       return Redirect::route('section_data')
               ->with('error_message', "Cette section contient des membres. Il faut <a href='"
-                      . URL::route('manage_listing', array('section_slug' => $section->slug)) . 
+                      . URL::route('manage_listing', array('section_slug' => $section->slug)) .
                       "'>supprimer ou changer de section tous les membres</a> avant de supprimer la section.");
     }
     // Check that this section does not have any leaders
@@ -269,8 +270,19 @@ class SectionDataController extends BaseController {
     if ($memberCount) {
       return Redirect::route('section_data')
               ->with('error_message', "Cette section contient des animateurs. Il faut <a href='"
-                      . URL::route('edit_leaders', array('section_slug' => $section->slug)) . 
+                      . URL::route('edit_leaders', array('section_slug' => $section->slug)) .
                       "'>supprimer ou changer de section tous les animateurs</a> avant de supprimer la section.");
+    }
+    // Check that this section does not have any externs
+    $memberCount = Member::where("validated", '=', true)
+            ->where('section_id', '=', $section_id)
+            ->where('is_extern', '=', true)
+            ->count();
+    if ($memberCount) {
+      return Redirect::route('section_data')
+              ->with('error_message', "Cette section contient des externes. Il faut <a href='"
+                      . URL::route('edit_leaders', array('section_slug' => $section->slug)) .
+                      "'>supprimer ou changer de section tous les externes</a> avant de supprimer la section.");
     }
     // Delete section
     try {

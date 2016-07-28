@@ -40,6 +40,7 @@ class PrivilegeController extends BaseController {
     $leaders = Member::where('is_leader', '=', true)
             ->where('section_id', '=', $this->section->id)
             ->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->orderBy('leader_in_charge', 'DESC')
             ->orderBy('leader_name', 'ASC')
             ->get();

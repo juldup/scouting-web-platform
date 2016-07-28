@@ -245,6 +245,7 @@ class HealthCardController extends BaseController {
     }
     // Get the members of the section
     $sectionMembers = Member::where('validated', '=', 1)
+            ->where('is_extern', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('is_leader', 'ASC')
             ->orderBy('last_name')
@@ -279,6 +280,7 @@ class HealthCardController extends BaseController {
     }
     // Get members
     $members = Member::where('validated', '=', 1)
+            ->where('is_extern', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('is_leader', 'ASC')
             ->orderBy('last_name')
@@ -306,6 +308,7 @@ class HealthCardController extends BaseController {
     }
     // Get members
     $members = Member::where('validated', '=', 1)
+            ->where('is_extern', '=', false)
             ->where('section_id', '=', $this->section->id)
             ->orderBy('is_leader', 'ASC')
             ->orderBy('last_name')

@@ -50,6 +50,7 @@ class EnvelopsPDF {
     $pdf->SetFont('Helvetica','', 16);
     // Get members
     $query = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where(function($query) use ($sections) {
               foreach ($sections as $section) {
                 $query->orWhere('section_id', '=', $section->id);
@@ -74,6 +75,7 @@ class EnvelopsPDF {
       if (!$member->is_leader) {
         $usedAddresses[] = $addrShort;
         $siblings = Member::where('validated', '=', true)
+                ->where('is_extern', '=', false)
                 ->where('is_leader', '=', false)
                 ->where('address', '=', $member->address)
                 ->where('postcode', '=', $member->postcode)

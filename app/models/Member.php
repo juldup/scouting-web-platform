@@ -104,6 +104,7 @@ class Member extends Eloquent {
       $query->orWhere('email3', '=', $email);
       $query->orWhere('email_member', '=', $email);
     })->where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->first();
     if ($aMember) return true;
     else return false;
@@ -592,9 +593,11 @@ class Member extends Eloquent {
     $currentYear = $startYear . "-" . ($startYear + 1);
     // Update members' year in section where needed
     $count = Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('year_in_section_last_update', '<', $currentYear)
             ->increment('year_in_section');
     Member::where('validated', '=', true)
+            ->where('is_extern', '=', false)
             ->where('year_in_section_last_update', '<', $currentYear)
             ->update(array('year_in_section_last_update' => $currentYear));
     if ($count) {
