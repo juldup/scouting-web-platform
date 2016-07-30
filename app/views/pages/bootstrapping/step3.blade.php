@@ -60,6 +60,11 @@
             <td>{{ URL::route('cron_auto_increment_year_in_section') }}</td>
             <td>Tous les jours (doit être exécuté au moins le 1er août de chaque année)</td>
           </tr>
+          <tr>
+            <td>Suppression automatique des comptes non vérifiés</td>
+            <td>{{ URL::route('cron_auto_clean_up_unverified_accounts') }}</td>
+            <td>Une fois par jour</td>
+          </tr>
         </tbody>
       </table>
       <h2>(Possibilité 2) Exécuter les tâches via un script</h2>
@@ -67,7 +72,7 @@
         <thead>
           <tr>
             <th>Tâche</th>
-            <th>URL à appeler</th>
+            <th>Script à appeler</th>
             <th>Fréquence</th>
           </tr>
         </thead>
@@ -86,6 +91,11 @@
             <td>Augmentation automatique de l'année des scouts</td>
             <td>{...}/cron/year_in_section.php</td>
             <td>Tous les jours (doit être exécuté au moins le 1er août de chaque année)</td>
+          </tr>
+          <tr>
+            <td>Suppression automatique des comptes non vérifiés</td>
+            <td>{...}/cron/delete_unverified_accounts.php</td>
+            <td>Une fois par jour</td>
           </tr>
         </tbody>
       </table>

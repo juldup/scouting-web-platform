@@ -34,11 +34,13 @@ class MonitoringController extends BaseController {
     $emailLastExecution = Parameter::get(Parameter::$CRON_EMAIL_LAST_EXECUTION);
     $healthCardsLastExecution = Parameter::get(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION);
     $incrementYearInSectionLastExecution = Parameter::get(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION);
+    $cleanUpUnverifiedAccountsLastExecution = Parameter::get(Parameter::$CRON_CLEAN_UP_UNUSED_ACCOUNTS);
     // Show page
     return View::make('pages.monitoring.monitoring', array(
         "emailLastExecution" => $emailLastExecution,
         "healthCardsLastExecution" => $healthCardsLastExecution,
         "incrementYearInSectionLastExecution" => $incrementYearInSectionLastExecution,
+        "cleanUpUnverifiedAccountsLastExecution" => $cleanUpUnverifiedAccountsLastExecution,
         "emailTimedOut" => self::emailTimedOut($emailLastExecution),
         "healthCardsTimedOut" => self::healthCardsTimedOut($healthCardsLastExecution),
         "incrementYearInSectionTimedOut" => self::incrementYearInSectionTimedOut($incrementYearInSectionLastExecution),

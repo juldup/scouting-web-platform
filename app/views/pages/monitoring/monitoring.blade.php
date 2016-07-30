@@ -86,6 +86,19 @@
               @endif
             </td>
           </tr>
+          <tr>
+            <td>Suppression automatique des comptes non vérifiés</td>
+            <td>{{ $cleanUpUnverifiedAccountsLastExecution ? date('j/n/Y à G:i', $cleanUpUnverifiedAccountsLastExecution) : "Jamais" }}</td>
+            <td>
+              @if ($cleanUpUnverifiedAccountsLastExecution < time() - 3600 * 24 * 7)
+                <span class="safe">
+                  Cette tâche n'a pas été exécutée depuis longtemps, mais elle n'est pas indispensable.
+                </span>
+              @else
+                <span class="safe">OK</span>
+              @endif
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

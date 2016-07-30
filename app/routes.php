@@ -56,6 +56,12 @@ Route::get('cron/augmenter-annee-auto', array("as" => "cron_auto_increment_year_
   // Update cron job last execution time
   Parameter::set(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION, time());
 }));
+Route::get('cron/suppression-auto-comptes-non-verifies', array("as" => "cron_auto_clean_up_unverified_accounts", "uses" => function() {
+  LogEntry::$isCronJobUser = true;
+  User::cleanUpUnverifiedAccounts();
+  // Update cron job last execution time
+  Parameter::set(Parameter::$CRON_CLEAN_UP_UNUSED_ACCOUNTS, time());
+}));
 
 // General
 Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));

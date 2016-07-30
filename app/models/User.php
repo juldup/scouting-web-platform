@@ -371,4 +371,19 @@ class User extends Eloquent {
     return false;
   }
   
+  // Delete user accounts older than one month that haven't been verified
+  public static function cleanUpUnverifiedAccounts() {
+    $unverifiedOldUsers = User::where('verified', '=', 0)
+            ->where('last_visit', '<', time() - 3600*24*31)
+            ->get();
+    foreach ($unverifiedOldUsers as $user) {
+      LogEntry::log("Utilisateur", "Suppression auto d'un compte d'utilisateur non vérifié", [
+            'Utilisateur' => $user->username,
+            'Adresse e-mail' => $user->email,
+            'Dernière connexion' => date('d/m/Y', $user->last_visit),
+          ], true);
+      $user->delete();
+    }
+  }
+  
 }
