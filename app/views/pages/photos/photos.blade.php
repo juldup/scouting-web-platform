@@ -145,7 +145,7 @@
           <div class="carousel-inner">
             <?php $photoCounter = 1; ?>
             @foreach ($photos as $photo)
-              <div class="item @if ($photo == $photos[0]) active @endif">
+              <div class="item @if ($photo == $photos[0]) active @endif" data-photo-id="{{ $photo->id }}">
                 <div class="image-wrapper-outer">
                   <div class="image-wrapper-inner">
                     <a href="{{ $photo->getOriginalURL(); }}">
@@ -169,6 +169,29 @@
             </a>
           @endif
         </div>
+        <div class="photo-comments-wrapper">
+          @foreach ($photos as $photo)
+            @if (count($photo->getComments()) || $user->isMember())
+              <div class="comments photo-comments" data-photo-id="{{ $photo->id }}" @if ($photo != $photos[0]) style="display: none;" @endif>
+                @if (count($photo->getComments()))
+                  <div class="comment-title">Commentaires</div>
+                @endif
+                @if (count($photo->getComments()) > 5)
+                  <a class="show-hidden-comments">Voir les {{ count($photo->getComments()) - 4 }} commentaires précédents</a>
+                @endif
+                @foreach ($photo->getComments() as $index=>$comment)
+                  <div class="comment @if($index < count($photo->getComments()) - 4 && count($photo->getComments()) != 5) comment-hidden @endif">
+                    <span class="comment-meta">{{{ $comment->getHumanDate() }}}, <span class="comment-username">{{{ $comment->getUserName() }}}</span> a écrit &nbsp;:</span>
+                    <span class="comment-body">{{{ $comment->body }}}</span>
+                  </div>
+                @endforeach
+                @if ($user->isMember())
+                  <a href="" class="add-comment-button" data-referent="{{ $photo->id }}" data-referent-type="photo">@if (count($photo->getComments())) Répondre @else Ajouter un commentaire @endif</a>
+                @endif
+              </div>
+            @endif
+          @endforeach
+        </div>
       </div>
     </div>
     
@@ -185,5 +208,15 @@
       @endforeach
     </div>
   @endif
+  
+  <div id="comment-prototype" style="display: none;">
+    <form class="comment-form" action="{{ URL::route('post-comment', array('referent_id' => "REFERENT_ID", 'referent_type' => "REFERENT_TYPE")) }}" method="POST">
+      <textarea name="body" class="form-control"></textarea>
+      <input type="submit" value="Poster" class="btn btn-sm btn-primary">
+    </form>
+  </div>
+  <script>
+    var currentUserName = "{{{ $user->username }}}";
+  </script>
   
 @stop

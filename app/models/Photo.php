@@ -159,4 +159,14 @@ class Photo extends Eloquent {
     $this->createThumbnailPicture();
   }
   
+  /**
+   * Returns the list of comments on this photo
+   */
+  public function getComments() {
+    if (!$this->comments) {
+      $this->comments = Comment::listFor("photo", $this->id);
+    }
+    return $this->comments;
+  }
+  
 }

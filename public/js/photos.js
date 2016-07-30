@@ -69,6 +69,16 @@ $().ready(function() {
     var url = $(this).find("a.photo-album-link").attr('href');
     if (url) window.location = url;
   });
+  
+  // Show comments when sliding
+  $('#photo-carousel').bind('slide.bs.carousel', function(event) {
+    // Get loading photo index
+    var index = $(event.relatedTarget).index();
+    // Hide all comments
+    $('.photo-comments-wrapper .photo-comments').slideUp();
+    // Show comment for the loading photo
+    $('.photo-comments-wrapper .photo-comments:nth-child(' + (index + 1) + ')').slideDown();
+  });
 });
 
 /**
