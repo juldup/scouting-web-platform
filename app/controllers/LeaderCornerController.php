@@ -76,6 +76,12 @@ class LeaderCornerController extends BaseController {
                 'help' => 'edit-health-cards',
                 'condition' => Parameter::$SHOW_HEALTH_CARDS,
             ),
+            "Autorisations parentales" => array(
+                'url' => URL::route('manage_parental_authorizations'),
+                'help-anchor' => 'autorisations-parentales',
+                'help' => 'edit-parental-authorizations',
+                'condition' => Parameter::$SHOW_PARENTAL_AUTHORIZATIONS,
+            ),
             "Trésorerie" => array(
                 'url' => URL::route('accounting'),
                 'help-anchor' => 'tresorerie',

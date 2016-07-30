@@ -234,6 +234,10 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"fiches santé\"",
             'parameter_name' => Parameter::$SHOW_HEALTH_CARDS
         ),
+        'page_parental_authorizations' => array(
+            'description' => "Afficher la page \"autorisations parentales\"",
+            'parameter_name' => Parameter::$SHOW_PARENTAL_AUTHORIZATIONS
+        ),
         'page_unit_policy' => array(
             'description' => "Afficher la page \"charte d'unité\"",
             'parameter_name' => Parameter::$SHOW_UNIT_POLICY

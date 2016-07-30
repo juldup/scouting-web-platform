@@ -37,6 +37,7 @@ Liste des fonctionnalités présentes:
 * Des outils de gestion de l'unité :
   * Envoyer des e-mails aux parents d'une section ou de toute l'unité
   * Fiches santé en ligne que les parents ne doivent remplir qu'une fois pour toutes
+  * Autorisations parentales en ligne
   * Gestion de la trésorerie par section
   * Gestion du listing et des inscriptions dans l'unité (formulaire d'inscription à remplir par les parents)
   * Gestion des réinscriptions, passages et vérification des paiement de cotisations en 2-3 clics

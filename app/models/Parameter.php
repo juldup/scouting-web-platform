@@ -45,6 +45,7 @@ class Parameter extends Eloquent {
   public static $SHOW_REGISTRATION = "Show registration";
   public static $REGISTRATION_ACTIVE = "Registration active";
   public static $SHOW_HEALTH_CARDS = "Show health cards";
+  public static $SHOW_PARENTAL_AUTHORIZATIONS = "Show parental authorizations";
   public static $SHOW_UNIT_POLICY = "Show unit policy";
   public static $SHOW_UNIFORMS = "Show uniforms";
   public static $SHOW_LINKS = "Show links";

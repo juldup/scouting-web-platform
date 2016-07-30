@@ -149,6 +149,10 @@ Route::get('gestion/fiche-sante/{section_slug?}', array("as" => "manage_health_c
 Route::get('gestion/fiche-sante/telecharger-tout/{section_slug}', array("as" => "manage_health_cards_download_all", "uses" => "HealthCardController@downloadSectionCards"));
 Route::get('gestion/fiche-sante/telecharger-resume/{section_slug}', array("as" => "manage_health_cards_download_summary", "uses" => "HealthCardController@downloadSectionSummary"));
 
+// Parental authorization
+Route::get('autorisations-parentales/{section_slug?}', array('as' => 'parental_authorization', 'uses' => 'ParentalAuthorizationController@showPage'));
+Route::get('gestion/autorisations-parentales/{section_slug?}', array("as" => "manage_parental_authorizations", "uses" => "ParentalAuthorizationController@showManage"));
+
 // Unit policy
 Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "UnitPolicyPageController@showPage"));
 Route::get('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page", "uses" => "UnitPolicyPageController@showEdit"));

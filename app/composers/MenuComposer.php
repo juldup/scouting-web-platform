@@ -69,6 +69,8 @@ class MenuComposer {
       $homeCategory["Inscription"] = 'registration';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
       $homeCategory["Fiches santé"] = 'health_card';
+    if (Parameter::get(Parameter::$SHOW_PARENTAL_AUTHORIZATIONS))
+      $homeCategory["Autorisations parentales"] = 'parental_authorization';
     $homeCategory["divider_2"] = 'divider';
     if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
       $homeCategory["Fête d'unité"] = 'annual_feast';
@@ -143,6 +145,11 @@ class MenuComposer {
       $leaderCategory['Gérer les fiches santé'] = array(
           'routeName' => $user->can(Privilege::$VIEW_HEALTH_CARDS, $section) ? 'manage_health_cards' : null,
           'routeParameters' => $user->can(Privilege::$VIEW_HEALTH_CARDS, 1) ? null : array('section_slug' => $section->slug),
+      );
+    if (Parameter::get(Parameter::$SHOW_PARENTAL_AUTHORIZATIONS))
+      $leaderCategory['Gérer les autorisations parentales'] = array(
+          'routeName' => 'manage_parental_authorizations',
+          'routeParameters' => null,
       );
     $leaderCategory['Trésorerie'] = 'accounting';
     

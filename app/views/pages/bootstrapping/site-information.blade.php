@@ -18,7 +18,7 @@
 ?>
 <h2>Informations sur la gestion du site</h2>
 <h3>Rédiger les pages</h3>
-<p>Le site est composé de pages remplies automatiquement (listing, e-mails, contacts, fiches santé, etc.) et de pages à contenu libre.</p>
+<p>Le site est composé de pages remplies automatiquement (listing, e-mails, contacts, fiches santé, autorisations parentales, etc.) et de pages à contenu libre.</p>
 <p>
   Voici la liste des pages à contenu libre qui nécessitent une rédaction&nbsp;:
 </p>
@@ -72,7 +72,7 @@
 </p>
 <p>
   Les membres ont accès à certaines informations que les visiteurs quelconques ne peuvent pas voir, comme le listing,
-  les photos ou encore l'accès à la page des fiches santé.
+  les photos ou encore l'accès aux pages des fiches santé et des autorisations parentales.
 </p>
 <p>
   Pour avoir accès à ces informations, le membre doit&nbsp;:

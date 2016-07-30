@@ -146,6 +146,13 @@ class Privilege extends Eloquent {
       'predefined' => "ARSU"
   );
   
+  public static $EDIT_PARENTAL_AUTHORIZATIONS = array(
+      'id' => "Edit parental authorizations",
+      'text' => 'Gérer les autorisations parentales #delasection',
+      'section' => true,
+      'predefined' => "ARSU"
+  );
+  
   public static $EDIT_LEADER_PRIVILEGES = array(
       'id' => "Edit leader privileges",
       'text' => 'Changer les privilèges des animateurs #delasection',
