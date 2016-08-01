@@ -79,6 +79,19 @@ $().ready(function() {
     // Show comment for the loading photo
     $('.photo-comments-wrapper .photo-comments:nth-child(' + (index + 1) + ')').slideDown();
   });
+  
+  // Activate keyboard control for slideshow
+  $(document).keydown(function(event) {
+    if (event.keyCode === 37) {
+      // Previous
+      $(".carousel-control.left").click();
+    } else if (event.keyCode === 39) {
+      // Next
+      $(".carousel-control.right").click();
+    }
+    return false;
+  });
+  
 });
 
 /**
@@ -106,4 +119,11 @@ function stopCarousel() {
 function showPhoto(photoIndex) {
   $('#photo-carousel').carousel(photoIndex);
   stopCarousel();
+}
+
+/**
+ * Toggles fullscreen mode
+ */
+function carouselFullscreen() {
+  $('#photo-carousel').toggleClass('photos-fullscreen');
 }

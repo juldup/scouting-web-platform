@@ -41,8 +41,8 @@ class Photo extends Eloquent {
   // Format sizes
   public static $THUMBNAIL_WIDTH = 150;
   public static $THUMBNAIL_HEIGHT = 100;
-  public static $PREVIEW_WIDTH = 600;
-  public static $PREVIEW_HEIGHT = 400;
+  public static $PREVIEW_WIDTH = 1200;
+  public static $PREVIEW_HEIGHT = 800;
   
   /**
    * Returns the URL that accesses the photo in a given format

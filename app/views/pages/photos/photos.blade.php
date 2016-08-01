@@ -134,10 +134,16 @@
         <div id="photo-carousel" class="carousel slide">
           @if (count($photos) > 1)
             <div id="carousel-controls">
+              <a id="carousel-fullscreen" href="javascript:carouselFullscreen();" title="Plain écran">
+                <span class="glyphicon glyphicon-fullscreen"></span>
+              </a>
+              <a id="carousel-exit-fullscreen" href="javascript:carouselFullscreen();" title="Quitter le mode plain écran">
+                <span class="glyphicon glyphicon-resize-small"></span>
+              </a>
               <a id="carousel-start" href="javascript:startCarousel();" title="Diaporama">
                 <span class="glyphicon glyphicon-play"></span>
               </a>
-              <a id="carousel-stop" href="javascript:stopCarousel();" style="display: none;">
+              <a id="carousel-stop" href="javascript:stopCarousel();" style="display: none;" title="Arrêter le diaporama">
                 <span class="glyphicon glyphicon-pause"></span>
               </a>
             </div>
@@ -148,8 +154,8 @@
               <div class="item @if ($photo == $photos[0]) active @endif" data-photo-id="{{ $photo->id }}">
                 <div class="image-wrapper-outer">
                   <div class="image-wrapper-inner">
-                    <a href="{{ $photo->getOriginalURL(); }}">
-                      <img data-src="{{ $photo->getPreviewURL(); }}" />
+                    <a href="{{ $photo->getOriginalURL(); }}" target="_blank">
+                      <div class="photo-image" style="background-image: url({{ $photo->getPreviewURL(); }})"></div>
                     </a>
                   </div>
                 </div>
