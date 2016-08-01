@@ -64,7 +64,11 @@
       language: 'fr',
       extraPlugins: 'divarea,mediaembed',
       height: '250px',
-      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
+      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}"
+    });
+    CKEDITOR.on("instanceReady", function(event) {
+      // Move signature below e-mail body
+      $('.cke_contents').after($('.email-signature-wrapper'));
     });
     var defaultSubject = "{{ Helper::sanitizeForJavascript($default_subject) }}";
   </script>
@@ -103,6 +107,15 @@
             <div class="col-md-10">
               {{ Form::textarea('body', '', array('class' => 'form-control')) }}
             </div>
+          </div>
+          <div class="email-signature-wrapper">
+            <hr>
+            <div class="email-signature-toggler">
+              {{ Form::label('sender_address', "Afficher la signature", array('class' => 'control-label')) }}
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox('sign_email', 1, true) }}
+            </div>
+            <div class="email-signature">{{ $signature }}</div>
           </div>
           <div class="form-group">
             {{ Form::label('sender_address', "Expéditeur", array('class' => 'col-md-2 control-label')) }}

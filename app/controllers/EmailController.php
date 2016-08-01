@@ -206,6 +206,7 @@ class EmailController extends BaseController {
         'recipients' => $recipients,
         'target' => 'parents',
         'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
+        'signature' => $this->user->getSignature(),
     ));
   }
   
@@ -253,6 +254,7 @@ class EmailController extends BaseController {
         'recipients' => $recipients,
         'target' => 'leaders',
         'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
+        'signature' => $this->user->getSignature(),
     ));
   }
   
@@ -316,6 +318,7 @@ class EmailController extends BaseController {
     // Gather input
     $subject = Input::get('subject');
     $body = Input::get('body');
+    if (Input::get('sign_email')) $body .= "<p>" . $this->user->getSignature() . "</p>";
     $senderName = Input::get('sender_name');
     $senderAddress = Input::get('sender_address');
     $files = Input::file('attachments');

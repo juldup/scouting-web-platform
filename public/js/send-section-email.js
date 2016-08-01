@@ -117,6 +117,14 @@ $().ready(function() {
     // Everything is correct
     return true;
   });
+  // Show/hide signature when toggled
+  $("input[name='sign_email']").change(function() {
+    if ($(this).prop('checked')) {
+      $(".email-signature-wrapper").removeClass('signature-hidden');
+    } else {
+      $(".email-signature-wrapper").addClass('signature-hidden');
+    }
+  });
 });
 
 /**
