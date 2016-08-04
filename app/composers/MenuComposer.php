@@ -47,7 +47,8 @@ class MenuComposer {
             ->withSectionList($sectionList)
             ->withSectionMenuItems($sectionMenuItems)
             ->withGlobalNewsSelected($currentRouteName === "global_news")
-            ->withDailyPhotosSelected($currentRouteName === "daily_photos");
+            ->withDailyPhotosSelected($currentRouteName === "daily_photos")
+            ->withSearchSelected($currentRouteName === "search");
   }
   
   /**

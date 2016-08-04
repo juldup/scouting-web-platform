@@ -77,7 +77,7 @@
   @if ($user->isMember())
     
     @foreach($emails as $email)
-      <div class="row">
+      <div class="row"><a name="email_{{ $email->id }}"></a>
         <div class="col-md-12">
           <div class="well @if ($email->target == 'leaders') email-only-leaders @endif">
             <legend>

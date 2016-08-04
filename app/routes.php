@@ -336,6 +336,10 @@ Route::get('ajax/gestion/logs/logs-suivants/{lastKnownLogId}/{count}', array("as
 // Comments
 Route::post('post-comment/{referent_type}/{referent_id}', array("as" => "post-comment", "uses" => "CommentController@postComment"));
 
+// Search
+Route::get('rechercher/{section_slug?}', array("as" => "search", "uses" => "SearchController@showSearchPage"));
+Route::post('rechercher/{section_slug?}', array("as" => "search", "uses" => "SearchController@showSearchPage"));
+
 // Website bootstrapping
 Route::get('/initialisation-du-site', array("as" => "bootstrapping", "uses" => "WebsiteBootstrappingController@showPage"));
 Route::any('/initialisation-du-site/etape-{step}', array("as" => "bootstrapping_step", "uses" => "WebsiteBootstrappingController@showStep"));

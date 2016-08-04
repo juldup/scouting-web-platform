@@ -60,6 +60,7 @@ class Parameter extends Eloquent {
   public static $SHOW_HELP = "Show help";
   public static $SHOW_DAILY_PHOTOS = "Show daily photos";
   public static $PHOTOS_PUBLIC = "Photos public";
+  public static $SHOW_SEARCH = "Show search";
   // Unit specific parameters
   public static $UNIT_SHORT_NAME = "Unit short name";
   public static $UNIT_LONG_NAME = "Unit long name";

@@ -35,11 +35,9 @@
           <span class="icon-bar"></span>
         </button>
       </div>
-
-        <div class="collapse navbar-collapse">
-          @include('menu.user_box')
-        </div>
-
+      <div class="collapse navbar-collapse">
+        @include('menu.user_box')
+      </div>
     </div>
   </div>
   <div class="navbar navbar-collapse navbar-default navbar-static-top second-nav-bar collapse" id='bs-example-navbar-collapse-1'

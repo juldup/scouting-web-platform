@@ -86,27 +86,34 @@
   @endif
 </ul>
 
-<!-- Leader menu -->
-  @if ($leader_menu)
-  <ul class="nav navbar-nav navbar-right section-selector">
-    <li class="dropdown @if ($leader_menu['active']) active" @endif">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">Coin des animateurs <b class="caret"></b></a>
-      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-        @foreach ($leader_menu['items'] as $item => $item_data)
-          @if ($item_data['is_divider'])
-            <li class="divider"></li>
-          @elseif ($item_data['is_title'])
-            <li class="divider"></li>
-            <li class="dropdown-header">{{{ $item }}}</li>
-          @else
-            @if ($item_data['url'])
-              <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
-            @else
-              <li class="disabled"><a>{{{ $item }}}</a></li>
-            @endif
-          @endif
-        @endforeach
-      </ul>
-    </li>
-  </ul>
-@endif
+<!-- Search and leader menu -->
+  @if ($leader_menu || Parameter::get(Parameter::$SHOW_SEARCH))
+    <ul class="nav navbar-nav navbar-right section-selector">
+      @if (Parameter::get(Parameter::$SHOW_SEARCH))
+        <li class="nav navbar-nav search-box-wrapper">
+          @include('pages.search.search_box')
+        </li>
+      @endif
+      @if ($leader_menu)
+        <li class="dropdown @if ($leader_menu['active']) active" @endif">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Coin des animateurs <b class="caret"></b></a>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+            @foreach ($leader_menu['items'] as $item => $item_data)
+              @if ($item_data['is_divider'])
+                <li class="divider"></li>
+              @elseif ($item_data['is_title'])
+                <li class="divider"></li>
+                <li class="dropdown-header">{{{ $item }}}</li>
+              @else
+                @if ($item_data['url'])
+                  <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
+                @else
+                  <li class="disabled"><a>{{{ $item }}}</a></li>
+                @endif
+              @endif
+            @endforeach
+          </ul>
+        </li>
+      @endif
+    </ul>
+  @endif

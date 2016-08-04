@@ -52,6 +52,7 @@ class Helper {
       else if ($string[$i] == 'Ü' || $string[$i] == 'Ù' || $string[$i] == 'Û') $newString .= "U";
       else if ($string[$i] == 'À' || $string[$i] == 'Â') $newString .= "A";
       else if ($string[$i] == 'Ç') $newString .= "C";
+      else if ($string[$i] == "'") $newString .= ' ';
     }
     return $newString;
   }

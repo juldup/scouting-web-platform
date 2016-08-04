@@ -29,7 +29,7 @@ return array(
 	|
 	*/
 
-	'url' => 'http://localhost',
+	'url' => file_get_contents(__DIR__ . "/../storage/site_data/website-base-url.txt"),
 
 	/*
 	|--------------------------------------------------------------------------

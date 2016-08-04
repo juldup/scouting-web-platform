@@ -13,3 +13,4 @@
 
 Artisan::add(new AutomaticEmailSenderCommand);
 Artisan::add(new ImportOldSiteDatabaseCommand);
+Artisan::add(new BuildElasticsearchDatabase());

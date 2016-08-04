@@ -291,6 +291,10 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"listing\"",
             'parameter_name' => Parameter::$SHOW_LISTING
         ),
+        'page_search' => array(
+            'description' => "Afficher l'outil de recherche",
+            'parameter_name' => Parameter::$SHOW_SEARCH
+        ),
     );
     foreach ($pages as $page=>$pageData) {
       $pageData['active'] = Parameter::get($pageData['parameter_name']);
