@@ -241,13 +241,18 @@ class EmailController extends BaseController {
       $recipientList = $this->getRecipientsForSection(1);
       if (array_key_exists('leaders', $recipientList)) $leaders["Équipe d'unité"] = $recipientList['leaders'];
       if (count($leaders)) $recipients['Animateurs actuels'] = $leaders;
+      $recipientList = $this->getFormerLeaders(1);
+      if (count($recipientList)) $recipients["Anciens animateurs"] = $recipientList;
     } else {
       // Non-unit section
+      $recipients['Animateurs actuels'] = [];
       $recipientList = $this->getRecipientsForSection($this->section->id);
-      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs ' . $this->section->de_la_section] = $recipientList['leaders'];
+      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs actuels']['Animateurs ' . $this->section->de_la_section] = $recipientList['leaders'];
       $recipientList = $this->getRecipientsForSection(1);
-      if (array_key_exists('leaders', $recipientList)) $recipients["Équipe d'unité"] = $recipientList['leaders'];
-      $recipients = array($recipients);
+      if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs actuels']["Équipe d'unité"] = $recipientList['leaders'];
+      $recipientList = $this->getFormerLeaders($this->section->id);
+      if (count($recipientList)) $recipients["Anciens animateurs"] = $recipientList;
+      $recipients = $recipients;
     }
     return View::make('pages.emails.sendEmail', array(
         'default_subject' => $this->defaultSubject(),
@@ -289,6 +294,27 @@ class EmailController extends BaseController {
     if (count($scouts)) $recipients['scouts'] = $scouts;
     if (count($leaders)) $recipients['leaders'] = $leaders;
     return $recipients;
+  }
+  
+  private function getFormerLeaders($sectionId) {
+    // Get former leaders (i.e. archived leaders that are no longer members)
+    $query = ArchivedLeader::where('member_id', '=', null)
+            ->orderBy('year', 'DESC')
+            ->orderBy('last_name')
+            ->orderBy('first_name');
+    if ($sectionId != 1) $query->where('section_id', '=', $sectionId);
+    $queryResults = $query->get();
+    // Create result array
+    $result = [];
+    $year = null;
+    foreach ($queryResults as $archivedLeader) {
+      if ($archivedLeader->year != $year) {
+        $year = $archivedLeader->year;
+        $result["Année " . $year] = [];
+      }
+      $result["Année " . $year]["former-leader-" . $archivedLeader->id] = ['member' => $archivedLeader, 'type' => 'former_leader', 'preselected' => false];
+    }
+    return $result;
   }
   
   /**
@@ -361,6 +387,14 @@ class EmailController extends BaseController {
             if ($member->email_member && !in_array($member->email_member, $recipientArray))
                     $recipientArray[] = $member->email_member;
           }
+        }
+      }
+      if (strpos($key, "former_leader_") === 0) {
+        $formerLeaderId = substr($key, strlen("former_leader_"));
+        $formerLeader = ArchivedLeader::find($formerLeaderId);
+        if ($formerLeader) {
+          if ($formerLeader->email_member && !in_array($formerLeader->email_member, $recipientArray))
+                  $recipientArray[] = $formerLeader->email_member;
         }
       }
     }

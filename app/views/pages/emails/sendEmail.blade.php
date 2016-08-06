@@ -163,7 +163,7 @@
                         &nbsp;
                         <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
                         <a class="btn-sm btn-default recipient-uncheck-all" href=""><span class="glyphicon glyphicon-unchecked"></span></a>
-                        <span class="recipient-list-warning" style="display:none;">&nbsp;&nbsp;Les destinaires cachés restent cochés/décochés.</span>
+                        <span class="recipient-list-warning" style="display:none;">&nbsp;&nbsp;Les destinataires cachés restent cochés/décochés.</span>
                       </div>
                     </div>
                   @endif
@@ -181,7 +181,7 @@
                             &nbsp;
                             <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
                             <a class="btn-sm btn-default recipient-uncheck-all" href=""><span class="glyphicon glyphicon-unchecked"></span></a>
-                            <span class="recipient-list-warning" style="display:none;">&nbsp;&nbsp;Les destinaires cachés restent cochés/décochés.</span>
+                            <span class="recipient-list-warning" style="display:none;">&nbsp;&nbsp;Les destinataires cachés restent cochés/décochés.</span>
                           </div>
                         </div>
                         <div class="form-group recipient-list">
@@ -193,7 +193,7 @@
                             @foreach ($members as $member)
                               <div class="col-md-4">
                                 <p>
-                                  {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, $preselectedRecipients ? $member['preselected'] : true, array('class' => 'recipient-checkbox')) }}
+                                  {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, $preselectedRecipients ? $member['preselected'] : $member['type'] != 'former_leader', array('class' => 'recipient-checkbox')) }}
                                   &nbsp;&nbsp;
                                   {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
                                 </p>
