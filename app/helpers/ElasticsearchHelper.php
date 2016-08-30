@@ -84,16 +84,16 @@ class ElasticsearchHelper {
               // Read pdf content
               $parser = new \Smalot\PdfParser\Parser();
               $pdfText = $parser->parseFile($document->getPath())->getText();
-              $params['body'][] = [
-                  'index' => [
-                      '_index' => self::getIndexName(),
-                      '_type' => 'text',
-                      '_id' => $indexCounter++,
-                  ]
-              ];
             } else {
               $pdfText = "";
             }
+            $params['body'][] = [
+                'index' => [
+                    '_index' => self::getIndexName(),
+                    '_type' => 'text',
+                    '_id' => $indexCounter++,
+                ]
+            ];
             $params['body'][] = [
                 'search_content' => Helper::removeSpecialCharacters($document->title . " " . $document->description . " " . $pdfText),
                 'content' => $document->description,
