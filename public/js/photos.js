@@ -82,14 +82,18 @@ $().ready(function() {
   
   // Activate keyboard control for slideshow
   $(document).keydown(function(event) {
-    if (event.keyCode === 37) {
-      // Previous
-      $(".carousel-control.left").click();
-    } else if (event.keyCode === 39) {
-      // Next
-      $(".carousel-control.right").click();
+    if (!$(event.target).is("textarea")) {
+      if (event.keyCode === 37) {
+        // Previous
+        $(".carousel-control.left").click();
+        return false;
+      } else if (event.keyCode === 39) {
+        // Next
+        $(".carousel-control.right").click();
+      return false;
+      }
     }
-    return false;
+    return true;
   });
   
 });
