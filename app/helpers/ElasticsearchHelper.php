@@ -37,6 +37,9 @@ class ElasticsearchHelper {
    */
   public static function fillElasticsearchDatabase() {
     
+    // Set duration limit to 20 minutes instead of 30 seconds
+    set_time_limit(1200);
+    
     $client = self::getClient();
     
     // Clear index
