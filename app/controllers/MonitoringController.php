@@ -57,9 +57,11 @@ class MonitoringController extends BaseController {
     $emailLastExecution = Parameter::get(Parameter::$CRON_EMAIL_LAST_EXECUTION);
     $healthCardsLastExecution = Parameter::get(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION);
     $incrementYearInSectionLastExecution = Parameter::get(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION);
+    $updateElasticsearchLastExecution = Parameter::get(Parameter::$CRON_UPDATE_ELASTICSEARCH);
     return self::emailTimedOut($emailLastExecution) ||
             self::healthCardsTimedOut($healthCardsLastExecution) ||
-            self::incrementYearInSectionTimedOut($incrementYearInSectionLastExecution);
+            self::incrementYearInSectionTimedOut($incrementYearInSectionLastExecution) ||
+            self::updateElasticsearchTimedOut($updateElasticsearchLastExecution);
   }
   
   /**
