@@ -99,6 +99,7 @@ abstract class GenericPageController extends BaseController {
     return View::make('pages.customPage.page', array(
         'page_body' => $page->body_html,
         'page_title' => $this->getPageTitle(),
+        'page_slug' => $page->type . ($this->isSectionPage() ? "-" . Section::find($page->section_id)->slug : ""),
         'edit_url' => $editURL,
         'can_edit' => $this->canEdit(),
         'is_home_page' => $this->isHomePage,

@@ -32,7 +32,7 @@
 </head>
 <body>
   @yield('body_top')
-  <div id="wrap">
+  <div id="wrap" @if (isset($page_slug) && $page_slug) class="page-{{ $page_slug }}" @endif>
     @include('menu.header')
     <div class="container">
       @include('subviews.navigationLinks')

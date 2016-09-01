@@ -34,7 +34,7 @@
           <div class='row'>
             <div class='col-sm-9'>
               Tu es en <strong>mode test</strong>. Il n'y a que toi qui vois le site de cette manière et tu peux visiter les autres pages pour voir l'effet du nouveau style. <br />
-              Pour appliquer les changements, clique sur <strong>Appliquer au site</strong> en bas de la page.
+              Pour appliquer les changements, clique sur <strong>Appliquer au site public</strong> en bas de la page.
             </div>
             <div class='col-sm-3 text-right'>
               <a href='{{ URL::route('edit_css_stop_testing') }}' class='btn btn-default'>Quitter le mode test</a>
@@ -63,7 +63,7 @@
         {{ Form::file('cssFile', ['class' => "form-control large btn btn-default"]) }}
       </div>
       <div class="col-sm-3">
-        {{ Form::button('Enregistrer', ['class' => "form-control btn " . (Session::get('testing-css') ? "btn-primary" : "btn-default"), 'name' => 'action', 'type' => 'submit', 'value' => 'save']) }}
+        {{ Form::button(Session::get('testing-css') ? 'Enregistrer sans rendre public' : 'Enregistrer sans publier', ['class' => "form-control btn " . (Session::get('testing-css') ? "btn-primary" : "btn-default"), 'name' => 'action', 'type' => 'submit', 'value' => 'save']) }}
       </div>
     </div>
     @if (!Session::get('testing-css'))
@@ -75,7 +75,7 @@
     @endif
     <div class='form-group'>
       <div class='col-sm-3 col-sm-offset-9'>
-        {{ Form::button('Appliquer au site', ['class' => "form-control btn btn-danger", 'name' => 'action', 'type' => 'submit', 'value' => 'apply']) }}
+        {{ Form::button('Appliquer au site public', ['class' => "form-control btn btn-danger", 'name' => 'action', 'type' => 'submit', 'value' => 'apply']) }}
       </div>
     </div>
   {{ Form::close() }}
