@@ -98,6 +98,7 @@ class Parameter extends Eloquent {
   public static $CRON_HEALTH_CARDS_LAST_EXECUTION = "Cron health cards last execution";
   public static $CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION = "Cron increment year in section last execution";
   public static $CRON_CLEAN_UP_UNUSED_ACCOUNTS = "Cron clean up unused accounts";
+  public static $CRON_UPDATE_ELASTICSEARCH = "Cron update elasticsearch";
   
   // List of parameters, stored to avoid multiple accesses to database
   private static $parameters = null;

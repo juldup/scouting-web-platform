@@ -35,15 +35,18 @@ class MonitoringController extends BaseController {
     $healthCardsLastExecution = Parameter::get(Parameter::$CRON_HEALTH_CARDS_LAST_EXECUTION);
     $incrementYearInSectionLastExecution = Parameter::get(Parameter::$CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION);
     $cleanUpUnverifiedAccountsLastExecution = Parameter::get(Parameter::$CRON_CLEAN_UP_UNUSED_ACCOUNTS);
+    $updateElasticsearchLastExecution = Parameter::get(Parameter::$CRON_UPDATE_ELASTICSEARCH);
     // Show page
     return View::make('pages.monitoring.monitoring', array(
         "emailLastExecution" => $emailLastExecution,
         "healthCardsLastExecution" => $healthCardsLastExecution,
         "incrementYearInSectionLastExecution" => $incrementYearInSectionLastExecution,
         "cleanUpUnverifiedAccountsLastExecution" => $cleanUpUnverifiedAccountsLastExecution,
+        "updateElasticsearchLastExecution" => $updateElasticsearchLastExecution,
         "emailTimedOut" => self::emailTimedOut($emailLastExecution),
         "healthCardsTimedOut" => self::healthCardsTimedOut($healthCardsLastExecution),
         "incrementYearInSectionTimedOut" => self::incrementYearInSectionTimedOut($incrementYearInSectionLastExecution),
+        "updateElasticsearchTimedOut" => self::updateElasticsearchTimedOut($updateElasticsearchLastExecution),
     ));
   }
   
@@ -80,6 +83,16 @@ class MonitoringController extends BaseController {
     $year = date('m') < 8 ? date('Y') - 1 : date('Y');
     $lastAugustFirst = strtotime($year . "-08-02");
     return !$incrementYearInSectionLastExecution || $incrementYearInSectionLastExecution < $lastAugustFirst;
+  }
+  
+  /**
+   * Returns true if the update elasticsearch cron task has timed out
+   */
+  private static function updateElasticsearchTimedOut($updateElasticsearchLastExecution) {
+    // No timeout if search is disabled
+    if (!Parameter::get(Parameter::$SHOW_SEARCH)) return false;
+    // Check that the update has been done in the last 26 hours
+    return !$updateElasticsearchLastExecution || $updateElasticsearchLastExecution < time() - 3600 * 26;
   }
   
 }

@@ -62,6 +62,12 @@ Route::get('cron/suppression-auto-comptes-non-verifies', array("as" => "cron_aut
   // Update cron job last execution time
   Parameter::set(Parameter::$CRON_CLEAN_UP_UNUSED_ACCOUNTS, time());
 }));
+Route::get('cron/mise-a-jour-elasticsearch', array("as" => "cron_update_elasticsearch", "uses" => function() {
+  LogEntry::$isCronJobUser = true;
+  ElasticsearchHelper::fillElasticsearchDatabase();
+  // Update cron job last execution time
+  Parameter::set(Parameter::$CRON_UPDATE_ELASTICSEARCH, time());
+}));
 
 // General
 Route::get('logo-image', array("as" => "website_logo", "uses" => "HomePageController@websiteLogo"));

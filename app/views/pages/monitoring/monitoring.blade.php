@@ -99,6 +99,23 @@
               @endif
             </td>
           </tr>
+          <tr>
+            <td>Mise à jour de la base de donnée de recherche sur le site</td>
+            <td>{{ $updateElasticsearchLastExecution ? date('j/n/Y à G:i', $updateElasticsearchLastExecution) : "Jamais" }}</td>
+            <td>
+              @if ($updateElasticsearchTimedOut)
+                <span class="danger">
+                  Attention&nbsp;!
+                  Cette tâche n'a pas été exécutée depuis trop longtemps.
+                  Préviens le <a href="{{ URL::route('contacts') }}#webmaster">webmaster</a>.
+                </span>
+              @elseif (!Parameter::get(Parameter::$SHOW_SEARCH))
+                <span class="safe">L'outil de recherche n'est pas activé sur le site.</span>
+              @else
+                <span class="safe">OK</span>
+              @endif
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
