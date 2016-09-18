@@ -10,7 +10,7 @@
     "michelf/php-markdown": "1.4.*",
     "tecnickcom/tcpdf": "dev-master",
     "phpoffice/phpexcel": "dev-master",
-    "setasign/fpdi": "1.6.1",
+    "setasign/fpdi-fpdf": "1.6.1",
     "elasticsearch/elasticsearch": "~2.0",
     "smalot/pdfparser": "^0.9.25"
   },

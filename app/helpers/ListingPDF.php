@@ -141,17 +141,17 @@ class ListingPDF {
     } else {
       // Init pdf rendering
       $rendererName = PHPExcel_Settings::PDF_RENDERER_TCPDF;
-      $rendererLibraryPath = __DIR__ . '/../../vendor/tecnick.com/tcpdf/';
+      $rendererLibraryPath = __DIR__ . '/../../vendor/tecnickcom/tcpdf/';
       if (!PHPExcel_Settings::setPdfRenderer(
               $rendererName,
               $rendererLibraryPath
           )) {
-        throw Exception("Une erreur est survenue.");
+        throw new Exception("Une erreur est survenue.");
       }
       // Create pdf document
       $pdfDocument = new FPDI('L', 'pt', 'A4');
-      $pdfDocument->setPrintHeader(false);
-      $pdfDocument->setPrintFooter(false);
+//      $pdfDocument->setPrintHeader(false);
+//      $pdfDocument->setPrintFooter(false);
       // Add each section data to the pdf
       if (!$groupBySection) {
         $sections = array(null);
