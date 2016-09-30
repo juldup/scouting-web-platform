@@ -255,7 +255,8 @@ class Helper {
       $phoneNumber = "0" . $phoneNumber;
     }
     // Determine prefix length
-    if (self::startsWith($phoneNumber, "0468") ||
+    if (self::startsWith($phoneNumber, "045") ||
+        self::startsWith($phoneNumber, "046") ||
         self::startsWith($phoneNumber, "047") ||
         self::startsWith($phoneNumber, "048") ||
         self::startsWith($phoneNumber, "049")) {
