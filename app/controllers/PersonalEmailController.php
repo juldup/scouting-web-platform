@@ -108,7 +108,7 @@ class PersonalEmailController extends BaseController {
       foreach ($this->getEmailAddressesFor($contact_type, $member_id) as $recipient) {
         $emailContent = Helper::renderEmail('personalEmail', $recipient, array(
             'message_body' => $body,
-            'header_text' => "Voici un message de la part de $senderName ($senderEmail) envoyé depuis de site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+            'header_text' => "Voici un message de la part de $senderName ($senderEmail) envoyé depuis le site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
         ));
         $email = PendingEmail::create(array(
             'subject' => $subject,

@@ -90,7 +90,7 @@ class UserController extends BaseController {
   public function create() {
     // Retrieve data from form
     $username = Input::get('create_username');
-    $email = strtolower(Input::get('create_email'));
+    $email = trim(strtolower(Input::get('create_email')));
     $password = Input::get('create_password');
     $remember = Input::get('create_remember');
     // Validate data
@@ -218,7 +218,7 @@ class UserController extends BaseController {
       // Post: data is being modified
       // Get input data (some of these will be defined, depending on the action)
       $oldPassword = Input::get('old_password');
-      $email = strtolower(Input::get('email'));
+      $email = trim(strtolower(Input::get('email')));
       $password = Input::get('password');
       $defaultSection = Input::get('default_section');
       // Check that the old password is valid (for 'section' action, there is no password)
