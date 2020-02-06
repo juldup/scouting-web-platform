@@ -37,7 +37,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-horizontal well">
-          {{ Form::open(array('url' => URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : 0)))) }}
+          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : 0)))) }}
             <legend>
               @if ($contact_type == PersonalEmailController::$CONTACT_TYPE_PARENTS)
                 <h2>Envoyer un e-mail aux parents de {{{ $member->first_name }}} {{{ $member->last_name }}}</h2>
@@ -81,7 +81,7 @@
             </div>
             <div class="form-group">
               <div class="col-md-7 col-md-offset-3">
-                {{ Form::submit('Envoyer', array('class' => 'btn btn-primary')) }}
+                {{ Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Envoyer', 'disabled')) }}
               </div>
             </div>
           {{ Form::close() }}
