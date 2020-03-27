@@ -5,6 +5,9 @@ return array(
   // Number of photos to put in each photo album download chunk
   'photoAlbumDownloadPartSize' => 40,
   
+  // Maximum size for e-mail attachements
+  'maximumEmailAttachmentSize' => 8388608, // 8 MB
+  
 	/*
 	|--------------------------------------------------------------------------
 	| Application Debug Mode

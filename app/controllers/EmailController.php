@@ -350,6 +350,28 @@ class EmailController extends BaseController {
     $files = Input::file('attachments');
     $extraRecipients = Input::get('extra_recipients');
     $attachments = array();
+    // Check total attachment size
+    $totalSize = 0;
+    foreach ($files as $file) {
+      if ($file != null) {
+        try {
+          $totalSize += $file->getSize();
+        } catch (Exception $ex) {
+          Log::error($ex);
+          LogEntry::error("E-mails", "Erreur lors du calcul de la taille des pièces jointes d'un e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
+          return Redirect::route('send_section_email')
+                  ->withInput()
+                  ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
+        }
+      }
+    }
+    if ($totalSize > Config::get('app.maximumEmailAttachmentSize')) {
+      $totalSizeString = ((int)(($totalSize / 1024 / 1024) * 100))/100 + "";
+      $limitSizeString = ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "";
+      return Redirect::route('send_section_email')
+                  ->withInput()
+                  ->with('error_message', "La taille totale des pièces jointes ($totalSizeString MB) dépasse la limite autorisée ($limitSizeString MB). Attention, les pièces jointes ont été retirées.");
+    }
     // Create attachments
     foreach ($files as $file) {
       if ($file != null) {
