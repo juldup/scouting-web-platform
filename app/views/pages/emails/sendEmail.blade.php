@@ -136,7 +136,7 @@
                 {{ Form::file('attachments[0]', array('class' => 'btn-sm btn-default')) }}
                 <a class="remove-attachment"><span class="glyphicon glyphicon-remove"></span></a>
               </div>
-              <a id="add-attachment-button" class="btn-sm btn-default">Ajouter</a>
+              <a id="add-attachment-button" class="btn-sm btn-default">Ajouter</a> (taille totale maximum des fichiers : {{ $maxAttachmentSize }} MB)
             </div>
           </div>
           

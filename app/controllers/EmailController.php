@@ -207,6 +207,7 @@ class EmailController extends BaseController {
         'target' => 'parents',
         'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
         'signature' => $this->user->getSignature(),
+        'maxAttachmentSize' => ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "",
     ));
   }
   
@@ -260,6 +261,7 @@ class EmailController extends BaseController {
         'target' => 'leaders',
         'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
         'signature' => $this->user->getSignature(),
+        'maxAttachmentSize' => ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "",
     ));
   }
   
@@ -370,7 +372,7 @@ class EmailController extends BaseController {
       $limitSizeString = ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "";
       return Redirect::route('send_section_email')
                   ->withInput()
-                  ->with('error_message', "La taille totale des pièces jointes ($totalSizeString MB) dépasse la limite autorisée ($limitSizeString MB). Attention, les pièces jointes ont été retirées.");
+                  ->with('error_message', "La taille totale des pièces jointes ($totalSizeString MB) dépasse la limite autorisée ($limitSizeString MB). Aucun e-mail n'a été envoyé. Attention, les pièces jointes ont été retirées.");
     }
     // Create attachments
     foreach ($files as $file) {
