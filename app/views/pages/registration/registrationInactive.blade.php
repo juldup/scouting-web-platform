@@ -31,6 +31,13 @@
       </a>
     </p>
   @endif
+  @if ($can_edit)
+    <p>
+      <a href='{{ URL::route('edit_registration_page') }}'>
+        Modifier cette page
+      </a>
+    </p>
+  @endif
 @stop
 
 @section('content')
@@ -41,13 +48,8 @@
     </div>
   </div>
   <div class="row page_body">
-    <div class="col-md-12 alert alert-warning">
-      <p>
-        Les inscriptions ne sont pas ouvertes pour l'instant.
-      </p>
-      <p>
-        Pour toute question à ce propos, veuillez contacter le <a href="{{ URL::route('contacts') }}">staff d'unité</a>.
-      </p>
+    <div class="col-md-12">
+      {{ $page_body }}
     </div>
   </div>
 @stop

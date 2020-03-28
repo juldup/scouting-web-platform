@@ -36,7 +36,10 @@ class RegistrationController extends GenericPageController {
     return "registration";
   }
   protected function getPageType() {
-    return "registration";
+    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE))
+      return "registration";
+    else
+      return "registration_inactive";
   }
   protected function isSectionPage() {
     return false;
@@ -56,21 +59,21 @@ class RegistrationController extends GenericPageController {
     if (!Parameter::get(Parameter::$SHOW_REGISTRATION)) {
       return App::abort(404);
     }
+    // Get page text and update it with the parametric values
+    $page = $this->getPage();
+    $pageBody = $page->body_html;
+    $pageBody = str_replace("(PRIX UN ENFANT)", Parameter::get(Parameter::$PRICE_1_CHILD), $pageBody);
+    $pageBody = str_replace("(PRIX DEUX ENFANTS)", Parameter::get(Parameter::$PRICE_2_CHILDREN), $pageBody);
+    $pageBody = str_replace("(PRIX TROIS ENFANTS)", Parameter::get(Parameter::$PRICE_3_CHILDREN), $pageBody);
+    $pageBody = str_replace("(PRIX UN ANIMATEUR)", Parameter::get(Parameter::$PRICE_1_LEADER), $pageBody);
+    $pageBody = str_replace("(PRIX DEUX ANIMATEURS)", Parameter::get(Parameter::$PRICE_2_LEADERS), $pageBody);
+    $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
+    $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
+    $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
+    $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
+    $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
     if (Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
       // The registrations are active (i.e. people can register)
-      // Get page text and update it with the parametric values
-      $page = $this->getPage();
-      $pageBody = $page->body_html;
-      $pageBody = str_replace("(PRIX UN ENFANT)", Parameter::get(Parameter::$PRICE_1_CHILD), $pageBody);
-      $pageBody = str_replace("(PRIX DEUX ENFANTS)", Parameter::get(Parameter::$PRICE_2_CHILDREN), $pageBody);
-      $pageBody = str_replace("(PRIX TROIS ENFANTS)", Parameter::get(Parameter::$PRICE_3_CHILDREN), $pageBody);
-      $pageBody = str_replace("(PRIX UN ANIMATEUR)", Parameter::get(Parameter::$PRICE_1_LEADER), $pageBody);
-      $pageBody = str_replace("(PRIX DEUX ANIMATEURS)", Parameter::get(Parameter::$PRICE_2_LEADERS), $pageBody);
-      $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
-      $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
-      $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
-      $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
-      $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
       // Get the list of members owned by the user for the reregistration form
       $familyMembers = array();
       if ($this->user->isMember()) {
@@ -90,10 +93,12 @@ class RegistrationController extends GenericPageController {
     } else {
       // The registration are not active, show a default page
       return View::make('pages.registration.registrationInactive', array(
+          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
           'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
                               || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)
                               || $this->user->can(Privilege::$SECTION_TRANSFER, 1),
           'page_title' => $this->getPageTitle(),
+          'page_body' => $pageBody,
       ));
     }
   }
