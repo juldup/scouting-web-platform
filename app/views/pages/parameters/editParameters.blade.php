@@ -112,6 +112,24 @@
           <legend>
             <div class="row">
               <div class="col-sm-8">
+                Menu
+              </div>
+              <div class="col-sm-4 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
+              {{ Form::label("registration_active", "Regrouper les menus de section") }}
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox("grouped_section_menu", 1, $grouped_section_menu) }}
+            </div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-sm-8">
                 Catégories de documents
               </div>
               <div class="col-sm-4 text-right">

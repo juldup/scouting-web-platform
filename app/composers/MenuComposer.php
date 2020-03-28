@@ -40,7 +40,7 @@ class MenuComposer {
     $leaderMenu = $this->generateLeaderMenu($currentRouteName);
     $sectionList = $this->generateSectionList($currentRouteName, $currentRouteParameters);
     $sectionMenuItems = $this->generateSectionMenu($currentRouteName);
-    
+       
     // Pass the menu arrays to the view
     $view->withMainMenu($mainMenu)
             ->withLeaderMenu($leaderMenu)
@@ -48,7 +48,8 @@ class MenuComposer {
             ->withSectionMenuItems($sectionMenuItems)
             ->withGlobalNewsSelected($currentRouteName === "global_news")
             ->withDailyPhotosSelected($currentRouteName === "daily_photos")
-            ->withSearchSelected($currentRouteName === "search");
+            ->withSearchSelected($currentRouteName === "search")
+            ->withGroupedSectionMenu(Parameter::get(Parameter::$GROUPED_SECTION_MENU));
   }
   
   /**

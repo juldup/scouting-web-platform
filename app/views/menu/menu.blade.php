@@ -17,7 +17,7 @@
 
 <ul class="nav navbar-nav navbar-left">
   <!-- Main menu -->
-  <li class="dropdown @if ($main_menu['active']) active" @endif">
+  <li class="dropdown @if ($main_menu['active'] && $grouped_section_menu) active" @endif">
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Unité <b class="caret"></b></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
       @foreach ($main_menu['items'] as $item => $item_data)
@@ -36,38 +36,86 @@
       @endforeach
     </ul>
   </li>
-  <!-- Section menu -->
-  <li class="dropdown @if ($section_page) active @endif">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-      @if ($section_page)
-        <span class="glyphicon glyphicon-certificate" style="color: {{ $user->currentSection->color }};"></span> 
-        <!--{{{ $user->currentSection->name }}}-->
-        Section @if ($user->currentSection->id != 1) : {{{ $user->currentSection->name }}} @endif
-      @else
-        Section
-      @endif
-      <b class="caret"></b>
-    </a>
-    <ul class="dropdown-menu">
-      <!-- List of sections -->
-      @foreach ($section_list as $tab)
-        <li class="{{ $tab['is_selected'] ? "active" : "" }}">
-          <a href="{{ $tab['link'] }}">
-            <span class="glyphicon glyphicon-certificate" style="color: {{ $tab['color'] }};"></span> {{{ $tab['text'] }}}
-          </a>
-        </li>
-      @endforeach
-      <li class="divider"></li>
-      <!-- Section menu items -->
-      @foreach ($section_menu_items as $item => $item_data)
-        @if ($item_data['url'])
-          <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
+  @if ($grouped_section_menu)
+    <!-- Section/page menu -->
+    <li class="dropdown @if ($section_page) active @endif">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        @if ($section_page)
+          <span class="glyphicon glyphicon-certificate" style="color: {{ $user->currentSection->color }};"></span> 
+          <!--{{{ $user->currentSection->name }}}-->
+          Section @if ($user->currentSection->id != 1) : {{{ $user->currentSection->name }}} @endif
         @else
-          <li class="disabled"><a>{{{ $item }}}</a></li>
+          Section
         @endif
-      @endforeach
-    </ul>
-  </li>
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        <!-- List of sections -->
+        @foreach ($section_list as $tab)
+          <li class="{{ $tab['is_selected'] ? "active" : "" }}">
+            <a href="{{ $tab['link'] }}">
+              <span class="glyphicon glyphicon-certificate" style="color: {{ $tab['color'] }};"></span> {{{ $tab['text'] }}}
+            </a>
+          </li>
+        @endforeach
+        <li class="divider"></li>
+        <!-- Section menu items -->
+        @foreach ($section_menu_items as $item => $item_data)
+          @if ($item_data['url'])
+            <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
+          @else
+            <li class="disabled"><a>{{{ $item }}}</a></li>
+          @endif
+        @endforeach
+      </ul>
+    </li>
+  @else
+    <!-- Section menu -->
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        @if ($section_page)
+          <span class="glyphicon glyphicon-certificate" style="color: {{ $user->currentSection->color }};"></span> 
+          <!--{{{ $user->currentSection->name }}}-->
+          Section @if ($user->currentSection->id != 1) : {{{ $user->currentSection->name }}} @endif
+        @else
+          Section
+        @endif
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        @foreach ($section_list as $tab)
+          <li class="{{ $tab['is_selected'] ? "active" : "" }}">
+            <a href="{{ $tab['link'] }}">
+              <span class="glyphicon glyphicon-certificate" style="color: {{ $tab['color'] }};"></span> {{{ $tab['text'] }}}
+            </a>
+          </li>
+        @endforeach
+      </ul>
+    </li>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        Page
+        @if ($section_page)
+          @foreach ($section_menu_items as $item => $item_data)
+            @if ($item_data['active'])
+              : {{{ $item }}}
+            @endif
+          @endforeach
+        @endif
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+        <!-- Section menu items -->
+        @foreach ($section_menu_items as $item => $item_data)
+          @if ($item_data['url'])
+            <li @if ($item_data['active']) class="active" @endif><a href="{{ $item_data['url'] }}">{{{ $item }}}</a></li>
+          @else
+            <li class="disabled"><a>{{{ $item }}}</a></li>
+          @endif
+        @endforeach
+      </ul>
+    </li>
+  @endif
   <!-- News shortcut -->
   @if (Parameter::get(Parameter::$SHOW_NEWS))
     <li class="{{ $global_news_selected ? "active" : "" }}">

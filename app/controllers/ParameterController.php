@@ -43,6 +43,7 @@ class ParameterController extends BaseController {
     return View::make('pages.parameters.editParameters', array(
         'pages' => $this->getPageList(),
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
+        'grouped_section_menu' => Parameter::get(Parameter::$GROUPED_SECTION_MENU),
         'prices' => $prices,
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
         'safe_emails' => explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
@@ -71,6 +72,9 @@ class ParameterController extends BaseController {
         // Registration
         ["name" => "Inscriptions", "key" => Parameter::$REGISTRATION_ACTIVE, "value" => (Input::get('registration_active') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
+        // Section menu
+        ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => (Input::get('grouped_section_menu') ? "true" : "false"),
+            "valueNames" => ["true" => "groupé", "false" => "séparé"]],
     ];
     // Pages
     foreach ($this->getPageList() as $page => $pageData) {
