@@ -51,6 +51,7 @@ class ListingController extends BaseController {
     // Gather members per section
     $sectionArray = array();
     $editableMembers = array();
+    $totalMemberCount = 0;
     foreach ($sections as $section) {
       $members = Member::where('validated', '=', true)
               ->where('section_id', '=', $section->id)
@@ -74,12 +75,14 @@ class ListingController extends BaseController {
           'show_totem' => $showTotem,
           'show_subgroup' => $showSubgroup,
       );
+      $totalMemberCount += $members->count();
     }
     // Make view
     return View::make('pages.listing.listing', array(
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
                         || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
         'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'total_member_count' => $totalMemberCount,
         'sections' => $sectionArray,
         'editable_members' => $editableMembers,
         'subgroup_choices' => $this->createSubgroupList(),

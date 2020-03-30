@@ -64,7 +64,7 @@
     <div class="row">
       <div class="col-md-12">
         <h1>
-          Listing {{{ $user->currentSection->de_la_section }}}
+          Listing {{{ $user->currentSection->de_la_section }}} ({{ $total_member_count }} membres)
         </h1>
       </div>
     </div>
