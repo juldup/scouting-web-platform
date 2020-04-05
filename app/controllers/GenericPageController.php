@@ -67,6 +67,23 @@ abstract class GenericPageController extends BaseController {
   protected abstract function getPageTitle();
   
   /**
+   * Returns the title that is displayed at the top of the page
+   * when in edit mode. By default, this is the same as the normal
+   * page title
+   */
+  protected function getPageEditTitle() {
+    return $this->getPageTitle();
+  }
+  
+  /**
+   * Returns a view with additional information to be displayed
+   * on the edit page
+   */
+  protected function getAdditionalEditInformationSubview() {
+    return null;
+  }
+  
+  /**
    * Returns true if the page can be displayed (cf. site parameters)
    */
   protected abstract function canDisplayPage();
@@ -123,8 +140,9 @@ abstract class GenericPageController extends BaseController {
     // Make view
     return View::make('pages.customPage.editPage')
             ->with('page_body', $page->body_html)
-            ->with('page_title', $this->getPageTitle())
+            ->with('page_title', $this->getPageEditTitle())
             ->with('page_id', $page->id)
+            ->with('additional_information_subview', $this->getAdditionalEditInformationSubview())
             ->with('original_page_url', URL::route($this->getShowRouteName(), $this->getShowRouteParameters()));
   }
   

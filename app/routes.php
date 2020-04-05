@@ -135,8 +135,11 @@ Route::get('inscription/formulaire/{section_slug?}', array("as" => "registration
 Route::post('inscription/formulaire/submit/{section_slug?}', array("as" => "registration_form_submit", "uses" => "RegistrationController@submit"));
 Route::get('inscription/{section_slug?}', array("as" => "registration", "uses" => "RegistrationController@showMain"));
 Route::get('inscription/reinscription/{member_id}', array("as" => "reregistration", "uses" => "RegistrationController@reregister"));
-Route::get('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page", "uses" => "RegistrationController@showEdit"));
-Route::post('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_page_submit", "uses" => "RegistrationController@savePage"));
+Route::get('inscription-fermee/{section_slug?}', array("as" => "registration_inactive", "uses" => "RegistrationInactiveController@showMain"));
+Route::get('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_active_page", "uses" => "RegistrationController@showEdit"));
+Route::post('gestion/inscription/page-principale/{section_slug?}', array("as" => "edit_registration_active_page_submit", "uses" => "RegistrationController@savePage"));
+Route::get('gestion/inscription/page-inscriptions-desactivees/{section_slug?}', array("as" => "edit_registration_inactive_page", "uses" => "RegistrationInactiveController@showEdit"));
+Route::post('gestion/inscription/page-inscriptions-desactivees/{section_slug?}', array("as" => "edit_registration_inactive_page_submit", "uses" => "RegistrationInactiveController@savePage"));
 Route::get('gestion/inscription/nouvelles-inscriptions/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manageRegistration"));
 Route::post('gestion/inscription/nouvelles-inscriptions/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
 Route::get('gestion/inscription/supprimer-inscription/{member_id}', array("as" => "edit_delete_registration", "uses" => "RegistrationController@deleteRegistration"));

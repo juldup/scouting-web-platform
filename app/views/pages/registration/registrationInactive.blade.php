@@ -33,8 +33,13 @@
   @endif
   @if ($can_edit)
     <p>
-      <a href='{{ URL::route('edit_registration_page') }}'>
-        Modifier cette page
+      <a href='{{ URL::route('edit_registration_active_page') }}'>
+        Modifier la page «&nbsp;inscriptions activées&nbsp;»
+      </a>
+    </p>
+    <p>
+      <a href='{{ URL::route('edit_registration_inactive_page') }}'>
+        Modifier la page «&nbsp;inscriptions désactivées&nbsp;»
       </a>
     </p>
   @endif

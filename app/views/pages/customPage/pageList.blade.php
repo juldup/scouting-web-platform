@@ -60,7 +60,7 @@
             <th>Charte d'unité</th>
             <td>
               <span class='horiz-divider'></span>
-              <a href='{{ URL::route('unit_policy') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
+                <a href='{{ URL::route('unit_policy') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
               &nbsp;
               @if ($user->can(Privilege::$EDIT_PAGES, 1))
                 <a href='{{ URL::route('edit_unit_policy_page') }}' class='btn btn-primary'><span class='glyphicon glyphicon-edit'></span></a>
@@ -79,13 +79,32 @@
             </td>
           </tr>
           <tr>
-            <th>Inscription</th>
+            <th>Inscription (activée)</th>
             <td>
               <span class='horiz-divider'></span>
-              <a href='{{ URL::route('registration') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
+              @if (Parameter::get(Parameter::$REGISTRATION_ACTIVE))
+                <a href='{{ URL::route('registration') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
+              @else
+                <button class='btn btn-default disabled'><span class='glyphicon glyphicon-eye-close'></span></button>
+              @endif
               &nbsp;
               @if ($user->can(Privilege::$EDIT_PAGES, 1))
-                <a href='{{ URL::route('edit_registration_page') }}' class='btn btn-primary'><span class='glyphicon glyphicon-edit'></span></a>
+                <a href='{{ URL::route('edit_registration_active_page') }}' class='btn btn-primary'><span class='glyphicon glyphicon-edit'></span></a>
+              @endif
+            </td>
+          </tr>
+          <tr>
+            <th>Inscription (désactivée)</th>
+            <td>
+              <span class='horiz-divider'></span>
+              @if (!Parameter::get(Parameter::$REGISTRATION_ACTIVE))
+                <a href='{{ URL::route('registration_inactive') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
+              @else
+                <button class='btn btn-default disabled'><span class='glyphicon glyphicon-eye-close'></span></button>
+              @endif
+              &nbsp;
+              @if ($user->can(Privilege::$EDIT_PAGES, 1))
+                <a href='{{ URL::route('edit_registration_inactive_page') }}' class='btn btn-primary'><span class='glyphicon glyphicon-edit'></span></a>
               @endif
             </td>
           </tr>

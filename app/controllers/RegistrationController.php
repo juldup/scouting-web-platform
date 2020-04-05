@@ -30,22 +30,25 @@ class RegistrationController extends GenericPageController {
   }
   
   protected function getEditRouteName() {
-    return "edit_registration_page";
+    return "edit_registration_active_page";
   }
   protected function getShowRouteName() {
     return "registration";
   }
   protected function getPageType() {
-    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE))
-      return "registration";
-    else
-      return "registration_inactive";
+    return "registration";
   }
   protected function isSectionPage() {
     return false;
   }
   protected function getPageTitle() {
     return "Inscription dans l'unité";
+  }
+  protected function getPageEditTitle() {
+    return "Inscription dans l'unité (lorsque les inscriptions sont activées)";
+  }
+  protected function getAdditionalEditInformationSubview() {
+    return 'subviews.registrationEditInformation';
   }
   protected function canDisplayPage() {
     return Parameter::get(Parameter::$SHOW_REGISTRATION);
@@ -58,6 +61,10 @@ class RegistrationController extends GenericPageController {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_REGISTRATION)) {
       return App::abort(404);
+    }
+    // Redirect to inactive registration page if deactivated
+    if (!Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+      return Redirect::route('registration_inactive');
     }
     // Get page text and update it with the parametric values
     $page = $this->getPage();
@@ -72,35 +79,22 @@ class RegistrationController extends GenericPageController {
     $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
     $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
     $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
-    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
-      // The registrations are active (i.e. people can register)
-      // Get the list of members owned by the user for the reregistration form
-      $familyMembers = array();
-      if ($this->user->isMember()) {
-        $familyMembers = $this->user->getAssociatedMembers();
-      }
-      // Make view
-      return View::make('pages.registration.registrationMain', array(
-          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
-          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section) ||
-                          $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section) ||
-                          $this->user->can(Privilege::$SECTION_TRANSFER, 1),
-          'page_title' => $this->getPageTitle(),
-          'page_body' => $pageBody,
-          'family_members' => $familyMembers,
-          'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
-      ));
-    } else {
-      // The registration are not active, show a default page
-      return View::make('pages.registration.registrationInactive', array(
-          'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
-          'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
-                              || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section)
-                              || $this->user->can(Privilege::$SECTION_TRANSFER, 1),
-          'page_title' => $this->getPageTitle(),
-          'page_body' => $pageBody,
-      ));
+    // Get the list of members owned by the user for the reregistration form
+    $familyMembers = array();
+    if ($this->user->isMember()) {
+      $familyMembers = $this->user->getAssociatedMembers();
     }
+    // Make view
+    return View::make('pages.registration.registrationMain', array(
+        'can_edit' => $this->user->can(Privilege::$EDIT_PAGES, 1),
+        'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section) ||
+                        $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section) ||
+                        $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'page_title' => $this->getPageTitle(),
+        'page_body' => $pageBody,
+        'family_members' => $familyMembers,
+        'reregistration_year' => date('Y') . "-" . (date('Y') + 1),
+    ));
   }
   
   /**
@@ -132,6 +126,10 @@ class RegistrationController extends GenericPageController {
    * [Route] Displays the registration form page
    */
   public function showForm() {
+    // Redirect to inactive registration page if deactivated
+    if (!Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+      return Redirect::route('registration_inactive');
+    }
     if (Session::get('registration')) {
       // Get default value from last form filled during this session
       $defaultValues = Session::get('registration');
