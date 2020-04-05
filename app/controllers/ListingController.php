@@ -406,7 +406,7 @@ class ListingController extends BaseController {
           } elseif (strcasecmp($fieldName, 'Sexe') == 0) {
             $memberData['gender'] = trim($memberRawData[$index]);
           } elseif (strcasecmp($fieldName, 'Date de naissance') == 0) {
-            $memberData['birth_date'] = Helper::dateToSql(trim($memberRawData[$index]));
+            $memberData['birth_date'] = trim($memberRawData[$index]);
           } elseif (strcasecmp($fieldName, 'Tél') == 0) {
             $memberData['phone1'] = trim($memberRawData[$index]);
           } elseif (strcasecmp($fieldName, 'GSM') == 0) {
