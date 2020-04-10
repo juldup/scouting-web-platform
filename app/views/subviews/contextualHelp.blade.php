@@ -248,6 +248,13 @@
   </p>
 @endif
 
+@if ($help == 'edit-registration-form')
+  <p>Sur cette page, tu peux modifier la plupart des textes d'information apparaissant sur le
+    formulaire. Il suffit de modifier les zones de texte bleues, sans oublier de cliquer sur
+    <strong><em>Enregistrer</em></strong> en bas de la page.
+  </p>
+@endif
+
 @if ($help == 'edit-new-registrations')
   <p>Cet outil permet d'inscrire des nouveaux scouts ou animateurs ayant rempli le formulaire d'inscription. <em>Utilise les onglets pour voir les autres fonctionnalités.</em></p>
   <h3>Validation d'une nouvelle inscription</h3>

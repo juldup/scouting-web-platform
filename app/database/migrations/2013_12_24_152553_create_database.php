@@ -68,6 +68,11 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array('name' => Parameter::$DOCUMENT_CATEGORIES, 'value' => 'Convocations;Documents administratifs;Informations générales;Pour les scouts'));
     DB::table('parameters')->insert(array('name' => Parameter::$WEBSITE_META_KEYWORDS, 'value' => 'scout, scoutisme, unité, louveteaux, baladins, éclaireurs, pionniers, meute, troupe, ribambelle, poste'));
     DB::table('parameters')->insert(array('name' => Parameter::$WEBSITE_META_DESCRIPTION, 'value' => "Site web de l'unité scoute de ..., membre de la Fédération des Scouts Baden-Powell de Belgique"));
+    DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_INTRODUCTION, 'value' => "Ce formulaire ne fait pas office d'inscription. Avant de le remplir, il est indispensable de prendre contact avec l'animateur d'unité. L'inscription de votre enfant dans l'unité ne sera effective qu'après une confirmation de la part de l'animateur d'unité, et après le paiement de la cotisation.\r\n\r\nIl est inutile de remplir ce formulaire pour un membre étant déjà inscrit."));
+    DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_FILL_IN_FORM, 'value' => "Dans ce formulaire, \"le scout\" signifie \"le jeune que vous êtes en train d'inscrire\"."));
+    DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_EMAIL, 'value' => "Il est recommandé de donner au moins une adresse e-mail.\r\n\r\nLes adresses e-mail resteront toujours confidentielles (*)."));
+    DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_TOTEM, 'value' => "Si le scout a déjà été totémisé précédemment."));
+    DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_QUALI, 'value' => "Si le scout a déjà été qualifié précédemment."));
     
     // Sections
     Schema::create('sections', function($table) {

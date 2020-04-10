@@ -100,7 +100,34 @@ class Parameter extends Eloquent {
   public static $CRON_INCREMENT_YEAR_IN_SECTION_LAST_EXECUTION = "Cron increment year in section last execution";
   public static $CRON_CLEAN_UP_UNUSED_ACCOUNTS = "Cron clean up unused accounts";
   public static $CRON_UPDATE_ELASTICSEARCH = "Cron update elasticsearch";
-  
+  // Registration form help texts
+  public static $REGISTRATION_FORM_HELP_INTRODUCTION = "Registration form help introduction";
+  public static $REGISTRATION_FORM_HELP_FILL_IN_FORM = "Registration form help fill-in form";
+  public static $REGISTRATION_FORM_HELP_IDENTITY = "Registration form help identity";
+  public static $REGISTRATION_FORM_HELP_FIRST_NAME = "Registration form help first name";
+  public static $REGISTRATION_FORM_HELP_LAST_NAME = "Registration form help last name";
+  public static $REGISTRATION_FORM_HELP_BIRTH_DATE = "Registration form help birth date";
+  public static $REGISTRATION_FORM_HELP_GENDER = "Registration form help gender";
+  public static $REGISTRATION_FORM_HELP_NATIONALITY = "Registration form help nationality";
+  public static $REGISTRATION_FORM_HELP_ADDRESS = "Registration form help address";
+  public static $REGISTRATION_FORM_HELP_ADDRESS_STREET = "Registration form help address street";
+  public static $REGISTRATION_FORM_HELP_POSTCODE = "Registration form help postcode";
+  public static $REGISTRATION_FORM_HELP_CITY = "Registration form help city";
+  public static $REGISTRATION_FORM_HELP_CONTACT = "Registration form help contact";
+  public static $REGISTRATION_FORM_HELP_PHONE = "Registration form help phone";
+  public static $REGISTRATION_FORM_HELP_PHONE_MEMBER = "Registration form help phone member";
+  public static $REGISTRATION_FORM_HELP_EMAIL = "Registration form help email";
+  public static $REGISTRATION_FORM_HELP_EMAIL_MEMBER = "Registration form help email member";
+  public static $REGISTRATION_FORM_HELP_SECTION_HEADER = "Registration form help section header";
+  public static $REGISTRATION_FORM_HELP_SECTION = "Registration form help section";
+  public static $REGISTRATION_FORM_HELP_TOTEM = "Registration form help totem";
+  public static $REGISTRATION_FORM_HELP_QUALI = "Registration form help quali";
+  public static $REGISTRATION_FORM_HELP_LEADER = "Registration form help leader";
+  public static $REGISTRATION_FORM_HELP_REMARKS = "Registration form help remarks";
+  public static $REGISTRATION_FORM_HELP_HANDICAP = "Registration form help handicap";
+  public static $REGISTRATION_FORM_HELP_COMMENTS = "Registration form help comments";
+  public static $REGISTRATION_FORM_HELP_FAMILY = "Registration form help family";
+  public static $REGISTRATION_FORM_HELP_FINISH = "Registration form help finish";
   // List of parameters, stored to avoid multiple accesses to database
   private static $parameters = null;
   

@@ -109,6 +109,17 @@
             </td>
           </tr>
           <tr>
+            <th>Formulaire d'inscription</th>
+            <td>
+              <span class='horiz-divider'></span>
+                <a href='{{ URL::route('registration_form') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
+              &nbsp;
+              @if ($user->can(Privilege::$EDIT_PAGES, 1))
+                <a href='{{ URL::route('edit_registration_form') }}' class='btn btn-primary'><span class='glyphicon glyphicon-edit'></span></a>
+              @endif
+            </td>
+          </tr>
+          <tr>
             <th>Fête d'unité</th>
             <td>
               <span class='horiz-divider'></span>

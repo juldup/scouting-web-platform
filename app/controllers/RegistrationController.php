@@ -167,6 +167,7 @@ class RegistrationController extends GenericPageController {
     return View::make('pages.registration.registrationForm', array(
         'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'default' => $defaultValues,
+        'can_edit'  => $this->user->can(Privilege::$EDIT_PAGES, 1),
     ));
   }
   
@@ -270,6 +271,88 @@ class RegistrationController extends GenericPageController {
             ->with('error_message', $message)
             ->withInput();
     }
+  }
+  
+  /**
+   * Shows the page to edit the form text
+   */
+  public function editForm() {
+    // Make sure the use can access this page
+    if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    // Get existing form texts
+    $data = array(
+        'introduction' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_INTRODUCTION),
+        'fill-in-form' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FILL_IN_FORM),
+        'identity' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_IDENTITY),
+        'first_name' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FIRST_NAME),
+        'last_name' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_LAST_NAME),
+        'birth_date' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_BIRTH_DATE),
+        'gender' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_GENDER),
+        'nationality' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_NATIONALITY),
+        'address' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_ADDRESS),
+        'address_street' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_ADDRESS_STREET),
+        'postcode' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_POSTCODE),
+        'city' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_CITY),
+        'contact' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_CONTACT),
+        'phone' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE), 
+        'phone_member' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE_MEMBER),
+        'email' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_EMAIL),
+        'email_member' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_EMAIL_MEMBER),
+        'section_header' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SECTION_HEADER),
+        'section' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SECTION),
+        'totem' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_TOTEM),
+        'quali' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_QUALI),
+        'leader' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_LEADER),
+        'remarks' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_REMARKS),
+        'handicap' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_HANDICAP),
+        'comments' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_COMMENTS),
+        'family' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FAMILY),
+        'finish' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FINISH),
+    );
+    // Make view
+    return View::make('pages.registration.editForm', array(
+        'data' => $data,
+    ));
+  }
+  
+  /**
+   * Saves the form help texts and redirects to the form
+   */
+  public function saveForm() {
+    // Make sure the use can edit the form help texts
+    if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_INTRODUCTION, Input::get('introduction'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FILL_IN_FORM, Input::get('fill-in-form'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_IDENTITY, Input::get('identity'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FIRST_NAME, Input::get('first_name'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_LAST_NAME, Input::get('last_name'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_BIRTH_DATE, Input::get('birth_date'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_GENDER, Input::get('gender'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_NATIONALITY, Input::get('nationality'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_ADDRESS, Input::get('address'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_ADDRESS_STREET, Input::get('address_street'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_POSTCODE, Input::get('postcode'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_CITY, Input::get('city'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_CONTACT, Input::get('contact'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_PHONE, Input::get('phone'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_PHONE_MEMBER, Input::get('phone_member'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_EMAIL, Input::get('email'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_EMAIL_MEMBER, Input::get('email_member'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_SECTION_HEADER, Input::get('section_header'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_SECTION, Input::get('section'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_TOTEM, Input::get('totem'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_QUALI, Input::get('quali'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_LEADER, Input::get('leader'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_REMARKS, Input::get('remarks'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_HANDICAP, Input::get('handicap'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_COMMENTS, Input::get('comments'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FAMILY, Input::get('family'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FINISH, Input::get('finish'));
+    return Redirect::route('registration_form');
   }
   
   /**
