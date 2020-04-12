@@ -145,6 +145,7 @@ Route::post('gestion/inscription/formulaire/{section_slug?}', array("as" => "edi
 Route::get('gestion/inscription/nouvelles-inscriptions/{section_slug?}', array("as" => "manage_registration", "uses" => "RegistrationController@manageRegistration"));
 Route::post('gestion/inscription/nouvelles-inscriptions/submit/{section_slug?}', array("as" => "manage_registration_submit", "uses" => "RegistrationController@manageSubmit"));
 Route::get('gestion/inscription/supprimer-inscription/{member_id}', array("as" => "edit_delete_registration", "uses" => "RegistrationController@deleteRegistration"));
+Route::get('ajax/gestion/inscription/liste-attente', array("as" => "ajax_toggle_waiting_list", "uses" => "RegistrationController@ajaxToggleWaitingList"));
 Route::get('gestion/inscription/reinscription/{section_slug?}', array("as" => "manage_reregistration", "uses" => "RegistrationController@manageReregistration"));
 Route::get('ajax/gestion/inscription/reinscription', array("as" => "ajax_reregister", "uses" => "RegistrationController@ajaxReregister"));
 Route::get('ajax/gestion/inscription/annulation-reinscription', array("as" => "ajax_cancel_reregistration", "uses" => "RegistrationController@ajaxCancelReregistration"));

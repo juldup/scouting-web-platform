@@ -384,6 +384,7 @@ class RegistrationController extends GenericPageController {
     // Gather pending registrations
     $pendingRegistrations = Member::where('validated', '=', false)
             ->where('section_id', '=', $this->section->id)
+            ->orderBy('in_waiting_list')
             ->get();
     // List other sections that contain pending registrations
     $otherSection = Section::where('id', '!=', $this->section->id)
@@ -595,6 +596,34 @@ class RegistrationController extends GenericPageController {
     } catch (Exception $ex) {
       Log::error($ex);
       LogEntry::error("Inscription", "Erreur lors de la suppression d'un membre", array("Erreur" => $ex->getMessage()));
+      return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
+    }
+  }
+  
+  /**
+   * [Route] Ajax call to add/remove a member to/from the waiting list
+   */
+  public function ajaxToggleWaitingList() {
+    // Find member
+    $memberId = Input::get('member_id');
+    $member = Member::find($memberId);
+    if (!$member) {
+      return json_encode(array("result" => "Failure", "message" => "Cette demande d'inscription n'existe pas."));
+    }
+    // Make sure the user is allowed to modify the waiting list
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $member->section_id)) {
+      return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges requis pour modifier la liste d'attente."));
+    }
+    // Update waiting list
+    try {
+      $inWaitingList = Input::get('in_waiting_list') ? true : false;
+      $member->in_waiting_list = $inWaitingList;
+      $member->save();
+      LogEntry::log("Inscription", "Changement de la liste d'attente", array("Membre" => $member->getFullName(), "Liste d'attente" => ($inWaitingList ? "Oui" : "Non")));
+      return json_encode(array('result' => 'Success'));
+    } catch (Exception $ex) {
+      Log::error($ex);
+      LogEntry::error("Inscription", "Erreur lors du changement de la liste d'attente", array("Erreur" => $ex->getMessage()));
       return json_encode(array("result" => "Failure", "message" => "Erreur inconnue."));
     }
   }

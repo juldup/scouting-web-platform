@@ -32,6 +32,33 @@ $().ready(function() {
   if (!$("#member_form input[name='is_leader']").prop("checked")) {
     $("#member_form .leader_specific").hide();
   }
+  // Add to waiting list button
+  $(".toggle-waiting-list-button").on('click', function() {
+    // Get row, its member and waiting list status
+    var row = $(this).closest('.member-row');
+    var memberId = row.data('member-id');
+    var inWaitingList = $(this).data('in-waiting-list');
+    // Save change
+    $.ajax({
+      url: toggleWaitingListURL,
+      data: {member_id: memberId, in_waiting_list: inWaitingList}
+    }).done(function(json) {
+      data = JSON.parse(json);
+      if (data.result === "Success") {
+        // Update text once it has been saved
+        if (inWaitingList) {
+          row.find('.is-in-waiting-list').show();
+          row.find('.is-not-in-waiting-list').hide();
+        } else {
+          row.find('.is-in-waiting-list').hide();
+          row.find('.is-not-in-waiting-list').show();
+        }
+      } else {
+        alert("Une erreur s'est produite : " + data.message);
+      }
+    });
+    return false;
+  });
 });
 
 /**

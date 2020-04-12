@@ -71,6 +71,7 @@
     var reregisterMemberURL = "{{ URL::route('ajax_reregister') }}";
     var unreregisterMemberURL = "{{ URL::route('ajax_cancel_reregistration') }}";
     var deleteMemberURL = "{{ URL::route('ajax_delete_member') }}";
+    var toggleWaitingListURL = "{{ URL::route('ajax_toggle_waiting_list') }}";
   </script>
 @stop
 
@@ -111,11 +112,12 @@
               <th>Nom</th>
               <th>Prénom</th>
               <th>Animateur</th>
+              <th>Liste d'attente</th>
             </tr>
           </thead>
           <tbody>
             @foreach ($registrations as $member)
-              <tr>
+              <tr class="member-row" data-member-id="{{ $member->id }}">
                 <td class="space-on-right">
                   <a class="btn-sm btn-primary" href="javascript:editRegistration({{ $member->id }})">
                     Inscrire
@@ -128,6 +130,20 @@
                 <td class="space-on-right">{{{ $member->last_name }}}</td>
                 <td class="space-on-right">{{{ $member->first_name }}}</td>
                 <td>{{{ $member->is_leader ? "Oui" : "Non" }}}</td>
+                <td>
+                  <span class="is-in-waiting-list" @if (!$member->in_waiting_list) style='display: none;' @endif>
+                    Oui <span class='horiz-divider'></span>
+                    <a class="btn-sm btn-default toggle-waiting-list-button" data-in-waiting-list="0">
+                      Retirer de la liste d'attente
+                    </a>
+                  </span>
+                  <span class="is-not-in-waiting-list" @if ($member->in_waiting_list) style='display: none;' @endif>
+                    Non <span class='horiz-divider'></span>
+                    <a class="btn-sm btn-default toggle-waiting-list-button" data-in-waiting-list="1">
+                      Ajouter à la liste d'attente
+                    </a>
+                  </span>
+                </td>
               </tr>
             @endforeach
           </tbody>
