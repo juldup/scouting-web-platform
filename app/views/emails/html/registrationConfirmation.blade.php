@@ -20,7 +20,7 @@
 
 @section('body')
   <p>
-    Bonjour,
+    Madame, Monsieur,
   </p>
   @if ($to_leaders)
     <p>
@@ -117,12 +117,10 @@
       À vous maintenant de valider ou annuler cette demande inscription&nbsp;:
       <a href="{{ URL::route('manage_registration', array('section_slug' => $member->getSection()->slug)) }}">{{ URL::route('manage_registration', array('section_slug' => $member->getSection()->slug)) }}</a>
     </p>
-  @else
     <p>
-      L'animateur d'unité et ses équipiers se chargeront de valider l'inscription.
+      Cordialement,<br />Le gestionnaire du site
     </p>
+  @else
+    {{ Helper::rawToHTML($custom_content) }}
   @endif
-  <p>
-    Cordialement,<br />Le gestionnaire du site
-  </p>
 @stop

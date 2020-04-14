@@ -19,7 +19,7 @@
 ?>
 
 @section('body')
-Bonjour,
+Madame, Monsieur,
 
 @if ($to_leaders)
 Une nouvelle demande d'inscription a été introduite sur le site de l'unité.
@@ -75,10 +75,10 @@ Inscription en tant qu'animateur
 
 @if ($to_leaders)
 À vous maintenant de valider ou annuler cette demande inscription.
-@else
-L'animateur d'unité et ses équipiers se chargeront de valider l'inscription.
-@endif
 
 Cordialement,
 Le gestionnaire du site
+@else
+{{ $custom_content }}
+@endif
 @stop

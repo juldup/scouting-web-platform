@@ -274,6 +274,55 @@
           <legend>
             <div class="row">
               <div class="col-sm-8">
+                Contenu des e-mails automatiques
+              </div>
+              <div class="col-sm-4 text-right">
+                <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
+              </div>
+            </div>
+          </legend>
+          <div class="form-group">
+            <p>
+              Certaines parties des e-mails automatiques peuvent être modifiées : elles sont ici représentées
+              par des zones de texte à saisir.
+            </p>
+            <p>
+              Clique sur un e-mail pour le modifier : 
+              <span class='btn btn-primary' onclick="$('.email-content-pane').hide(); $('#email1').show()">
+                Formulaire d'inscription complété
+              </span>
+              <span class='btn btn-primary' onclick="$('.email-content-pane').hide(); $('#email2').show()">
+                Inscription validée
+              </span>
+            </p>
+            <div id="email1" class="email-content-pane col-md-10 col-md-offset-1" style="display: none;">
+              <p class="email-description">Cet e-mail automatique est envoyé lorsqu'un visiteur complète le formulaire d'inscription</p>
+              <p><strong>Objet : Demande d'inscription de (prénom + nom)</strong></p>
+              <p>
+                Madame, Monsieur,
+              </p>
+              <p>Vous venez de faire une demande d'inscription sur le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}.<br />
+                Voici les détails de la demande d'inscription&nbsp;:</p>
+              <p><em>(Ici apparait la liste des champs complétés lors de la demande d'inscription : nom, prénom, etc.)</em></p>
+              {{ Form::textarea('registration_form_filled', Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED), array("class" => "form-control", "rows" => 5)) }}
+            </div>
+            <div id="email2" class="email-content-pane col-md-10 col-md-offset-1" style="display: none;">
+              <p class="email-description">
+                Cet e-mail automatique est envoyé lorsqu'une demande d'inscription est validée.
+                <br />
+                La chaine de caractères <strong>((NOM))</strong> sera remplacée
+                par le prénom et le nom du membre inscrit.
+                <br />
+                Note : si ce champ est vide, aucun e-mail ne sera envoyé.
+              </p>
+              <p><strong>Objet : Confirmation de l'inscription de ((NOM))</strong></p>
+              {{ Form::textarea('registration_validated', Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED), array("class" => "form-control", "rows" => 10)) }}
+            </div>
+          </div>
+          
+          <legend>
+            <div class="row">
+              <div class="col-sm-8">
                 Réseaux sociaux
               </div>
               <div class="col-sm-4 text-right">

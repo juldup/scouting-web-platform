@@ -19,11 +19,5 @@
 ?>
 
 @section('body')
-Bonjour,
-
-Vous aviez introduit une demande d'inscription pour {{{ $member->getFullName() }}} sur le site de l'unité {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}}.
-Cette demande vient d'être validée par les animateurs.
-
-Cordialement,
-Le gestionnaire du site
+{{ $custom_content }}
 @stop

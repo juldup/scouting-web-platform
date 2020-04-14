@@ -128,6 +128,9 @@ class Parameter extends Eloquent {
   public static $REGISTRATION_FORM_HELP_COMMENTS = "Registration form help comments";
   public static $REGISTRATION_FORM_HELP_FAMILY = "Registration form help family";
   public static $REGISTRATION_FORM_HELP_FINISH = "Registration form help finish";
+  // Automatic e-mail content
+  public static $AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED = "Automatic e-mail content registration form filled";
+  public static $AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED = "Automatic e-mail content registration validated";
   // List of parameters, stored to avoid multiple accesses to database
   private static $parameters = null;
   

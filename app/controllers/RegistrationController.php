@@ -231,6 +231,7 @@ class RegistrationController extends GenericPageController {
         $emailContent = Helper::renderEmail('registrationConfirmation', $recipient, array(
             'member' => $member,
             'to_leaders' => false,
+            'custom_content' => Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED),
         ));
         $email = PendingEmail::create(array(
             'subject' => "Demande d'inscription de " . $member->getFullName(),
@@ -461,25 +462,28 @@ class RegistrationController extends GenericPageController {
           $message = "$name est à présent inscrit.";
         }
         LogEntry::log("Inscription", "Validation d'une demande d'inscription", array("Membre" => $member->getFullName())); // TODO improve log message
-        // Send confirmation e-mail
-        if ($member->is_leader) {
-          $emailAddresses = $member->email_member ? array($member->email_member) : array();
-        } else {
-          $emailAddresses = $member->getParentsEmailAddresses();
-        }
-        foreach ($emailAddresses as $recipient) {
-          $emailContent = Helper::renderEmail('registrationValidated', $recipient, array(
-              'member' => $member,
-          ));
-          $email = PendingEmail::create(array(
-              'subject' => "Confirmation de l'inscription de " . $member->getFullName(),
-              'raw_body' => $emailContent['txt'],
-              'html_body' => $emailContent['html'],
-              'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
-              'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
-              'recipient' => $recipient,
-              'priority' => PendingEmail::$ACCOUNT_EMAIL_PRIORITY,
-          ));
+        // Send confirmation e-mail (if the automatic e-mail content is not empty)
+        if (trim(Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED))) {
+          if ($member->is_leader) {
+            $emailAddresses = $member->email_member ? array($member->email_member) : array();
+          } else {
+            $emailAddresses = $member->getParentsEmailAddresses();
+          }
+          foreach ($emailAddresses as $recipient) {
+            $emailContent = Helper::renderEmail('registrationValidated', $recipient, array(
+                'member' => $member,
+                'custom_content' => str_replace("((NOM))", $member->getFullName(), Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED)),
+            ));
+            $email = PendingEmail::create(array(
+                'subject' => "Confirmation de l'inscription de " . $member->getFullName(),
+                'raw_body' => $emailContent['txt'],
+                'html_body' => $emailContent['html'],
+                'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+                'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+                'recipient' => $recipient,
+                'priority' => PendingEmail::$ACCOUNT_EMAIL_PRIORITY,
+            ));
+          }
         }
       } else {
         $success = false;

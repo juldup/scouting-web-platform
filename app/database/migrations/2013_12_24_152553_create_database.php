@@ -73,6 +73,8 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_EMAIL, 'value' => "Il est recommandé de donner au moins une adresse e-mail.\r\n\r\nLes adresses e-mail resteront toujours confidentielles (*)."));
     DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_TOTEM, 'value' => "Si le scout a déjà été totémisé précédemment."));
     DB::table('parameters')->insert(array('name' => Parameter::$REGISTRATION_FORM_HELP_QUALI, 'value' => "Si le scout a déjà été qualifié précédemment."));
+    DB::table('parameters')->insert(array('name' => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED, 'value' => "L'animateur d'unité et ses équipiers se chargeront de valider l'inscription.\r\n\r\nCordialement,\r\nLe gestionnaire du site"));
+    DB::table('parameters')->insert(array('name' => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED, 'value' => "Bonjour,\r\n\r\nVous aviez introduit une demande d'inscription pour ((NOM)) sur le site de notre unité.\r\nCette demande vient d'être validée par les animateurs.\r\n\r\nCordialement,\r\nLe gestionnaire du site"));
     
     // Sections
     Schema::create('sections', function($table) {

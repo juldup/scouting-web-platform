@@ -105,6 +105,9 @@ class ParameterController extends BaseController {
         // Search engine
         ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],
         ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => Input::get('website_meta_keywords')],
+        // Automatic e-mail content
+        ["name" => "Contenu e-mail automatique demande d'inscription", "key" => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED, "value" => Input::get('registration_form_filled')],
+        ["name" => "Contenu e-mail automatique inscription validée", "key" => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED, "value" => Input::get('registration_validated')],
         // Facebook app id
         ["name" => "Facebook App ID", "key" => Parameter::$FACEBOOK_APP_ID, "value" => Input::get('facebook_app_id')],
         // Save the advanced site parameters
