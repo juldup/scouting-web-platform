@@ -43,6 +43,7 @@ class ParameterController extends BaseController {
     return View::make('pages.parameters.editParameters', array(
         'pages' => $this->getPageList(),
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
+        'reregistration_active' => Parameter::get(Parameter::$REREGISTRATION_ACTIVE),
         'grouped_section_menu' => Parameter::get(Parameter::$GROUPED_SECTION_MENU),
         'prices' => $prices,
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
@@ -71,6 +72,8 @@ class ParameterController extends BaseController {
         ["name" => "Prix trois membres ou plus - animateur", "key" => Parameter::$PRICE_3_LEADERS, "value" => Helper::formatCashAmount(Input::get('price_3_leaders'))],
         // Registration
         ["name" => "Inscriptions", "key" => Parameter::$REGISTRATION_ACTIVE, "value" => (Input::get('registration_active') ? "true" : "false"),
+            "valueNames" => ["true" => "actives", "false" => "désactivées"]],
+        ["name" => "Réinscriptions", "key" => Parameter::$REREGISTRATION_ACTIVE, "value" => (Input::get('reregistration_active') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
         // Section menu
         ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => (Input::get('grouped_section_menu') ? "true" : "false"),

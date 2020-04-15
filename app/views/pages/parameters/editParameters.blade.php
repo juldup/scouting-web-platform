@@ -86,6 +86,11 @@
               <span class="horiz-divider"></span>
               {{ Form::checkbox("registration_active", 1, $registration_active) }}
             </div>
+            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
+              {{ Form::label("reregistration_active", "Activer les réinscriptions") }}
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox("reregistration_active", 1, $reregistration_active) }}
+            </div>
           </div>
           
           <legend>

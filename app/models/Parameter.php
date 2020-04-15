@@ -44,6 +44,7 @@ class Parameter extends Eloquent {
   public static $SHOW_ANNUAL_FEAST = "Show annual feast";
   public static $SHOW_REGISTRATION = "Show registration";
   public static $REGISTRATION_ACTIVE = "Registration active";
+  public static $REREGISTRATION_ACTIVE = "Reregistration active";
   public static $GROUPED_SECTION_MENU = "Grouped section menu";
   public static $SHOW_HEALTH_CARDS = "Show health cards";
   public static $SHOW_UNIT_POLICY = "Show unit policy";

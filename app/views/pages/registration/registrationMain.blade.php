@@ -52,7 +52,7 @@
       @include('subviews.flashMessages')
     </div>
   </div>
-  @if (count($family_members))
+  @if (Parameter::get(Parameter::$REREGISTRATION_ACTIVE) and count($family_members))
     <form class="well form-horizontal">
       <legend>Réinscription des membres de votre famille pour l'année {{{ $reregistration_year }}}</legend>
       @foreach ($family_members as $member)
