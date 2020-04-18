@@ -108,6 +108,7 @@
         <div class="col-md-12">
           <table class="table table-striped table-hover sort-by-column">
             <thead>
+              <th>N°</th>
               <th class="parser-false"></th>
               <th>Nom</th>
               <th>Prénom</th>
@@ -121,8 +122,12 @@
               <th class="parser-false">E-mail</th>
             </thead>
             <tbody>
+              <?php $counter = 1; ?>
               @foreach ($sct['members'] as $member)
                 <tr>
+                  <td>
+                    {{ $counter++ }}
+                  </td>
                   <td>
                     <a class="btn-sm btn-default" href="javascript:showMemberDetails({{ $member->id }})">Détails</a>
                     @if ($user->isOwnerOfMember($member))

@@ -60,7 +60,7 @@
   
   <div class="row">
     <div class="col-lg-12">
-      <h1>Gestion du listing {{{ $user->currentSection->de_la_section }}}</h1>
+      <h1>Gestion du listing {{{ $user->currentSection->de_la_section }}} ({{ $members->count() }} membres)</h1>
     </div>
   </div>
   
@@ -98,7 +98,8 @@
       <div class="col-lg-12">
         <table class="table table-striped table-hover sort-by-column">
           <thead>
-            <th class="parser-false"></th>
+            <th>N°</th>
+            <th class="parser-false">Actions</th>
             @if ($user->currentSection->id == 1)
               <th>Section</th>
             @endif
@@ -108,8 +109,12 @@
             <th>Année</th>
           </thead>
           <tbody>
+            <?php $counter = 1; ?>
             @foreach ($members as $member)
               <tr>
+                <td>
+                  {{ $counter++ }}
+                </td>
                 <td>
                   <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">
                     Modifier
