@@ -240,6 +240,10 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"inscription\"",
             'parameter_name' => Parameter::$SHOW_REGISTRATION
         ),
+        'page_absences' => array(
+            'description' => "Afficher la page \"absences\"",
+            'parameter_name' => Parameter::$SHOW_ABSENCES
+        ),
         'page_health_cards' => array(
             'description' => "Afficher la page \"fiches santé\"",
             'parameter_name' => Parameter::$SHOW_HEALTH_CARDS

@@ -103,6 +103,18 @@ class Helper {
   }
   
   /**
+   * Returns the last 15th of August in "YYYY-MM-DD" format
+   */
+  public static function startOfThisYear() {
+    $year = date('Y');
+    if (date('m') < 8 or (date('m') == 8 and date('d') < 15)) {
+      return ($year-1) . "-08-15";
+    } else {
+      $year . "-08-15";
+    }
+  }
+  
+  /**
    * Returns the day of the month of a 'YYYY-MM-DD' sql date
    */
   public static function getDateDay($sqlDate) {

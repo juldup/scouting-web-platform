@@ -132,7 +132,7 @@
     {{-- No members --}}
     <div class="row">
       <div class="col-md-12">
-        <p>Il n'y a pas de membres dans cette section</p>
+        <p>Il n'y a pas de membre dans cette section</p>
       </div>
     </div>
   @endif

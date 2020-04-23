@@ -263,6 +263,18 @@ angularAttendance.controller('AttendanceController', function($scope) {
             var errorMessage = null;
             if (data.result === "Success") {
               // Upload was successful
+              // Add new excused
+              if (data.newExcused) {
+                data.newExcused.forEach(function(item) {
+                  var newExcusedData = item.split(":");
+                  $scope.members.forEach(function(member) {
+                    if (member.id == newExcusedData[1]) {
+                      member.status["event_" + newExcusedData[0]] = 2;
+                    }
+                  });
+                });
+                $scope.$$phase || $scope.$apply();
+              }
               // Stop uploading
               $scope.uploading = false;
               if (uploadId !== $scope.uploadId) {
@@ -280,6 +292,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
               throw "error";
             }
           } catch (err) {
+            console.log(err);
             // On error, reload the page so the user can see what has actually been saved
             alert(errorMessage ? errorMessage : "Une erreur est survenue lors de l'enregistrement des présences.");
             // Reload page

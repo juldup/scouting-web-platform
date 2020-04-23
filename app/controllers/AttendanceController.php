@@ -103,6 +103,7 @@ class AttendanceController extends BaseController {
       $events = json_decode(Input::get('events'));
       // Update members' attendance status
       $changesMade = "";
+      $newExcused = [];
       foreach ($events as $event) {
         $calendarEvent = CalendarItem::find($event->id);
         if ($event->monitored) {
@@ -125,6 +126,17 @@ class AttendanceController extends BaseController {
             $member = Member::find($memberData->id);
             if ($member) {
               if (!$attendance) {
+                // Check if the absence has not been notified by the parents
+                if ($attended == 0) {
+                  $absence = Absence::where('event_id', '=', $event->id)
+                          ->where('member_id', '=', $memberData->id)
+                          ->first();
+                  // Set status as 'excused'
+                  if ($absence) {
+                    $attended = 2;
+                    $newExcused[] = $event->id . ":" . $memberData->id;
+                  }
+                }
                 // Create new attendance instance
                 $attendance = Attendance::create(array(
                     'member_id' => $memberData->id,
@@ -175,6 +187,7 @@ class AttendanceController extends BaseController {
       // Return response
       return json_encode(array(
           "result" => "Success",
+          "newExcused" => $newExcused,
       ));
     } catch (Exception $e) {
       // An error has occurred

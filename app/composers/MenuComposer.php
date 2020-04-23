@@ -69,6 +69,8 @@ class MenuComposer {
       $homeCategory["divider_1"] = "divider";
     if (Parameter::get(Parameter::$SHOW_REGISTRATION))
       $homeCategory["Inscription"] = 'registration';
+    if (Parameter::get(Parameter::$SHOW_ABSENCES))
+      $homeCategory["Absences"] = 'absences';
     if (Parameter::get(Parameter::$SHOW_HEALTH_CARDS))
       $homeCategory["Fiches santé"] = 'health_card';
     $homeCategory["divider_2"] = 'divider';

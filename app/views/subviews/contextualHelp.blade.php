@@ -42,6 +42,16 @@
   </p>
 @endif
 
+@if ($help == 'manage-absences')
+  <p>
+    Sur cette page, tu peux consulter la liste des absents aux événements de la section.
+  </p>
+  <p>
+    Les absences sont liées au calendrier. Les parents peuvent prévenir de l'absence d'un scout
+    à une activité inscrite dans le calendrier.
+  </p>
+@endif
+
 @if ($help == 'edit-calendar')
   <p>Cette page permet d'ajouter/modifier/supprimer des événements dans le calendrier.
     Pour modifier le calendrier d'une section, il faut sélectionner cette section dans le menu.</p>
