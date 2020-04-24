@@ -46,6 +46,21 @@
     <div class="col-md-12">
       <h1>Absences {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
+      <div class='well'>
+        @foreach ($associated_leaders as $leader)
+          @if ($leader->receive_absence_emails)
+            <p>Tu
+              @if (count($associated_leaders) > 1) (en tant que {{ $leader->getFullName() }}) @endif
+              reçois les notifications d'absences par e-mail.
+              <a href="{{ URL::route('unregister_from_absence_emails', array('member_id' => $leader->id)) }}" class="btn btn-primary">Ne plus les recevoir</a></p>
+          @else
+            <p>Tu
+              @if (count($associated_leaders) > 1) (en tant que {{ $leader->getFullName() }}) @endif
+              ne reçois pour l'instant pas les notifications d'absence par e-mail.
+              <a href="{{ URL::route('register_to_absence_emails', array('member_id' => $leader->id)) }}" class="btn btn-primary">Je veux les recevoir</a></p>
+          @endif
+        @endforeach
+      </div>
       <p>Clique sur un événement pour voir la liste d'absents.</p>
     </div>
   </div>

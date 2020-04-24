@@ -94,22 +94,62 @@ class AbsenceController extends BaseController {
           'other_event' => $eventId == 0 ? $otherEvent : null,
           'explanation' => $explanation,
       ));
-      // Log
+      // Get member
       $member = Member::find($memberId);
+      // Get name and date of event
       if ($eventId) {
         $calendarItem = CalendarItem::find($eventId);
         $eventDate = Helper::dateToHuman($calendarItem->start_date);
         if ($calendarItem->end_date != $calendarItem->start_date) {
           $eventDate .= " au " . Helper::dateToHuman($calendarItem->end_date);
         }
-        $event = $calendarItem->event . " du " . $eventDate
+        $eventName = $calendarItem->event . " du " . $eventDate
                 . " (" . $calendarItem->getSection()->name . ")";
       } else {
-        $event = $otherEvent;
+        $eventName = $otherEvent;
       }
+      // Send e-mail to leaders
+      $leaderForEmail = Member::where('section_id', '=', $member->section_id)
+              ->where('is_leader', '=', true)
+              ->where('receive_absence_emails', '=', true)
+              ->get();
+      foreach ($leaderForEmail as $leader) {
+        $recipient = $leader->email_member;
+        $emailContent = Helper::renderEmail('absenceNotified', $recipient, array(
+            'member' => $member,
+            'event' => $eventName,
+            'explanation' => $explanation,
+        ));
+        $email = PendingEmail::create(array(
+            'subject' => "Absence de " . $member->getFullName(),
+            'raw_body' => $emailContent['txt'],
+            'html_body' => $emailContent['html'],
+            'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+            'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+            'recipient' => $recipient,
+            'priority' => PendingEmail::$ABSENCE_EMAIL_PRIORITY,
+        ));
+      }
+      // Send confirmation e-mail to user
+      $recipient = $this->user->email;
+      $emailContent = Helper::renderEmail('absenceConfirmation', $recipient, array(
+          'member' => $member,
+          'event' => $eventName,
+          'explanation' => $explanation,
+      ));
+      $email = PendingEmail::create(array(
+          'subject' => "Absence de " . $member->getFullName(),
+          'raw_body' => $emailContent['txt'],
+          'html_body' => $emailContent['html'],
+          'sender_email' => Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS),
+          'sender_name' => "Site " . Parameter::get(Parameter::$UNIT_SHORT_NAME),
+          'recipient' => $recipient,
+          'priority' => PendingEmail::$ABSENCE_EMAIL_PRIORITY,
+      ));
+      // Log
       LogEntry::log("Absence", "Absence à un évenement signalée", array(
           "Membre" => $member->getFullName(),
-          "Activité" => $event,
+          "Activité" => $eventName,
           "Justification" => $explanation,
       ));
       // Success
@@ -178,7 +218,42 @@ class AbsenceController extends BaseController {
     // Make view
     return View::make('pages.absences.manageAbsences', array(
         'events' => $events,
+        'associated_leaders' => $this->user->getAssociatedLeaderMembers(),
     ));
+  }
+  
+  /**
+   * [Route] Change the leader's preference to receive automatic e-mails when an
+   * absence is submitted
+   */
+  public function registerToAbsenceEmails($member_id) {
+    // Make sure the user has access to this page
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->user->isOwnerOfMember($member_id)) {
+      $member = Member::find($member_id);
+      $member->receive_absence_emails = true;
+      $member->save();
+    }
+    return Redirect::to(URL::route('manage_absences'));
+  }
+  
+  /**
+   * [Route] Change the leader's preference to stop receiving automatic e-mails when an
+   * absence is submitted
+   */
+  public function unregisterFromAbsenceEmails($member_id) {
+    // Make sure the user has access to this page
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    if ($this->user->isOwnerOfMember($member_id)) {
+      $member = Member::find($member_id);
+      $member->receive_absence_emails = false;
+      $member->save();
+    }
+    return Redirect::to(URL::route('manage_absences'));
   }
   
 }

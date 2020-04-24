@@ -161,6 +161,8 @@ Route::post('ajax/gestion/inscription/cotisation', array("as" => "ajax_update_su
 Route::get('absences/{section_slug?}', array("as" => "absences", "uses" => "AbsenceController@showPage"));
 Route::post('absences/submit/{section_slug?}', array("as" => "submit_absence", "uses" => "AbsenceController@submit"));
 Route::get('gestion/absences/{section_slug?}', array("as" => "manage_absences", "uses" => "AbsenceController@showManage"));
+Route::get('gestion/absences/inscription-emails/{member_id}/{section_slug?}', array("as" => "register_to_absence_emails", "uses" => "AbsenceController@registerToAbsenceEmails"));
+Route::get('gestion/absences/desinscription-emails/{member_id}/{section_slug?}', array("as" => "unregister_from_absence_emails", "uses" => "AbsenceController@unregisterFromAbsenceEmails"));
 
 // Health card
 Route::get('fiche-sante/completer/{member_id}/{section_slug?}', array("as" => "health_card_edit", "uses" => "HealthCardController@showEdit"));

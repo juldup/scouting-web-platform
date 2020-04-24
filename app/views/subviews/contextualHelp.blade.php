@@ -50,6 +50,10 @@
     Les absences sont liées au calendrier. Les parents peuvent prévenir de l'absence d'un scout
     à une activité inscrite dans le calendrier.
   </p>
+  <p>
+    Il est possible de recevoir une notification par e-mail lorsqu'une absence est notifiée par les parents.
+    Il suffit de cliquer sur <strong><em>Je veux les recevoir</em></strong> pour activer ces notifications.
+  </p>
 @endif
 
 @if ($help == 'edit-calendar')

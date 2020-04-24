@@ -45,6 +45,7 @@ class PendingEmail extends Eloquent {
   public static $ACCOUNT_EMAIL_PRIORITY = 1;
   public static $PERSONAL_SENDER_PRIORITY = 2;
   public static $PERSONAL_EMAIL_PRIORITY = 5;
+  public static $ABSENCE_EMAIL_PRIORITY = 7;
   public static $SECTION_EMAIL_PRIORITY = 10;
   public static $SECTION_SENDER_PRIORITY = 12;
   public static $HEALTH_CARD_REMINDER_PRIORITY = 14;
