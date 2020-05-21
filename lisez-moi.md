@@ -66,6 +66,7 @@ Une fois que vous avez votre hébergement et votre système d'envoi d'e-mails, v
 1. Installez les librairies via composer: `php composer.phar install`
 1. Faites pointer l'URL de base **/** vers le répertoire **public/**
 1. Rendez les dossiers `app/storage` et `public/css` accessibles en écriture par l'utilisateur web, p.ex. avec les commandes suivantes :
+
         ``HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1` ``
         ``setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/storage``
         ``setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/storage``
