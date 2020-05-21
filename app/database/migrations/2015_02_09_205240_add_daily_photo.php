@@ -16,7 +16,7 @@ class AddDailyPhoto extends Migration {
       $table->date('date');
       $table->integer('photo_id')->unsigned()->nullable();
       $table->foreign('photo_id')->references('id')->on('photos')->onDelete('set null');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('date');
     });

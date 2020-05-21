@@ -32,7 +32,7 @@ return array(
 	|
 	*/
 
-	'url' => trim(file_get_contents(__DIR__ . "/../storage/site_data/website-base-url.txt")),
+	'url' => trim(file_exists(__DIR__ . "/../storage/site_data/website-base-url.txt") ? file_get_contents(__DIR__ . "/../storage/site_data/website-base-url.txt") : ""),
 
 	/*
 	|--------------------------------------------------------------------------

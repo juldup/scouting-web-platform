@@ -32,7 +32,7 @@ class CreateDatabase extends Migration {
       $table->increments('id');
       $table->string('name');
       $table->text('value');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->unique('name');
     });
@@ -83,7 +83,7 @@ class CreateDatabase extends Migration {
       $table->increments('id');
       $table->string('name');
       $table->string('slug')->unique();
-      $table->integer('position');
+      $table->integer('position')->default(0);
       $table->string('section_category')->nullable();
       $table->string('section_type')->nullable();
       $table->string('section_type_number')->nullable();
@@ -92,7 +92,7 @@ class CreateDatabase extends Migration {
       $table->string('de_la_section');
       $table->string('la_section');
       $table->string('subgroup_name')->default('Équipe');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('slug');
     });
@@ -116,8 +116,8 @@ class CreateDatabase extends Migration {
       $table->string('type');
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
-      $table->text('body_html')->default("");
-      $table->timestamps();
+      $table->text('body_html');
+      $table->nullableTimestamps();
       
       $table->index('type');
       $table->index('section_id');
@@ -140,7 +140,7 @@ class CreateDatabase extends Migration {
       $table->string('original_name');
       $table->integer('page_id')->unsigned();
       $table->foreign('page_id')->references('id')->on('pages')->onDelete('cascade');
-      $table->timestamps();
+      $table->nullableTimestamps();
     });
     
     // Users
@@ -155,7 +155,7 @@ class CreateDatabase extends Migration {
       $table->integer('current_visit')->default('0');
       $table->string('verification_code')->nullable();
       $table->boolean('verified')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('username');
       $table->index('email');
@@ -169,7 +169,7 @@ class CreateDatabase extends Migration {
       $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
       $table->string('code');
       $table->integer('timestamp');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('code');
     });
@@ -226,7 +226,7 @@ class CreateDatabase extends Migration {
       $table->string('leader_role')->nullable();
       $table->boolean('has_picture')->nullable();
       $table->boolean('validated')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('year_in_section');
@@ -246,7 +246,7 @@ class CreateDatabase extends Migration {
       $table->string('scope', 5);
       $table->integer('member_id')->unsigned();
       $table->foreign('member_id')->references('id')->on('members')->onDelete('cascade');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('member_id');
       $table->unique(array('operation', 'scope', 'member_id'));
@@ -262,7 +262,7 @@ class CreateDatabase extends Migration {
       $table->string('event');
       $table->text('description');
       $table->string('type');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('start_date');
@@ -277,7 +277,7 @@ class CreateDatabase extends Migration {
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->string('title');
       $table->text('body');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('news_date');
@@ -290,12 +290,12 @@ class CreateDatabase extends Migration {
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->string('title');
-      $table->text('description')->default("");
+      $table->text('description');
       $table->string('category');
       $table->string('filename');
       $table->boolean('public')->default(false);
       $table->boolean('archived')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('doc_date');
@@ -309,7 +309,7 @@ class CreateDatabase extends Migration {
       $table->string('title');
       $table->string('url');
       $table->text('description');
-      $table->timestamps();
+      $table->nullableTimestamps();
     });
     DB::table('links')->insert(array('title' => 'Fédération des Scouts Baden-Powell de Belgique', 'url' => 'http://www.lesscouts.be', 'description' => 'Fédération scoute dont fait partie cette unité.'));
     
@@ -351,7 +351,7 @@ class CreateDatabase extends Migration {
       $table->text('drugs_details')->nullable();
       $table->text('drugs_autonomy')->nullable();
       $table->text('comments')->nullable();
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('member_id');
     });
@@ -364,10 +364,10 @@ class CreateDatabase extends Migration {
       $table->string('name');
       $table->integer('photo_count')->default(0);
       $table->integer('position')->default(0);
-      $table->date('date')->default('0000-00-00');
+      $table->date('date')->nullable();
       $table->boolean('archived')->default(false);
-      $table->date('last_update')->default('0000-00-00');
-      $table->timestamps();
+      $table->date('last_update')->nullable();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('photo_count');
@@ -383,7 +383,7 @@ class CreateDatabase extends Migration {
       $table->string('filename');
       $table->text('caption')->nullable();
       $table->integer('position')->default(0);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('album_id');
       $table->index('position');
@@ -404,7 +404,7 @@ class CreateDatabase extends Migration {
       $table->string('sender_email');
       $table->boolean('archived')->default(false);
       $table->boolean('deleted')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('date');
@@ -417,7 +417,7 @@ class CreateDatabase extends Migration {
       $table->integer('email_id')->unsigned()->nullable();
       $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
       $table->string('filename');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('email_id');
     });
@@ -437,7 +437,7 @@ class CreateDatabase extends Migration {
       $table->integer('attached_document_id')->nullable();
       $table->boolean('sent')->default(false);
       $table->integer('last_retry')->default(0);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('created_at');
       $table->index('priority');
@@ -452,7 +452,7 @@ class CreateDatabase extends Migration {
       $table->text('response')->nullable();
       $table->integer('user_id')->unsigned()->nullable();
       $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
-      $table->timestamps();
+      $table->nullableTimestamps();
     });
     
     // Guest book
@@ -460,7 +460,7 @@ class CreateDatabase extends Migration {
       $table->increments('id');
       $table->text('body');
       $table->string('author');
-      $table->timestamps();
+      $table->nullableTimestamps();
     });
     
     // Accounting
@@ -479,7 +479,7 @@ class CreateDatabase extends Migration {
       $table->string('comment');
       $table->string('receipt');
       $table->integer('position')->default(10000);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('year');
@@ -496,7 +496,7 @@ class CreateDatabase extends Migration {
       $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
       $table->integer('timestamp');
       $table->boolean('invalidated')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('timestamp');
     });
@@ -507,7 +507,7 @@ class CreateDatabase extends Migration {
       $table->string('email');
       $table->string('ban_code');
       $table->boolean('banned')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('email');
       $table->index('banned');
@@ -540,7 +540,7 @@ class CreateDatabase extends Migration {
       $table->string('leader_role')->nullable();
       $table->boolean('has_picture')->nullable();
       $table->string('picture_filename')->nullable();
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('section_id');
       $table->index('year');
@@ -555,7 +555,7 @@ class CreateDatabase extends Migration {
       $table->string('action');
       $table->text('data')->nullable()->default(null);
       $table->boolean('is_error')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
     });
     
 	}

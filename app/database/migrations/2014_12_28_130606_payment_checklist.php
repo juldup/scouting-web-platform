@@ -17,7 +17,7 @@ class PaymentChecklist extends Migration {
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->string('year');
       $table->string('name');
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('year');
       $table->index('section_id');
@@ -30,7 +30,7 @@ class PaymentChecklist extends Migration {
       $table->integer('event_id')->unsigned();
       $table->foreign('event_id')->references('id')->on('payment_events')->onDelete('cascade');
       $table->boolean('paid')->default(false);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('event_id');
       $table->index('member_id');

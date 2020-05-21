@@ -17,6 +17,12 @@ The Belgian Scouting Web Platform is licensed under the [GNU General Public Lice
 1. Ensure that mcrypt has been activated: `sudo php5enmod mcrypt && sudo service apache2 restart`
 1. Run composer to load libraries: `php composer.phar install`
 1. Make the base url **/** point to the **public/** folder
+1. Make sure the `app/storage` and `public/css` folders can be written to by the web user, e.g. using :
+        ``HTTPDUSER=`ps aux | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1` ``
+        ``setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/storage``
+        ``setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX app/storage``
+        ``setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX public/css``
+        ``setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX public/css``
 1. Load the website's base url and follow the instructions to configure your website
 
 ## Credits

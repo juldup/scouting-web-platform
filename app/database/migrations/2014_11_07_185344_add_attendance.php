@@ -37,7 +37,7 @@ class AddAttendance extends Migration {
       $table->integer('section_id')->unsigned();
       $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
       $table->tinyInteger('attended')->default(0);
-      $table->timestamps();
+      $table->nullableTimestamps();
       
       $table->index('member_id');
       $table->index('event_id');
