@@ -419,6 +419,10 @@
             </div>
             <div class="col-sm-5">
               {{ Form::text('unit_email_address', Section::find(1)->email, array("class" => "form-control")) }}
+              <br />
+              Envoyer les demandes d'inscription à cette adresse :
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox("send_registrations_to_unit_email_address", 1, Parameter::get(Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS)) }}
             </div>
           </div>
           <div class="form-group">

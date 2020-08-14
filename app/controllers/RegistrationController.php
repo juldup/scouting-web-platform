@@ -245,7 +245,12 @@ class RegistrationController extends GenericPageController {
         // Don't send e-mail right away
       }
       // E-mail to unit's leader(s) that are allowed to register
-      foreach (self::getLeadersWithRegistrationPrivilege($member->section) as $recipient) {
+      $leader_email_addresses = self::getLeadersWithRegistrationPrivilege($member->section);
+      if (Parameter::get(Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS)) {
+        $unit_email_address = Section::find(1)->email;
+        if ($unit_email_address) $leader_email_addresses[] = $unit_email_address;
+      }
+      foreach ($leader_email_addresses as $recipient) {
         $emailContent = Helper::renderEmail('registrationConfirmation', $recipient, array(
             'member' => $member,
             'to_leaders' => true,

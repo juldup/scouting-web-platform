@@ -125,6 +125,7 @@ class ParameterController extends BaseController {
         ["name" => "Login SMTP", "key" => Parameter::$SMTP_USERNAME, "value" => Input::get('smtp_username')],
         ["name" => "Mot de passe SMTP", "key" => Parameter::$SMTP_PASSWORD, "value" => Input::get('smtp_password')],
         ["name" => "Sécurité SMTP", "key" => Parameter::$SMTP_SECURITY, "value" => Input::get('smtp_security')],
+        ["name" => "Envoyer les demandes d'inscription à l'adresse d'unité", "key" => Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS, "value" => Input::get('send_registrations_to_unit_email_address') ? "true" : "false"],
     ]);
     // Verified e-mail sender list
     $verifiedSendersArray = Input::get('email_safe_list');

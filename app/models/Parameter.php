@@ -74,6 +74,7 @@ class Parameter extends Eloquent {
   public static $LOGO_IMAGE = "Logo image";
   public static $LOGO_TWO_LINES = "Logo displayed on two lines";
   public static $ICON_IMAGE = "Icon image";
+  public static $SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS = "Send registrations to unit e-mail address";
   // Website metadata
   public static $BOOTSTRAPPING_DONE = "Website bootstrapping done";
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
