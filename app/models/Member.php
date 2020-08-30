@@ -355,6 +355,9 @@ class Member extends Eloquent {
       if ($validate) $data['validated'] = true;
       $data['year_in_section_last_update'] = date('Y') . "-" . (date('Y') + 1);
       $member = Member::create($data);
+      // Set last reregistration year
+      $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
+      $member->save();
       if ($member->is_leader) return $member->uploadPictureFromInput();
       else return $member;
     } catch (Exception $e) {
