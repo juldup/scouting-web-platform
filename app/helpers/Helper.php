@@ -110,7 +110,7 @@ class Helper {
     if (date('m') < 8 or (date('m') == 8 and date('d') < 15)) {
       return ($year-1) . "-08-15";
     } else {
-      $year . "-08-15";
+      return $year . "-08-15";
     }
   }
   

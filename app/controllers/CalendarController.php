@@ -306,4 +306,56 @@ class CalendarController extends BaseController {
     ))->with($success ? "success_message" : "error_message", $message);
   }
   
+  /**
+   * [Route] Shows the public calendar as list page
+   */
+  public function showCalendarAsList() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_CALENDAR)) {
+      return App::abort(404);
+    }
+    // Select current year
+    $year = date('Y');
+    
+    // Shift to make week start on Monday
+    $day_offset = 1;
+    // Name of the days
+    $days = array("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche");
+    // Name of the months
+    $months = array("Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre");
+    // Short names of the months
+    $months_short = array("Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc");
+    // Select calendar items
+    if ($this->user->isLeader()) {
+      // For leaders, also show the private events
+      $query = CalendarItem::where('start_date', '>=', Helper::startOfThisYear());
+    } else {
+      // For visitors, only show the public events
+      $query = CalendarItem::visibleToAllMembers()
+              ->where('start_date', '>=', Helper::startOfThisYear());
+    }
+    // Filter by the current section
+    if ($this->section->id != 1) {
+      $sectionId = $this->section->id;
+      $query = $query->where(function($query) use ($sectionId) {
+        $query->where('section_id', '=', $sectionId);
+        $query->orWhere('section_id', '=', 1);
+      });
+    }
+    // Get items
+    $calendarItems = $query->orderBy('start_date','ASC')->get();
+    // Return view
+    return View::make('pages.calendar.calendar-list', array(
+        'can_edit' => $this->user->can(Privilege::$EDIT_CALENDAR),
+        'can_edit_unit' => $this->user->can(Privilege::$EDIT_CALENDAR, 1),
+        'edit_url' => URL::route('manage_calendar_month', array('year' => $year, 'month' => date('m'), 'section_slug' => $this->section->slug)),
+        'page_url' => URL::route('calendar_month', array('year' => $year, 'month' => date('m'), 'section_slug' => $this->section->slug)),
+        'days' => $days,
+        'months' => $months,
+        'months_short' => $months_short,
+        'calendar_items' => $calendarItems,
+        'sectionList' => Section::where('id', '!=', 1)->get(),
+        'include_second_semester_by_default' => date('m') <= 7,
+    ));
+  }
 }
