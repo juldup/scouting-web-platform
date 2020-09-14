@@ -44,6 +44,15 @@
       </a>
     </p>
   @endif
+  @if (count($sections) == 1)
+    @if ($sections[0]['show_subgroup'])
+      <p>
+        <a href='{{ URL::route('listing_view_subgroups', array('section_slug' => $user->currentSection->slug)) }}'>
+          Listing par {{{ strtolower($sections[0]['section_data']->subgroup_name) }}}
+        </a>
+      </p>
+    @endif
+  @endif
 @stop
 
 @section('content')

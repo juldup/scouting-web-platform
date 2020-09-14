@@ -455,4 +455,63 @@ class ListingController extends BaseController {
     }
   }
   
+  /**
+   * [Route] Shows the subgroup listing page
+   */
+  public function showSubgroupPage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_LISTING)) {
+      return App::abort(404);
+    }
+    // Make sure the current user is a member an therefore has access to this page
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenNotMemberResponse();
+    }
+    // Redirect to normal listing if current section is the unit
+    if ($this->section->id == 1) {
+      return Redirect::route('listing');
+    }
+    // Gather members per section
+    $sectionArray = array();
+    $editableMembers = array();
+    $totalMemberCount = 0;
+
+    $members = Member::where('validated', '=', true)
+            ->where('section_id', '=', $this->section->id)
+            ->where('is_leader', '=', false)
+            ->orderBy('subgroup')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+    $showTotem = false;
+    $subgroupsExist = false;
+    $subgroups = [];
+    foreach ($members as $member) {
+      if ($member->totem) $showTotem = true;
+      if ($member->subgroup) $subgroupsExist = true;
+      // Allows the parents to edit their children's data
+      if ($this->user->isOwnerOfMember($member)) {
+        $editableMembers[] = $member;
+      }
+      // Sort by subgroup
+      if (!array_key_exists($member->subgroup, $subgroups)) $subgroups[$member->subgroup] = [];
+      $subgroups[$member->subgroup][] = $member;
+    }
+    if (!$subgroupsExist) {
+      return Redirect::route('listing');
+    }
+    // Make view
+    return View::make('pages.listing.listing-subgroups', array(
+        'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
+                        || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'section' => $this->section,
+        'members' => $members,
+        'subgroups' => $subgroups,
+        'show_totem' => $showTotem,
+        'editable_members' => $editableMembers,
+        'subgroup_choices' => $this->createSubgroupList(),
+        'subgroup_name' => $this->section->subgroup_name,
+    ));
+  }
 }
