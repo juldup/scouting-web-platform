@@ -44,6 +44,7 @@ class ParameterController extends BaseController {
         'pages' => $this->getPageList(),
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
         'reregistration_active' => Parameter::get(Parameter::$REREGISTRATION_ACTIVE),
+        'registration_automatic' => Parameter::get(Parameter::$REGISTRATION_AUTOMATIC),
         'grouped_section_menu' => Parameter::get(Parameter::$GROUPED_SECTION_MENU),
         'prices' => $prices,
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
@@ -62,6 +63,7 @@ class ParameterController extends BaseController {
     }
     $changesMade = "";
     $error = false;
+    $errorMessage = "";
     $parameterNewValues = [
         // Prices
         ["name" => "Prix un membre - enfant", "key" => Parameter::$PRICE_1_CHILD, "value" => Helper::formatCashAmount(Input::get('price_1_child'))],
@@ -75,10 +77,33 @@ class ParameterController extends BaseController {
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
         ["name" => "Réinscriptions", "key" => Parameter::$REREGISTRATION_ACTIVE, "value" => (Input::get('reregistration_active') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
+        ["name" => "Inscriptions activation automatique", "key" => Parameter::$REGISTRATION_AUTOMATIC, "value" => (Input::get('registration_automatic') ? "true" : "false"),
+            "valueNames" => ["true" => "oui", "false" => "non"]],
         // Section menu
         ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => (Input::get('grouped_section_menu') ? "true" : "false"),
             "valueNames" => ["true" => "groupé", "false" => "séparé"]],
     ];
+    // Automatic registration start and end dates
+    if (Input::get('registration_automatic')) {
+      $registrationStartDate = Input::get('registration_start_date');
+      if (DateHelper::checkMMDDHHMMFormat($registrationStartDate)) {
+        $parameterNewValues = array_merge($parameterNewValues, [
+            ["name" => "Date début inscriptions", "key" => Parameter::$REGISTRATION_START_DATE, "value" => $registrationStartDate],
+        ]);
+      } else {
+        $error = true;
+        $errorMessage .= "<br>Le format de la date de début des inscriptions n'est pas valide : il doit être de la forme \"MM-JJ hh:mm\" (p. ex. \"01-15 20:00\").";
+      }
+      $registrationEndDate = Input::get('registration_end_date');
+      if (DateHelper::checkMMDDHHMMFormat($registrationEndDate)) {
+        $parameterNewValues = array_merge($parameterNewValues, [
+            ["name" => "Date fin inscriptions", "key" => Parameter::$REGISTRATION_END_DATE, "value" => $registrationEndDate],
+        ]);
+      } else {
+        $error = true;
+        $errorMessage .= "<br>Le format de la date de fin des inscriptions n'est pas valide : il doit être de la forme \"MM-JJ hh:mm\" (p. ex. \"01-15 20:00\").";
+      }
+    }
     // Pages
     foreach ($this->getPageList() as $page => $pageData) {
       $parameterNewValues[] = [
@@ -208,7 +233,7 @@ class ParameterController extends BaseController {
     } else {
       LogEntry::error("Paramètres", "Erreur lors de la modification des paramètres du site", ["Changements" => $changesMade]);
       return Redirect::route('edit_parameters')
-              ->with('error_message', 'Une erreur est survenue. Tous les paramètres n\'ont peut-être pas été enregistrés.');
+              ->with('error_message', 'Une erreur est survenue. Tous les paramètres n\'ont peut-être pas été enregistrés. ' . $errorMessage);
     }
   }
   

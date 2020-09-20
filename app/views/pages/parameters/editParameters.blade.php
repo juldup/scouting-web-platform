@@ -91,6 +91,20 @@
               <span class="horiz-divider"></span>
               {{ Form::checkbox("reregistration_active", 1, $reregistration_active) }}
             </div>
+            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
+              {{ Form::label("registration_automatic", "Activation automatique") }}
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox("registration_automatic", 1, $registration_automatic) }}
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
+              {{ Form::label("registration_start_date", "du") }}
+              <span class="horiz-divider"></span>
+              {{ Form::text('registration_start_date', Parameter::get(Parameter::$REGISTRATION_START_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+              <span class="horiz-divider"></span>
+              {{ Form::label("registration_end_date", "au") }}
+              <span class="horiz-divider"></span>
+              {{ Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+            </div>
           </div>
           
           <legend>

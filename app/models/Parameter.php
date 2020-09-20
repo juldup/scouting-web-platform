@@ -45,6 +45,9 @@ class Parameter extends Eloquent {
   public static $SHOW_REGISTRATION = "Show registration";
   public static $REGISTRATION_ACTIVE = "Registration active";
   public static $REREGISTRATION_ACTIVE = "Reregistration active";
+  public static $REGISTRATION_AUTOMATIC = "Registration automatic";
+  public static $REGISTRATION_START_DATE = "Registration start date";
+  public static $REGISTRATION_END_DATE = "Registration end date";
   public static $GROUPED_SECTION_MENU = "Grouped section menu";
   public static $SHOW_ABSENCES = "Show absences";
   public static $SHOW_HEALTH_CARDS = "Show health cards";
@@ -198,6 +201,24 @@ class Parameter extends Eloquent {
       self::$verifiedEmailSenders = explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS));
     }
     return $emailAddress && in_array(strtolower($emailAddress), self::$verifiedEmailSenders);
+  }
+  
+  /**
+   * Returns whether the registrations are currently active (automatically or manually)
+   */
+  public static function registrationIsActive() {
+    if (self::get(self::$REGISTRATION_AUTOMATIC)) {
+      $currentDate = date("m-d h:i");
+      $startDate = self::get(self::$REGISTRATION_START_DATE);
+      $endDate = self::get(self::$REGISTRATION_END_DATE);
+      if ($startDate <= $endDate) {
+        return ($currentDate >= $startDate && $currentDate < $endDate);
+      } else {
+        return ($currentDate < $endDate || $currentDate >= $startDate);
+      }
+    } else {
+      return self::get(self::$REGISTRATION_ACTIVE);
+    }
   }
   
 }

@@ -74,4 +74,26 @@ $().ready(function() {
       }
     }
   });
+  // Enable/disable registration button according to automatic registration
+  setTimeout(function() {
+    if ($("[name='registration_automatic'").prop('checked')) {
+      $("[name='registration_active']").bootstrapSwitch('toggleDisabled',true,true);
+    } else {
+      $("[name='registration_start_date']").bootstrapSwitch('toggleDisabled',true,true);
+      $("[name='registration_end_date']").bootstrapSwitch('toggleDisabled',true,true);
+    }
+  }, 10);
+  $("[name='registration_automatic'").on('change.bootstrapSwitch', function(event, state) {
+    var checked = $("[name='registration_automatic'").prop('checked') ? true : false;
+    if ($("[name='registration_active']").prop('disabled') == !checked) {
+      $("[name='registration_active']").bootstrapSwitch('toggleDisabled',true,true);
+    }
+    if ($("[name='registration_start_date']").prop('disabled') == checked) {
+      $("[name='registration_start_date']").bootstrapSwitch('toggleDisabled',true,true);
+    }
+    if ($("[name='registration_end_date']").prop('disabled') == checked) {
+      $("[name='registration_end_date']").bootstrapSwitch('toggleDisabled',true,true);
+    }
+  });
+  
 });

@@ -63,7 +63,7 @@ class RegistrationController extends GenericPageController {
       return App::abort(404);
     }
     // Redirect to inactive registration page if deactivated
-    if (!Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+    if (!Parameter::registrationIsActive()) {
       return Redirect::route('registration_inactive');
     }
     // Get page text and update it with the parametric values
@@ -127,7 +127,7 @@ class RegistrationController extends GenericPageController {
    */
   public function showForm() {
     // Redirect to inactive registration page if deactivated
-    if (!Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+    if (!Parameter::registrationIsActive()) {
       return Redirect::route('registration_inactive');
     }
     if (Session::get('registration')) {

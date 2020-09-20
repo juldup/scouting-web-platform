@@ -588,7 +588,11 @@
         le texte de la page d'inscription.
       </li>
       <li>
-        Désactiver les inscriptions dans l'unité (n'oublie pas de les réactiver au moment opportun).
+        Désactiver les inscriptions dans l'unité (n'oublie pas de les réactiver au moment opportun). <br />
+        Il est possible de choisir une date de début et de fin d'inscription pour que
+        l'ouverture des inscriptions soit automatique. Le format des dates est strict : <span style='white-space: nowrap;'>"MM-JJ&nbsp;hh:mm"</span>
+        (où MM=01-12 est le mois ; JJ=01-31 est le jour ; hh=00-23 est l'heure ;
+        mm=00-59 est la minute).
       </li>
       <li>
         Décider, pour chaque page du site, si elle est accessible ou non (si non, elle disparaitra du menu). <br />

@@ -53,4 +53,20 @@ class DateHelper {
     return "Il y a " . $string;
   }
   
+  public static function checkMMDDHHMMFormat($date) {
+    if (strlen($date) != 11) return false;
+    if (substr($date,2,1) != "-") return false;
+    if (substr($date,5,1) != " ") return false;
+    if (substr($date,8,1) != ":") return false;
+    if (!is_numeric(substr($date, 0,2))) return false;
+    if (!is_numeric(substr($date, 3,2))) return false;
+    if (!is_numeric(substr($date, 6,2))) return false;
+    if (!is_numeric(substr($date, 9,2))) return false;
+    if (intval(substr($date, 0,2)) < 1 || intval(substr($date, 0,2)) > 12) return false;
+    if (intval(substr($date, 3,2)) < 1 || intval(substr($date, 3,2)) > 31) return false;
+    if (intval(substr($date, 6,2)) < 0 || intval(substr($date, 6,2)) > 23) return false;
+    if (intval(substr($date, 9,2)) < 0 || intval(substr($date, 9,2)) > 59) return false;
+    return true;
+  }
+  
 }

@@ -59,7 +59,7 @@ class RegistrationInactiveController extends GenericPageController {
       return App::abort(404);
     }
     // Redirect to active registration page if activated
-    if (Parameter::get(Parameter::$REGISTRATION_ACTIVE)) {
+    if (Parameter::registrationIsActive()) {
       return Redirect::route('registration');
     }
     // Get page text and update it with the parametric values
