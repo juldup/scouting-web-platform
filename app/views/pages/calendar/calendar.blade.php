@@ -141,6 +141,18 @@
                 {{ Form::select('section', $sections, '', array('class' => 'form-control')) }}
               </div>
             </div>
+            <div class='form-group multi-section-subform' style="display: none;">
+              <div class='col-md-6 col-md-offset-4'>
+                <div class="row">
+                  @foreach ($sectionList as $section)
+                    {{ Form::label('multi_section' . $section->id, $section->name, array('class' => 'col-md-4 control-label')) }}
+                    <div class='col-md-1'>
+                      {{ Form::checkbox('multi_section_' . $section->id, 1, in_array($section->id, $preselected_multi_sections) ? '1' : '0') }}
+                    </div>
+                  @endforeach
+                </div>
+              </div>
+            </div>
             <div class='form-group'>
               <div class='col-md-5 col-md-offset-3'>
                 {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}

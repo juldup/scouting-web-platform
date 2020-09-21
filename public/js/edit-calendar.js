@@ -34,11 +34,13 @@ function addEvent(day) {
     $("#calendar_event_form [name='description']").val("");
     $("#calendar_event_form [name='event_type']").val('normal');
     $("#calendar_event_form [name='section']").val(currentSection);
+    $("#calendar_event_form [name='section']").prop('disabled', false);
     $("#calendar_event_form #delete_link").hide();
     $("#calendar_event_form").slideDown();
   }
   $("#calendar_event_form [name='event_id']").val("");
   document.getElementById("event_name").focus();
+  updateMultiSectionSubform();
 }
 
 /**
@@ -62,8 +64,25 @@ function editEvent(eventId) {
   $("#calendar_event_form [name='description']").val(events[eventId].description);
   $("#calendar_event_form [name='event_type']").val(events[eventId].type);
   $("#calendar_event_form [name='section']").val(events[eventId].section);
+  $("#calendar_event_form [name='section']").prop('disabled', 'disabled');
   $("#calendar_event_form #delete_link").attr('href', events[eventId].delete_url);
   $("#calendar_event_form #delete_link").show();
   $("#calendar_event_form").slideDown();
+  updateMultiSectionSubform();
   document.getElementById("event_name").focus();
 }
+
+// Set multi-section form to show or hide
+function updateMultiSectionSubform() {
+  if ($("#calendar_event_form [name='section']").val() == "multi") {
+    $("#calendar_event_form .multi-section-subform").show();
+  } else {
+    $("#calendar_event_form .multi-section-subform").hide();
+  }
+}
+
+$().ready(function() {
+  $("#calendar_event_form [name='section']").on('change', function() {
+    updateMultiSectionSubform();
+  });
+});

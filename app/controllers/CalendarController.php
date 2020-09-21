@@ -112,6 +112,8 @@ class CalendarController extends BaseController {
     $sections = array();
     if ($editing) {
       $sections = Section::getSectionsForSelect();
+      $multiSectionList = Section::getSectionsForSelect();
+      $sections["multi"] = "Sélectionner plusieurs sections";
     }
     // Event type list for select
     $eventTypes = CalendarItem::$eventTypes;
@@ -140,6 +142,7 @@ class CalendarController extends BaseController {
         'event_types' => $eventTypes,
         'calendar_items' => $calendarItems,
         'include_second_semester_by_default' => date('m') <= 7,
+        'preselected_multi_sections' => Session::get('calendar_multi_sections') ? Session::get('calendar_multi_sections') : [],
     ));
   }
   
@@ -194,9 +197,23 @@ class CalendarController extends BaseController {
     $description = Input::get('description');
     $eventType = Input::get('event_type');
     $sectionId = Input::get('section');
+    if ($sectionId == "multi") {
+      $sectionIds = [];
+      $sectionList = Section::where('id', '!=', 1)->get();
+      foreach ($sectionList as $section) {
+        if (Input::get('multi_section_' . $section->id)) {
+          $sectionIds[] = $section->id;
+        }
+      }
+      Session::set('calendar_multi_sections', $sectionIds);
+    } else {
+      $sectionIds = [$sectionId];
+    }
     // Mark sure the user can edit the calendar for this section
-    if (!$this->user->can(Privilege::$EDIT_CALENDAR, $sectionId)) {
-      return Helper::forbiddenResponse();
+    foreach ($sectionIds as $sectionId) {
+      if (!$this->user->can(Privilege::$EDIT_CALENDAR, $sectionId)) {
+        return Helper::forbiddenResponse();
+      }
     }
     // Set default event name if the event name is missing
     if (!$eventName) {
@@ -216,16 +233,16 @@ class CalendarController extends BaseController {
       $message = "La durée n'est pas valide. Elle doit être au minimum <strong>1</strong>.";
     } else {
       // Tests passed
-      $eventData = array(
-          'start_date' => $startDate,
-          'end_date' => $endDate,
-          'event' => $eventName,
-          'description' => $description,
-          'type' => $eventType,
-          'section_id' => $sectionId,
-      );
       if ($eventId) {
         // The event already exists, update it
+        $eventData = array(
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'event' => $eventName,
+            'description' => $description,
+            'type' => $eventType,
+            'section_id' => $sectionId,
+        );
         $calendarItem = CalendarItem::find($eventId);
         if ($calendarItem) {
           $calendarItem->update($eventData);
@@ -244,14 +261,24 @@ class CalendarController extends BaseController {
         }
       } else {
         // Creating a new event
-        try {
-          CalendarItem::create($eventData);
-          $success = true;
-          $message = "L'événement a été créé.";
-        } catch (Illuminate\Database\QueryException $e) {
-          Log::error($e);
-          $success = false;
-          $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
+        foreach ($sectionIds as $sectionId) {
+          $eventData = array(
+              'start_date' => $startDate,
+              'end_date' => $endDate,
+              'event' => $eventName,
+              'description' => $description,
+              'type' => $eventType,
+              'section_id' => $sectionId,
+          );
+          try {
+            CalendarItem::create($eventData);
+            $success = true;
+            $message = "L'événement a été créé.";
+          } catch (Illuminate\Database\QueryException $e) {
+            Log::error($e);
+            $success = false;
+            $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
+          }
         }
       }
     }
