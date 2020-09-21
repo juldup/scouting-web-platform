@@ -62,6 +62,7 @@ class CustomPageController extends GenericPageController {
     return $this->customPage->title;
   }
   protected function canDisplayPage() {
+    if ($this->customPage->leaders_only && !$this->user->isLeader()) return false;
     return true;
   }
   
@@ -84,6 +85,7 @@ class CustomPageController extends GenericPageController {
   public function addCustomPage() {
     if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) return Helper::forbiddenResponse();
     $pageTitle = Input::get('page_title');
+    $leadersOnly = Input::get('leaders_only');
     // Check that page title is valid
     if (!$pageTitle) {
       return Redirect::route('edit_pages')->with('error_message', 'Le titre de la page ne peut pas être vide.');
@@ -100,6 +102,7 @@ class CustomPageController extends GenericPageController {
         'title' => $pageTitle,
         'slug' => $slug,
         'body_html' => '',
+        'leaders_only' => $leadersOnly ? 1 : 0,
     ));
     $page->position = $page->id;
     $page->save();

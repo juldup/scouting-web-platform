@@ -26,6 +26,6 @@
  */
 class Page extends Eloquent {
   
-  protected $fillable = array('type', 'section_id', 'body_html', 'title', 'slug', 'position');
+  protected $fillable = array('type', 'section_id', 'body_html', 'title', 'slug', 'position', 'leaders_only');
   
 }

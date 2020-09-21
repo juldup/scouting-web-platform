@@ -187,7 +187,7 @@
         <tbody class="@if ($user->can(Privilege::$EDIT_PAGES, 1)) draggable-tbody photos-uploaded @endif">
           @foreach (Page::where('type', '=', 'custom')->orderBy('position')->get() as $page)
             <tr class="draggable-row" id="page-{{ $page->id }}" data-draggable-id="{{ $page->id }}">
-              <th>{{{ $page->title }}}<span class='horiz-divider'></span></th>
+              <th>{{{ $page->title }}} {{ $page->leaders_only ? "(privé)" : "" }}<span class='horiz-divider'></span></th>
               <td>
                 <a href='{{ URL::route('custom_page', array('page_slug' => $page->slug)) }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
                 &nbsp;
@@ -207,6 +207,9 @@
               <td>
                 {{ Form::open(array('route' => 'add_custom_page')) }}
                 {{ Form::text('page_title', null, array('class' => 'form-control large', 'placeholder' => 'Titre de la page')) }}
+                <span class='horiz-divider'></span>
+                Page privée : {{ Form::checkbox('leaders_only', 1, 0) }}
+                <span class='horiz-divider'></span>
                 {{ Form::submit('Ajouter', array('class' => 'btn btn-primary')) }}
                 {{ Form::close() }}
               </td>

@@ -76,8 +76,11 @@ class MenuComposer {
     $homeCategory["divider_2"] = 'divider';
     if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST))
       $homeCategory["Fête d'unité"] = 'annual_feast';
+    $user = View::shared('user');
     foreach (Page::where('type', '=', 'custom')->orderBy('position')->get() as $page) {
-      $homeCategory[$page->title] = array('routeName' => 'custom_page', 'routeParameters' => array('page_slug' => $page->slug));
+      if (!$page->leaders_only || $user->isLeader()) {
+        $homeCategory[$page->title] = array('routeName' => 'custom_page', 'routeParameters' => array('page_slug' => $page->slug));
+      }
     }
     if (end($homeCategory) != 'divider') $homeCategory["divider_3"] = 'divider';
     $homeCategory["Nouveautés"] = 'view_recent_changes';
