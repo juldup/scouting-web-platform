@@ -241,7 +241,6 @@ class CalendarController extends BaseController {
             'event' => $eventName,
             'description' => $description,
             'type' => $eventType,
-            'section_id' => $sectionId,
         );
         $calendarItem = CalendarItem::find($eventId);
         if ($calendarItem) {
