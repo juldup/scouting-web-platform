@@ -70,6 +70,7 @@ function addLeader(sectionId) {
   $("#member_form [name='email_member']").val("");
   $("#member_form [name='totem']").val("");
   $("#member_form [name='quali']").val("");
+  $("#member_form img.edit_listing_picture").attr("src", "");
   $("#member_form [name='family_in_other_units']").val(0);
   $("#member_form [name='family_in_other_units_details']").val("");
   $("#member_form #current_leader_picture").attr("src", "");
@@ -146,6 +147,7 @@ function showEditLeaderForm(form, leaderId) {
   form.find("[name='email_member']").val(leaders[leaderId].email_member);
   form.find("[name='totem']").val(leaders[leaderId].totem);
   form.find("[name='quali']").val(leaders[leaderId].quali);
+  form.find("img.edit_listing_picture").attr("src", leaders[leaderId].picture_url);
   form.find("[name='family_in_other_units']").val(leaders[leaderId].family_in_other_units);
   form.find("[name='family_in_other_units_details']").val(leaders[leaderId].family_in_other_units_details);
   

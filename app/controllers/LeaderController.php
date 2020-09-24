@@ -175,20 +175,6 @@ class LeaderController extends BaseController {
   }
   
   /**
-   * [Route] Returns the picutre of a leader
-   */
-  public function getLeaderPicture($leader_id) {
-    $leader = Member::find($leader_id);
-    if ($leader && $leader->is_leader && $leader->has_picture) {
-      $path = $leader->getPicturePath();
-      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
-          "Content-Type" => "image",
-          "Content-Length" => filesize($path),
-      ));
-    }
-  }
-  
-  /**
    * [Route] Returns the picture of an archived leader
    */
   public function getArchivedLeaderPicture($archived_leader_id) {
@@ -225,7 +211,7 @@ class LeaderController extends BaseController {
       $wasLeaderBefore = $leader->is_leader;
       if ($leader) {
         // Update existing leader
-        $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true);
+        $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true, true);
         if ($result === true) {
           if (!$wasLeaderBefore) Privilege::addBasePrivilegesForLeader($leader);
           $success = true;

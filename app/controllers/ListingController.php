@@ -198,7 +198,7 @@ class ListingController extends BaseController {
         return Helper::forbiddenResponse();
       }
       // Update mmember
-      $result = $member->updateFromInput($memberPrivileges, true, $sectionTransferPrivileges, $leaderPrivileges, $leaderPrivileges);
+      $result = $member->updateFromInput($memberPrivileges, true, $sectionTransferPrivileges, $leaderPrivileges, $leaderPrivileges, $leaderPrivileges);
       // Set status message
       if ($result === true) {
         $success = true;
@@ -514,4 +514,76 @@ class ListingController extends BaseController {
         'subgroup_name' => $this->section->subgroup_name,
     ));
   }
+  
+  /**
+   * [Route] Returns the picutre of a member
+   */
+  public function getMemberPicture($member_id) {
+    $member = Member::find($member_id);
+    if ($member && $member->has_picture && ($member->is_leader || $this->user->isMember())) {
+      $path = $member->getPicturePath();
+      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+          "Content-Type" => "image",
+          "Content-Length" => filesize($path),
+      ));
+    }
+  }
+  
+  /**
+   * [Route] Shows the subgroup listing page
+   */
+  public function showMemberPicturePage() {
+    // Make sure this page can be displayed
+    if (!Parameter::get(Parameter::$SHOW_LISTING)) {
+      return App::abort(404);
+    }
+    // Make sure the current user is a member an therefore has access to this page
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenNotMemberResponse();
+    }
+    // Create an array containing the section(s) of which to display the listing
+    if ($this->section->id == 1) {
+      // All section
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+    } else {
+      // Only current section
+      $sections = array($this->section);
+    }
+    // Gather members per section
+    $sectionArray = array();
+    $totalMemberCount = 0;
+    foreach ($sections as $section) {
+      $members = Member::where('validated', '=', true)
+              ->where('section_id', '=', $section->id)
+              ->where('is_leader', '=', false)
+              ->orderBy('last_name')
+              ->orderBy('first_name')
+              ->get();
+      $showTotem = false;
+      $showSubgroup = false;
+      foreach ($members as $member) {
+        if ($member->totem) $showTotem = true;
+        if ($member->subgroup) $showSubgroup = true;
+      }
+      $sectionArray[] = array(
+          'section_data' => $section,
+          'members' => $members,
+          'show_totem' => $showTotem,
+          'show_subgroup' => $showSubgroup,
+      );
+      $totalMemberCount += $members->count();
+    }
+    // Make view
+    return View::make('pages.listing.listing-pictures', array(
+        'can_manage' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section)
+                        || $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+        'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+        'total_member_count' => $totalMemberCount,
+        'sections' => $sectionArray,
+        'subgroup_name' => $this->section->subgroup_name,
+    ));
+  }
+  
 }

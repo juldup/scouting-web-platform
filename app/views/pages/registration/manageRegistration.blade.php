@@ -99,6 +99,7 @@
       'edit_identity' => true,
       'edit_section' => true,
       'edit_totem' => true,
+      'edit_photo' => true,
       'edit_leader' => true), array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
   
   <div class="row">

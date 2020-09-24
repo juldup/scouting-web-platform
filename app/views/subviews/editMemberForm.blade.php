@@ -162,6 +162,15 @@
           {{ Form::label('quali', "Quali", array('class' => 'control-label col-md-4')) }}
           <div class='col-md-8'>{{ Form::text('quali', '', array('class' => 'form-control', ($edit_totem ? "enabled" : "disabled") )) }}</div>
         </div>
+        <div class='form-group'>
+          {{ Form::label('picture', "Photo", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-1'>
+            <img class="edit_listing_picture" src="" alt="/" />
+          </div>
+          <div class='col-md-7'>
+            {{ Form::file('picture', array('class' => 'btn btn-default', $edit_photo ? "enabled" : "disabled")) }}
+          </div>
+        </div>
         @if ($leader_only)
           {{ Form::hidden('is_leader', true) }}
         @else
@@ -193,12 +202,6 @@
         <div class='form-group @if (!$leader_only) leader_specific @endif'>
           {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'control-label col-md-4')) }}
           <div class='col-md-8'>{{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control', $edit_leader ? "enabled" : "disabled")) }}</div>
-        </div>
-        <div class='form-group @if (!$leader_only) leader_specific @endif'>
-          {{ Form::label('picture', "Photo", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>
-            {{ Form::file('picture', array('class' => 'btn btn-default', $edit_leader ? "enabled" : "disabled")) }}
-          </div>
         </div>
         <div class="row">
           {{ Form::label('has_handicap', "Handicap", array('class' => 'control-label col-md-4')) }}

@@ -90,6 +90,7 @@ function editMember(memberId) {
   $("#member_form [name='email_member']").val(members[memberId].email_member);
   $("#member_form [name='totem']").val(members[memberId].totem);
   $("#member_form [name='quali']").val(members[memberId].quali);
+  $("#member_form img.edit_listing_picture").attr("src", members[memberId].picture_url);
   $("#member_form [name='family_in_other_units']").val(members[memberId].family_in_other_units);
   $("#member_form [name='family_in_other_units_details']").val(members[memberId].family_in_other_units_details);
   $("#member_form [name='is_leader']").prop("checked", members[memberId].is_leader).trigger("change");

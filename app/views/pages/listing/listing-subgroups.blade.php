@@ -55,13 +55,7 @@
       @include('subviews.flashMessages')
     </div>
   </div>
-  
-  <div class="row">
-    <div class="col-md-12">
-      @include('subviews.editMemberForm', array('form_legend' => "Modifier un membre", 'submit_url' => URL::route('listing_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => false, 'edit_identity' => true, 'edit_section' => $can_change_section, 'edit_totem' => $can_manage,'edit_leader' => false))
-    </div>
-  </div>
-  
+    
   <div class="row">
     <div class="col-md-12">
       <h1>
@@ -84,9 +78,9 @@
             <div class="row">
               <div class="col-xs-6 col-sm-4 col-md-6">
                 @if ($member->has_picture)
-                  <img class="leader_picture" src="{{ $member->getPictureURL() }}" />
+                  <img class="member-picture" src="{{ $member->getPictureURL() }}" />
                 @else
-                  <img class="leader_picture" src="" alt=" Pas de photo " />
+                  <img class="member-picture" src="" alt=" Pas de photo " />
                 @endif
               </div>
               <div class="col-xs-6 col-sm-8 col-md-6">
@@ -108,7 +102,7 @@
                     <tr>
                       <th>Photo :</th>
                       <td>
-                        <img class="leader_picture" src="" alt=" Pas de photo " />
+                        <img class="member-picture" src="{{ $member->getPictureURL() }}" alt=" Pas de photo " />
                       </td>
                     </tr>
                     <tr>

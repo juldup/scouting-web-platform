@@ -53,6 +53,11 @@
       </p>
     @endif
   @endif
+  <p>
+    <a href="{{ URL::route('listing_view_pictures', array('section_slug' => $user->currentSection->slug)) }}">
+      Photos des membres
+    </a>
+  </p>
 @stop
 
 @section('content')
@@ -65,7 +70,7 @@
   
   <div class="row">
     <div class="col-md-12">
-      @include('subviews.editMemberForm', array('form_legend' => "Modifier un membre", 'submit_url' => URL::route('listing_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => false, 'edit_identity' => true, 'edit_section' => $can_change_section, 'edit_totem' => $can_manage,'edit_leader' => false))
+      @include('subviews.editMemberForm', array('form_legend' => "Modifier un membre", 'submit_url' => URL::route('listing_submit', array('section_slug' => $user->currentSection->slug)), 'leader_only' => false, 'edit_identity' => true, 'edit_section' => $can_change_section, 'edit_totem' => $can_manage,'edit_leader' => false, 'edit_photo' => $can_manage))
     </div>
   </div>
 
@@ -159,7 +164,10 @@
                   </td>
                 </tr>
                 <tr id="details_{{ $member->id }}" class="details_member" style="display: none;">
-                  <td colspan="{{ 5 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">
+                  <td colspan="2" class="listing-details-picture">
+                    {{ $member->has_picture ? "<img src='" . $member->getPictureURL() . "' alt='not found'>" : "" }}
+                  </td>
+                  <td colspan="{{ 3 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">
                     <div class="row">
                       <div class="col-md-3 member-detail-label">
                         Adresse :

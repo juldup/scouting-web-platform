@@ -120,7 +120,7 @@ class Member extends Eloquent {
    * Returns the URL at which the leader picture can be downloaded
    */
   public function getPictureURL() {
-    return URL::route('get_leader_picture', array('leader_id' => $this->id));
+    return URL::route('get_member_picture', array('leader_id' => $this->id));
   }
   
   /**
@@ -259,7 +259,7 @@ class Member extends Eloquent {
    * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali and subgroup
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
-  public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader) {
+  public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader, $canEditPhoto) {
     // Archive leaders
     ArchivedLeader::archiveLeadersIfNeeded();
     // Get input data and check it for errors
@@ -327,8 +327,7 @@ class Member extends Eloquent {
     // Save
     try {
       $this->save();
-      if ($this->is_leader) return $this->uploadPictureFromInput() ? true : false;
-      else return true;
+      return $this->uploadPictureFromInput() ? true : false;
     } catch (Exception $ex) {
       Log::error($ex);
       return false;
@@ -358,8 +357,7 @@ class Member extends Eloquent {
       // Set last reregistration year
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
       $member->save();
-      if ($member->is_leader) return $member->uploadPictureFromInput();
-      else return $member;
+      return $member->uploadPictureFromInput();
     } catch (Exception $e) {
       Log::error($e);
       return false;

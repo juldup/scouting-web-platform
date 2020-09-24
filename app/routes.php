@@ -266,7 +266,6 @@ Route::get('ajax/gestion/photos/tourner', array("as" => "ajax_rotate_photo", "us
 // Leaders
 Route::get('animateurs/archives/{year}/{section_slug?}', array("as" => "archived_leaders", "uses" => "LeaderController@showArchivedLeaders"));
 Route::get('animateurs/{section_slug?}', array("as" => "leaders", "uses" => "LeaderController@showPage"));
-Route::get('animateurs/photo/{leader_id}', array("as" => "get_leader_picture", "uses" => "LeaderController@getLeaderPicture"));
 Route::get('archive-animateurs/photo/{archived_leader_id}', array("as" => "get_archived_leader_picture", "uses" => "LeaderController@getArchivedLeaderPicture"));
 Route::get('gestion/animateurs/{section_slug?}', array("as" => "edit_leaders", "uses" => "LeaderController@showEdit"));
 Route::get('gestion/animateurs/scout-en-animateur/{member_id}/{section_slug}', array("as" => "edit_leaders_member_to_leader", "uses" => "LeaderController@showMemberToLeader"));
@@ -293,6 +292,8 @@ Route::get('gestion/listing/telechargement/{section_slug?}', array("as" => "down
 Route::post('gestion/listing/telechargement-options', array("as" => "download_listing_with_options", "uses" => "ListingController@downloadListingWithOptions"));
 Route::any('gestion/listing-desk/{section_slug?}', array("as" => "desk_listing", "uses" => "ListingController@showDeskPage"));
 Route::get('listing/sous-groupes/{section_slug?}', array("as" => "listing_view_subgroups", "uses" => "ListingController@showSubgroupPage"));
+Route::get('listing/photos-membres/{section_slug?}', array("as" => "listing_view_pictures", "uses" => "ListingController@showMemberPicturePage"));
+Route::get('listing/photo/{leader_id}', array("as" => "get_member_picture", "uses" => "ListingController@getMemberPicture"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));

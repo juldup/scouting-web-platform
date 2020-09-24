@@ -456,7 +456,7 @@ class RegistrationController extends GenericPageController {
         return Helper::forbiddenResponse();
       }
       // Update member with input data
-      $result = $member->updateFromInput(true, true, true, true, true);
+      $result = $member->updateFromInput(true, true, true, true, true, true);
       // Create result message
       if ($result === true) {
         $success = true;
