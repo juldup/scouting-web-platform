@@ -63,6 +63,15 @@
         </h1>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <p>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_member_pictures', array('section_slug' => $user->currentSection->slug)) }}">
+            Télécharger les photos de toute l'unité
+          </a>
+        </p>
+      </div>
+    </div>
   @endif
   
   @foreach ($sections as $sct)
@@ -76,6 +85,15 @@
           Photos des membres {{{ $sct['section_data']->de_la_section }}}
           @if ($sct['members']->count() > 1) ({{ $sct['members']->count() }} membres) @endif
         </h2>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <p>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_member_pictures', array('section_slug' => $sct['section_data']->slug)) }}">
+            Télécharger les photos {{{ $sct['section_data']->de_la_section }}}
+          </a>
+        </p>
       </div>
     </div>
     

@@ -586,4 +586,26 @@ class ListingController extends BaseController {
     ));
   }
   
+  /**
+   * [Route] Outputs the pictures of the members in PDF format for download
+   */
+  public function downloadMemberPictures($section_slug) {
+    // Make sure the user is a member and has access to the listing
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenResponse();
+    }
+    // Set list of sections to include
+    if ($this->section->id == 1) {
+      $sections = Section::where('id', '!=', 1)
+              ->orderBy('position')
+              ->get();
+    } else {
+      $sections = array($this->section);
+    }
+    // Log
+    LogEntry::log("Listing", "Téléchargement des photos des membres", array("Section" => $this->section->name));
+    // Output listing
+    ListingPDF::downloadMemberPictures($sections);
+  }
+  
 }

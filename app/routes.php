@@ -294,6 +294,7 @@ Route::any('gestion/listing-desk/{section_slug?}', array("as" => "desk_listing",
 Route::get('listing/sous-groupes/{section_slug?}', array("as" => "listing_view_subgroups", "uses" => "ListingController@showSubgroupPage"));
 Route::get('listing/photos-membres/{section_slug?}', array("as" => "listing_view_pictures", "uses" => "ListingController@showMemberPicturePage"));
 Route::get('listing/photo/{leader_id}', array("as" => "get_member_picture", "uses" => "ListingController@getMemberPicture"));
+Route::get('listing/telecharger-photos-membres/{section_slug}/{format?}', array("as" => "download_member_pictures", "uses" => "ListingController@downloadMemberPictures"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));
