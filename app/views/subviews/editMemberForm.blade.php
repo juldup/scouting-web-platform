@@ -25,8 +25,9 @@
 <?php if (!isset($edit_totem)) $edit_totem = false; ?>
 <?php if (!isset($edit_leader)) $edit_leader = false; ?>
 <?php if (!isset($edit_others)) $edit_others = true; ?>
+<?php if (!isset($edit_photo)) $edit_photo = false; ?>
 <?php if (!isset($form_id)) $form_id = "member_form"; ?>
-<?php $can_edit_something = $edit_identity || $edit_contact || $edit_section || $edit_totem || $edit_leader || $edit_others; ?>
+<?php $can_edit_something = $edit_identity || $edit_contact || $edit_section || $edit_totem || $edit_leader || $edit_others || $edit_photo; ?>
 
 <div id="{{ $form_id }}" class='well member-form-wrapper'
      @if (!Session::has('_old_input')) style="display: none;" @endif
@@ -151,6 +152,17 @@
               {{ Form::select('subgroup_select', $subgroup_choices, '', array('class' => 'form-control medium', ($edit_totem ? "enabled" : "disabled") )) }}
             @else
               {{ Form::text('subgroup', '', array('class' => 'form-control', ($edit_totem ? "enabled" : "disabled") )) }}
+            @endif
+          </div>
+        </div>
+        <div class="form-group">
+          {{ Form::label('role', 'Rôle', array('class' => 'control-label col-md-4')) }}
+          <div class="col-md-8">
+            @if ($edit_totem && isset($role_choices) && $role_choices)
+              {{ Form::text('role', '', array('class' => 'form-control medium', ($edit_totem ? "enabled" : "disabled") )) }}
+              {{ Form::select('role_select', $role_choices, '', array('class' => 'form-control medium', ($edit_totem ? "enabled" : "disabled") )) }}
+            @else
+              {{ Form::text('role', '', array('class' => 'form-control', ($edit_totem ? "enabled" : "disabled") )) }}
             @endif
           </div>
         </div>

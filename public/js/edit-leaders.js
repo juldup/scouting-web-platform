@@ -65,6 +65,7 @@ function addLeader(sectionId) {
   $("#member_form [name='leader_role']").val("");
   $("#member_form [name='section']").val(sectionId);
   $("#member_form [name='subgroup']").val("");
+  $("#member_form [name='role']").val("");
   $("#member_form [name='phone_member']").val("");
   $("#member_form [name='phone_member_private']").prop("checked", false).trigger("change");
   $("#member_form [name='email_member']").val("");
@@ -142,6 +143,7 @@ function showEditLeaderForm(form, leaderId) {
   form.find("[name='leader_role']").val(leaders[leaderId].leader_role);
   form.find("[name='section']").val(leaders[leaderId].section_id);
   form.find("[name='subgroup']").val(leaders[leaderId].subgroup);
+  form.find("[name='role']").val(leaders[leaderId].role);
   form.find("[name='phone_member']").val(leaders[leaderId].phone_member);
   form.find("[name='phone_member_private']").prop("checked", leaders[leaderId].phone_member_private).trigger("change");
   form.find("[name='email_member']").val(leaders[leaderId].email_member);

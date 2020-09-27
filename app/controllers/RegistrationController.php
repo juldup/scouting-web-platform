@@ -768,7 +768,7 @@ class RegistrationController extends GenericPageController {
     if (!$this->user->can(Privilege::$SECTION_TRANSFER, 1)) {
       return Helper::forbiddenResponse();
     }
-    // Transfer each member and reset their year in the section and their subgroup name
+    // Transfer each member and reset their year in the section and their subgroup and role
     $errorList = "";
     $success = false;
     $transferedMembers = "";
@@ -779,6 +779,7 @@ class RegistrationController extends GenericPageController {
           $member->section_id = $sectionTo->id;
           $member->year_in_section = 1;
           $member->subgroup = null;
+          $member->role = null;
           $member->save();
           $success = true;
           $transferedMembers .= ($transferedMembers ? ", " : "") . $member->getFullName();

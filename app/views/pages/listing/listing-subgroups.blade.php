@@ -85,11 +85,11 @@
               </div>
               <div class="col-xs-6 col-sm-8 col-md-6">
                 <p class="leader-name">{{{ $member->getFullName() }}}</p>
+                @if ($member->role)
+                  <p>{{{ $member->role }}}</p>
+                @endif
                 @if ($show_totem)
                   <p><strong>Totem :</strong> {{ $member->totem ? $member->totem : "<em>aucun</em>" }}</p>
-                @endif
-                @if (!$member->phone_member_private && $member->phone_member)
-                  <p><strong>GSM :</strong> {{{ $leader->phone_member }}}</p>
                 @endif
                 <p><a class="btn-sm btn-default" href="javascript:showMemberDetails({{ $member->id }})">Détails</a></p>
               </div>
@@ -113,6 +113,16 @@
                         {{{ $member->getFullName() }}}
                       </td>
                     </tr>
+                    @if ($member->role)
+                      <tr>
+                        <th>
+                          <strong>Rôle :</strong> 
+                        </th>
+                        <td>
+                          {{{ $member->role }}}
+                        </td>
+                      </tr>
+                    @endif
                     @if ($member->totem)
                       <tr>
                         <th>

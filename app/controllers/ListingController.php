@@ -61,9 +61,11 @@ class ListingController extends BaseController {
               ->get();
       $showTotem = false;
       $showSubgroup = false;
+      $showRole = false;
       foreach ($members as $member) {
         if ($member->totem) $showTotem = true;
         if ($member->subgroup) $showSubgroup = true;
+        if ($member->role) $showRole = true;
         // Allows the parents to edit their children's data
         if ($this->user->isOwnerOfMember($member)) {
           $editableMembers[] = $member;
@@ -74,6 +76,7 @@ class ListingController extends BaseController {
           'members' => $members,
           'show_totem' => $showTotem,
           'show_subgroup' => $showSubgroup,
+          'show_role' => $showRole,
       );
       $totalMemberCount += $members->count();
     }
@@ -86,6 +89,7 @@ class ListingController extends BaseController {
         'sections' => $sectionArray,
         'editable_members' => $editableMembers,
         'subgroup_choices' => $this->createSubgroupList(),
+        'role_choices' => $this->createRoleList(),
         'subgroup_name' => $this->section->subgroup_name,
     ));
   }
@@ -142,12 +146,14 @@ class ListingController extends BaseController {
         'can_change_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
         'can_edit_identity' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
         'subgroup_choices' => $this->createSubgroupList(),
+        'role_choices' => $this->createRoleList(),
         'subgroup_name' => $this->section->subgroup_name,
     ));
   }
   
   /**
-   * Generate the list of existing subgroup to provide a selector to choose the subgroup of a member
+   * Generate the list of existing subgroups to provide
+   * a selector to choose the subgroup of a member
    */
   private function createSubgroupList() {
     $subgroups = DB::table('members')
@@ -162,6 +168,30 @@ class ListingController extends BaseController {
     }
     if (count($subgroupList) == 1) $subgroupList = null;
     return $subgroupList;
+  }
+  
+  /**
+   * Generate the list of default and existing roles to provide
+   * a selector to choose the role of a member
+   */
+  private function createRoleList() {
+    $roles = DB::table('members')
+            ->select('role')
+            ->distinct()
+            ->where('section_id', '=', $this->section->id)
+            ->get();
+    $roleList = array(
+        "" => "(Sélectionner)",
+        "Sizenier" => "Sizenier",
+        "Second" => "Second",
+        "CP" => "CP",
+        "SP" => "SP",
+        );
+    foreach ($roles as $role) {
+      if ($role->role)
+        $roleList[$role->role] = $role->role;
+    }
+    return $roleList;
   }
   
   /**
@@ -484,10 +514,12 @@ class ListingController extends BaseController {
             ->orderBy('first_name')
             ->get();
     $showTotem = false;
+    $showRole = false;
     $subgroupsExist = false;
     $subgroups = [];
     foreach ($members as $member) {
       if ($member->totem) $showTotem = true;
+      if ($member->role) $showRole = true;
       if ($member->subgroup) $subgroupsExist = true;
       // Allows the parents to edit their children's data
       if ($this->user->isOwnerOfMember($member)) {
@@ -509,8 +541,10 @@ class ListingController extends BaseController {
         'members' => $members,
         'subgroups' => $subgroups,
         'show_totem' => $showTotem,
+        'show_role' => $showRole,
         'editable_members' => $editableMembers,
         'subgroup_choices' => $this->createSubgroupList(),
+        'role_choices' => $this->createRoleList(),
         'subgroup_name' => $this->section->subgroup_name,
     ));
   }
@@ -530,7 +564,7 @@ class ListingController extends BaseController {
   }
   
   /**
-   * [Route] Shows the subgroup listing page
+   * [Route] Shows the picture listing page
    */
   public function showMemberPicturePage() {
     // Make sure this page can be displayed
@@ -563,6 +597,7 @@ class ListingController extends BaseController {
               ->get();
       $showTotem = false;
       $showSubgroup = false;
+      $showRole = false;
       foreach ($members as $member) {
         if ($member->totem) $showTotem = true;
         if ($member->subgroup) $showSubgroup = true;
@@ -572,6 +607,7 @@ class ListingController extends BaseController {
           'members' => $members,
           'show_totem' => $showTotem,
           'show_subgroup' => $showSubgroup,
+          'show_role' => $showRole,
       );
       $totalMemberCount += $members->count();
     }

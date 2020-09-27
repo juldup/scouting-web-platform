@@ -37,6 +37,7 @@
   'leader_role': "{{ Helper::sanitizeForJavascript($member->leader_role) }}",
   'section_id': {{ $member->section_id }},
   'subgroup': "{{ Helper::sanitizeForJavascript($member->subgroup) }}",
+  'role': "{{ Helper::sanitizeForJavascript($member->role) }}",
   'phone1': "{{ Helper::sanitizeForJavascript($member->phone1) }}",
   'phone1_owner': "{{ Helper::sanitizeForJavascript($member->phone1_owner); }}",
   'phone1_private': {{ $member->phone1_private ? "true" : "false" }},

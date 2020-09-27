@@ -36,6 +36,10 @@ $().ready(function() {
   $("#member_form select[name='subgroup_select']").change(function() {
     $("#member_form input[name='subgroup']").val($(this).val());
   });
+  // Update the role when a role is selected
+  $("#member_form select[name='role_select']").change(function() {
+    $("#member_form input[name='role']").val($(this).val());
+  });
   // Add confirmation to delete buttons
   $(".warning-delete").click(function() {
     return confirm("Veux-tu vraiment supprimer ce membre du listing ?");
@@ -73,6 +77,7 @@ function editMember(memberId) {
   $("#member_form [name='leader_role']").val(members[memberId].leader_role);
   $("#member_form [name='section']").val(members[memberId].section_id);
   $("#member_form [name='subgroup']").val(members[memberId].subgroup);
+  $("#member_form [name='role']").val(members[memberId].role);
   $("#member_form [name='phone1']").val(members[memberId].phone1);
   $("#member_form [name='phone1_owner']").val(members[memberId].phone1_owner);
   $("#member_form [name='phone1_private']").prop("checked", members[memberId].phone1_private).trigger("change");

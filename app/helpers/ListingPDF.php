@@ -266,13 +266,20 @@ class ListingPDF {
         $row += 2;
       }
     }
-    // Check whether this section has subgroups and/or totems
+    // Check whether this section has subgroups, totems, qualis, roles
     $hasSubgroup = $csvMode ? true :
       Member::where('validated', '=', 1)
               ->where('is_leader', '=', false)
               ->whereIn('section_id', $sectionIds)
               ->whereNotNull('subgroup')
               ->where('subgroup', '!=', '')
+              ->first() ? true : false;
+    $hasRole = $csvMode ? true :
+      Member::where('validated', '=', 1)
+              ->where('is_leader', '=', false)
+              ->whereIn('section_id', $sectionIds)
+              ->whereNotNull('role')
+              ->where('role', '!=', '')
               ->first() ? true : false;
     $hasTotem = $csvMode ? true :
       Member::where('validated', '=', 1)
@@ -301,6 +308,7 @@ class ListingPDF {
     if ($hasTotem) $titles[] = "Totem";
     if ($this->output != 'pdf' && $hasQuali) $titles[] = "Quali";
     if ($hasSubgroup) $titles[] = $subgroupName;
+    if ($hasRole && $this->output != 'pdf') $titles[] = "Rôle"; // TODO Display role in PDF too
     if ($this->output != 'pdf') $titles[] = "Nationalité";
     $titles[] = "DDN";
     if ($this->output != 'pdf') $titles[] = "Année";
@@ -347,6 +355,7 @@ class ListingPDF {
         elseif ($title == "Nationalité") $colSizes[] = 12;
         elseif ($title == "Totem") $colSizes[] = 15;
         elseif ($title == $subgroupName) $colSizes[] = 15;
+        elseif ($title == "Rôle") $colSizes[] = 15;
         elseif ($title == "DDN") $colSizes[] = 13;
         elseif ($title == "Année") $colSizes[] = 7;
         elseif ($title == "Adresse") $colSizes[] = 40;
@@ -428,6 +437,8 @@ class ListingPDF {
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->totem);
         elseif($title == $subgroupName)
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->subgroup);
+        elseif($title == "Rôle")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->role);
         elseif($title == "DDN")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", Helper::dateToHuman($member->birth_date));
         elseif ($title == "Année")

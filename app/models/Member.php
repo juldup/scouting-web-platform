@@ -35,6 +35,7 @@
  *   - year_in_section:               The year in the section
  *   - year_in_section_last_update    The scout year in format YYYY-YYYY corresponding to the members' current year_in_section
  *   - subgroup:                      The subgroup in the section this member belongs to
+ *   - role:                          The role of the member in the section
  *   - family_in_other_units:         The number of direct relatives (same family) registered in other scout units
  *   - family_in_other_units_details: Explanation about the previous field
  *   - comments:                      A short optional comment about this member
@@ -256,7 +257,7 @@ class Member extends Eloquent {
    * @param type $canEditIdentity  Whether the current user is allowed to edit identity information
    * @param type $canEditContact  Whether the current user is allowed to edit contact information
    * @param type $canEditSection  Whether the current user is allowed to change the section
-   * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali and subgroup
+   * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali, subgroup and role
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
   public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader, $canEditPhoto) {
@@ -308,6 +309,7 @@ class Member extends Eloquent {
       $this->totem = $data['totem'];
       $this->quali = $data['quali'];
       $this->subgroup = $data['subgroup'];
+      $this->role = $data['role'];
     }
     // Update leader information
     if ($canEditLeader) {
@@ -372,7 +374,7 @@ class Member extends Eloquent {
    * @param type $canEditIdentity  Whether the current user is allowed to edit identity information
    * @param type $canEditContact  Whether the current user is allowed to edit contact information
    * @param type $canEditSection  Whether the current user is allowed to change the section
-   * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali and subgroup
+   * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali, subgroup and role
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
   public static function checkInputData($canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
@@ -397,6 +399,7 @@ class Member extends Eloquent {
     $leaderRole = Input::get('leader_role');
     $sectionId = Input::get('section');
     $subgroup = Input::get('subgroup');
+    $role = Input::get('role');
     $phone1Unformatted = Input::get('phone1');
     $phone1Owner = Input::get('phone1_owner');
     $phone1Private = Input::get('phone1_private') ? true : false;
@@ -522,6 +525,7 @@ class Member extends Eloquent {
           'leader_role' => $leaderRole,
           'section_id' => $sectionId,
           'subgroup' => $subgroup,
+          'role' => $role,
           'phone1' => $phone1,
           'phone1_owner' => $phone1Owner,
           'phone1_private' => $phone1Private,

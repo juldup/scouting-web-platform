@@ -132,6 +132,9 @@
               @if ($sct['show_subgroup'])
                 <th>{{{ $sct['section_data']->subgroup_name }}}</th>
               @endif
+              @if ($sct['show_role'])
+                <th>Rôle</th>
+              @endif
               <th>Téléphone</th>
               <th class="parser-false">E-mail</th>
             </thead>
@@ -156,6 +159,9 @@
                     @if ($sct['show_subgroup'])
                       <td>{{{ $member->subgroup }}}</td>
                     @endif
+                    @if ($sct['show_role'])
+                      <td>{{{ $member->role }}}</td>
+                    @endif
                   <td>{{{ $member->getPublicPhone() }}}</td>
                   <td>
                     <a class="btn-sm btn-default" href="{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PARENTS, "member_id" => $member->id)) }}">
@@ -167,7 +173,7 @@
                   <td colspan="2" class="listing-details-picture">
                     {{ $member->has_picture ? "<img src='" . $member->getPictureURL() . "' alt='not found'>" : "" }}
                   </td>
-                  <td colspan="{{ 3 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) }}">
+                  <td colspan="{{ 3 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) + ($sct['show_role'] ? 1 : 0) }}">
                     <div class="row">
                       <div class="col-md-3 member-detail-label">
                         Adresse :
