@@ -208,7 +208,7 @@ class Parameter extends Eloquent {
    */
   public static function registrationIsActive() {
     if (self::get(self::$REGISTRATION_AUTOMATIC)) {
-      $currentDate = date("m-d h:i");
+      $currentDate = date("m-d H:i");
       $startDate = self::get(self::$REGISTRATION_START_DATE);
       $endDate = self::get(self::$REGISTRATION_END_DATE);
       if ($startDate <= $endDate) {
