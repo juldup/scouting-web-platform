@@ -31,7 +31,7 @@
           L'adresse e-mail <strong>{{{ $email }}}</strong> fait partie de notre listing et ne peut être supprimée de la liste des destinataires.
         </p>
         <p>
-          Si vous ne souhaitez plus recevoir d'e-mails à cette adresse, veuillez <a href="{{ URL::route('contacts') }}">contacter l'animateur d'unité</a>.
+          Si vous ne souhaitez plus recevoir d'e-mails à cette adresse, veuillez <a href="{{ URL::route('contacts') }}">contacter {{{ Parameter::adaptAnUDenomination("l'animateur d'unité") }}}</a>.
         </p>
       </div>
     </div>

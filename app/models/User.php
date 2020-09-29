@@ -293,9 +293,9 @@ class User extends Eloquent {
       $signature = "" . $leader->leader_name . "<br /><span style='color:#808080'><em>" . $leader->first_name . " " . $leader->last_name . "<br />";
       if ($leader->getSection()->id == 1) {
         if ($leader->leader_in_charge) {
-          $signature .= ($leader->gender == "M" ? "Animateur d'unité" : "Animatrice d'unité");
+          $signature .= ($leader->gender == "M" ? Parameter::adaptAnUDenomination("Animateur d'unité") : Parameter::adaptAnUDenomination("Animatrice d'unité"));
         } else {
-          $signature .= ($leader->gender == "M" ? "Équipier d'unité" : "Équipière d'unité");
+          $signature .= ($leader->gender == "M" ? Parameter::adaptAsUDenomination("Équipier d'unité") : Parameter::adaptAsUDenomination("Équipière d'unité"));
         }
       } else {
         $signature .= ($leader->gender == "M" ? "Animateur " : "Animatrice ") . ($leader->leader_in_charge ? "responsable " : "") . $leader->getSection()->de_la_section;

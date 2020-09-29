@@ -76,10 +76,10 @@
               @if ($leader->leader_in_charge)
                 <?php $currentLeaderInCharge = true; ?>
                 @if ($user->currentSection->id == 1)
-                  @if ($count_in_charge > 1 && $men_in_charge) Animateurs d'unité
-                  @elseif ($count_in_charge > 1 && !$men_in_charge) Animatrices d'unité
-                  @elseif ($men_in_charge) Animateur d'unité
-                  @else Animatrice d'unité
+                  @if ($count_in_charge > 1 && $men_in_charge) {{{ Parameter::adaptAnUDenomination("Animateurs d'unité") }}}
+                  @elseif ($count_in_charge > 1 && !$men_in_charge) {{{ Parameter::adaptAnUDenomination("Animatrices d'unité") }}}
+                  @elseif ($men_in_charge) {{{ Parameter::adaptAnUDenomination("Animateur d'unité") }}}
+                  @else {{{ Parameter::adaptAnUDenomination("Animatrice d'unité") }}}
                   @endif
                 @else
                   @if ($count_in_charge > 1 && $men_in_charge) Animateurs responsables
@@ -91,10 +91,10 @@
               @else
                 <?php $currentLeaderInCharge = false; ?>
                 @if ($user->currentSection->id == 1)
-                  @if ($count_others > 1 && $men_in_others) Équipiers d'unité
-                  @elseif ($count_others > 1 && !$men_in_others) Équipières d'unité
-                  @elseif ($men_in_others) Équipier d'unité
-                  @else Équipière d'unité
+                  @if ($count_others > 1 && $men_in_others) {{{ Parameter::adaptAsUDenomination("Équipiers d'unité") }}}
+                  @elseif ($count_others > 1 && !$men_in_others) {{{ Parameter::adaptAsUDenomination("Équipières d'unité") }}}
+                  @elseif ($men_in_others) {{{ Parameter::adaptAsUDenomination("Équipier d'unité") }}}
+                  @else {{{ Parameter::adaptAsUDenomination("Équipière d'unité") }}}
                   @endif
                 @else
                   @if ($count_others > 1 && $men_in_others) Équipiers

@@ -476,7 +476,7 @@
   <p>Lorsqu'un nouvel animateur entre dans l'unité, il faut procéder aux étapes suivantes&nbsp;:
     <ol>
       <li>Le nouvel animateur doit s'inscrire dans l'unité via le <a href="{{ URL::route('registration_form') }}">formulaire d'inscription</a>.</li>
-      <li>L'animateur d'unité ou le responsable des inscriptions doit <a href='{{ URL::route('manage_registration') }}'>valider son inscription</a>.</li>
+      <li>{{{ Parameter::adaptAnUDenomination("L'animateur d'unité") }}} ou le responsable des inscriptions doit <a href='{{ URL::route('manage_registration') }}'>valider son inscription</a>.</li>
     </ol>
   </p>
   <h3>Voir ou modifier les données d'un animateur</h3>
@@ -530,8 +530,8 @@
     <ul>
       <li><strong>Animateur</strong>&nbsp;: Gestion de base + privilèges en fonction des besoins spécifique (photos, documents, comptes, etc.)</li>
       <li><strong>Animateur responsable ou webmaster de section</strong>&nbsp;: Gestion de base + Gestion avancée</li>
-      <li><strong>Équipier d'unité</strong>&nbsp;: Gestion de base + Gestion avancée (+ Gestion de l'unité)</li>
-      <li><strong>Animateur d'unité</strong>&nbsp;: Tous les privilèges</li>
+      <li><strong>{{{ Parameter::adaptAsUDenomination("Équipier d'unité") }}}</strong>&nbsp;: Gestion de base + Gestion avancée (+ Gestion de l'unité)</li>
+      <li><strong>{{{ Parameter::adaptAnUDenomination("Animateur d'unité") }}}</strong>&nbsp;: Tous les privilèges</li>
     </ul>
   </p>
 @endif

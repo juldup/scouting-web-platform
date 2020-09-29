@@ -77,9 +77,9 @@
           <p>
             <strong>{{{ $leader->leader_name }}}</strong>
             @if ($leader->leader_in_charge)
-              @if ($leader->gender == "F") (animatrice d'unité) @else (animateur d'unité) @endif
+              @if ($leader->gender == "F") ({{{ Parameter::adaptAnUDenomination("animatrice d'unité") }}}) @else ({{{ Parameter::adaptAnUDenomination("animateur d'unité") }}}) @endif
             @else
-              @if ($leader->gender == "F") (assistante d'unité) @else (assistant d'unité) @endif
+              @if ($leader->gender == "F") ({{{ Parameter::adaptAsUDenomination("équipière d'unité") }}}) @else ({{{ Parameter::adaptAsUDenomination("équipier d'unité") }}}) @endif
             @endif
           </p>
         </div>

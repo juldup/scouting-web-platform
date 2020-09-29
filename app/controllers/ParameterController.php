@@ -39,6 +39,19 @@ class ParameterController extends BaseController {
         '3 children' => Parameter::get(Parameter::$PRICE_3_CHILDREN),
         '3 leaders' => Parameter::get(Parameter::$PRICE_3_LEADERS),
     );
+    // AnU denomination list
+    $anuDenominationList = [
+        "animateur d'unité" => "Animateur d'unité",
+        "anu" => "AnU",
+        "responsable d'unité" => "Responsable d'unité",
+        "animateur responsable d'unité" => "Animateur responsable d'unité",
+    ];
+    $asuDenominationList = [
+        "équipier d'unité" => "Équipier d'unité",
+        "asu" => "AsU",
+        "animateur d'unité" => "Animateur d'unité",
+        "assistant d'unité" => "Assistant d'unité",
+    ];
     // Make view
     return View::make('pages.parameters.editParameters', array(
         'pages' => $this->getPageList(),
@@ -50,6 +63,8 @@ class ParameterController extends BaseController {
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
         'safe_emails' => explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
         'logo_two_lines' => Parameter::get(Parameter::$LOGO_TWO_LINES),
+        'anuDenominationList' => $anuDenominationList,
+        'asuDenominationList' => $asuDenominationList,
     ));
   }
   
@@ -130,6 +145,8 @@ class ParameterController extends BaseController {
         ["name" => "N° de compte", "key" => Parameter::$UNIT_BANK_ACCOUNT, "value" => Input::get('unit_bank_account')],
         ["name" => "Logo", "key" => Parameter::$LOGO_TWO_LINES, "value" => Input::get('logo_two_lines') ? 1 : 0,
             "valueNames" => ["1" => "sur deux lignes", "0" => "sur une ligne"]],
+        ["name" => "Appellation AnU", "key" => Parameter::$ANU_DENOMINATION, "value" => Input::get('anu_denomination')],
+        ["name" => "Appellation AsU", "key" => Parameter::$ASU_DENOMINATION, "value" => Input::get('asu_denomination')],
         // Search engine
         ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],
         ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => Input::get('website_meta_keywords')],

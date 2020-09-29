@@ -78,6 +78,8 @@ class Parameter extends Eloquent {
   public static $LOGO_TWO_LINES = "Logo displayed on two lines";
   public static $ICON_IMAGE = "Icon image";
   public static $SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS = "Send registrations to unit e-mail address";
+  public static $ANU_DENOMINATION = "AnU denomination";
+  public static $ASU_DENOMINATION = "AsU denomination";
   // Website metadata
   public static $BOOTSTRAPPING_DONE = "Website bootstrapping done";
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";
@@ -219,6 +221,106 @@ class Parameter extends Eloquent {
     } else {
       return self::get(self::$REGISTRATION_ACTIVE);
     }
+  }
+  
+  public static function adaptAnUDenomination($defaultDenomination) {
+    switch (Parameter::get(Parameter::$ANU_DENOMINATION)) {
+      case "anu": {
+        switch ($defaultDenomination) {
+          case "animateur d'unité": return "AnU";
+          case "Animateur d'unité": return "AnU";
+          case "Animateurs d'unité": return "AnUs";
+          case "l'animateur d'unité": return "l'AnU";
+          case "L'animateur d'unité": return "L'AnU";
+          case "animatrice d'unité": return "AnU";
+          case "Animatrice d'unité": return "AnU";
+          case "Animatrices d'unité": return "AnUs";
+        }
+      }
+      case "responsable d'unité": {
+        switch ($defaultDenomination) {
+          case "animateur d'unité": return "responsable d'unité";
+          case "Animateur d'unité": return "Responsable d'unité";
+          case "Animateurs d'unité": return "Responsables d'unité";
+          case "l'animateur d'unité": return "le responsable d'unité";
+          case "L'animateur d'unité": return "Le responsable d'unité";
+          case "animatrice d'unité": return "responsable d'unité";
+          case "Animatrice d'unité": return "Responsable d'unité";
+          case "Animatrices d'unité": return "Responsables d'unité";
+        }
+      }
+      case "animateur responsable d'unité": {
+        switch ($defaultDenomination) {
+          case "animateur d'unité": return "animateur responsable d'unité";
+          case "Animateur d'unité": return "Animateur responsable d'unité";
+          case "Animateurs d'unité": return "Animateurs responsables d'unité";
+          case "l'animateur d'unité": return "l'animateur responsable d'unité";
+          case "L'animateur d'unité": return "L'animateur responsable d'unité";
+          case "animatrice d'unité": return "animatrice responsable d'unité";
+          case "Animatrice d'unité": return "Animatrice responsable d'unité";
+          case "Animatrices d'unité": return "Animatrices responsables d'unité";
+        }
+      }
+      default: {// "animateur d'unité"
+        switch ($defaultDenomination) {
+          case "animateur d'unité": return "animateur d'unité";
+          case "Animateur d'unité": return "Animateur d'unité";
+          case "Animateurs d'unité": return "Animateurs d'unité";
+          case "l'animateur d'unité": return "l'animateur d'unité";
+          case "L'animateur d'unité": return "L'animateur d'unité";
+          case "animatrice d'unité": return "animatrice d'unité";
+          case "Animatrice d'unité": return "Animatrice d'unité";
+          case "Animatrices d'unité": return "Animatrices d'unité";
+        }
+      }
+    }
+    return $defaultDenomination;
+  }
+  
+  public static function adaptAsUDenomination($defaultDenomination) {
+    switch (Parameter::get(Parameter::$ASU_DENOMINATION)) {
+      case "asu": {
+        switch ($defaultDenomination) {
+          case "Équipier d'unité": return "AsU";
+          case "Équipiers d'unité": return "AsUs";
+          case "Équipière d'unité": return "AsU";
+          case "Équipières d'unité": return "AsUs";
+          case "équipier d'unité": return "AsU";
+          case "équipière d'unité": return "AsU";
+        }
+      }
+      case "animateur d'unité": {
+        switch ($defaultDenomination) {
+          case "Équipier d'unité": return "Animateur d'unité";
+          case "Équipiers d'unité": return "Animateurs d'unité";
+          case "Équipière d'unité": return "Animatrice d'unité";
+          case "Équipières d'unité": return "Animatrices d'unité";
+          case "équipier d'unité": return "animateur d'unité";
+          case "équipière d'unité": return "animatrice d'unité";
+        }
+      }
+      case "assistant d'unité": {
+        switch ($defaultDenomination) {
+          case "Équipier d'unité": return "Assistant d'unité";
+          case "Équipiers d'unité": return "Assistants d'unité";
+          case "Équipière d'unité": return "Assistante d'unité";
+          case "Équipières d'unité": return "Assistantes d'unité";
+          case "équipier d'unité": return "assistant d'unité";
+          case "équipière d'unité": return "assistante d'unité";
+        }
+      }
+      default: {// "équipier d'unité"
+        switch ($defaultDenomination) {
+          case "Équipier d'unité": return "Équipier d'unité";
+          case "Équipiers d'unité": return "Équipiers d'unité";
+          case "Équipière d'unité": return "Équipière d'unité";
+          case "Équipières d'unité": return "Équipières d'unité";
+          case "équipier d'unité": return "équipier d'unité";
+          case "équipière d'unité": return "équipière d'unité";
+        }
+      }
+    }
+    return $defaultDenomination;
   }
   
 }

@@ -262,6 +262,22 @@
               {{ Form::file('icon', array('class' => 'btn btn-default website-logo-file-selector')) }}
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('anu_denomination', "Appellation du responsable d'unité (AnU)") }}
+            </div>
+            <div class="col-sm-8">
+              {{ Form::select('anu_denomination', $anuDenominationList, Parameter::get(Parameter::$ANU_DENOMINATION), array('class' => 'form-control large')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('asu_denomination', "Appellation des équipiers d'unité (AsU)") }}
+            </div>
+            <div class="col-sm-8">
+              {{ Form::select('asu_denomination', $asuDenominationList, Parameter::get(Parameter::$ASU_DENOMINATION), array('class' => 'form-control large')) }}
+            </div>
+          </div>
           
           <legend>
             <div class="row">

@@ -118,7 +118,7 @@ class RegistrationController extends GenericPageController {
       Log::error($ex);
       LogEntry::error("Inscription", "Erreur lors de la réinscription d'un membre", array("Erreur" => $ex->getMessage()));
       return Redirect::route('registration')->with('error_message', "Une erreur est survenue. La réinscription de "
-              . $member->getFullName() . " n'a pas été enregistrée. Contactez l'animateur d'unité. $ex");
+              . $member->getFullName() . " n'a pas été enregistrée. Contactez " . Parameter::adaptAnUDenomination("l'animateur d'unité") . ". $ex");
     }
   }
   
@@ -190,11 +190,11 @@ class RegistrationController extends GenericPageController {
         $message = $result;
         if (!$message) $message = "Une erreur est survenue. Votre inscription n'a pas été enregistrée. " .
                 "Veuillez réessayer ou <a href='" . URL::route('contacts') . 
-                "'>contacter l'animateur d'unité</a>.";
+                "'>contacter " . Parameter::adaptAnUDenomination("l'animateur d'unité") . "</a>.";
       } else {
         // Success
         $success = true;
-        $message = "Votre inscription a été enregistrée. L'animateur d'unité la validera prochainement.";
+        $message = "Votre inscription a été enregistrée. " . Parameter::adaptAnUDenomination("L'animateur d'unité") . " la validera prochainement.";
         // Save values in session for re-use for another registration
         Session::put('registration.last_name', Input::get('last_name'));
         Session::put('registration.nationality', Input::get('nationality'));

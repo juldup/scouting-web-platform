@@ -42,7 +42,7 @@
                 <span style="font-size: .8em; color: #333333;">
                   @if ($email_is_in_listing)
                     Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} dont vous êtes membre.<br />
-                    Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez contacter l'animateur d'unité&nbsp;: <a href='{{ URL::route('contacts') }}'>{{ URL::route('contacts') }}</a>
+                    Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez contacter {{{ Parameter::adaptAnUDenomination("l'animateur d'unité") }}}&nbsp;: <a href='{{ URL::route('contacts') }}'>{{ URL::route('contacts') }}</a>
                   @else
                     Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}.
                     Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis notre site, veuillez cliquer sur le lien suivant.<br />
