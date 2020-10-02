@@ -40,6 +40,10 @@ $().ready(function() {
   } else {
     $("#own-data-form").hide();
   }
+  // Display member order help info
+  $(".member-order-help").click(function() {
+    alert("Ce numéro sert à classer les animateurs sur la page des animateurs. Les numéros les plus petits apparaitront d'abord.");
+  });
 });
 
 /**
@@ -61,6 +65,7 @@ function addLeader(sectionId) {
   $("#member_form [name='comments']").val("");
   $("#member_form [name='leader_name']").val("");
   $("#member_form [name='leader_in_charge']").prop("checked", false).trigger("change");
+  $("#member_form [name='member_list_order']").val("");
   $("#member_form [name='leader_description']").val("");
   $("#member_form [name='leader_role']").val("");
   $("#member_form [name='section']").val(sectionId);
@@ -139,6 +144,7 @@ function showEditLeaderForm(form, leaderId) {
   form.find("[name='comments']").val(leaders[leaderId].comments);
   form.find("[name='leader_name']").val(leaders[leaderId].leader_name);
   form.find("[name='leader_in_charge']").prop("checked", leaders[leaderId].leader_in_charge).trigger("change");
+  form.find("[name='list_order']").val(leaders[leaderId].list_order);
   form.find("[name='leader_description']").val(leaders[leaderId].leader_description);
   form.find("[name='leader_role']").val(leaders[leaderId].leader_role);
   form.find("[name='section']").val(leaders[leaderId].section_id);

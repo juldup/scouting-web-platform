@@ -43,6 +43,7 @@ class LeaderController extends BaseController {
               ->where('section_id', '=', $this->section->id)
               ->where('validated', '=', true)
               ->orderBy('leader_in_charge', 'DESC')
+              ->orderBy('list_order', 'ASC')
               ->orderBy('leader_name', 'ASC')
               ->get();
     } else {
@@ -116,6 +117,7 @@ class LeaderController extends BaseController {
             ->where('section_id', '=', $this->section->id)
             ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'DESC')
+            ->orderBy('list_order', 'ASC')
             ->orderBy('leader_name', 'ASC')
             ->get();
     // List scouts that could be turned into a leader

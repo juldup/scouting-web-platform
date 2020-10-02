@@ -64,6 +64,7 @@
  *   Leader stuff
  *   - is_leader:                     Whether the member is a leader (the following fields make sense only if this one is true)
  *   - leader_in_charge:              Whether the member is a leader in charge of his/her section
+ *   - list_order:                    Order to sort the leader list on the leader page
  *   - leader_name:                   Name of the leader (how they are called in their section)
  *   - leader_description:            A short description of the leader
  *   - leader_role:                   Role of the leader in the section
@@ -318,6 +319,7 @@ class Member extends Eloquent {
       $this->leader_in_charge = $data['leader_in_charge'];
       $this->leader_description = $data['leader_description'];
       $this->leader_role = $data['leader_role'];
+      $this->list_order = $data['list_order'];
     }
     // Update comments
     $this->comments = $data['comments'];
@@ -395,6 +397,7 @@ class Member extends Eloquent {
     $comments = Input::get('comments');
     $leaderName = Input::get('leader_name');
     $leaderInCharge = Input::get('leader_in_charge') ? true : false;
+    $listOrder = intval(Input::get('list_order'));
     $leaderDescription = Input::get('leader_description');
     $leaderRole = Input::get('leader_role');
     $sectionId = Input::get('section');
@@ -521,6 +524,7 @@ class Member extends Eloquent {
           'comments' => $comments,
           'leader_name' => $leaderName,
           'leader_in_charge' => $leaderInCharge,
+          'list_order' => $listOrder,
           'leader_description' => $leaderDescription,
           'leader_role' => $leaderRole,
           'section_id' => $sectionId,

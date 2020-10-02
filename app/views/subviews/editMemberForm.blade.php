@@ -201,10 +201,17 @@
         </div>
         <div class='form-group @if (!$leader_only) leader_specific @endif'>
           {{ Form::label('leader_in_charge', "Animateur responsable", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>
+          <div class='col-md-2'>
             <div class="checkbox">
               {{ Form::checkbox('leader_in_charge', 1, '', array($edit_leader ? "enabled" : "disabled")) }}
             </div>
+          </div>
+          <div class="control-label col-md-4">
+            {{ Form::label('list_order', "Numéro") }}
+            <span class="member-order-help"></span> :
+          </div>
+          <div class="col-md-2">
+            {{ Form::text('list_order', '', array('class' => 'form-control')) }}
           </div>
         </div>
         <div class='form-group @if (!$leader_only) leader_specific @endif'>
