@@ -28,19 +28,28 @@ class PersonalEmailController extends BaseController {
   public static $CONTACT_TYPE_PERSONAL = "personnel";
   public static $CONTACT_TYPE_ARCHIVED_LEADER = "archive-animateur";
   public static $CONTACT_TYPE_WEBMASTER = "webmaster";
+  public static $CONTACT_TYPE_SECTION = "section";
   
   /**
    * [Route] Shows a page with a form to send an e-mail to a specific person
    * 
    * @param string $contact_type  The kind of contact (see above)
-   * @param string $member_id  The id of the member to contact (or anything for the webmaster)
+   * @param string $member_id  The id of the member/section to contact (or anything for the webmaster)
    */
   public function sendEmail($contact_type, $member_id) {
     if (URL::previous() != URL::current()) {
       // Record referrer url
       Session::put('personal_email_referrer', URL::previous());
     }
-    if ($contact_type != self::$CONTACT_TYPE_WEBMASTER) {
+    $member = null;
+    $section = null;
+    if ($contact_type == self::$CONTACT_TYPE_WEBMASTER) {
+      // Nothing to do
+    } elseif ($contact_type == self::$CONTACT_TYPE_SECTION) {
+      $section = Section::find($member_id);
+      if (!$section) App::abort(404, "Impossible d'envoyer un message : cette section n'existe pas.");
+      if (!$section->email) App::abort(404, "Impossible d'envoyer un message à " . $section->la_section . " car son adresse e-mail est inconnue.");
+    } else {
       // Get recipient member
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
         $member = ArchivedLeader::find($member_id);
@@ -60,6 +69,10 @@ class PersonalEmailController extends BaseController {
       if ($member->is_leader && $contact_type == self::$CONTACT_TYPE_PARENTS) {
         return Helper::forbiddenResponse();
       }
+      // Leaders cannot be contacted by non-members if the personal contact option is disabled
+      if ($member->is_leader && !Parameter::get(Parameter::$ALLOW_PERSONAL_CONTACT)) {
+        return Helper::forbiddenResponse();
+      }
       // Check that there is a parent's e-mail address to write to
       if (($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress())) {
         App::abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
@@ -68,12 +81,11 @@ class PersonalEmailController extends BaseController {
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->email_member) {
         App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
-    } else {
-      $member = null;
     }
     // Make view
     return View::make('pages.contacts.personalEmail', array(
         'member' => $member,
+        'section' => $section,
         'contact_type' => $contact_type,
     ));
   }
@@ -155,6 +167,9 @@ class PersonalEmailController extends BaseController {
     $middlePart = "";
     if ($contact_type == self::$CONTACT_TYPE_WEBMASTER) {
       $middlePart = " au webmaster";
+    } elseif ($contact_type == self::$CONTACT_TYPE_SECTION) {
+      $section = Section::find($member_id);
+      $middlePart = " aux animateurs " . $section->de_la_section;
     } else {
       // Get recipient member
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
@@ -179,7 +194,14 @@ class PersonalEmailController extends BaseController {
    * @param string $member_id  The id of the member to contact (or anything for the webmaster)
    */
   private function getEmailAddressesFor($contact_type, $member_id) {
-    if ($contact_type != self::$CONTACT_TYPE_WEBMASTER) {
+    if ($contact_type == self::$CONTACT_TYPE_WEBMASTER) {
+      return array(Parameter::get(Parameter::$WEBMASTER_EMAIL));
+    } elseif ($contact_type == self::$CONTACT_TYPE_SECTION) {
+      $section = Section::find($member_id);
+      if (!$section) App::abort(404, "Impossible d'envoyer un message : cette section n'existe pas.");
+      if (!$section->email) App::abort(404, "Impossible d'envoyer un message à " . $section->la_section . " car son adresse e-mail est inconnue.");
+      return array($section->email);
+    } else {
       // Get recipient member
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
         $member = ArchivedLeader::find($member_id);
@@ -215,8 +237,6 @@ class PersonalEmailController extends BaseController {
       } elseif ($contact_type == self::$CONTACT_TYPE_PERSONAL || $contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
         return array($member->email_member);
       }
-    } else {
-      return array(Parameter::get(Parameter::$WEBMASTER_EMAIL));
     }
   }
   

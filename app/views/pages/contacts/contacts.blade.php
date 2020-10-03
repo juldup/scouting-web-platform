@@ -70,10 +70,21 @@
   @endif
   
   <div class="well">
-    <legend>Contacter les animateurs d'unité</legend>
+    <legend>
+      <div class="row">
+        <div class="col-md-9">
+          Contacter les animateurs d'unité
+        </div>
+        <div class="col-md-3">
+          <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_SECTION, 'member_id' => 1)) }}'>
+            Contacter l'unité par e-mail
+          </a>
+        </div>
+      </div>
+    </legend>
     @foreach ($unitLeaders as $leader)
       <div class='row contact-row'>
-        <div class="col-md-3">
+        <div class="col-md-4">
           <p>
             <strong>{{{ $leader->leader_name }}}</strong>
             @if ($leader->leader_in_charge)
@@ -91,10 +102,12 @@
             @if ($leader->phone_member && !$leader->phone_member_private) {{{ $leader->phone_member }}} @endif
           </p>
         </div>
-        <div class="col-md-4">
-          <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PERSONAL, "member_id" => $leader->id)) }}'>
-            Contacter {{{ $leader->leader_name }}} par e-mail
-          </a>
+        <div class="col-md-3">
+          @if (Parameter::get(Parameter::$ALLOW_PERSONAL_CONTACT))
+            <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array("contact_type" => PersonalEmailController::$CONTACT_TYPE_PERSONAL, "member_id" => $leader->id)) }}'>
+              Contacter {{{ $leader->leader_name }}} par e-mail
+            </a>
+          @endif
         </div>
       </div>
     @endforeach
@@ -115,10 +128,16 @@
             @if ($leader->phone_member && !$leader->phone_member_private) {{{ $leader->phone_member }}} @endif
           </p>
         </div>
-        <div class="col-md-3">
-          <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_PERSONAL, 'member_id' => $leader->id)) }}'>
-            Contacter {{{ $leader->leader_name }}} par e-mail
-          </a>
+        <div class="col-md-4">
+          @if (Parameter::get(Parameter::$ALLOW_PERSONAL_CONTACT))
+            <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_PERSONAL, 'member_id' => $leader->id)) }}'>
+              Contacter {{{ $leader->leader_name }}} par e-mail
+            </a>
+          @else
+            <a class='btn-sm btn-default' href='{{ URL::route('personal_email', array('contact_type' => PersonalEmailController::$CONTACT_TYPE_SECTION, 'member_id' => $leader->getSection()->id)) }}'>
+              Contacter {{{ $leader->getSection()->la_section }}} par e-mail
+            </a>
+          @endif
         </div>
       </div>
     @endforeach

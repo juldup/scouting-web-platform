@@ -80,6 +80,7 @@ class Parameter extends Eloquent {
   public static $SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS = "Send registrations to unit e-mail address";
   public static $ANU_DENOMINATION = "AnU denomination";
   public static $ASU_DENOMINATION = "AsU denomination";
+  public static $ALLOW_PERSONAL_CONTACT = "Allow personal contact";
   // Website metadata
   public static $BOOTSTRAPPING_DONE = "Website bootstrapping done";
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";

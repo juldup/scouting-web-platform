@@ -63,6 +63,7 @@ class ParameterController extends BaseController {
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
         'safe_emails' => explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
         'logo_two_lines' => Parameter::get(Parameter::$LOGO_TWO_LINES),
+        'allow_personal_contact' => Parameter::get(Parameter::$ALLOW_PERSONAL_CONTACT),
         'anuDenominationList' => $anuDenominationList,
         'asuDenominationList' => $asuDenominationList,
     ));
@@ -147,6 +148,8 @@ class ParameterController extends BaseController {
             "valueNames" => ["1" => "sur deux lignes", "0" => "sur une ligne"]],
         ["name" => "Appellation AnU", "key" => Parameter::$ANU_DENOMINATION, "value" => Input::get('anu_denomination')],
         ["name" => "Appellation AsU", "key" => Parameter::$ASU_DENOMINATION, "value" => Input::get('asu_denomination')],
+        ["name" => "Contact personnel", "key" => Parameter::$ALLOW_PERSONAL_CONTACT, "value" => Input::get('allow_personal_contact') ? 1 : 0,
+            "valueNames" => ["1" => "oui", "0" => "non"]],
         // Search engine
         ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],
         ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => Input::get('website_meta_keywords')],
@@ -189,7 +192,8 @@ class ParameterController extends BaseController {
         if ($oldValue != $parameterData['value']) {
           Parameter::set($parameterData['key'], $parameterData['value']);
           if (array_key_exists("valueNames", $parameterData)) {
-            $changesMade .= "- " . $parameterData['name'] . "&nbsp;: <del>" . str_replace("<", "&lt;", $parameterData['valueNames'][$oldValue]) .
+            $changesMade .= "- " . $parameterData['name'] . "&nbsp;: <del>" . 
+                    ($oldValue ? str_replace("<", "&lt;", $parameterData['valueNames'][$oldValue]) : "(inexistant)") .
                     "</del> <ins>" . str_replace("<", "&lt;", $parameterData['valueNames'][$parameterData['value']]) . "</ins><br>";
           } else {
             $changesMade .= "- " . $parameterData['name'] . "&nbsp;: <del>" . str_replace("<", "&lt;", $oldValue) .

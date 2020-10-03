@@ -37,7 +37,7 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-horizontal well">
-          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : 0)))) }}
+          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : ($section ? $section->id : 0))))) }}
             <legend>
               @if ($contact_type == PersonalEmailController::$CONTACT_TYPE_PARENTS)
                 <h2>Envoyer un e-mail aux parents de {{{ $member->first_name }}} {{{ $member->last_name }}}</h2>
@@ -45,6 +45,8 @@
                 <h2>Envoyer un e-mail à {{{ $member->first_name }}} {{{ $member->last_name }}} ({{{ $member->leader_name }}})</h2>
               @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_ARCHIVED_LEADER)
                 <h2>Envoyer un e-mail à {{{ $member->first_name }}} {{{ $member->last_name }}} ({{{ $member->leader_name }}} en {{{ $member->year }}})</h2>
+              @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_SECTION)
+                <h2>Envoyer un e-mail aux animateurs {{{ $section->de_la_section }}}</h2>
               @elseif ($contact_type == PersonalEmailController::$CONTACT_TYPE_WEBMASTER)
                 <h2>Envoyer un e-mail au webmaster</h2>
               @endif

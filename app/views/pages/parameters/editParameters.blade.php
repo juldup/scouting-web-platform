@@ -278,6 +278,18 @@
               {{ Form::select('asu_denomination', $asuDenominationList, Parameter::get(Parameter::$ASU_DENOMINATION), array('class' => 'form-control large')) }}
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('allow_personal_contact', "Contact personnel") }}
+            </div>
+            <div class="col-sm-1">
+              {{ Form::checkbox('allow_personal_contact', 1, $allow_personal_contact) }}
+            </div>
+            <div class='col-sm-7'>
+              Si cette case est cochée, il sera possible de contacter les animateurs
+              par e-mail via la page de contact et la page des animateurs.
+            </div>
+          </div>
           
           <legend>
             <div class="row">

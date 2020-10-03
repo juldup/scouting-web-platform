@@ -129,7 +129,7 @@
               @if (!$leader->phone_member_private && $leader->phone_member)
                 <p><strong>GSM :</strong> {{{ $leader->phone_member }}}</p>
               @endif
-              @if ($leader->email_member)
+              @if (Parameter::get(Parameter::$ALLOW_PERSONAL_CONTACT) && $leader->email_member)
                 <p>
                   <strong>E-mail :</strong>
                   @if ($archive_year)
