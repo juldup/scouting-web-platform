@@ -185,6 +185,7 @@
       <li>La page spécifique de la fête d'unité, à mettre à jour chaque année</li>
       <li>La page d'inscription</li>
       <li>La charte d'unité</li>
+      <li>Le RGPD</li>
       <li>La page de présentation de l'uniforme de chaque section</li>
       <li>La page d'aide</li>
     </ul>

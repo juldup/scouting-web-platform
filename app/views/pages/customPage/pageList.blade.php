@@ -68,6 +68,17 @@
             </td>
           </tr>
           <tr>
+            <th>RGPD</th>
+            <td>
+              <span class='horiz-divider'></span>
+                <a href='{{ URL::route('gdpr') }}' class='btn btn-default'><span class='glyphicon glyphicon-eye-open'></span></a>
+              &nbsp;
+              @if ($user->can(Privilege::$EDIT_PAGES, 1))
+                <a href='{{ URL::route('edit_gdpr_page') }}' class='btn btn-primary'><span class='glyphicon glyphicon-edit'></span></a>
+              @endif
+            </td>
+          </tr>
+          <tr>
             <th>Adresses</th>
             <td>
               <span class='horiz-divider'></span>

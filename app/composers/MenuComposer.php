@@ -62,9 +62,11 @@ class MenuComposer {
       $homeCategory["Présentation"] = 'section_unit';
     if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
       $homeCategory["Charte d'unité"] = 'unit_policy';
+    if (Parameter::get(Parameter::$SHOW_GDPR))
+      $homeCategory["RDPG"] = 'gdpr';
     if (Parameter::get(Parameter::$SHOW_CONTACTS))
       $homeCategory["Contacts" . (Parameter::get(Parameter::$SHOW_LINKS) ? " et liens" : "")] = 'contacts';
-    if ((Parameter::get(Parameter::$SHOW_SECTIONS) || Parameter::get(Parameter::$SHOW_UNIT_POLICY) || Parameter::get(Parameter::$SHOW_CONTACTS)) &&
+    if ((Parameter::get(Parameter::$SHOW_SECTIONS) || Parameter::get(Parameter::$SHOW_UNIT_POLICY) || Parameter::get(Parameter::$SHOW_GDPR) || Parameter::get(Parameter::$SHOW_CONTACTS)) &&
         (Parameter::get(Parameter::$SHOW_REGISTRATION) || Parameter::get(Parameter::$SHOW_HEALTH_CARDS)))
       $homeCategory["divider_1"] = "divider";
     if (Parameter::get(Parameter::$SHOW_REGISTRATION))

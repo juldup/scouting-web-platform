@@ -60,6 +60,7 @@ class CreateDatabase extends Migration {
     DB::table('parameters')->insert(array('name' => Parameter::$SHOW_SUGGESTIONS, 'value' => 'true'));
     DB::table('parameters')->insert(array('name' => Parameter::$SHOW_UNIFORMS, 'value' => 'true'));
     DB::table('parameters')->insert(array('name' => Parameter::$SHOW_UNIT_POLICY, 'value' => 'true'));
+    DB::table('parameters')->insert(array('name' => Parameter::$SHOW_GDPR, 'value' => 'true'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_1_CHILD, 'value' => '40,75'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_2_CHILDREN, 'value' => '32,25'));
     DB::table('parameters')->insert(array('name' => Parameter::$PRICE_3_CHILDREN, 'value' => '26,75'));

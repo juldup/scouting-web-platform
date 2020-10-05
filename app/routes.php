@@ -179,6 +179,11 @@ Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "Uni
 Route::get('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page", "uses" => "UnitPolicyPageController@showEdit"));
 Route::post('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page_submit", "uses" => "UnitPolicyPageController@savePage"));
 
+// GDPR
+Route::get('rgpd/{section_slug?}', array("as" => "gdpr", "uses" => "GDPRPageController@showPage"));
+Route::get('gestion/rgpd/{section_slug?}', array("as" => "edit_gdpr_page", "uses" => "GDPRPageController@showEdit"));
+Route::post('gestion/rgpd/{section_slug?}', array("as" => "edit_gdpr_page_submit", "uses" => "GDPRPageController@savePage"));
+
 // Uniforms
 Route::get('uniforme/{section_slug?}', array("as" => "uniform", "uses" => "UniformPageController@showPage"));
 Route::get('gestion/uniforme/{section_slug}', array("as" => "edit_uniform_page", "uses" => "UniformPageController@showEdit"));

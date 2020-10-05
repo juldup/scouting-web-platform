@@ -77,6 +77,7 @@ class RegistrationController extends GenericPageController {
     $pageBody = str_replace("(PRIX TROIS ANIMATEURS)", Parameter::get(Parameter::$PRICE_3_LEADERS), $pageBody);
     $pageBody = str_replace("BEXX-XXXX-XXXX-XXXX", Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), $pageBody);
     $pageBody = str_replace("(ACCES CHARTE)", '<a href="' . URL::route('unit_policy') . '">charte d&apos;unité</a>', $pageBody);
+    $pageBody = str_replace("(ACCES RGPD)", '<a href="' . URL::route('gdpr') . '">RGPD</a>', $pageBody);
     $pageBody = str_replace("(ACCES CONTACT)", '<a href="' . URL::route('contacts') . '">contact</a>', $pageBody);
     $pageBody = str_replace("(ACCES FORMULAIRE)", '<a href="' . URL::route('registration_form') . '">formulaire d&apos;inscription</a>', $pageBody);
     // Get the list of members owned by the user for the reregistration form
@@ -175,14 +176,20 @@ class RegistrationController extends GenericPageController {
    * [Route] Called when the registration form is submitted
    */
   public function submit() {
-    // Get whether the policy agreement has been accepted
+    // Get whether the policy agreement and GDPR have been accepted
     $policyAgreement = Input::get('policy_agreement') ? true : false;
-    if (Parameter::get(Parameter::$SHOW_UNIT_POLICY) && !$policyAgreement) {
+    $gdprAgreement = Input::get('gdpr_agreement') ? true : false;
+    if ((Parameter::get(Parameter::$SHOW_UNIT_POLICY) && !$policyAgreement) ||
+        (Parameter::get(Parameter::$SHOW_GDPR) && !$gdprAgreement)) {
       // The policy agreement has not been accepted, set error message
       $success = false;
-      $message = "Vous devez adhérer à la charte d'unité pour inscrire un enfant.";
+      $message = "";
+      if (Parameter::get(Parameter::$SHOW_UNIT_POLICY) && !$policyAgreement)
+        $message .= "Vous devez adhérer à la charte d'unité pour inscrire un enfant.";
+      if (Parameter::get(Parameter::$SHOW_GDPR) && !$gdprAgreement)
+        $message .= ($message ? " " : "") . "Vous devez accepter le RGPD.";
     } else {
-      // The policy agreement has been accepted, create a new member instance from input
+      // The policy agreement and GDPR have been accepted, create a new member instance from input
       $result = Member::createFromInput(false);
       if (is_string($result)) {
         // An error has occured

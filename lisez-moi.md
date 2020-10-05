@@ -10,6 +10,7 @@ Liste des fonctionnalités présentes:
   * Page d'accueil
   * Page d'adresses, de contacts et de liens
   * Page charte d'unité
+  * Page RGPD
   * Page d'inscription dans l'unité
   * Page d'aide
   * Page "boite à suggestions"

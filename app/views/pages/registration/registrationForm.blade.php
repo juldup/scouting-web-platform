@@ -433,6 +433,19 @@
         </div>
       @endif
      
+      @if (Parameter::get(Parameter::$SHOW_GDPR))
+        <div class='form-group'>
+          {{ Form::label('gdpr_agreement', "RGPD", array('class' => 'col-md-3 control-label')) }}
+          <div class="col-md-8">
+            <p class="form-side-note">
+              J'ai pris connaissance du <a target="_blank" href="{{ URL::route('gdpr') }}">RGPD</a>
+              et l'accepte : 
+              {{ Form::checkbox('gdpr_agreement') }}
+            </p>
+          </div>
+        </div>
+      @endif
+      
       <div class="form-group">
         <div class="col-md-9 col-md-offset-3">
           {{ Form::submit('Inscrire maintenant', array('class' => 'btn btn-primary')) }}

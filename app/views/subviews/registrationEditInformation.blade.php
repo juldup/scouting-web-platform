@@ -71,6 +71,12 @@
           <td>(lien vers la page de la charte d'unité)</td>
         </tr>
         <tr>
+          <td><strong>(ACCES RGPD)</strong></td>
+          <td>=&gt;</td>
+          <td><strong><a target='_blank' href="{{URL::route('gdpr')}}">RGPD</a></strong></td>
+          <td>(lien vers la page du RGPD)</td>
+        </tr>
+        <tr>
           <td><strong>(ACCES CONTACT)</strong></td>
           <td>=&gt;</td>
           <td><strong><a target='_blank' href="{{URL::route('contacts')}}">contact</a></strong></td>

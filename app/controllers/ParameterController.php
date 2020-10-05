@@ -299,6 +299,10 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"charte d'unité\"",
             'parameter_name' => Parameter::$SHOW_UNIT_POLICY
         ),
+        'page_gdpr' => array(
+            'description' => "Afficher la page \"RGPD\"",
+            'parameter_name' => Parameter::$SHOW_GDPR
+        ),
         'page_uniforms' => array(
             'description' => "Afficher la page \"uniformes\"",
             'parameter_name' => Parameter::$SHOW_UNIFORMS

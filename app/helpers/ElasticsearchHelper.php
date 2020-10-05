@@ -181,6 +181,13 @@ class ElasticsearchHelper {
             $title = "Charte d'unité";
           }
           break;
+        case "gdpr":
+          if (Parameter::get(Parameter::$SHOW_GDPR)) {
+            $showPage = true;
+            $linkURL = URL::route('gdpr');
+            $title = "RGPD";
+          }
+          break;
         case "section_uniform":
           if (Parameter::get(Parameter::$SHOW_UNIFORMS)) {
             $showPage = true;
