@@ -69,4 +69,16 @@ class DateHelper {
     return true;
   }
   
+  /**
+   * Checks whether a string matches a valid mysql datetime (YYYY-MM-DD hh:mm:ss)
+   */
+  public static function verifyMysqlDatetime($datetime) { 
+    if (preg_match("/^(\d{4})-(\d{2})-(\d{2}) ([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/", $datetime, $matches)) {
+      if (checkdate($matches[2], $matches[3], $matches[1])) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
 }

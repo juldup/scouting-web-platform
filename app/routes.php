@@ -156,6 +156,7 @@ Route::get('gestion/inscription/changer-de-section/{section_slug?}', array("as" 
 Route::post('gestion/inscription/changer-de-section/submit/{section_slug}', array("as" => "manage_member_section_submit", "uses" => "RegistrationController@submitUpdateSection"));
 Route::get('gestion/inscription/cotisation/{section_slug?}', array("as" => "manage_subscription_fee", "uses" => "RegistrationController@manageSubscriptionFee"));
 Route::post('ajax/gestion/inscription/cotisation', array("as" => "ajax_update_subscription_fee", "uses" => "RegistrationController@updateSubscriptionFee"));
+Route::post('gestion/inscription/priorite', array("as" => "submit_registration_priority", "uses" => "RegistrationController@submitPriority"));
 
 // Absences
 Route::get('absences/{section_slug?}', array("as" => "absences", "uses" => "AbsenceController@showPage"));

@@ -139,6 +139,11 @@ class RegistrationController extends GenericPageController {
       if (count($members)) {
         // Get value from another existing member owned by this user
         $defaultValues = $members[0]->attributesToArray();
+        $siblings = "";
+        foreach ($members as $member) {
+          $siblings .= ($siblings ? ", " : "") . $member->getFullName();
+        }
+        $defaultValues['registration_siblings'] = $siblings;
       } else {
         // Default values if none of the above apply
         $defaultValues = array(
@@ -222,6 +227,8 @@ class RegistrationController extends GenericPageController {
         Session::put('registration.email3', Input::get('email3'));
         Session::put('registration.family_in_other_units', Input::get('family_in_other_units'));
         Session::put('registration.family_in_other_units_details', Input::get('family_in_other_units_details'));
+        Session::put('registration.registration_siblings', Input::get('registration_siblings'));
+        Session::put('registration.registration_former_leader_child', Input::get('registration_former_leader_child'));
       }
     }
     // Send confirmation e-mail
@@ -323,6 +330,8 @@ class RegistrationController extends GenericPageController {
         'comments' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_COMMENTS),
         'family' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FAMILY),
         'finish' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FINISH),
+        'registration_siblings' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SIBLINGS), 
+        'registration_former_leader_child' => Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FORMER_LEADER_CHILD),
     );
     // Make view
     return View::make('pages.registration.editForm', array(
@@ -365,6 +374,8 @@ class RegistrationController extends GenericPageController {
     Parameter::set(Parameter::$REGISTRATION_FORM_HELP_COMMENTS, Input::get('comments'));
     Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FAMILY, Input::get('family'));
     Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FINISH, Input::get('finish'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_SIBLINGS, Input::get('registration_siblings'));
+    Parameter::set(Parameter::$REGISTRATION_FORM_HELP_FORMER_LEADER_CHILD, Input::get('registration_former_leader_child'));
     return Redirect::route('registration_form');
   }
   
@@ -394,29 +405,77 @@ class RegistrationController extends GenericPageController {
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
       return Redirect::route('manage_reregistration');
     }
-    // Gather pending registrations
-    $pendingRegistrations = Member::where('validated', '=', false)
-            ->where('section_id', '=', $this->section->id)
-            ->orderBy('in_waiting_list')
-            ->get();
-    // List other sections that contain pending registrations
-    $otherSection = Section::where('id', '!=', $this->section->id)
-            ->whereExists(function($query) {
-              $query->select(DB::raw(1))
-                      ->from('members')
-                      ->where('validated', '=', false)
-                      ->whereRaw('members.section_id = sections.id');
-            })->get();
-    // Render view
-    return View::make('pages.registration.manageRegistration', array(
-        'registrations' => $pendingRegistrations,
-        'other_sections' => $otherSection,
-        'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
-        'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
-        'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
-        'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
-        'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
-    ));
+    if (!Parameter::get(Parameter::$ADVANCED_REGISTRATIONS)) { // Normal registrations
+      // Gather pending registrations
+      $pendingRegistrations = Member::where('validated', '=', false)
+              ->where('section_id', '=', $this->section->id)
+              ->orderBy('in_waiting_list')
+              ->get();
+      // List other sections that contain pending registrations
+      $otherSection = Section::where('id', '!=', $this->section->id)
+              ->whereExists(function($query) {
+                $query->select(DB::raw(1))
+                        ->from('members')
+                        ->where('validated', '=', false)
+                        ->whereRaw('members.section_id = sections.id');
+              })->get();
+      // Render view
+      return View::make('pages.registration.manageRegistration', array(
+          'registrations' => $pendingRegistrations,
+          'other_sections' => $otherSection,
+          'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+          'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+          'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+          'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
+      ));
+    } else { // Advanced registrations
+      // Gather pending registrations
+      $pendingRegistrations = Member::where('validated', '=', false)->get();
+      $sectionCategories = [];
+      foreach ($pendingRegistrations as $registration) {
+        $category = $registration->registration_section_category;
+        if (!$category) $category = $registration->getSection()->name;
+        if (!array_key_exists($category, $sectionCategories)) {
+          $sectionCategories[$category] = [];
+        }
+        $sectionCategories[$category][] = $registration;
+      }
+      $referenceCity = Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY);
+      if ($referenceCity) $referenceCity = Helper::slugify($referenceCity);
+      foreach ($sectionCategories as $category => $pendingRegistrationArray) {
+        usort($pendingRegistrationArray, function($a, $b) use ($referenceCity) {
+          // Is leader
+          if ($a->is_leader && !$b->is_leader) return -1;
+          if ($b->is_leader && !$a->is_leader) return 1;
+          // Siblings
+          if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
+          if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
+          // City
+          if ($referenceCity) {
+            if (strpos(Helper::slugify($a->city), $referenceCity) !== false
+                    && strpos(Helper::slugify($b->city), $referenceCity) == false) return -1;
+            if (strpos(Helper::slugify($b->city), $referenceCity) !== false
+                    && strpos(Helper::slugify($a->city), $referenceCity) == false) return 1;
+          }
+          // Former leader child
+          if (trim($a->registration_former_leader_child) && !trim($b->registration_former_leader_child)) return -1;
+          if (trim($b->registration_former_leader_child) && !trim($a->registration_former_leader_child)) return 1;
+          // Date
+          return strcmp($a->registration_date, $b->registration_date);
+        });
+        $sectionCategories[$category] = $pendingRegistrationArray;
+      }
+      // Render view
+      return View::make('pages.registration.manageAdvancedRegistration', array(
+          'registrations' => $sectionCategories,
+          'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+          'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+          'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+          'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
+      ));
+    }
   }
   
   /**
@@ -885,6 +944,37 @@ class RegistrationController extends GenericPageController {
     LogEntry::log("Inscription", "Mise à jour du statut de paiement de cotisation", array("Membres" => $members)); // TODO improve log message
     // Redirect with status message
     return json_encode(array('result' => $error ? "Failure" : "Success", 'message' => $message));
+  }
+  
+  /**
+   * [Route] Updates the priority fields of a registration record
+   */
+  public function submitPriority() {
+    $memberId = Input::get('member_id');
+    $member = Member::find($memberId);
+    if ($member) {
+      $member->is_leader = Input::get('registration_is_leader') ? 1 : 0;
+      $member->registration_siblings = Input::get('registration_siblings');
+      $member->city = Input::get('registration_city');
+      $member->registration_former_leader_child = Input::get('registration_former_leader_child');
+      // Check date
+      if (DateHelper::verifyMysqlDatetime(Input::get('registration_date'))) {
+        $member->registration_date = Input::get('registration_date');
+        $wrongDate = false;
+      } else {
+        $wrongDate = true;
+      }
+      $member->save();
+      if ($wrongDate) {
+        return Redirect::route('manage_registration', array('section_slug' => $this->section->slug))
+                ->with('error_message', "Le format de la date d'inscription doit être AAAA-MM-JJ hh:mm:ss (ex. : 2020-08-18 17:07:30). Les autres données ont été enregistrées.");
+      } else {
+        return Redirect::route('manage_registration', array('section_slug' => $this->section->slug))
+                ->with('success_message', "Modifications enregistrées.");
+      }
+    }
+    return Redirect::route('manage_registration', array('section_slug' => $this->section->slug))
+              ->with('error_message', "Une erreur est survenue.");
   }
   
 }

@@ -48,6 +48,7 @@ class Parameter extends Eloquent {
   public static $REGISTRATION_AUTOMATIC = "Registration automatic";
   public static $REGISTRATION_START_DATE = "Registration start date";
   public static $REGISTRATION_END_DATE = "Registration end date";
+  public static $ADVANCED_REGISTRATIONS = "Advanced registrations";
   public static $GROUPED_SECTION_MENU = "Grouped section menu";
   public static $SHOW_ABSENCES = "Show absences";
   public static $SHOW_HEALTH_CARDS = "Show health cards";
@@ -138,6 +139,9 @@ class Parameter extends Eloquent {
   public static $REGISTRATION_FORM_HELP_COMMENTS = "Registration form help comments";
   public static $REGISTRATION_FORM_HELP_FAMILY = "Registration form help family";
   public static $REGISTRATION_FORM_HELP_FINISH = "Registration form help finish";
+  public static $REGISTRATION_FORM_HELP_SIBLINGS = "Registration form help siblings";
+  public static $REGISTRATION_FORM_HELP_FORMER_LEADER_CHILD = "Registration form help former leader chield";
+  public static $REGISTRATION_PRIORITY_CITY = "Registration priority city";
   // Automatic e-mail content
   public static $AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED = "Automatic e-mail content registration form filled";
   public static $AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED = "Automatic e-mail content registration validated";

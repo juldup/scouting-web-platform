@@ -118,3 +118,29 @@ function editRegistration(memberId) {
   }
   $("#member_form").slideDown();
 }
+
+// Show edit registration priority for a member
+function editRegistrationPriority(memberId) {
+  var element = $("#advanced-registration-edit-" + memberId);
+  $(".advanced-registration-edit:visible").hide();
+  element.show();
+  $(document).focus();
+};
+
+// Close registration priority edit panel
+$().ready(function() {
+  $(".close-button").click(function() {
+    $(this).closest(".advanced-registration-edit").hide();
+  });
+  $(".advanced-registration-edit").click(function() {
+    $(this).hide();
+  });
+  $('.advanced-registration-edit-panel').click(function(event) {
+    event.stopPropagation();
+  });
+  $(document).on('keydown', function(event) {
+    if(event.key == "Escape") {
+      $(".advanced-registration-edit").hide();
+    }
+  });
+});

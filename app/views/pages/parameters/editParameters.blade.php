@@ -105,6 +105,16 @@
               <span class="horiz-divider"></span>
               {{ Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
             </div>
+            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
+              {{ Form::label("advanced_registrations", "Inscriptions avancées") }}
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox("advanced_registrations", 1, $advanced_registrations) }}
+            </div>
+            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
+              {{ Form::label("registration_priority_city", "==> Localité prioritaire") }}
+              <span class="horiz-divider"></span>
+              {{ Form::text("registration_priority_city", Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY), ['class' => 'form-control medium']) }}
+            </div>
           </div>
           
           <legend>

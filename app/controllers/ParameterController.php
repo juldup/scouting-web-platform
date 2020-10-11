@@ -58,6 +58,7 @@ class ParameterController extends BaseController {
         'registration_active' => Parameter::get(Parameter::$REGISTRATION_ACTIVE),
         'reregistration_active' => Parameter::get(Parameter::$REREGISTRATION_ACTIVE),
         'registration_automatic' => Parameter::get(Parameter::$REGISTRATION_AUTOMATIC),
+        'advanced_registrations' => Parameter::get(Parameter::$ADVANCED_REGISTRATIONS),
         'grouped_section_menu' => Parameter::get(Parameter::$GROUPED_SECTION_MENU),
         'prices' => $prices,
         'document_categories' => explode(";", Parameter::get(Parameter::$DOCUMENT_CATEGORIES)),
@@ -95,6 +96,9 @@ class ParameterController extends BaseController {
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
         ["name" => "Inscriptions activation automatique", "key" => Parameter::$REGISTRATION_AUTOMATIC, "value" => (Input::get('registration_automatic') ? "true" : "false"),
             "valueNames" => ["true" => "oui", "false" => "non"]],
+        ["name" => "Inscriptions avancées", "key" => Parameter::$ADVANCED_REGISTRATIONS, "value" => (Input::get('advanced_registrations') ? "true" : "false"),
+            "valueNames" => ["true" => "actives", "false" => "désactivées"]],
+        ["name" => "Localité prioritaire", "key" => Parameter::$REGISTRATION_PRIORITY_CITY, "value" => Input::get('registration_priority_city')],
         // Section menu
         ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => (Input::get('grouped_section_menu') ? "true" : "false"),
             "valueNames" => ["true" => "groupé", "false" => "séparé"]],

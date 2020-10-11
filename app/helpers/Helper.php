@@ -333,7 +333,7 @@ class Helper {
     // Remove unwanted characters
     $text = preg_replace('~[^-\w]+~', '', $text);
     if (empty($text)) {
-      throw new Exception("Could not slugify text");
+      return "-";
     }
     return $text;
   }

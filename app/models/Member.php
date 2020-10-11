@@ -357,6 +357,7 @@ class Member extends Eloquent {
     try {
       if ($validate) $data['validated'] = true;
       $data['year_in_section_last_update'] = date('Y') . "-" . (date('Y') + 1);
+      $data['registration_date'] = date('Y-m-d H:i:s');
       $member = Member::create($data);
       // Set last reregistration year
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
@@ -423,6 +424,8 @@ class Member extends Eloquent {
     $familyMembers = Input::get('family_in_other_units');
     $familyDetails = Input::get('family_in_other_units_details');
     $isLeader = Input::get('is_leader') ? true : false;
+    $registrationSiblings = trim(Input::get('registration_siblings'));
+    $registrationFormerLeaderChild = trim(Input::get('registration_former_leader_child'));
     // Error message is initially empty
     $errorMessage = "";
     // Check all fields for errors
@@ -550,6 +553,8 @@ class Member extends Eloquent {
           'family_in_other_units' => $familyMembers,
           'family_in_other_units_details' => $familyDetails,
           'is_leader' => $isLeader,
+          'registration_siblings' => $registrationSiblings,
+          'registration_former_leader_child' => $registrationFormerLeaderChild,
           'validated' => false,
       );
     }

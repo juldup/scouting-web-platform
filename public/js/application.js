@@ -112,9 +112,9 @@ $().ready(function() {
 
 // Convert all checkboxes to switches
 $().ready(function() {
-  $('input[type="checkbox"]').bootstrapSwitch();
-  $('input[type="checkbox"]').bootstrapSwitch('setOnLabel', 'Oui');
-  $('input[type="checkbox"]').bootstrapSwitch('setOffLabel', 'Non');
+  $('input[type="checkbox"]:not(.no-bootstrap-switch)').bootstrapSwitch();
+  $('input[type="checkbox"]:not(.no-bootstrap-switch)').bootstrapSwitch('setOnLabel', 'Oui');
+  $('input[type="checkbox"]:not(.no-bootstrap-switch)').bootstrapSwitch('setOffLabel', 'Non');
 });
 
 /**************************************************

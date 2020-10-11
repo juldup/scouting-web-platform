@@ -319,7 +319,7 @@
             </div>
           </div>
           
-          <div class='row'>
+          <div class='form-group'>
             {{ Form::label('family_in_other_units', "Famille dans d'autres unités", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-5">
               {{ Form::select('', array(), '', array('class' => 'form-control medium', 'disabled' => 'disabled')) }}
@@ -334,6 +334,30 @@
               {{ Form::textarea('family', $data['family'], array('class' => 'form-control edit-form-field', 'rows' => 5)) }}
             </div>
           </div>
+          
+          @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS))
+            <div class='form-group'>
+              {{ Form::label('registration_siblings', "Frères et sœurs dans l'unité", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-5">
+                {{ Form::text('', '',
+                          array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control', 'disabled' => 'disabled')) }}
+              </div>
+              <div class="col-md-4">
+                {{ Form::text('registration_siblings', $data['registration_siblings'], array('class' => 'form-control edit-form-field')) }}
+              </div>
+            </div>
+            
+            <div class='form-group'>
+              {{ Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-5">
+                {{ Form::text('', '',
+                          array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control', 'disabled' => 'disabled')) }}
+              </div>
+              <div class="col-md-4">
+                {{ Form::text('registration_former_leader_child', $data['registration_former_leader_child'], array('class' => 'form-control edit-form-field')) }}
+              </div>
+            </div>
+          @endif
           
           <legend>Terminer l'inscription</legend>
           <div class='form-group'>

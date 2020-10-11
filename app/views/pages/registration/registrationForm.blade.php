@@ -399,7 +399,7 @@
             </div>
           </div>
           
-          <div class='row'>
+          <div class='form-group'>
             {{ Form::label('family_in_other_units', "Famille dans d'autres unités", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-5">
               {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), $default['family_in_other_units'], array('class' => 'form-control medium')) }}
@@ -415,42 +415,73 @@
             </div>
           </div>
           
-      <legend>Terminer l'inscription</legend>
-          <p class='registration-form-subsection-information'>
-            {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FINISH)) }}
-          </p>
-      
-      @if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
-        <div class='form-group'>
-          {{ Form::label('policy_agreement', "Engagement", array('class' => 'col-md-3 control-label')) }}
-          <div class="col-md-8">
-            <p class="form-side-note">
-              J'ai pris connaissance de la <a target="_blank" href="{{ URL::route('unit_policy') }}">charte d'unité</a>
-              et y adhère entièrement : 
-              {{ Form::checkbox('policy_agreement') }}
+          @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS))
+            <div class='form-group'>
+              {{ Form::label('registration_siblings', "Frères et sœurs dans l'unité", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-5">
+                {{ Form::text('registration_siblings', $default['registration_siblings'],
+                          array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control')) }}
+              </div>
+              <div class="col-md-4">
+                <p class="form-side-note registration-form-side-information">
+                  {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SIBLINGS)) }}
+                </p>
+              </div>
+            </div>
+            
+            <div class='form-group'>
+              {{ Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-5">
+                {{ Form::text('registration_former_leader_child', $default['registration_former_leader_child'],
+                          array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control')) }}
+              </div>
+              <div class="col-md-4">
+                <p class="form-side-note registration-form-side-information">
+                  {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FORMER_LEADER_CHILD)) }}
+                </p>
+              </div>
+            </div>
+          @endif
+          
+          <legend>Terminer l'inscription</legend>
+            <p class='registration-form-subsection-information'>
+              {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FINISH)) }}
             </p>
-          </div>
-        </div>
-      @endif
-     
-      @if (Parameter::get(Parameter::$SHOW_GDPR))
-        <div class='form-group'>
-          {{ Form::label('gdpr_agreement', "RGPD", array('class' => 'col-md-3 control-label')) }}
-          <div class="col-md-8">
-            <p class="form-side-note">
-              J'ai pris connaissance du <a target="_blank" href="{{ URL::route('gdpr') }}">RGPD</a>
-              et l'accepte : 
-              {{ Form::checkbox('gdpr_agreement') }}
-            </p>
-          </div>
-        </div>
-      @endif
+            
+            @if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
+              <div class='form-group'>
+                {{ Form::label('policy_agreement', "Engagement", array('class' => 'col-md-3 control-label')) }}
+                <div class="col-md-8">
+                  <p class="form-side-note">
+                    J'ai pris connaissance de la <a target="_blank" href="{{ URL::route('unit_policy') }}">charte d'unité</a>
+                    et y adhère entièrement : 
+                    {{ Form::checkbox('policy_agreement') }}
+                  </p>
+                </div>
+              </div>
+            @endif
+            
+            @if (Parameter::get(Parameter::$SHOW_GDPR))
+              <div class='form-group'>
+                {{ Form::label('gdpr_agreement', "RGPD", array('class' => 'col-md-3 control-label')) }}
+                <div class="col-md-8">
+                  <p class="form-side-note">
+                    J'ai pris connaissance du <a target="_blank" href="{{ URL::route('gdpr') }}">RGPD</a>
+                    et l'accepte : 
+                    {{ Form::checkbox('gdpr_agreement') }}
+                  </p>
+                </div>
+              </div>
+            @endif
       
-      <div class="form-group">
-        <div class="col-md-9 col-md-offset-3">
-          {{ Form::submit('Inscrire maintenant', array('class' => 'btn btn-primary')) }}
+            <div class="form-group">
+              <div class="col-md-9 col-md-offset-3">
+                {{ Form::submit('Inscrire maintenant', array('class' => 'btn btn-primary')) }}
+              </div>
+            </div>
+          {{ Form::close() }}
         </div>
       </div>
-    {{ Form::close() }}
+    </div>
   </div>
 @stop
