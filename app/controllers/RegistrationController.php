@@ -167,6 +167,7 @@ class RegistrationController extends GenericPageController {
           'family_in_other_units' => '0',
           'family_in_other_units_details' => '',
           'registration_siblings' => '',
+          'registration_former_leader_child' => '',
         );
       }
     }
