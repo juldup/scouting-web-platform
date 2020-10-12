@@ -78,9 +78,10 @@ $().ready(function() {
   setTimeout(function() {
     if ($("[name='registration_automatic'").prop('checked')) {
       $("[name='registration_active']").bootstrapSwitch('toggleDisabled',true,true);
+      $(".registration_automatic_only").removeClass('semi-invisible');
     } else {
-      $("[name='registration_start_date']").bootstrapSwitch('toggleDisabled',true,true);
-      $("[name='registration_end_date']").bootstrapSwitch('toggleDisabled',true,true);
+      $(".registration_automatic_only").addClass('semi-invisible');
+      $(".registration_automatic_only").find('input').prop('disabled', 'disabled');
     }
   }, 10);
   $("[name='registration_automatic'").on('change.bootstrapSwitch', function(event, state) {
@@ -88,11 +89,29 @@ $().ready(function() {
     if ($("[name='registration_active']").prop('disabled') == !checked) {
       $("[name='registration_active']").bootstrapSwitch('toggleDisabled',true,true);
     }
-    if ($("[name='registration_start_date']").prop('disabled') == checked) {
-      $("[name='registration_start_date']").bootstrapSwitch('toggleDisabled',true,true);
+    if (checked) {
+      $(".registration_automatic_only").removeClass('semi-invisible');
+      $(".registration_automatic_only").find('input').prop('disabled', false);
+    } else {
+      $(".registration_automatic_only").addClass('semi-invisible');
+      $(".registration_automatic_only").find('input').prop('disabled', 'disabled');
     }
-    if ($("[name='registration_end_date']").prop('disabled') == checked) {
-      $("[name='registration_end_date']").bootstrapSwitch('toggleDisabled',true,true);
+  });
+  // Enable/disable registration button according to advanced registration
+  setTimeout(function() {
+    if ($("[name='advanced_registrations'").prop('checked')) {
+      $(".advanced-registration-only").removeClass('semi-invisible');
+    } else {
+      $(".advanced-registration-only").addClass('semi-invisible');
+    }
+  }, 10);
+  $("[name='advanced_registrations'").on('change.bootstrapSwitch', function(event, state) {
+    if ($("[name='advanced_registrations'").prop('checked')) {
+      $(".advanced-registration-only").removeClass('semi-invisible');
+      $(".advanced-registration-only").find('input').prop('disabled', false);
+    } else {
+      $(".advanced-registration-only").addClass('semi-invisible');
+      $(".advanced-registration-only").find('input').prop('disabled', 'disabled');
     }
   });
   

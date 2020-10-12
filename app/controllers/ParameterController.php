@@ -98,7 +98,10 @@ class ParameterController extends BaseController {
             "valueNames" => ["true" => "oui", "false" => "non"]],
         ["name" => "Inscriptions avancées", "key" => Parameter::$ADVANCED_REGISTRATIONS, "value" => (Input::get('advanced_registrations') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
-        ["name" => "Localité prioritaire", "key" => Parameter::$REGISTRATION_PRIORITY_CITY, "value" => Input::get('registration_priority_city')],
+        ["name" => "Localité prioritaire", "key" => Parameter::$REGISTRATION_PRIORITY_CITY,
+            "value" => Input::get('registration_priority_city') ? Input::get('registration_priority_city') : Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY)],
+        ["name" => "Sections génériques pour les inscriptions", "key" => Parameter::$REGISTRATION_GENERIC_SECTIONS, "value" => (Input::get('registration_generic_sections') ? "true" : "false"),
+            "valueNames" => ["true" => "oui", "false" => "non"]],
         // Section menu
         ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => (Input::get('grouped_section_menu') ? "true" : "false"),
             "valueNames" => ["true" => "groupé", "false" => "séparé"]],

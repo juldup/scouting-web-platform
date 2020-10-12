@@ -435,6 +435,9 @@ class RegistrationController extends GenericPageController {
       $sectionCategories = [];
       foreach ($pendingRegistrations as $registration) {
         $category = $registration->registration_section_category;
+        if ($category && array_key_exists($category, Section::$CATEGORIES)) {
+          $category = Section::$CATEGORIES[$category]['name'];
+        }
         if (!$category) $category = $registration->getSection()->name;
         if (!array_key_exists($category, $sectionCategories)) {
           $sectionCategories[$category] = [];

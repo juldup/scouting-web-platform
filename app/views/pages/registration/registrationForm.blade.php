@@ -285,7 +285,11 @@
           <div class='form-group'>
             {{ Form::label('section', "Section", array('class' => 'col-md-3 control-label')) }}
             <div class="col-md-4">
-              {{ Form::select('section', Section::getSectionsForSelect(), $user->currentSection->id, array('class' => 'form-control')) }}
+              @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS))
+                {{ Form::select('section_category', Section::getExistingCategoriesForSelect(), '', array('class' => 'form-control')) }}
+              @else
+                {{ Form::select('section', Section::getSectionsForSelect(), $user->currentSection->id, array('class' => 'form-control')) }}
+              @endif
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">

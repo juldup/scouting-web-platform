@@ -96,24 +96,36 @@
               <span class="horiz-divider"></span>
               {{ Form::checkbox("registration_automatic", 1, $registration_automatic) }}
             </div>
-            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("registration_start_date", "du") }}
-              <span class="horiz-divider"></span>
-              {{ Form::text('registration_start_date', Parameter::get(Parameter::$REGISTRATION_START_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
-              <span class="horiz-divider"></span>
-              {{ Form::label("registration_end_date", "au") }}
-              <span class="horiz-divider"></span>
-              {{ Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+            <div class="col-lg-6 col-md-6 col-sm-9 form-side-note">
+              <div class="registration_automatic_only">
+                <span class='glyphicon glyphicon-arrow-right'></span>
+                <span class='horiz-divider'></span>
+                {{ Form::label("registration_start_date", "du", ['class' => 'control-label']) }}
+                <span class="horiz-divider"></span>
+                {{ Form::text('registration_start_date', Parameter::get(Parameter::$REGISTRATION_START_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+                <span class="horiz-divider"></span>
+                {{ Form::label("registration_end_date", "au", ['class' => 'control-label']) }}
+                <span class="horiz-divider"></span>
+                {{ Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+              </div>
             </div>
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
               {{ Form::label("advanced_registrations", "Inscriptions avancées") }}
               <span class="horiz-divider"></span>
               {{ Form::checkbox("advanced_registrations", 1, $advanced_registrations) }}
             </div>
-            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("registration_priority_city", "==> Localité prioritaire") }}
+            <div class="col-lg-5 col-md-6 col-sm-9 form-side-note advanced-registration-only">
+              <span class='glyphicon glyphicon-arrow-right'></span>
+              <span class='horiz-divider'></span>
+              {{ Form::label("registration_priority_city", "Localité prioritaire", ['class' => 'control-label']) }}
               <span class="horiz-divider"></span>
               {{ Form::text("registration_priority_city", Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY), ['class' => 'form-control medium']) }}
+              <br />
+              <span class='glyphicon glyphicon-arrow-right'></span>
+              <span class='horiz-divider'></span>
+              {{ Form::label("registration_generic_sections", "Utiliser les sections génériques", ['class' => 'control-label']) }}
+              <span class="horiz-divider"></span>
+              {{ Form::checkbox("registration_generic_sections", 1, Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS) ? 1 : 0) }}
             </div>
           </div>
           

@@ -61,6 +61,11 @@
  *   Registration
  *   - subscription_paid:             Whether the subscription fee had been paid
  *   - last_reregistration:           The last time this member was marked as reregistered (scouting year in the format 'YYYY-YYYY')
+ *   - in_waiting_list
+ *   - registration_date
+ *   - registration_siblings
+ *   - registration_former_leader_child	
+ *   - 	registration_section_category
  *   Leader stuff
  *   - is_leader:                     Whether the member is a leader (the following fields make sense only if this one is true)
  *   - leader_in_charge:              Whether the member is a leader in charge of his/her section
@@ -401,7 +406,13 @@ class Member extends Eloquent {
     $listOrder = intval(Input::get('list_order'));
     $leaderDescription = Input::get('leader_description');
     $leaderRole = Input::get('leader_role');
-    $sectionId = Input::get('section');
+    if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS)) {
+      $sectionId = 1;
+      $registrationSectionCategory = Input::get('section_category');
+    } else {
+      $sectionId = Input::get('section');
+      $registrationSectionCategory = null;
+    }
     $subgroup = Input::get('subgroup');
     $role = Input::get('role');
     $phone1Unformatted = Input::get('phone1');
@@ -506,7 +517,7 @@ class Member extends Eloquent {
     if ($familyMembers != "0" && $familyMembers != "1" && $familyMembers != "2")
       $familyMembers = 0;
     // Make sure the member is not a non-leader in the "Unit" section
-    if (!$isLeader && $sectionId == 1) {
+    if (!$isLeader && $sectionId == 1 && $registrationSectionCategory == null) {
       $errorMessage .= "Il est impossible d'inscrire un membre non animateur dans la section \"Unité\". ";
     }
     // Return error message or array containing the data
@@ -555,6 +566,7 @@ class Member extends Eloquent {
           'is_leader' => $isLeader,
           'registration_siblings' => $registrationSiblings,
           'registration_former_leader_child' => $registrationFormerLeaderChild,
+          'registration_section_category' => $registrationSectionCategory,
           'validated' => false,
       );
     }

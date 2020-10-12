@@ -36,46 +36,50 @@ class Section extends Eloquent {
   protected $guarded = array('id', 'created_at', 'updated_at');
   
   // Static list of section categories
-  private static $CATEGORIES = array(
+  public static $CATEGORIES = array(
       "baladins" => array(
           "name" => "Baladins",
           "scouts" => "baladins",
-      ),
-      "louveteaux" => array(
-          "name" => "Louveteaux",
-          "scouts" => "louveteaux",
-      ),
-      "eclaireurs" => array(
-          "name" => "Éclaireurs",
-          "scouts" => "éclaireurs",
-      ),
-      "pionniers" => array(
-          "name" => "Pionniers",
-          "scouts" => "pionniers",
       ),
       "nutons" => array(
           "name" => "Nutons",
           "scouts" => "nutons",
       ),
+      "castors" => array(
+          "name" => "Castors",
+          "scouts" => "castors",
+      ),
+      "louveteaux" => array(
+          "name" => "Louveteaux",
+          "scouts" => "louveteaux",
+      ),
       "lutins" => array(
           "name" => "Lutins",
           "scouts" => "lutins",
+      ),
+      "louvettes" => array(
+          "name" => "Louvettes",
+          "scouts" => "louvettes",
+      ),
+      "eclaireurs" => array(
+          "name" => "Éclaireurs",
+          "scouts" => "éclaireurs",
       ),
       "guides" => array(
           "name" => "Guides",
           "scouts" => "guides",
       ),
-      "castors" => array(
-          "name" => "Castors",
-          "scouts" => "castors",
+      "scouts" => array(
+          "name" => "Scouts",
+          "scouts" => "scouts",
+      ),
+      "pionniers" => array(
+          "name" => "Pionniers",
+          "scouts" => "pionniers",
       ),
       "routiers" => array(
           "name" => "Routiers",
           "scouts" => "routiers",
-      ),
-      "scouts" => array(
-          "name" => "Scouts",
-          "scouts" => "scouts",
       ),
   );
   
@@ -137,6 +141,18 @@ class Section extends Eloquent {
    */
   public function getSectionCode() {
     return $this->section_type . $this->section_type_number;
+  }
+  
+  /**
+   * 
+   */
+  public static function getExistingCategoriesForSelect() {
+    $categories = [];
+    foreach (self::$CATEGORIES as $name => $data) {
+      $section = Section::where('section_category', '=', $name)->first();
+      if (count($section)) $categories[$name] = $data['name'];
+    }
+    return $categories;
   }
   
 }
