@@ -59,6 +59,11 @@ class GuestBookController extends BaseController {
               ->withInput()
               ->with('error_message', "Entrez un message.");
     }
+    if (Session::token() != Input::get('_token')) {
+      return Redirect::route('guest_book')
+              ->withInput()
+              ->with('error_message', "Une erreur est survenue. Veuillez rafraichir la page et réessayer.");
+    }
     try {
       // Create guest book entry
       GuestBookEntry::create(array(
