@@ -270,7 +270,7 @@ class Member extends Eloquent {
     // Archive leaders
     ArchivedLeader::archiveLeadersIfNeeded();
     // Get input data and check it for errors
-    $data = self::checkInputData($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
+    $data = self::checkInputData(false, $canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
     if (is_string($data)) {
       // An error has occured
       return $data;
@@ -379,13 +379,14 @@ class Member extends Eloquent {
    * the an array containg the data. If it is invalid, returns a string
    * containing an error message.
    * 
+   * @param type $newMember  Whether the member is being created (true) or updated (false)
    * @param type $canEditIdentity  Whether the current user is allowed to edit identity information
    * @param type $canEditContact  Whether the current user is allowed to edit contact information
    * @param type $canEditSection  Whether the current user is allowed to change the section
    * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali, subgroup and role
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
-  public static function checkInputData($canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
+  private static function checkInputData($newMember = true, $canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
     // Get data from input
     $firstName = Input::get('first_name');
     $lastName = Input::get('last_name');
@@ -406,7 +407,7 @@ class Member extends Eloquent {
     $listOrder = intval(Input::get('list_order'));
     $leaderDescription = Input::get('leader_description');
     $leaderRole = Input::get('leader_role');
-    if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS)) {
+    if ($newMember && Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS)) {
       $sectionId = 1;
       $registrationSectionCategory = Input::get('section_category');
     } else {
