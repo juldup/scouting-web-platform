@@ -63,7 +63,7 @@ class MenuComposer {
     if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
       $homeCategory["Charte d'unité"] = 'unit_policy';
     if (Parameter::get(Parameter::$SHOW_GDPR))
-      $homeCategory["RDPG"] = 'gdpr';
+      $homeCategory["RGPD"] = 'gdpr';
     if (Parameter::get(Parameter::$SHOW_CONTACTS))
       $homeCategory["Contacts" . (Parameter::get(Parameter::$SHOW_LINKS) ? " et liens" : "")] = 'contacts';
     if ((Parameter::get(Parameter::$SHOW_SECTIONS) || Parameter::get(Parameter::$SHOW_UNIT_POLICY) || Parameter::get(Parameter::$SHOW_GDPR) || Parameter::get(Parameter::$SHOW_CONTACTS)) &&
