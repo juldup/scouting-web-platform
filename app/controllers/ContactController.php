@@ -61,6 +61,7 @@ class ContactController extends GenericPageController {
             ->where('section_id', '=', '1')
             ->where('validated', '=', true)
             ->orderBy('leader_in_charge', 'desc')
+            ->orderBy('list_order', 'asc')
             ->orderBy('leader_name')
             ->get();
     // Find sections' leaders in charge
