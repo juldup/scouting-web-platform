@@ -220,7 +220,12 @@
         </div>
         <div class='form-group @if (!$leader_only) leader_specific @endif'>
           {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'control-label col-md-4')) }}
-          <div class='col-md-8'>{{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control', $edit_leader ? "enabled" : "disabled")) }}</div>
+          <div class='col-md-8'>
+            {{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control', $edit_leader ? "enabled" : "disabled")) }}
+            <br />
+              Afficher le rôle dans la page de contact :
+              {{ Form::checkbox('leader_role_in_contact_page', 1, '', array($edit_leader ? "enabled" : "disabled")) }}
+          </div>
         </div>
         <div class="row">
           {{ Form::label('has_handicap', "Handicap", array('class' => 'control-label col-md-4')) }}

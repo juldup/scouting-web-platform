@@ -73,6 +73,7 @@
  *   - leader_name:                   Name of the leader (how they are called in their section)
  *   - leader_description:            A short description of the leader
  *   - leader_role:                   Role of the leader in the section
+ *   - leader_role_in_contact_page    Whether the leader's role replaces the status in the contact page
  *   - has_picture:                   Whether this leader has an uploaded picture
  *   Initial registration
  *   - validated:                     Whether this member's registration has been validated by the leaders (the member is
@@ -324,6 +325,7 @@ class Member extends Eloquent {
       $this->leader_in_charge = $data['leader_in_charge'];
       $this->leader_description = $data['leader_description'];
       $this->leader_role = $data['leader_role'];
+      $this->leader_role_in_contact_page = $data['leader_role_in_contact_page'];
       $this->list_order = $data['list_order'];
     }
     // Update comments
@@ -407,6 +409,7 @@ class Member extends Eloquent {
     $listOrder = intval(Input::get('list_order'));
     $leaderDescription = Input::get('leader_description');
     $leaderRole = Input::get('leader_role');
+    $leaderRoleInContactPage = Input::get('leader_role_in_contact_page') ? true : false;
     if ($newMember && Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS)) {
       $sectionId = 1;
       $registrationSectionCategory = Input::get('section_category');
@@ -542,6 +545,7 @@ class Member extends Eloquent {
           'list_order' => $listOrder,
           'leader_description' => $leaderDescription,
           'leader_role' => $leaderRole,
+          'leader_role_in_contact_page' => $leaderRoleInContactPage,
           'section_id' => $sectionId,
           'subgroup' => $subgroup,
           'role' => $role,

@@ -47,6 +47,7 @@
           'leader_in_charge': {{ $member->leader_in_charge ? "true" : "false" }},
           'leader_description': "{{ Helper::sanitizeForJavascript($member->leader_description) }}",
           'leader_role': "{{ Helper::sanitizeForJavascript($member->leader_role) }}",
+          'leader_role_in_contact_page': {{ $member->leader_role_in_contact_page ? "true" : "false" }},
           'section_id': {{ $member->section_id }},
           'phone1': "{{ Helper::sanitizeForJavascript($member->phone1) }}",
           'phone1_owner': "{{ Helper::sanitizeForJavascript($member->phone1_owner) }}",

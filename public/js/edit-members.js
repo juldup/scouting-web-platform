@@ -75,6 +75,7 @@ function editMember(memberId) {
   $("#member_form [name='leader_in_charge']").prop("checked", members[memberId].leader_in_charge).trigger("change");
   $("#member_form [name='leader_description']").val(members[memberId].leader_description);
   $("#member_form [name='leader_role']").val(members[memberId].leader_role);
+  $("#member_form [name='leader_role_in_contact_page']").prop("checked", members[memberId].leader_role_in_contact_page).trigger("change");
   $("#member_form [name='section']").val(members[memberId].section_id);
   $("#member_form [name='subgroup']").val(members[memberId].subgroup);
   $("#member_form [name='role']").val(members[memberId].role);

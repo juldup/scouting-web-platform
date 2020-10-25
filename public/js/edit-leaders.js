@@ -68,6 +68,7 @@ function addLeader(sectionId) {
   $("#member_form [name='member_list_order']").val("");
   $("#member_form [name='leader_description']").val("");
   $("#member_form [name='leader_role']").val("");
+  $("#member_form [name='leader_role_in_contact_page']").prop("checked", false).trigger("change");
   $("#member_form [name='section']").val(sectionId);
   $("#member_form [name='subgroup']").val("");
   $("#member_form [name='role']").val("");
@@ -103,6 +104,9 @@ function editOwnData(leaderId) {
   } else {
     $("#own-data-form").slideDown();
   }
+  $([document.documentElement, document.body]).animate({
+    scrollTop: $("#own-data-form").offset().top
+  }, 500);
 }
 
 /**
@@ -122,6 +126,9 @@ function editLeader(leaderId, scoutToLeader) {
   } else {
     $("#member_form").slideDown();
   }
+  $([document.documentElement, document.body]).animate({
+    scrollTop: $("#member_form").offset().top
+  }, 500);
 }
 
 /**
@@ -147,6 +154,7 @@ function showEditLeaderForm(form, leaderId) {
   form.find("[name='list_order']").val(leaders[leaderId].list_order);
   form.find("[name='leader_description']").val(leaders[leaderId].leader_description);
   form.find("[name='leader_role']").val(leaders[leaderId].leader_role);
+  form.find("[name='leader_role_in_contact_page']").prop("checked", leaders[leaderId].leader_role_in_contact_page).trigger("change");
   form.find("[name='section']").val(leaders[leaderId].section_id);
   form.find("[name='subgroup']").val(leaders[leaderId].subgroup);
   form.find("[name='role']").val(leaders[leaderId].role);

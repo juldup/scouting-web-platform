@@ -87,10 +87,14 @@
         <div class="col-md-4">
           <p>
             <strong>{{{ $leader->leader_name }}}</strong>
-            @if ($leader->leader_in_charge)
-              @if ($leader->gender == "F") ({{{ Parameter::adaptAnUDenomination("animatrice d'unité") }}}) @else ({{{ Parameter::adaptAnUDenomination("animateur d'unité") }}}) @endif
+            @if ($leader->leader_role_in_contact_page && $leader->leader_role)
+              ({{{ $leader->leader_role }}})
             @else
-              @if ($leader->gender == "F") ({{{ Parameter::adaptAsUDenomination("équipière d'unité") }}}) @else ({{{ Parameter::adaptAsUDenomination("équipier d'unité") }}}) @endif
+              @if ($leader->leader_in_charge)
+                @if ($leader->gender == "F") ({{{ Parameter::adaptAnUDenomination("animatrice d'unité") }}}) @else ({{{ Parameter::adaptAnUDenomination("animateur d'unité") }}}) @endif
+              @else
+                @if ($leader->gender == "F") ({{{ Parameter::adaptAsUDenomination("équipière d'unité") }}}) @else ({{{ Parameter::adaptAsUDenomination("équipier d'unité") }}}) @endif
+              @endif
             @endif
           </p>
         </div>

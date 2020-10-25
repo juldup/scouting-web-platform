@@ -90,6 +90,7 @@ function editRegistration(memberId) {
   $("#member_form [name='leader_in_charge']").prop("checked", registrations[memberId].leader_in_charge).trigger("change");
   $("#member_form [name='leader_description']").val(registrations[memberId].leader_description);
   $("#member_form [name='leader_role']").val(registrations[memberId].leader_role);
+  $("#member_form [name='leader_role_in_contact_page']").prop("checked", registrations[memberId].leader_role_in_contact_page).trigger("change");
   $("#member_form [name='section']").val(registrations[memberId].section_id);
   $("#member_form [name='phone1']").val(registrations[memberId].phone1);
   $("#member_form [name='phone1_owner']").val(registrations[memberId].phone1_owner);

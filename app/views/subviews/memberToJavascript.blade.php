@@ -36,6 +36,7 @@
   'list_order': {{ $member->list_order }},
   'leader_description': "{{ Helper::sanitizeForJavascript($member->leader_description) }}",
   'leader_role': "{{ Helper::sanitizeForJavascript($member->leader_role) }}",
+  'leader_role_in_contact_page': {{ $member->leader_role_in_contact_page ? "true" : "false" }},
   'section_id': {{ $member->section_id }},
   'subgroup': "{{ Helper::sanitizeForJavascript($member->subgroup) }}",
   'role': "{{ Helper::sanitizeForJavascript($member->role) }}",
