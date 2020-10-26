@@ -169,7 +169,7 @@
                     </a>
                   </td>
                 </tr>
-                <tr id="details_{{ $member->id }}" class="details_member" style="display: none;">
+                <tr id="details_{{ $member->id }}" class="details_member tablesorter-childRow" style="display: none;">
                   <td colspan="2" class="listing-details-picture">
                     {{ $member->has_picture ? "<img src='" . $member->getPictureURL() . "' alt='not found'>" : "" }}
                   </td>
