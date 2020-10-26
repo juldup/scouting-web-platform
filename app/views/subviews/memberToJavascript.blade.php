@@ -33,7 +33,7 @@
   'comments': "{{ Helper::sanitizeForJavascript($member->comments) }}",
   'leader_name': "{{ Helper::sanitizeForJavascript($member->leader_name) }}",
   'leader_in_charge': {{ $member->leader_in_charge ? "true" : "false" }},
-  'list_order': {{ $member->list_order }},
+  'list_order': {{ $member->list_order ? $member->list_order : 0 }},
   'leader_description': "{{ Helper::sanitizeForJavascript($member->leader_description) }}",
   'leader_role': "{{ Helper::sanitizeForJavascript($member->leader_role) }}",
   'leader_role_in_contact_page': {{ $member->leader_role_in_contact_page ? "true" : "false" }},
