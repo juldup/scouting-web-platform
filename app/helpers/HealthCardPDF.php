@@ -84,7 +84,7 @@ class HealthCardPDF {
   // Constants
   protected static $LINE_HEIGHT = 4.2;
   protected static $INTERLINE = 6;
-  protected static $SMALL_INTERLINE = 3;
+  protected static $SMALL_INTERLINE = 1.5;
   
   // The current PDF document
   protected $pdf;
@@ -155,6 +155,14 @@ class HealthCardPDF {
   }
   
   /**
+   * (Helper function)
+   * Adds a small horizontal gap to indent the next entry
+   */
+  protected function indent() {
+    $this->pdf->Cell($this->pdf->GetStringWidth("• "), 4, "");
+  }
+  
+  /**
    * (Constructor)
    * Starts a new PDF document
    */
@@ -195,15 +203,17 @@ class HealthCardPDF {
     $this->pdf->Ln(4);
     // Identity section
     $this->pdf->SetFont("Times","B",10);
-    $this->pdf->Cell(185, self::$LINE_HEIGHT, "Identité du scout");
+    $this->pdf->Cell(185, self::$LINE_HEIGHT, "Identité du participant");
     $this->pdf->Ln(self::$INTERLINE);
     $this->entry("Nom : ", 60, $member->last_name);
     $this->entry("Prénom : ", 50, $member->first_name);
     $this->entry("Né$e le : ", 20, $member->getHumanBirthDate());
     $this->pdf->Ln();
-    $this->entry("Adresse : ", 150, $member->address . "  ;  " . $member->postcode . "  " . $member->city);
+    $this->entry("N° registre national : ", 35, $healthCard->national_id);
+    $this->entry("Téléphone : ", 35, $member->getPersonalPhone());
+    $this->entry("E-mail : ", 60, $member->email_member);
     $this->pdf->Ln();
-    $this->entry("Téléphone : ", 75, $member->getPersonalPhone());
+    $this->entry("Adresse : ", 150, $member->address . "  ;  " . $member->postcode . "  " . $member->city);
     $this->pdf->Ln(self::$INTERLINE);
     // Contact section
     $this->pdf->SetFont("Times", "B", 10);
@@ -214,7 +224,9 @@ class HealthCardPDF {
     $this->multiline($healthCard->contact1_name
             . ($healthCard->contact1_relationship ? " (" . $healthCard->contact1_relationship . ")" : "") . "\n"
             . $healthCard->contact1_address . "\n"
-            . $healthCard->contact1_phone, 90);
+            . $healthCard->contact1_phone . "\n"
+            . $healthCard->contact1_email
+            . ($healthCard->contact1_comment ? "\n" . $healthCard->contact1_comment : ""), 90);
     $y2 = $this->pdf->GetY();
     $this->pdf->SetY($y);
     $this->pdf->SetX(110);
@@ -222,7 +234,9 @@ class HealthCardPDF {
     $this->multiline($healthCard->contact2_name
             . ($healthCard->contact2_relationship ? " (" . $healthCard->contact2_relationship . ")" : "") . "\n"
             . $healthCard->contact2_address . "\n"
-            . $healthCard->contact2_phone, 90);
+            . $healthCard->contact2_phone . "\n"
+            . $healthCard->contact2_email
+            . ($healthCard->contact2_comment ? "\n" . $healthCard->contact2_comment : ""), 90);
     $this->pdf->SetY(max($this->pdf->GetY(), $y2));
     $this->pdf->Ln(2);
     // Doctor section
@@ -233,85 +247,113 @@ class HealthCardPDF {
     
     // Health data section
     $this->pdf->SetFont("Times","B",10);
-    $this->pdf->Cell(185, self::$LINE_HEIGHT, "Informations confidentielles concernant la santé du scout");
+    $this->pdf->Cell(185, self::$LINE_HEIGHT, "Informations confidentielles concernant la santé du participantf");
     $this->pdf->Ln(self::$INTERLINE);
     
-    $this->entry("Peut-$il prendre part aux activités proposée ? (sport, excursions, jeux, natation...)", 
+    $this->entry("• Taille :", 30, $healthCard->height);
+    $this->entry("Poids :", 30, $healthCard->weight);
+    $this->entry("Sait-$il nager ?", 
+        50, ($healthCard->can_swim == "Difficilement" ||
+            $healthCard->can_swim == "Pas du tout" ? "|" : "") . $healthCard->can_swim);
+    $this->pdf->Ln();
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
+
+    $this->entry("• Peut-$il prendre part aux activités proposées ? (sport, excursions, jeux, baignade...)", 
         15, ($healthCard->has_no_constrained_activities ? "OUI" : "|NON"));
     $this->pdf->Ln();
     if ($healthCard->constrained_activities_details) {
+      $this->indent();
       $this->title("Raisons : ");
       $this->multiline("|" . $healthCard->constrained_activities_details, 160);
-      $this->pdf->Ln(self::$SMALL_INTERLINE);
-    } else $this->pdf->Ln(self::$SMALL_INTERLINE);
+    }
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
     
-    $this->titleMultiline("Y a-t-il des données médicales spécifiques importantes à connaître pour le bon déroulement de l'activité/du camp ? (ex. : problèmes cardiaques, épilepsie, asthme, diabète, mal des transports, rhumatisme, somnambulisme, affections cutanées, handicap moteur ou mental...)");
+    $this->content(2.2, "•");
+    $this->titleMultiline("Souffre-t-$il de manière permanente ou régulière de : diabète, asthme, épilepsie, mal des transports, rhumatisme, énurésie nocturne, affection cardiaque, affection cutanée, somnambulisme, handicap mental, handicap moteur, maux de tête / migraines, ...Indiquez la fréquence, la gravité et les actions à mettre en œuvre pour les éviter et/ou y réagir.", 186);
+    $this->indent();
     $this->multiline(($healthCard->medical_data ? "|" . $healthCard->medical_data : "(néant)"));
     $this->pdf->Ln(self::$SMALL_INTERLINE);
     
-    $this->titleMultiline("Quelles sont les maladies ou les interventions médicales qu'$il a dû subir (+ années respectives) ?");
+    $this->titleMultiline("• Quelles sont les autres maladies importantes ou les interventions médicales qu'$il a dû subir ?");
+    $this->indent();
     $this->multiline(($healthCard->medical_history ? $healthCard->medical_history : "(néant)"));
     $this->pdf->Ln(self::$SMALL_INTERLINE);
     
-    $this->entry("Est-$il en ordre de vaccination contre le tétanos ?", "20", ($healthCard->has_tetanus_vaccine ? "OUI" : "|NON"));
-    $this->pdf->Ln();
-    if ($healthCard->tetanus_vaccine_details) {
-      $this->title("Date du dernier rappel : ");
-      $this->multiline($healthCard->tetanus_vaccine_details, 137);
-      $this->pdf->Ln(self::$SMALL_INTERLINE);
-    } else $this->pdf->Ln(self::$SMALL_INTERLINE);
-    
-    $this->entry("Est-$il allergique à certaines substances, aliments ou médicaments ?", "20", ($healthCard->has_allergy ? "|OUI" : "NON"));
-    $this->pdf->Ln();
-    if ($healthCard->has_allergy || $healthCard->allergy_details || $healthCard->allergy_consequences) {
-      $this->title("Lesquels : ");
-      $this->multiline("|" . $healthCard->allergy_details, 160);
-      $this->title("Conséquences : ");
-      $this->multiline("|" . $healthCard->allergy_consequences, 160);
-      $this->pdf->Ln(self::$SMALL_INTERLINE);
-    } else $this->pdf->Ln(self::$SMALL_INTERLINE);
-    
-    $this->entry("A-t-$il un régime alimentaire particulier ?", "20", ($healthCard->has_special_diet ? "|OUI" : "NON"));
-    $this->pdf->Ln();
-    if ($healthCard->special_diet_details) {
-      $this->title("Lequel ? ");
-      $this->multiline("|" . $healthCard->special_diet_details, 165);
-      $this->pdf->Ln(self::$SMALL_INTERLINE);
-    } else $this->pdf->Ln(self::$SMALL_INTERLINE);
-    
-    $this->titleMultiline("Autres renseignements concernant le scout que vous jugez importants (problèmes de sommeil," .
-            " incontinence nocturne, problèmes psychiques ou physiques, port de lunettes ou appareil auditif...)");
+    $this->titleMultiline("• Autres renseignements que vous jugez importants pour le bon déroulement des activités / du camp :");
+    $this->indent();
     $this->multiline(($healthCard->other_important_information ? "|" . $healthCard->other_important_information : "(néant)"));
     $this->pdf->Ln(self::$SMALL_INTERLINE);
     
-    $this->entry("Doit-$il prendre des médicaments ?", "20", ($healthCard->has_drugs ? "|OUI" : "NON"));
+    $this->entry("• Est-$il en ordre de vaccination contre le tétanos ?", "20", ($healthCard->has_tetanus_vaccine ? "OUI" : "|NON"));
+    if ($healthCard->tetanus_vaccine_details) {
+      $this->title("Date du dernier rappel : ");
+      $this->multiline($healthCard->tetanus_vaccine_details, 60);
+    } else $this->pdf->Ln();
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
+    
+    $this->entry("• Est-$il allergique à certaines substances, aliments ou médicaments ?", "20", ($healthCard->has_allergy ? "|OUI" : "NON"));
+    $this->pdf->Ln();
+    if ($healthCard->has_allergy || $healthCard->allergy_details || $healthCard->allergy_consequences) {
+      $this->indent();
+      $this->title("Lesquels : ");
+      $this->multiline("|" . $healthCard->allergy_details, 160);
+      $this->indent();
+      $this->title("Conséquences : ");
+      $this->multiline("|" . $healthCard->allergy_consequences, 150);
+    }
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
+    
+    $this->entry("• A-t-$il un régime alimentaire particulier ?", "20", ($healthCard->has_special_diet ? "|OUI" : "NON"));
+    $this->pdf->Ln();
+    if ($healthCard->special_diet_details) {
+      $this->indent();
+      $this->title("Lequel ? ");
+      $this->multiline("|" . $healthCard->special_diet_details, 165);
+    }
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
+    
+    $this->entry("• Doit-$il prendre des médicaments quotidiennement ?", "20", ($healthCard->has_drugs ? "|OUI" : "NON"));
     $this->pdf->Ln();
     if ($healthCard->has_drugs || $healthCard->drugs_details) {
+      $this->indent();
       $this->title("Lesquels, quand et en quelle quantité : ");
-      $this->multiline("|" . $healthCard->drugs_details, 160);
+      $this->multiline("|" . $healthCard->drugs_details, 120);
+      $this->indent();
       $this->entry("Est-$il autonome dans la prise de ces médicaments ? ", 20, ($healthCard->drugs_autonomy ? "OUI" : "|NON"));
       $this->pdf->Ln();
-      $this->pdf->Ln(self::$SMALL_INTERLINE);
-    } else $this->pdf->Ln(self::$SMALL_INTERLINE);
+    }
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
+    
+    // Codiv-19
+    $this->entry("• Fait-$il partie d’un groupe à risques du covid-19 ?", 10, ($healthCard->covid_19_risk_group ? "|OUI" : "NON"));
+    $this->pdf->Ln();
+    if ($healthCard->covid_19_risk_group) {
+      $this->indent();
+      $this->entry("- A-t-$il reçu un avis favorable de son médecin traitant quant à sa participation aux activités scoutes ?", 10, ($healthCard->covid_19_physician_agreement ? "OUI" : "|NON"));
+      $this->pdf->Ln();
+      $this->indent();
+      $this->entry("- Les coordonnées complètes du médecin traitant ont été renseignées sur cette fiche santé :", 10, ($healthCard->covid_19_physician_agreement ? "OUI" : "|NON"));
+      $this->pdf->Ln();
+    }
+    $this->pdf->Ln(self::$SMALL_INTERLINE);
     
     // Comments section
     if ($healthCard->comments) {
-      $this->title("Commentaires : ");
+      $this->title("• Commentaires : ");
       $this->multiline("|" . $healthCard->comments, 153);
       $this->pdf->Ln(self::$SMALL_INTERLINE);
     }
     
     // Bottom notice
     $this->pdf->SetFont("Times","B",10);
-    $this->pdf->Cell(35, self::$LINE_HEIGHT, "Remarque");
+    $this->pdf->Cell(35, self::$LINE_HEIGHT, "Remarques");
     $this->pdf->Ln(self::$INTERLINE);
     $this->pdf->SetFont("Helvetica", "", "8");
     $this->pdf->MultiCell(185, 3, "Les animateurs disposent d'une boite de premiers soins. Dans" .
             " le cas de situations ponctuelles ou dans l'attente de l'arrivée du médecin, ils" .
             " peuvent administrer les médicaments cités ci-dessous et ce à bon escient :\n");
     $this->pdf->SetFont("Times", "I", "8");
-    $this->pdf->MultiCell(185, 3, "paracétamol, lopéramide (plus de 6 ans), crème à l'arnica," .
-            " crème Euceta® ou Calendeel®, désinfectant (Cédium® ou Isobétadine®), Flamigel®.\n");
+    $this->pdf->MultiCell(185, 3, "paracétamol, antiseptique (de type Chlorhexidine), pommade apaisante (sur avis médical ou du pharmacien).\n");
     $this->pdf->Ln(3);
     
     // Signature
@@ -338,6 +380,10 @@ class HealthCardPDF {
     $il = ($member->gender == "F" ? "elle" : "il");
     // Get important data from health card
     $importantData = array();
+    if ($healthCard->can_swim == "Difficilement")
+      $importantData[] = "Nage difficilement";
+    if ($healthCard->can_swim == "Pas du tout")
+      $importantData[] = "Ne sait pas nager";
     if (!$healthCard->has_no_constrained_activities) 
       $importantData[] = "Ne peut pas participer à toutes les activités : " . $healthCard->constrained_activities_details;
     if ($healthCard->medical_data)
@@ -359,6 +405,11 @@ class HealthCardPDF {
       $importantData[] = $healthCard->other_important_information;
     if ($healthCard->comments)
       $importantData[] = "Commentaires : " . $healthCard->comments;
+    if ($healthCard->covid_19_risk_group) {
+      $importantData[] = "Fait partie d'un groupe à risques du covid-19";
+      if (!$healthCard->covid_19_physician_agreement)
+        $importantData[] = "et n'a pas reçu d'avis favorable du médecin quant à la participation aux activités scoutes";
+    }
     // Print important data (if any)
     if (count($importantData)) {
       // Display name

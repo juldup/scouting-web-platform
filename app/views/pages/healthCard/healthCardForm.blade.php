@@ -51,16 +51,23 @@
         
         @include('subviews.flashMessages')
         
+        <p><strong>Cette fiche a pour objectif d’être au plus près de votre enfant/de vous-même en cas de nécessité.
+Elle sera un appui pour les animateurs ou le personnel soignant en cas de besoin. Il est essentiel
+que les renseignements que vous fournissez soient complets, corrects et à jour au moment des
+activités concernées.
+N’hésitez pas à ajouter des informations écrites ou orales auprès des animateurs si cela vous
+semble utile.</strong></p>
+        
         <div class="well form-horizontal">
           {{ Form::model($health_card, array('url' => URL::route('health_card_submit'))) }}
           {{ Form::hidden('member_id') }}
-          <legend>Identité du scout</legend>
+          <legend>Identité du participant</legend>
           
-          <div class='col-md-6'>
+          <div class='col-md-4'>
             
             <div class='row'>
               {{ Form::label('', 'Nom', array('class' => 'col-md-4 control-label')) }}
-              <div class="col-md-4">
+              <div class="col-md-8">
                 <p class='form-side-note'>
                   {{{ $member->first_name }}} {{{ $member->last_name }}}
                 </p>
@@ -69,23 +76,30 @@
             
             <div class='form-group'>
               {{ Form::label('', 'Adresse', array('class' => 'col-md-4 control-label')) }}
-              <div class="col-md-4">
+              <div class="col-md-8">
                 <p class='form-side-note'>
                   {{{ $member->address }}} <br />
-                  {{{ $member->postode }}} {{{ $member->city }}}
+                  {{{ $member->postcode }}} {{{ $member->city }}}
+                </p>
+              </div>
+            </div>
+            
+            <div class='row'>
+              {{ Form::label('', 'Né' . ($il == "il" ? "" : "e") . ' le', array('class' => 'col-md-4 control-label')) }}
+              <div class="col-md-4">
+                <p class='form-side-note'>
+                  {{ $member->getHumanBirthDate() }}
                 </p>
               </div>
             </div>
             
           </div>
-          <div class='col-md-6'>
+          <div class='col-md-8'>
             
-            <div class='row'>
-              {{ Form::label('', 'Né le', array('class' => 'col-md-4 control-label')) }}
-              <div class="col-md-4">
-                <p class='form-side-note'>
-                  {{ $member->getHumanBirthDate() }}
-                </p>
+            <div class='form-group'>
+              {{ Form::label('national_id', 'Numéro de registre national', array('class' => 'col-md-4 control-label')) }}
+              <div class="col-md-8">
+                {{ Form::text('national_id', null, array('class' => 'form-control')) }}
               </div>
             </div>
             
@@ -94,6 +108,15 @@
               <div class="col-md-4">
                 <p class='form-side-note'>
                   {{{ $member->getPersonalPhone() }}}
+                </p>
+              </div>
+            </div>
+            
+            <div class='form-group'>
+              {{ Form::label('', 'E-mail', array('class' => 'col-md-4 control-label')) }}
+              <div class="col-md-8">
+                <p class='form-side-note'>
+                  {{{ $member->email_member }}}
                 </p>
               </div>
             </div>
@@ -108,25 +131,46 @@
             </div>
           </div>
           
-          <div class='form-group'>
-            {{ Form::label('contact1_name', 'Nom', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
-            <div class="col-md-4">
-              {{ Form::text('contact1_name', null, array('class' => 'form-control')) }}
+          <div class='row'>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ Form::label('contact1_name', 'Nom', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact1_name', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact1_relationship', 'Lien de parenté', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact1_relationship', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact1_address', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::textarea('contact1_address', null, array('class' => 'form-control', 'rows' => 2)) }}
+                </div>
+              </div>
             </div>
-            {{ Form::label('contact1_relationship', 'Lien de parenté', array('class' => 'col-md-2 control-label')) }}
-            <div class="col-md-3">
-              {{ Form::text('contact1_relationship', null, array('class' => 'form-control')) }}
-            </div>
-          </div>
-          
-          <div class='form-group'>
-            {{ Form::label('contact1_address', 'Adresse', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
-            <div class="col-md-4">
-              {{ Form::textarea('contact1_address', null, array('class' => 'form-control', 'rows' => 2)) }}
-            </div>
-            {{ Form::label('contact1_phone', 'Téléphone', array('class' => 'col-md-2 control-label')) }}
-            <div class="col-md-3">
-              {{ Form::text('contact1_phone', null, array('class' => 'form-control')) }}
+            <div class='col-md-6'>
+              <div class="form-group">
+                {{ Form::label('contact1_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact1_phone', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact1_email', 'E-mail', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact1_email', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact1_comment', 'Remarques', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::textarea('contact1_comment', null, array('class' => 'form-control', 'rows' => 2)) }}
+                </div>
+              </div>
             </div>
           </div>
           
@@ -138,25 +182,46 @@
             </div>
           </div>
           
-          <div class='form-group'>
-            {{ Form::label('contact2_name', 'Nom', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
-            <div class="col-md-4">
-              {{ Form::text('contact2_name', null, array('class' => 'form-control')) }}
+          <div class='row'>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ Form::label('contact2_name', 'Nom', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact2_name', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact2_relationship', 'Lien de parenté', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact2_relationship', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact2_address', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::textarea('contact2_address', null, array('class' => 'form-control', 'rows' => 2)) }}
+                </div>
+              </div>
             </div>
-            {{ Form::label('contact2_relationship', 'Lien de parenté', array('class' => 'col-md-2 control-label')) }}
-            <div class="col-md-3">
-              {{ Form::text('contact2_relationship', null, array('class' => 'form-control')) }}
-            </div>
-          </div>
-          
-          <div class='form-group'>
-            {{ Form::label('contact2_address', 'Adresse', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
-            <div class="col-md-4">
-              {{ Form::textarea('contact2_address', null, array('class' => 'form-control', 'rows' => 2)) }}
-            </div>
-            {{ Form::label('contact2_phone', 'Téléphone', array('class' => 'col-md-2 control-label')) }}
-            <div class="col-md-3">
-              {{ Form::text('contact2_phone', null, array('class' => 'form-control')) }}
+            <div class='col-md-6'>
+              <div class="form-group">
+                {{ Form::label('contact2_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact2_phone', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact2_email', 'E-mail', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('contact2_email', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('contact2_comment', 'Remarques', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::textarea('contact2_comment', null, array('class' => 'form-control', 'rows' => 2)) }}
+                </div>
+              </div>
             </div>
           </div>
           
@@ -168,31 +233,60 @@
             </div>
           </div>
           
-          <div class='form-group'>
-            {{ Form::label('doctor_name', 'Nom', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
-            <div class="col-md-4">
-              {{ Form::text('doctor_name', null, array('class' => 'form-control')) }}
+          <div class='row'>
+            <div class="col-md-6">
+              <div class="form-group">
+                {{ Form::label('doctor_name', 'Nom', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('doctor_name', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+              <div class="form-group">
+                {{ Form::label('doctor_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::text('doctor_phone', null, array('class' => 'form-control')) }}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class='form-group'>
+                {{ Form::label('doctor_address', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+                <div class="col-md-8">
+                  {{ Form::textarea('doctor_address', null, array('class' => 'form-control', 'rows' => 2)) }}
+                </div>
+              </div>
             </div>
           </div>
           
-          <div class='form-group'>
-            {{ Form::label('doctor_address', 'Adresse', array('class' => 'col-md-1 col-md-offset-1 control-label')) }}
-            <div class="col-md-4">
-              {{ Form::textarea('doctor_address', null, array('class' => 'form-control', 'rows' => 2)) }}
-            </div>
-            {{ Form::label('doctor_phone', 'Téléphone', array('class' => 'col-md-2 control-label')) }}
-            <div class="col-md-3">
-              {{ Form::text('doctor_phone', null, array('class' => 'form-control')) }}
+          <legend>Informations confidentielles concernant la santé de {{ $member->getFullName() }}</legend>
+          
+          <?php $counter = 1; ?>
+          <div class="form-group">
+            <div class="col-md-12">
+              <p>
+                <label>
+                  {{ $counter++ }}. {{ Form::label('height', 'Taille') }} : 
+                </label>
+                <span class="horiz-divider"></span>
+                {{ Form::text('height', null, array('class' => 'form-control large')) }}
+                <span class="horiz-divider"></span>
+                <span class="horiz-divider"></span>
+                <label>
+                  {{ $counter++ }}. {{ Form::label('weight', 'Poids') }} :
+                </label>
+                <span class="horiz-divider"></span>
+                {{ Form::text('weight', null, array('class' => 'form-control large')) }}
+              </p>
             </div>
           </div>
           
-          <legend>Informations confidentielles concernant la santé du participant</legend>
+          <hr>
           
           <div class="form-group">
             <div class="col-md-12">
               <p>
                 <label>
-                  1. Peut-{{ $il }} prendre part à toutes les activités proposées ? (sport, excursions, jeux, natation, ...)
+                  {{ $counter++ }}. Peut-{{ $il }} prendre part à toutes les activités proposées ? (sport, excursions, jeux, baignade, ...)
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_no_constrained_activities') }}
               </p>
@@ -210,9 +304,25 @@
           <div class="form-group">
             <div class="col-md-12">
               <label>
-                2. Y a-t-il des données médicales spécifiques importantes à connaitre pour le bon déroulement des
-                activités ? (ex.&nbsp;: problèmes cardiaques, épilepsie, asthme, diabète, mal des transports,
-                rhumatisme, somnambulisme, affections cutanées, handicap moteur ou mental...)  <br />
+                {{ $counter++ }}. Sait-{{ $il }} nager ?
+              </label>
+              <span class="horiz-divider"></span>
+              {{ Form::select('can_swim', ["" => "", "Très bien" => "Très bien",
+                              "Bien" => "Bien", "Moyennement bien" => "Moyennement bien",
+                              "Difficilement" => "Difficilement", "Pas du tout" => "Pas du tout"], null, array('class' => 'form-control large', 'rows' => 2, 'placeholder' => "Néant")) }}
+            </div>
+          </div>
+          
+          <hr>
+          
+          <div class="form-group">
+            <div class="col-md-12">
+              <label>
+                {{ $counter++ }}. Souffre-t-{{ $il }} de manière permanente ou régulière de :
+                <br />
+                diabète, asthme, épilepsie, mal des transports, rhumatisme, énurésie nocturne,
+                affection cardiaque, affection cutanée, somnambulisme, handicap mental, handicap moteur,
+                maux de tête / migraines, ...  <br />
                 Indiquez la fréquence, la gravité et les actions à mettre en &#339;uvre pour les éviter et/ou y réagir.
               </label>
             </div>
@@ -226,7 +336,7 @@
           <div class="form-group">
             <div class="col-md-12">
               <label>
-                3. Quelles sont les maladies ou les interventions médicales qu'{{ $il }} a dû subir (+ années respectives) ? (rougeole, appendicite...)
+                {{ $counter++ }}. Quelles sont les autres maladies importantes ou les interventions médicales qu'{{ $il }} a dû subir (+ années respectives) ? (appendicite, rougeole...)
               </label>
             </div>
             <div class="col-md-12">
@@ -238,9 +348,24 @@
           
           <div class="form-group">
             <div class="col-md-12">
+              <label>
+                {{ $counter++ }}. Autres renseignements concernant {{ $member->getFullName() }} que vous jugez importants
+                pour le bon déroulement des activités / du camp (problèmes de sommeil, problèmes psychiques
+                ou physiques, port de lunettes ou appareil auditif...) :
+              </label>
+            </div>
+            <div class="col-md-12">
+              {{ Form::textarea('other_important_information', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+            </div>
+          </div>
+          
+          <hr>
+          
+          <div class="form-group">
+            <div class="col-md-12">
               <p>
                 <label>
-                  4. Est-{{ $il }} en ordre de vaccination contre le tétanos ?
+                  {{ $counter++ }}. Est-{{ $il }} en ordre de vaccination contre le tétanos ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_tetanus_vaccine') }}
               </p>
@@ -259,7 +384,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  5. Est-{{ $il }} allergique à certaines substances, aliments ou médicaments ?
+                  {{ $counter++ }}. Est-{{ $il }} allergique à certaines substances, aliments ou médicaments ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_allergy') }}
               </p>
@@ -284,7 +409,7 @@
             <div class="col-md-12">
               <p>
                 <label>
-                  6. A-t-{{ $il }} un régime alimentaire particulier ?
+                  {{ $counter++ }}. A-t-{{ $il }} un régime alimentaire particulier ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_special_diet') }}
               </p>
@@ -301,43 +426,53 @@
           
           <div class="form-group">
             <div class="col-md-12">
-              <label>
-                7. Y a-t-il d'autres renseignements concernant le scout que vous jugez importants ?
-                (problèmes de sommeil, incontinence nocturne, problèmes psychiques ou physiques, 
-                port de lunettes ou appareil auditif...)
-              </label>
-            </div>
-            <div class="col-md-12">
-              {{ Form::textarea('other_important_information', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
-            </div>
-          </div>
-          
-          <hr>
-          
-          <div class="form-group">
-            <div class="col-md-12">
               <p>
                 <label>
-                  8. Doit-{{ $il }} prendre des médicaments pendant les week-ends et/ou le camp ?
+                  {{ $counter++ }}. Doit-{{ $il }} prendre des médicaments quotidiennement ?
                 </label>
                 <span class='horiz-divider'></span>{{ Form::checkbox('has_drugs') }}
               </p>
             </div>
             <div class="col-md-12">
               <p>
-                Si oui, lesquels, quand et en quelle quantité ?
+                Si oui, lesquels ? Quand ? Précisez le dosage et les quantités.
               </p>
               {{ Form::textarea('drugs_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
             </div>
             <div class="col-md-12">
               <p class="form-side-note">
                 Est-{{ $il }} autonome dans la prise de ces médicaments ? (Nous rappelons que les médicaments
-                ne peuvent pas être partagés entre les participants)
+                ne peuvent pas être partagés entre les participants.)
                 <span class='horiz-divider'></span>{{ Form::checkbox('drugs_autonomy') }}
               </p>
               
             </div>
           </div>
+          
+          <legend>Covid-19</legend>
+          
+          <div class="form-group">
+            <div class="col-md-12">
+              <label>
+                Le participant fait-il partie d’un groupe à risques du covid-19 ?
+              </label>
+              <span class='horiz-divider'></span>
+              {{ Form::checkbox('covid_19_risk_group') }}
+            </div>
+            <div class="col-md-12">
+              Si oui :
+              - celui-ci a reçu un avis favorable de son médecin traitant quant à sa
+                participation aux activités scoutes :
+              {{ Form::checkbox('covid_19_physician_agreement') }}
+            </div>
+            <div class="col-md-12">
+              <span class="invisible">Si oui :</span>
+              - les coordonnées complètes du médecin traitant ont été renseignées sur
+                cette fiche santé :
+              {{ Form::checkbox('covid_19_physician_contact_information_given') }}
+            </div>
+          </div>
+          
           
           <legend>Autres informations et commentaires</legend>
           

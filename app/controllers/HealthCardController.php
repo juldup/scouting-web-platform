@@ -99,7 +99,10 @@ class HealthCardController extends BaseController {
         'has_allergy',
         'has_special_diet',
         'has_drugs',
-        'drugs_autonomy') as $booleanKey) {
+        'drugs_autonomy',
+        'covid_19_risk_group',
+        'covid_19_physician_agreement',
+        'covid_19_physician_contact_information_given') as $booleanKey) {
       if (!array_key_exists($booleanKey, $inputAll))
               $inputAll[$booleanKey] = false;
     }
