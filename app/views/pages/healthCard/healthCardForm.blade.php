@@ -454,7 +454,8 @@ semble utile.</strong></p>
           <div class="form-group">
             <div class="col-md-12">
               <label>
-                Le participant fait-il partie d’un groupe à risques du covid-19 ?
+                Le participant fait-il partie d’un <a href="/Groupes-à-risques.pdf" target="_blank">groupe à risques</span></a> du covid-19 ?
+                
               </label>
               <span class='horiz-divider'></span>
               {{ Form::checkbox('covid_19_risk_group') }}
