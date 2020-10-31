@@ -116,43 +116,43 @@ class HealthCardController extends BaseController {
     }
     // Make sure that question 1 is correctly answered
     if (!$inputAll['has_no_constrained_activities'] && !$inputAll['constrained_activities_details']) {
-      $errorMessage .= "Vous n'avez pas spécifié les détails à la question 1. ";
+      $errorMessage .= "Vous n'avez pas spécifié les détails à la question 3. ";
     }
     if ($inputAll['has_no_constrained_activities'] && $inputAll['constrained_activities_details']) {
       $warningMessage .=
-              "Vous avez répondu 'oui' à la question 1, mais avez tout de même complété des raisons. ";
+              "Vous avez répondu 'oui' à la question 3, mais avez tout de même complété des raisons. ";
     }
     // Make sure that question 4 is correctly answered
     if ($inputAll['has_tetanus_vaccine'] && !$inputAll['tetanus_vaccine_details']) {
-      $errorMessage .= "Vous n'avez pas spécifié la date de vaccination à la question 4. ";
+      $errorMessage .= "Vous n'avez pas spécifié la date de vaccination à la question 8. ";
     }
     if (!$inputAll['has_tetanus_vaccine'] && $inputAll['tetanus_vaccine_details']) {
       $warningMessage .=
-              "Vous avez répondu 'non' à la question 4, mais avez tout de même indiqué une date de vaccination. ";
+              "Vous avez répondu 'non' à la question 8, mais avez tout de même indiqué une date de vaccination. ";
     }
     // Make sure that question 5 is correctly answered
     if ($inputAll['has_allergy'] && !$inputAll['allergy_details']) {
-      $errorMessage .= "Vous n'avez pas spécifié les allergies à la question 5. ";
+      $errorMessage .= "Vous n'avez pas spécifié les allergies à la question 9. ";
     }
     if (!$inputAll['has_allergy'] && ($inputAll['allergy_details'] || $inputAll['allergy_consequences'])) {
       $warningMessage .=
-              "Vous avez répondu 'non' à la question 5, mais avez tout de même donné des informations. ";
+              "Vous avez répondu 'non' à la question 9, mais avez tout de même donné des informations. ";
     }
     // Make sure that question 6 is correctly answered
     if ($inputAll['has_special_diet'] && !$inputAll['special_diet_details']) {
-      $errorMessage .= "Vous n'avez pas spécifié le régime à la question 6. ";
+      $errorMessage .= "Vous n'avez pas spécifié le régime à la question 10. ";
     }
     if (!$inputAll['has_special_diet'] && $inputAll['special_diet_details']) {
       $warningMessage .=
-              "Vous avez répondu 'non' à la question 6, mais avez tout de même indiqué un régime. ";
+              "Vous avez répondu 'non' à la question 10, mais avez tout de même indiqué un régime. ";
     }
     // Make sure that question 8 is correctly answered
     if ($inputAll['has_drugs'] && !$inputAll['drugs_details']) {
-      $errorMessage .= "Vous n'avez pas spécifié les médicaments à la question 8. ";
+      $errorMessage .= "Vous n'avez pas spécifié les médicaments à la question 11. ";
     }
     if (!$inputAll['has_drugs'] && ($inputAll['drugs_details'])) {
       $warningMessage .=
-              "Vous avez répondu 'non' à la question 8, mais avez tout de même donné des informations. ";
+              "Vous avez répondu 'non' à la question 11, mais avez tout de même donné des informations. ";
     }
     // Save the card in there is no error
     if (!$errorMessage) {
