@@ -65,6 +65,7 @@ class ParameterController extends BaseController {
         'safe_emails' => explode(";", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
         'logo_two_lines' => Parameter::get(Parameter::$LOGO_TWO_LINES),
         'allow_personal_contact' => Parameter::get(Parameter::$ALLOW_PERSONAL_CONTACT),
+        'consider_scouts_as_members' => Parameter::get(Parameter::$CONSIDER_SCOUTS_AS_MEMBERS),
         'anuDenominationList' => $anuDenominationList,
         'asuDenominationList' => $asuDenominationList,
     ));
@@ -156,6 +157,8 @@ class ParameterController extends BaseController {
         ["name" => "Appellation AnU", "key" => Parameter::$ANU_DENOMINATION, "value" => Input::get('anu_denomination')],
         ["name" => "Appellation AsU", "key" => Parameter::$ASU_DENOMINATION, "value" => Input::get('asu_denomination')],
         ["name" => "Contact personnel", "key" => Parameter::$ALLOW_PERSONAL_CONTACT, "value" => Input::get('allow_personal_contact') ? 1 : 0,
+            "valueNames" => ["1" => "oui", "0" => "non"]],
+        ["name" => "Accès aux pages confidentielles pour les scouts", "key" => Parameter::$CONSIDER_SCOUTS_AS_MEMBERS, "value" => Input::get('consider_scouts_as_members') ? 1 : 0,
             "valueNames" => ["1" => "oui", "0" => "non"]],
         // Search engine
         ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],

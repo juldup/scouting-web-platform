@@ -85,6 +85,7 @@ class Parameter extends Eloquent {
   public static $ANU_DENOMINATION = "AnU denomination";
   public static $ASU_DENOMINATION = "AsU denomination";
   public static $ALLOW_PERSONAL_CONTACT = "Allow personal contact";
+  public static $CONSIDER_SCOUTS_AS_MEMBERS = "Consider scouts as members";
   // Website metadata
   public static $BOOTSTRAPPING_DONE = "Website bootstrapping done";
   public static $WEBSITE_META_DESCRIPTION = "Website meta description";

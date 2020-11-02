@@ -153,7 +153,7 @@
           <legend>
             <div class="row">
               <div class="col-sm-8">
-                Menu
+                Contenu du site
               </div>
               <div class="col-sm-4 text-right">
                 <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
@@ -161,10 +161,34 @@
             </div>
           </legend>
           <div class="form-group">
-            <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("registration_active", "Regrouper les menus de section") }}
-              <span class="horiz-divider"></span>
+            <div class="col-sm-4 control-label">
+              {{ Form::label("grouped_section_menu", "Regrouper les menus de section") }}
+            </div>
+            <div class="col-sm-1">
               {{ Form::checkbox("grouped_section_menu", 1, $grouped_section_menu) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label('allow_personal_contact', "Contact personnel") }}
+            </div>
+            <div class="col-sm-1">
+              {{ Form::checkbox('allow_personal_contact', 1, $allow_personal_contact) }}
+            </div>
+            <div class='col-sm-7'>
+              Si cette case est cochée, il sera possible de contacter les animateurs
+              par e-mail via la page de contact et la page des animateurs.
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label("consider_scouts_as_members", "Accès aux pages confidentielles pour les scouts") }}
+            </div>
+            <div class="col-sm-1">
+              {{ Form::checkbox("consider_scouts_as_members", 1, $consider_scouts_as_members) }}
+            </div>
+            <div class='col-sm-7 form-side-note'>
+              (Le mot «&nbsp;scout&nbsp;» est à considérer au sens large.)
             </div>
           </div>
           
@@ -298,18 +322,6 @@
             </div>
             <div class="col-sm-8">
               {{ Form::select('asu_denomination', $asuDenominationList, Parameter::get(Parameter::$ASU_DENOMINATION), array('class' => 'form-control large')) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-sm-4 control-label">
-              {{ Form::label('allow_personal_contact', "Contact personnel") }}
-            </div>
-            <div class="col-sm-1">
-              {{ Form::checkbox('allow_personal_contact', 1, $allow_personal_contact) }}
-            </div>
-            <div class='col-sm-7'>
-              Si cette case est cochée, il sera possible de contacter les animateurs
-              par e-mail via la page de contact et la page des animateurs.
             </div>
           </div>
           

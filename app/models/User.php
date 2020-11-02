@@ -234,7 +234,7 @@ class User extends Eloquent {
         return false;
       }
       // Check if there is an associated member
-      $this->isMember = count($this->getAssociatedMembers()) != 0;
+      $this->isMember = count($this->getAssociatedMembers(Parameter::get(Parameter::$CONSIDER_SCOUTS_AS_MEMBERS))) != 0;
       // If the user is webmaster, they are a member
       if ($this->is_webmaster) $this->isMember = true;
     }
@@ -309,20 +309,24 @@ class User extends Eloquent {
    * Fetches (if needed) and returns the list of associated members (i.e. sharing this user's e-mail address).
    * If the user is not logged in or unverified, there are no associated members
    */
-  public function getAssociatedMembers() {
+  public function getAssociatedMembers($include_scouts_as_members = false) {
     if (!$this->isConnected || !$this->verified) return array();
     if ($this->associatedMembers === null) {
       // Find all members sharing an e-mail address with this use
       $email = $this->email;
       if ($email) {
-        $this->associatedMembers = Member::where(function($query) use ($email) {
+        $this->associatedMembers = Member::where(function($query) use ($email, $include_scouts_as_members) {
           $query->where('email1', '=', $email);
           $query->orWhere('email2', '=', $email);
           $query->orWhere('email3', '=', $email);
-          $query->orWhere(function($query) use ($email) {
-            $query->where('email_member', '=', $email);
-            $query->where('is_leader', '=', true);
-          });
+          if ($include_scouts_as_members) {
+            $query->orWhere('email_member', '=', $email);
+          } else {
+            $query->orWhere(function($query) use ($email) {
+              $query->where('email_member', '=', $email);
+              $query->where('is_leader', '=', true);
+            });
+          }
         })->where('validated', '=', true)
                 ->get();
       } else {
