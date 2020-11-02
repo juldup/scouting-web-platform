@@ -41,7 +41,8 @@ class User extends Eloquent {
   var $currentSection;
   
   // Members owned by this user (i.e. sharing same e-mail address)
-  private $associatedMembers = null;
+  // 0 = only matching parents and leaders ; 1 = matching parents, leaders and scouts
+  private $associatedMembers = array(0 => null, 1 => null);
   
   // Members owned by this user that are leaders
   private $associatedLeaderMembers = null;
@@ -311,11 +312,11 @@ class User extends Eloquent {
    */
   public function getAssociatedMembers($include_scouts_as_members = false) {
     if (!$this->isConnected || !$this->verified) return array();
-    if ($this->associatedMembers === null) {
+    if ($this->associatedMembers[$include_scouts_as_members] === null) {
       // Find all members sharing an e-mail address with this use
       $email = $this->email;
       if ($email) {
-        $this->associatedMembers = Member::where(function($query) use ($email, $include_scouts_as_members) {
+        $this->associatedMembers[$include_scouts_as_members] = Member::where(function($query) use ($email, $include_scouts_as_members) {
           $query->where('email1', '=', $email);
           $query->orWhere('email2', '=', $email);
           $query->orWhere('email3', '=', $email);
@@ -330,10 +331,10 @@ class User extends Eloquent {
         })->where('validated', '=', true)
                 ->get();
       } else {
-        $this->associatedMembers = array();
+        $this->associatedMembers[$include_scouts_as_members] = array();
       }
     }
-    return $this->associatedMembers;
+    return $this->associatedMembers[$include_scouts_as_members];
   }
   
   /**
