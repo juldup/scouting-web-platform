@@ -221,11 +221,7 @@ class Parameter extends Eloquent {
       $currentDate = date("m-d H:i");
       $startDate = self::get(self::$REGISTRATION_START_DATE);
       $endDate = self::get(self::$REGISTRATION_END_DATE);
-      if ($startDate <= $endDate) {
-        return ($currentDate >= $startDate && $currentDate < $endDate);
-      } else {
-        return ($currentDate < $endDate || $currentDate >= $startDate);
-      }
+      return DateHelper::isWithinDateRange($currentDate, $startDate, $endDate);
     } else {
       return self::get(self::$REGISTRATION_ACTIVE);
     }

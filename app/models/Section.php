@@ -30,6 +30,7 @@
  *   - de_la_section:       Used in different titles and texts on the website
  *   - la_section:          Used in different titles and texts on the website
  *   - subgroup_name:       Designation of the subgroups in this section (e.g. 'Sizaine', 'Patrouille')
+ *   - start_age:           Used for advanced registrations : the age of the youngest members
  */
 class Section extends Eloquent {
   
@@ -144,15 +145,28 @@ class Section extends Eloquent {
   }
   
   /**
-   * 
+   * Returns the list of section categories for use in a html select
    */
   public static function getExistingCategoriesForSelect() {
     $categories = [];
     foreach (self::$CATEGORIES as $name => $data) {
-      $section = Section::where('section_category', '=', $name)->first();
+      $section = Section::where('id', '!=', 1)
+              ->where('section_category', '=', $name)
+              ->first();
       if (count($section)) $categories[$name] = $data['name'];
     }
     return $categories;
+  }
+  
+  /**
+   * Returns the start age of a section category
+   */
+  public static function getCategoryStartAge($category) {
+    $section = self::where('section_category', '=', $category)
+            ->whereNotNull('start_age')
+            ->first();
+    if ($section) return $section->start_age;
+    return 0;
   }
   
 }

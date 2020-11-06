@@ -50,7 +50,8 @@
         'de_la_section': "{{ Helper::sanitizeForJavascript($section->de_la_section) }}",
         'subgroup_name': "{{ Helper::sanitizeForJavascript($section->subgroup_name) }}",
         'delete_url': "{{ URL::route('edit_section_delete', array('section_id' => $section->id)) }}",
-        'calendar_shortname': "{{ Helper::sanitizeForJavascript($section->calendar_shortname) }}"
+        'calendar_shortname': "{{ Helper::sanitizeForJavascript($section->calendar_shortname) }}",
+        'start_age': "{{ $section->start_age }}",
       };
     @endforeach
   </script>
@@ -149,6 +150,16 @@
             </div>
             <div class="col-md-7">
               {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'ex.: Sizaine')) }}
+            </div>
+          </div>
+          <div class="form-group">
+            <div class='col-md-3 control-label'>
+              {{ Form::label('section_start_age', 'Âge minimum') }}
+              <br>
+              (nombre entier)
+            </div>
+            <div class="col-md-7">
+              {{ Form::text('section_start_age', '', array('class' => 'form-control', 'placeholder' => 'ex.: 12')) }}
             </div>
           </div>
           <div class="form-group">

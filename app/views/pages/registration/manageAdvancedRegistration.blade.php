@@ -167,6 +167,11 @@
                   @endif
                 </td>
                 <td>
+                  @if (DateHelper::isWithinDateRange(substr($member->registration_date,5,11),
+                        Parameter::get(Parameter::$REGISTRATION_START_DATE),
+                        Parameter::get(Parameter::$REGISTRATION_END_DATE)))
+                    <span class="glyphicon glyphicon-star danger"></span>
+                  @endif
                   {{{ Helper::dateToHuman($member->registration_date) }}}
                   <span class="glyphicon glyphicon-info-sign" title="{{{ substr($member->registration_date,11) }}}"></span>
                 </td>
@@ -188,6 +193,12 @@
                       {{ Form::label('registration_is_leader', "Animateur", array("class" => "col-md-4 control-label")) }}
                       <div class="col-md-8">
                         {{ Form::checkbox('registration_is_leader', 1, $member->is_leader ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      {{ Form::label('year_in_section', "Année dans la section", array("class" => "col-md-4 control-label")) }}
+                      <div class="col-md-2">
+                        {{ Form::text('year_in_section', $member->year_in_section, array('class' => 'form-control')) }}
                       </div>
                     </div>
                     <div class="form-group">

@@ -433,7 +433,11 @@ class RegistrationController extends GenericPageController {
       ));
     } else { // Advanced registrations
       // Gather pending registrations
-      $pendingRegistrations = Member::where('validated', '=', false)->get();
+      $pendingRegistrations = Member::where('validated', '=', false)
+              ->orderBy('section_id', 'ASC')
+              ->orderBy('registration_section_category', 'ASC')
+              ->orderBy('year_in_section', 'ASC')
+              ->get();
       $sectionCategories = [];
       foreach ($pendingRegistrations as $registration) {
         $category = $registration->registration_section_category;
@@ -441,6 +445,7 @@ class RegistrationController extends GenericPageController {
           $category = Section::$CATEGORIES[$category]['name'];
         }
         if (!$category) $category = $registration->getSection()->name;
+        $category .= " (année " . $registration->year_in_section . ")";
         if (!array_key_exists($category, $sectionCategories)) {
           $sectionCategories[$category] = [];
         }
@@ -962,6 +967,7 @@ class RegistrationController extends GenericPageController {
       $member->registration_siblings = Input::get('registration_siblings');
       $member->city = Input::get('registration_city');
       $member->registration_former_leader_child = Input::get('registration_former_leader_child');
+      $member->year_in_section = intval(Input::get('year_in_section'));
       // Check date
       if (DateHelper::verifyMysqlDatetime(Input::get('registration_date'))) {
         $member->registration_date = Input::get('registration_date');

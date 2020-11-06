@@ -366,6 +366,7 @@ class Member extends Eloquent {
       $data['year_in_section_last_update'] = date('Y') . "-" . (date('Y') + 1);
       $data['registration_date'] = date('Y-m-d H:i:s');
       $member = Member::create($data);
+      $member->year_in_section = $member->calculateYearInSection();
       // Set last reregistration year
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
       $member->save();
@@ -664,6 +665,23 @@ class Member extends Eloquent {
     }
     // No associated leader or matching privilege
     return false;
+  }
+  
+  /**
+   * Calculates the year in section
+   */
+  public function calculateYearInSection() {
+    $startAge = null;
+    if ($this->section_id != 1) {
+      $startAge = $this->getSection()->start_age;
+    } else {
+      $startAge = Section::getCategoryStartAge($this->registration_section_category);
+    }
+    if (!$startAge) return 1; // No computable year in section
+    $birthYear = substr($this->birth_date,0,4);
+    $currentYear = date('Y');
+    $yearInSection = ($currentYear-$birthYear) - $startAge + 1;
+    return $yearInSection;
   }
   
 }

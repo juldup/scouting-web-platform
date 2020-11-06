@@ -81,4 +81,16 @@ class DateHelper {
     return false;
   }
   
+  /**
+   * Returns whether the given time is between startDate end endDate.
+   * All three times must be in "MM-DD hh:mm" format.
+   */
+  public static function isWithinDateRange($date, $startDate, $endDate) {
+    if ($startDate <= $endDate) {
+      return ($date >= $startDate && $date < $endDate);
+    } else {
+      return ($date < $endDate || $date >= $startDate);
+    }
+  }
+  
 }
