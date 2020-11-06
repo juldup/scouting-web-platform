@@ -108,6 +108,9 @@
   <div class="row">
     <div class="col-md-12">
       <h1>Nouvelles inscriptions en attente</h1>
+      <div class="text-right">
+        <a href="{{ URL::route('recompute_years_in_section') }}" class="btn btn-default">Recalculer les années dans les sections</a>
+      </div>
       @foreach ($registrations as $category => $registrationList)
         <h2>{{{ $category }}}</h2>
         <table class="table table-striped table-hover">

@@ -458,19 +458,30 @@ class RegistrationController extends GenericPageController {
           // Is leader
           if ($a->is_leader && !$b->is_leader) return -1;
           if ($b->is_leader && !$a->is_leader) return 1;
-          // Siblings
-          if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
-          if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
-          // City
-          if ($referenceCity) {
-            if (strpos(Helper::slugify($a->city), $referenceCity) !== false
-                    && strpos(Helper::slugify($b->city), $referenceCity) == false) return -1;
-            if (strpos(Helper::slugify($b->city), $referenceCity) !== false
-                    && strpos(Helper::slugify($a->city), $referenceCity) == false) return 1;
+          // Is registered in priority timespan
+          $aPrioritary = DateHelper::isWithinDateRange(substr($a->registration_date,5,11),
+                  Parameter::get(Parameter::$REGISTRATION_START_DATE),
+                  Parameter::get(Parameter::$REGISTRATION_END_DATE));
+          $bPrioritary = DateHelper::isWithinDateRange(substr($b->registration_date,5,11),
+                  Parameter::get(Parameter::$REGISTRATION_START_DATE),
+                  Parameter::get(Parameter::$REGISTRATION_END_DATE));
+          if ($aPrioritary && !$bPrioritary) return -1;
+          if ($bPrioritary && !$aPrioritary) return 1;
+          if ($aPrioritary && $a->year_in_section == 1) { // and therefore also $bPrioritary and $b->year_in_section == 1
+            // Siblings
+            if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
+            if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
+            // City
+            if ($referenceCity) {
+              if (strpos(Helper::slugify($a->city), $referenceCity) !== false
+                      && strpos(Helper::slugify($b->city), $referenceCity) == false) return -1;
+              if (strpos(Helper::slugify($b->city), $referenceCity) !== false
+                      && strpos(Helper::slugify($a->city), $referenceCity) == false) return 1;
+            }
+            // Former leader child
+            if (trim($a->registration_former_leader_child) && !trim($b->registration_former_leader_child)) return -1;
+            if (trim($b->registration_former_leader_child) && !trim($a->registration_former_leader_child)) return 1;
           }
-          // Former leader child
-          if (trim($a->registration_former_leader_child) && !trim($b->registration_former_leader_child)) return -1;
-          if (trim($b->registration_former_leader_child) && !trim($a->registration_former_leader_child)) return 1;
           // Date
           return strcmp($a->registration_date, $b->registration_date);
         });
@@ -960,6 +971,10 @@ class RegistrationController extends GenericPageController {
    * [Route] Updates the priority fields of a registration record
    */
   public function submitPriority() {
+    // Make sure the user is allowed to manage registrations
+    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+      return Helper::forbiddenResponse();
+    }
     $memberId = Input::get('member_id');
     $member = Member::find($memberId);
     if ($member) {
@@ -986,6 +1001,23 @@ class RegistrationController extends GenericPageController {
     }
     return Redirect::route('manage_registration', array('section_slug' => $this->section->slug))
               ->with('error_message', "Une erreur est survenue.");
+  }
+  
+  /**
+   * [Route] Resets the years in section values in all registrations
+   */
+  public function recomputeYearsInSection() {
+    // Make sure the user is allowed to manage registrations
+    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    $registrations = Member::where('validated', '=', 0)->get();
+    foreach ($registrations as $registration) {
+      $registration->year_in_section = $registration->calculateYearInSection();
+      $registration->save();
+    }
+    return Redirect::route('manage_registration', array('section_slug' => $this->section->slug))
+              ->with('success_message', "Les années dans les sections ont été recalculées.");
   }
   
 }
