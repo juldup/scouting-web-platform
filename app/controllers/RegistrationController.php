@@ -1020,4 +1020,46 @@ class RegistrationController extends GenericPageController {
               ->with('success_message', "Les années dans les sections ont été recalculées.");
   }
   
+  /**
+   * [Route] Downloads the registration list in CSV format
+   */
+  public function downloadRegistrationList() {
+    // Make sure the user is allowed to manage registrations
+    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    $fields = [
+        "registration_section_category" => "Type de section",
+        "year_in_section" => "Année dans la section",
+        "last_name" => "Nom",
+        "first_name" => "Prénom",
+        "birth_date" => "Date de naissance",
+        "gender" => "Sexe",
+        "city" => "Localité",
+        "is_leader" => "Animateur",
+        "registration_date" => "Date d'inscription",
+        "registration_siblings" => "Frères et sœurs",
+        "registration_former_leader_child" => "Enfant d'ancien animateur",
+    ];
+    $firstField = "registration_section_category";
+    $registrations = Member::where('validated', '=', 0)->get();
+    $output = "";
+    foreach ($fields as $field => $fieldName) {
+      $output .= ($field != $firstField ?  "," : "") . "\"$fieldName\"";
+    }
+    $output .= "\n";
+    foreach ($registrations as $registration) {
+      foreach ($fields as $field => $fieldName) {
+        $output .= ($field != $firstField ?  "," : "") . "\"" . str_replace("\"", "\"\"", $registration->$field) . "\"";
+      }
+      $output .= "\n";
+    }
+    
+    return Response::stream(
+            function() use ($output) {echo $output;}, 200, [
+        'Cache-Control'         => 'must-revalidate, post-check=0, pre-check=0',
+        'Content-Disposition'   => 'attachment; filename="Inscriptions.csv"',
+    ]);
+  }
+  
 }
