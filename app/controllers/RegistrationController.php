@@ -983,6 +983,13 @@ class RegistrationController extends GenericPageController {
       $member->city = Input::get('registration_city');
       $member->registration_former_leader_child = Input::get('registration_former_leader_child');
       $member->year_in_section = intval(Input::get('year_in_section'));
+      if (Input::get('section')) {
+        $member->section_id = Input::get('section');
+        $member->registration_section_category = null;
+      } elseif (Input::get('section_category')) {
+        $member->registration_section_category = Input::get('section_category');
+        $member->section_id = 1;
+      }
       // Check date
       if (DateHelper::verifyMysqlDatetime(Input::get('registration_date'))) {
         $member->registration_date = Input::get('registration_date');

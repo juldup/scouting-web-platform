@@ -194,6 +194,16 @@
                       </div>
                     </div>
                     <div class="form-group">
+                      {{ Form::label('section_category', "Section", array("class" => "col-md-4 control-label")) }}
+                      <div class="col-md-2">
+                        @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS))
+                          {{ Form::select('section_category', Section::getExistingCategoriesForSelect(), $member->registration_section_category, array('class' => 'form-control')) }}
+                        @else
+                          {{ Form::select('section', Section::getSectionsForSelect(), $member->section_id, array('class' => 'form-control')) }}
+                        @endif
+                      </div>
+                    </div>
+                    <div class="form-group">
                       {{ Form::label('registration_is_leader', "Animateur", array("class" => "col-md-4 control-label")) }}
                       <div class="col-md-8">
                         {{ Form::checkbox('registration_is_leader', 1, $member->is_leader ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
