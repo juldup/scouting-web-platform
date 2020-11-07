@@ -312,11 +312,11 @@ class User extends Eloquent {
    */
   public function getAssociatedMembers($include_scouts_as_members = false) {
     if (!$this->isConnected || !$this->verified) return array();
-    if ($this->associatedMembers[$include_scouts_as_members] === null) {
+    if ($this->associatedMembers[$include_scouts_as_members ? 1 : 0] === null) {
       // Find all members sharing an e-mail address with this use
       $email = $this->email;
       if ($email) {
-        $this->associatedMembers[$include_scouts_as_members] = Member::where(function($query) use ($email, $include_scouts_as_members) {
+        $this->associatedMembers[$include_scouts_as_members ? 1 : 0] = Member::where(function($query) use ($email, $include_scouts_as_members) {
           $query->where('email1', '=', $email);
           $query->orWhere('email2', '=', $email);
           $query->orWhere('email3', '=', $email);
@@ -331,10 +331,10 @@ class User extends Eloquent {
         })->where('validated', '=', true)
                 ->get();
       } else {
-        $this->associatedMembers[$include_scouts_as_members] = array();
+        $this->associatedMembers[$include_scouts_as_members ? 1 : 0] = array();
       }
     }
-    return $this->associatedMembers[$include_scouts_as_members];
+    return $this->associatedMembers[$include_scouts_as_members ? 1 : 0];
   }
   
   /**
