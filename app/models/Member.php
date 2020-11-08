@@ -65,7 +65,8 @@
  *   - registration_date
  *   - registration_siblings
  *   - registration_former_leader_child	
- *   - 	registration_section_category
+ *   - registration_section_category
+ *   - registration_priority
  *   Leader stuff
  *   - is_leader:                     Whether the member is a leader (the following fields make sense only if this one is true)
  *   - leader_in_charge:              Whether the member is a leader in charge of his/her section
@@ -365,6 +366,11 @@ class Member extends Eloquent {
       if ($validate) $data['validated'] = true;
       $data['year_in_section_last_update'] = date('Y') . "-" . (date('Y') + 1);
       $data['registration_date'] = date('Y-m-d H:i:s');
+      if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS)) {
+        $data['registration_priority'] = DateHelper::isWithinDateRange(substr($data['registration_date'],5,11),
+                          Parameter::get(Parameter::$REGISTRATION_START_DATE),
+                          Parameter::get(Parameter::$REGISTRATION_END_DATE));
+      }
       $member = Member::create($data);
       $member->year_in_section = $member->calculateYearInSection();
       // Set last reregistration year

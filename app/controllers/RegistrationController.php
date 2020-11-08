@@ -459,15 +459,9 @@ class RegistrationController extends GenericPageController {
           if ($a->is_leader && !$b->is_leader) return -1;
           if ($b->is_leader && !$a->is_leader) return 1;
           // Is registered in priority timespan
-          $aPrioritary = DateHelper::isWithinDateRange(substr($a->registration_date,5,11),
-                  Parameter::get(Parameter::$REGISTRATION_START_DATE),
-                  Parameter::get(Parameter::$REGISTRATION_END_DATE));
-          $bPrioritary = DateHelper::isWithinDateRange(substr($b->registration_date,5,11),
-                  Parameter::get(Parameter::$REGISTRATION_START_DATE),
-                  Parameter::get(Parameter::$REGISTRATION_END_DATE));
-          if ($aPrioritary && !$bPrioritary) return -1;
-          if ($bPrioritary && !$aPrioritary) return 1;
-          if ($aPrioritary && $a->year_in_section == 1) { // and therefore also $bPrioritary and $b->year_in_section == 1
+          if ($a->registration_priority && !$b->registration_priority) return -1;
+          if ($b->registration_priority && !$a->registration_priority) return 1;
+          if ($a->registration_priority && $a->year_in_section == 1) { // and therefore also $bPrioritary and $b->year_in_section == 1
             // Siblings
             if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
             if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
@@ -983,6 +977,7 @@ class RegistrationController extends GenericPageController {
       $member->city = Input::get('registration_city');
       $member->registration_former_leader_child = Input::get('registration_former_leader_child');
       $member->year_in_section = intval(Input::get('year_in_section'));
+      $member->registration_priority = Input::get('registration_priority') ? 1 : 0;
       if (Input::get('section')) {
         $member->section_id = Input::get('section');
         $member->registration_section_category = null;
@@ -1047,6 +1042,7 @@ class RegistrationController extends GenericPageController {
         "registration_date" => "Date d'inscription",
         "registration_siblings" => "Frères et sœurs",
         "registration_former_leader_child" => "Enfant d'ancien animateur",
+        "registration_priority" => "Inscription prioritaire",
     ];
     $firstField = "registration_section_category";
     $registrations = Member::where('validated', '=', 0)->get();

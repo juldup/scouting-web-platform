@@ -171,9 +171,7 @@
                   @endif
                 </td>
                 <td>
-                  @if (DateHelper::isWithinDateRange(substr($member->registration_date,5,11),
-                        Parameter::get(Parameter::$REGISTRATION_START_DATE),
-                        Parameter::get(Parameter::$REGISTRATION_END_DATE)))
+                  @if ($member->registration_priority)
                     <span class="glyphicon glyphicon-star danger"></span>
                   @endif
                   {{{ Helper::dateToHuman($member->registration_date) }}}
@@ -237,6 +235,15 @@
                       {{ Form::label('registration_date', "Date de la demande d'inscription", array("class" => "col-md-4 control-label")) }}
                       <div class="col-md-8">
                         {{ Form::text('registration_date', $member->registration_date, array('class' => 'form-control')) }}
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-md-4 control-label">
+                        {{ Form::label('registration_priority', "Inscription prioritaire", array("class" => "")) }}
+                        <span class="glyphicon glyphicon-star danger"></span>
+                      </div>
+                      <div class="col-md-8">
+                        {{ Form::checkbox('registration_priority', 1, $member->registration_priority ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
                       </div>
                     </div>
                     <div class='form-group'>
