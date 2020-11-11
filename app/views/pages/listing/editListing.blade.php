@@ -106,6 +106,9 @@
             @endif
             <th>Nom</th>
             <th>Prénom</th>
+            @if ($show_totem)
+              <th>Totem</th>
+            @endif
             @if ($show_subgroup)
               <th>{{{ $user->currentSection->subgroup_name }}}</th>
             @endif
@@ -137,6 +140,9 @@
                 @endif
                 <td>{{{ $member->last_name }}}</td>
                 <td>{{{ $member->first_name }}}</td>
+                @if ($show_totem)
+                  <td>{{{ $member->totem }}}</td>
+                @endif
                 @if ($show_subgroup)
                   <td>
                     <span style="display: none;">{{{ $member->subgroup }}}</span>

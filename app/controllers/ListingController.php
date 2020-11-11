@@ -143,10 +143,12 @@ class ListingController extends BaseController {
     // Check if there are subgroups/roles
     $showSubgroup = false;
     $showRole = false;
+    $showTotem = false;
     if ($this->user->currentSection->id != 1) {
       foreach ($members as $member) {
         if ($member->subgroup) $showSubgroup = true;
         if ($member->role) $showRole = true;
+        if ($member->totem) $showTotem = true;
       }
     }
     // Make view
@@ -159,6 +161,7 @@ class ListingController extends BaseController {
         'subgroup_name' => $this->section->subgroup_name,
         'show_subgroup' => $showSubgroup,
         'show_role' => $showRole,
+        'show_totem' => $showTotem,
     ));
   }
   
