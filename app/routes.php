@@ -303,6 +303,7 @@ Route::get('listing/sous-groupes/{section_slug?}', array("as" => "listing_view_s
 Route::get('listing/photos-membres/{section_slug?}', array("as" => "listing_view_pictures", "uses" => "ListingController@showMemberPicturePage"));
 Route::get('listing/photo/{leader_id}', array("as" => "get_member_picture", "uses" => "ListingController@getMemberPicture"));
 Route::get('listing/telecharger-photos-membres/{section_slug}/{format?}', array("as" => "download_member_pictures", "uses" => "ListingController@downloadMemberPictures"));
+Route::post('ajax/listing/change-subgroup-or-role', array("as" => "ajax_change_subgroup_or_role", "uses" => "ListingController@ajaxChangeSubgroupOrRole"));
 
 // Suggestions
 Route::get('suggestions/{section_slug?}', array("as" => "suggestions", "uses" => "SuggestionController@showPage"));

@@ -33,6 +33,7 @@
     @foreach ($members as $member)
       members[{{ $member->id }}] = @include ('subviews.memberToJavascript', array('member' => $member));
     @endforeach
+    var ajaxChangeSubgroupOrRoleURL = "{{ URL::route('ajax_change_subgroup_or_role') }}";
   </script>
 @stop
 
@@ -105,6 +106,12 @@
             @endif
             <th>Nom</th>
             <th>Prénom</th>
+            @if ($show_subgroup)
+              <th>{{{ $user->currentSection->subgroup_name }}}</th>
+            @endif
+            @if ($show_role)
+              <th>Rôle</th>
+            @endif
             <th>Date de naissance</th>
             <th>Année</th>
           </thead>
@@ -130,6 +137,18 @@
                 @endif
                 <td>{{{ $member->last_name }}}</td>
                 <td>{{{ $member->first_name }}}</td>
+                @if ($show_subgroup)
+                  <td>
+                    <span style="display: none;">{{{ $member->subgroup }}}</span>
+                    {{ Form::select('select_subgroup', ['' => 'Aucun(e)'] + $subgroup_choices + ['select_other_subgroup' => "Créer un groupe"], $member->subgroup, ['class' => 'form-control medium', 'data-member_id' => $member->id]) }}
+                  </td>
+                @endif
+                @if ($show_role)
+                  <td>
+                    <span style="display: none;">{{{ $member->role }}}</span>
+                    {{ Form::select('select_role', ['' => 'Aucun'] + $role_choices + ['select_other_role' => "Créer un rôle"], $member->role, ['class' => 'form-control medium', 'data-member_id' => $member->id]) }}
+                  </td>
+                @endif
                 <td data-text="{{ $member->birth_date }}">{{{ $member->getHumanBirthDate() }}}</td>
                 <td>{{{ $member->year_in_section }}}</td>
               </tr>
@@ -153,4 +172,5 @@
     
   @endif
   
+  <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
 @stop

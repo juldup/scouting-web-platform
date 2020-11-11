@@ -140,6 +140,15 @@ class ListingController extends BaseController {
               ->orderBy('first_name')
               ->get();
     }
+    // Check if there are subgroups/roles
+    $showSubgroup = false;
+    $showRole = false;
+    if ($this->user->currentSection->id != 1) {
+      foreach ($members as $member) {
+        if ($member->subgroup) $showSubgroup = true;
+        if ($member->role) $showRole = true;
+      }
+    }
     // Make view
     return View::make('pages.listing.editListing', array(
         'members' => $members,
@@ -148,6 +157,8 @@ class ListingController extends BaseController {
         'subgroup_choices' => $this->createSubgroupList(),
         'role_choices' => $this->createRoleList(),
         'subgroup_name' => $this->section->subgroup_name,
+        'show_subgroup' => $showSubgroup,
+        'show_role' => $showRole,
     ));
   }
   
@@ -642,6 +653,30 @@ class ListingController extends BaseController {
     LogEntry::log("Listing", "Téléchargement des photos des membres", array("Section" => $this->section->name));
     // Output listing
     ListingPDF::downloadMemberPictures($sections);
+  }
+  
+  /**
+   * [Route] Ajax call to change the subgroup or role of a member
+   */
+  public function ajaxChangeSubgroupOrRole() {
+    // Get input data
+    $memberId = Input::get('member_id');
+    $field = Input::get('field');
+    $value = Input::get('value');
+    if ($field != 'subgroup' && $field != 'role') return json_encode(['result' => 'Failure']);
+    if (!$memberId) return json_encode(['result' => 'Failure', 'message' => "Erreur : ce membre n'existe pas."]);
+    $member = Member::find($memberId);
+    if (!$member) return json_encode(['result' => 'Failure', 'message' => "Erreur : ce membre n'existe pas."]);
+    // Check if the user can operate this change
+    if (!$this->user->can(Privilege::$EDIT_LISTING_LIMITED, $member->section_id)) {
+      return json_encode(['result' => 'Failure', 'message' => "Vous n'avez pas les privilèges pour faire ce changement."]);
+    }
+    // Apply the change
+    if ($field == 'subgroup') $member->subgroup = $value;
+    if ($field == 'role') $member->role = $value;
+    $member->save();
+    // Return result
+    return json_encode(array('result' => "Success"));
   }
   
 }

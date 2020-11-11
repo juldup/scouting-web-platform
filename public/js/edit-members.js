@@ -124,3 +124,52 @@ function showMemberDetails(memberId) {
     element.show();
   }
 }
+
+// Edit subgroup and role using ajax
+$().ready(function() {
+  var ajaxCallCounter = 0;
+  $('select[name=select_subgroup], select[name=select_role]').change(function() {
+    var newValue = $(this).val();
+    var memberId = $(this).data('member_id');
+    if (newValue == 'select_other_subgroup') {
+      editMember($(this).data('member_id'));
+      $("#member_form [name='subgroup']").focus();
+    } else if (newValue == 'select_other_role') {
+      editMember($(this).data('member_id'));
+      $("#member_form [name='role']").focus();
+    } else {
+      ajaxCallCounter++;
+      $("#pending-commit").show();
+      $.ajax({
+        type: "POST",
+        url: ajaxChangeSubgroupOrRoleURL,
+        data: {
+            'member_id': memberId,
+            'field': $(this).attr('name') == 'select_subgroup' ? 'subgroup' : 'role',
+            'value': newValue
+          }
+      }).done(function(json) {
+        console.log(json);
+        // Disable pending commit icon if this is the last call
+        ajaxCallCounter--;
+        if (ajaxCallCounter == 0) $("#pending-commit").hide();
+        // Check for errors
+        try {
+          data = JSON.parse(json);
+          if (data.result != "Success") {
+            // An error has occured
+            if (data.message) {
+              alert(data.message);
+            } else {
+              alert("Une erreur est survenue.");
+            }
+            window.location = window.location;
+          }
+        } catch(error) {
+          alert("Une erreur est survenue.");
+          window.location = window.location;
+        }
+      });
+    }
+  });
+});
