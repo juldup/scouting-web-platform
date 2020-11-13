@@ -90,6 +90,7 @@ class LeaderController extends BaseController {
         'men_in_others' => $menInOthers,
         'archives' => $archiveYears,
         'archive_year' => $archive,
+        'can_view_leader_history' => $this->user->isMember(),
     ));
   }
   
@@ -272,8 +273,9 @@ class LeaderController extends BaseController {
       if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, $sectionId)) {
         return Helper::forbiddenResponse();
       }
-      // Archive leaders if needed
+      // Archive leaders and create history if needed
       ArchivedLeader::archiveLeadersIfNeeded();
+      MemberHistory::createHistoryIfNeeded();
       // Delete leader
       try {
         $member->delete();

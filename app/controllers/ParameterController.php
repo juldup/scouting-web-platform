@@ -160,6 +160,8 @@ class ParameterController extends BaseController {
             "valueNames" => ["1" => "oui", "0" => "non"]],
         ["name" => "Accès aux pages confidentielles pour les scouts", "key" => Parameter::$CONSIDER_SCOUTS_AS_MEMBERS, "value" => Input::get('consider_scouts_as_members') ? 1 : 0,
             "valueNames" => ["1" => "oui", "0" => "non"]],
+        ["name" => "Historique des membres", "key" => Parameter::$SHOW_MEMBER_HISTORY, "value" => Input::get('show_member_history') ? 1 : 0,
+            "valueNames" => ["1" => "oui", "0" => "non"]],
         // Search engine
         ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],
         ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => Input::get('website_meta_keywords')],

@@ -191,6 +191,14 @@
               (Le mot «&nbsp;scout&nbsp;» est à considérer au sens large.)
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label("show_member_history", "Historique des membres dans l'unité") }}
+            </div>
+            <div class="col-sm-1">
+              {{ Form::checkbox("show_member_history", 1, Parameter::get(Parameter::$SHOW_MEMBER_HISTORY)) }}
+            </div>
+          </div>
           
           <legend>
             <div class="row">

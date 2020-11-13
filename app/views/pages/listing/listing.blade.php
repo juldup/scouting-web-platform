@@ -147,6 +147,9 @@
                   </td>
                   <td>
                     <a class="btn-sm btn-default" href="javascript:showMemberDetails({{ $member->id }})">Détails</a>
+                    @if (Parameter::get(Parameter::$SHOW_MEMBER_HISTORY))
+                      <a class="btn-sm btn-default" href="javascript:showMemberHistory({{ $member->id }})">Historique</a>
+                    @endif
                     @if ($user->isOwnerOfMember($member))
                       <a class="btn-sm btn-primary" href="javascript:editMember({{ $member->id }})">Modifier</a>
                     @endif
@@ -228,6 +231,40 @@
                     @endif
                   </td>
                 </tr>
+                @if (Parameter::get(Parameter::$SHOW_MEMBER_HISTORY))
+                  <tr id="history_{{ $member->id }}" class="history_member tablesorter-childRow" style="display: none;">
+                    <td colspan="1"></td>
+                    <td colspan="{{ 4 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) + ($sct['show_role'] ? 1 : 0) }}">
+                      <div class="row">
+                        @if (count(MemberHistory::getForMember($member->id)))
+                          @foreach (MemberHistory::getForMember($member->id) as $history_entry)
+                            <div class="col-md-12">
+                              @if ($history_entry->section_id)
+                                <span class="glyphicon glyphicon-certificate" style="color: {{ $history_entry->getSection()->color }}"></span>
+                                En {{{ $history_entry->year }}} :
+                                {{{ $history_entry->getSection()->name }}}
+                              @else
+                                <span class="glyphicon glyphicon-certificate"></span>
+                                En {{{ $history_entry->year }}} :
+                                {{{ $history_entry->section_name_backup }}}
+                              @endif
+                              @if ($history_entry->subgroup && $history_entry->role)
+                                ({{{ $history_entry->getSubgroupForDisplay() }}} ; role :
+                                {{{ $history_entry->role }}})
+                              @elseif ($history_entry->subgroup)
+                                ({{{ $history_entry->getSubgroupForDisplay() }}})
+                              @elseif ($history_entry->role)
+                                (Role : {{{ $history_entry->role }}})
+                              @endif
+                            </div>
+                          @endforeach
+                        @else
+                          Ce membre n'a pas d'historique dans l'unité.
+                        @endif
+                      </div>
+                    </td>
+                  </tr>
+                @endif
               @endforeach
             </tbody>
           </table>

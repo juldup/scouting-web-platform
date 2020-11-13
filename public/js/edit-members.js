@@ -112,7 +112,7 @@ function editMember(memberId) {
 
 /**
  * Shows the member details section of a given member, and hides
- * the details for the other members
+ * the details and histories for the other members
  */
 function showMemberDetails(memberId) {
   var element = $("#details_" + memberId);
@@ -121,6 +121,23 @@ function showMemberDetails(memberId) {
     element.hide();
   } else {
     $(".details_member:visible").hide();
+    $(".history_member:visible").hide();
+    element.show();
+  }
+}
+
+/**
+ * Shows the member history section of a given member, and hides
+ * the histories and details for the other members
+ */
+function showMemberHistory(memberId) {
+  var element = $("#history_" + memberId);
+  var visible = element.is(":visible");
+  if (visible) {
+    element.hide();
+  } else {
+    $(".details_member:visible").hide();
+    $(".history_member:visible").hide();
     element.show();
   }
 }

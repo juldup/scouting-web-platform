@@ -269,8 +269,9 @@ class Member extends Eloquent {
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
   public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader, $canEditPhoto) {
-    // Archive leaders
+    // Archive leaders and create history
     ArchivedLeader::archiveLeadersIfNeeded();
+    MemberHistory::createHistoryIfNeeded();
     // Get input data and check it for errors
     $data = self::checkInputData(false, $canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
     if (is_string($data)) {
@@ -353,8 +354,9 @@ class Member extends Eloquent {
    * @param boolean $validate  If true, the newly created member is immediately marked as registered
    */
   public static function createFromInput($validate = false) {
-    // Archive leaders
+    // Archive leaders and create history
     ArchivedLeader::archiveLeadersIfNeeded();
+    MemberHistory::createHistoryIfNeeded();
     // Get data from input and check it
     $data = self::checkInputData();
     if (is_string($data)) {

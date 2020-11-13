@@ -26,6 +26,16 @@
   <meta name="robots" content="noindex">
 @stop
 
+@section('additional_javascript')
+  <script>
+    $().ready(function() {
+      $("#leader_history_button").click(function() {
+        $("#leader_history").show();
+      });
+    });
+  </script>
+@stop
+
 @section('back_links')
   @if ($archive_year)
     <p>
@@ -149,6 +159,48 @@
       </div>
     @endforeach
   </div>
+  
+  @if (Parameter::get(Parameter::$SHOW_MEMBER_HISTORY) && $can_view_leader_history && count($leaders))
+    <button class="btn btn-default" id="leader_history_button">Voir l'historique des animateurs dans l'unité</button>
+    <div id="leader_history" style="display: none;">
+      @foreach ($leaders as $leader)
+        <div class="row leader-history-row">
+          <div class="col-md-12">
+            <strong>{{{ $leader->leader_name }}} ({{{ $leader->getFullName() }}})</strong>
+            <div class="col-md-11 col-offset-md-1">
+              <div class="row">
+                @if (count(MemberHistory::getForMember($leader->id)))
+                  @foreach (MemberHistory::getForMember($leader->id) as $history_entry)
+                    <div class="col-md-12">
+                      @if ($history_entry->section_id)
+                        <span class="glyphicon glyphicon-certificate" style="color: {{ $history_entry->getSection()->color }}"></span>
+                        En {{{ $history_entry->year }}} :
+                        {{{ $history_entry->getSection()->name }}}
+                      @else
+                        <span class="glyphicon glyphicon-certificate"></span>
+                        En {{{ $history_entry->year }}} :
+                        {{{ $history_entry->section_name_backup }}}
+                      @endif
+                      @if ($history_entry->subgroup && $history_entry->role)
+                        ({{{ $history_entry->getSubgroupForDisplay() }}} ; role :
+                        {{{ $history_entry->role }}})
+                      @elseif ($history_entry->subgroup)
+                        ({{{ $history_entry->getSubgroupForDisplay() }}})
+                      @elseif ($history_entry->role)
+                        (Role : {{{ $history_entry->role }}})
+                      @endif
+                    </div>
+                  @endforeach
+                @else
+                  Ce membre n'a pas d'historique dans l'unité.
+                @endif
+              </div>
+            </div>
+          </div>
+        </div>
+      @endforeach
+    </div>
+  @endif
   
   @if (count($archives) || $archive_year)
     <div class="row">

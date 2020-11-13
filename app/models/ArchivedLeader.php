@@ -49,7 +49,7 @@ class ArchivedLeader extends Eloquent {
    * Creates archived leader entries for all leaders of the previous year if they don't exist yet
    */
   public static function archiveLeadersIfNeeded() {
-    $lastYear = self::getLastYear();
+    $lastYear = DateHelper::getLastYearForArchiving();
     $count = ArchivedLeader::where('year', '=', $lastYear)
             ->take(1)
             ->count();
@@ -87,16 +87,6 @@ class ArchivedLeader extends Eloquent {
           'picture_filename' => $leader->getPicturePathFilename(),
       ));
     }
-  }
-  
-  /**
-   * Returns the 'YYYY-YYYY' string representation of the previous scouting year
-   */
-  public static function getLastYear() {
-    $month = date('m');
-    $startYear = date('Y') - 1;
-    if ($month <= 6) $startYear--;
-    return $startYear . "-" . ($startYear + 1);
   }
   
   /**

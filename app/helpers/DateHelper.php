@@ -93,4 +93,15 @@ class DateHelper {
     }
   }
   
+  /**
+   * Returns the 'YYYY-YYYY' string representation of the previous scouting year.
+   * The next year is considered as starting on July 1st.
+   */
+  public static function getLastYearForArchiving() {
+    $month = date('m');
+    $startYear = date('Y') - 1;
+    if ($month <= 6) $startYear--;
+    return $startYear . "-" . ($startYear + 1);
+  }
+  
 }

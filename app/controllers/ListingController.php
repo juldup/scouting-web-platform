@@ -662,6 +662,8 @@ class ListingController extends BaseController {
    * [Route] Ajax call to change the subgroup or role of a member
    */
   public function ajaxChangeSubgroupOrRole() {
+    // Create member history if needed
+    MemberHistory::createHistoryIfNeeded();
     // Get input data
     $memberId = Input::get('member_id');
     $field = Input::get('field');

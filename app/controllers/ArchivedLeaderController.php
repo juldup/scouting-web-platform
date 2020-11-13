@@ -35,13 +35,13 @@ class ArchivedLeaderController extends BaseController {
       return Helper::forbiddenResponse();
     }
     // List leaders
-    if ($archive == null) $archive = ArchivedLeader::getLastYear();
+    if ($archive == null) $archive = DateHelper::getLastYearForArchiving();
     $leaders = ArchivedLeader::where('section_id', '=', $this->section->id)
               ->where('year', '=', $archive)
               ->orderBy('leader_in_charge', 'DESC')
               ->orderBy('leader_name', 'ASC')
               ->get();
-    $lastYear = ArchivedLeader::getLastYear();
+    $lastYear = DateHelper::getLastYearForArchiving();
     $firstYearLeader = ArchivedLeader::orderBy('year')->first();
     $firstYear = ($firstYearLeader ? $firstYearLeader->year : $lastYear);
     $archives = [];
