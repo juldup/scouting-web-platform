@@ -67,14 +67,17 @@ class MemberHistory extends Eloquent {
   private static function createHistoryEntries($lastYear) {
     $members = Member::where('validated', '=', true)->get();
     foreach ($members as $member) {
+      $subgroup = ($member->is_leader ? "" : $member->subgroup);
+      $role = ($member->is_leader
+               ? (($member->gender == 'M' ? "Animateur" : "Animatrice") . ($member->leader_in_charge ? " responsable" : ""))
+               : $member->role);
       self::create(array(
           'member_id' => $member->id,
           'year' => $lastYear,
           'section_id' => $member->section_id,
-          'subgroup' => ($member->is_leader ? "" : $member->subgroup),
-          'role' => ($member->is_leader
-                     ? (($member->gender == 'M' ? "Animateur" : "Animatrice") . ($member->leader_in_charge ? " responsable" : ""))
-                     : $member->role),
+          'section_name_backup' => $member->getSection()->name,
+          'subgroup' => $subgroup == null ? "" : $subgroup,
+          'role' => $role == null ? "" : $role,
       ));
     }
   }
