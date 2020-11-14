@@ -160,7 +160,7 @@
     @endforeach
   </div>
   
-  @if (Parameter::get(Parameter::$SHOW_MEMBER_HISTORY) && $can_view_leader_history && count($leaders))
+  @if (Parameter::get(Parameter::$SHOW_MEMBER_HISTORY) && $can_view_leader_history && count($leaders) && !$archive_year)
     <button class="btn btn-default" id="leader_history_button">Voir l'historique des animateurs dans l'unité</button>
     <div id="leader_history" style="display: none;">
       @foreach ($leaders as $leader)
