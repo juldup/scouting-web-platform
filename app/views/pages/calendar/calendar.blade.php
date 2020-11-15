@@ -315,7 +315,7 @@
     <p></p>
     <strong>Légende :</strong>
     <span class="horiz-divider"></span>
-    @foreach (Section::get() as $section)
+    @foreach (Section::orderBy('position', 'asc')->get() as $section)
       <span style="color: {{{ $section->color }}}">
         @if ($section->calendar_shortname)
           <strong>{{{ $section->calendar_shortname }}}</strong> :
