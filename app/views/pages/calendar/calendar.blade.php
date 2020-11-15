@@ -311,6 +311,21 @@
     </div>
   @endif
   
+  @if ($user->currentSection->id == 1)
+    <p></p>
+    <strong>Légende :</strong>
+    <span class="horiz-divider"></span>
+    @foreach (Section::get() as $section)
+      <span style="color: {{{ $section->color }}}">
+        @if ($section->calendar_shortname)
+          <strong>{{{ $section->calendar_shortname }}}</strong> :
+        @endif
+        {{{ $section->name }}}
+      </span>
+      <span class="horiz-divider"></span>
+    @endforeach
+  @endif
+  
   @if (!$editing)
     @include('subviews.downloadCalendar')
   @endif
