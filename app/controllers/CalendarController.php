@@ -384,4 +384,36 @@ class CalendarController extends BaseController {
         'include_second_semester_by_default' => date('m') <= 7,
     ));
   }
+  
+  /**
+   * [Route] Export the calendar in ical format
+   */
+  public function exportCalendar($section_slug) {
+    // Create query
+    $query = CalendarItem::visibleToAllMembers();
+    // Filter by the current section
+    if ($this->section->id != 1) {
+      $sectionId = $this->section->id;
+      $query = $query->where(function($query) use ($sectionId) {
+        $query->where('section_id', '=', $sectionId);
+        $query->orWhere('section_id', '=', 1);
+      });
+    }
+    // Get calendar events
+    $events = $query->get();
+    // Generate calendar
+    $ical = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
+    foreach ($events as $event) {
+      $ical .=
+          "BEGIN:VEVENT\n" . 
+          "UID:event" . $event->id . "\n" .
+          "DTSTART;VALUE=DATE:" . substr($event->start_date, 0, 4) . substr($event->start_date, 5, 2) . substr($event->start_date, 8, 2) . "\n" .
+          "DTEND;VALUE=DATE:" . substr($event->end_date, 0, 4) . substr($event->end_date, 5, 2) . substr($event->end_date, 8, 2) . "\n" .
+          "SUMMARY:" . $event->getSection()->name . " : " . $event->event . "\n" .
+          "END:VEVENT\n";
+    }
+    $ical .= "END:VCALENDAR";
+    dd($ical);
+  }
+  
 }

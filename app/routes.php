@@ -215,6 +215,7 @@ Route::post('gestion/calendrier/submit/{year}/{month}/{section_slug}', array("as
 Route::get('gestion/calendrier/delete/{year}/{month}/{section_slug}/{event_id}', array("as" => "manage_calendar_delete", "uses" => "CalendarController@deleteItem"));
 Route::post('calendrier/telecharger', array("as" => "download_calendar", "uses" => "CalendarController@downloadCalendar"));
 Route::get('calendrier-liste/{section_slug?}', array("as" => "calendar_as_list", "uses" => "CalendarController@showCalendarAsList"));
+Route::get('calendrier-icalendar/{section_slug}', array("as" => "export_calendar", "uses" => "CalendarController@exportCalendar"));
 
 // Attendance
 Route::get('gestion/presences/{section_slug?}/{year?}', array("as" => "edit_attendance", "uses" => "AttendanceController@editAttendance"));
