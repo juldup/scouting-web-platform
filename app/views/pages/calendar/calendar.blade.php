@@ -91,6 +91,23 @@
     </div>
   </div>
   
+  @if (Parameter::get(Parameter::$LEGEND_IN_CALENDAR) && $user->currentSection->id == 1)
+    <div class="calendar-large-screens">
+      <strong>Légende :</strong>
+      <span class="horiz-divider"></span>
+      @foreach (Section::orderBy('position', 'asc')->get() as $section)
+        <span style="color: {{{ $section->color }}}">
+          @if ($section->calendar_shortname)
+            <strong>{{{ $section->calendar_shortname }}}</strong> :
+          @endif
+          {{{ $section->name }}}
+        </span>
+        <span class="horiz-divider"></span>
+      @endforeach
+      <p></p>
+    </div>
+  @endif
+  
   <div class="row">
     <div class='col-md-10 col-md-offset-1'>
       @if ($editing)
@@ -310,22 +327,7 @@
       </div>
     </div>
   @endif
-  
-  @if ($user->currentSection->id == 1)
-    <p></p>
-    <strong>Légende :</strong>
-    <span class="horiz-divider"></span>
-    @foreach (Section::orderBy('position', 'asc')->get() as $section)
-      <span style="color: {{{ $section->color }}}">
-        @if ($section->calendar_shortname)
-          <strong>{{{ $section->calendar_shortname }}}</strong> :
-        @endif
-        {{{ $section->name }}}
-      </span>
-      <span class="horiz-divider"></span>
-    @endforeach
-  @endif
-  
+    
   @if (!$editing)
     @include('subviews.downloadCalendar')
   @endif

@@ -344,6 +344,10 @@ class ParameterController extends BaseController {
             'description' => 'Calendrier téléchargeable en pdf',
             'parameter_name' => Parameter::$CALENDAR_DOWNLOADABLE
         ),
+        'legend_in_calendar' => array(
+            'description' => "Légende dans le calendrier d'unité",
+            'parameter_name' => Parameter::$LEGEND_IN_CALENDAR
+        ),
         'page_documents' => array(
             'description' => 'Afficher la page "télécharger"',
             'parameter_name' => Parameter::$SHOW_DOCUMENTS

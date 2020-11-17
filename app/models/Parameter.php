@@ -38,6 +38,7 @@ class Parameter extends Eloquent {
    */
   // Page access parameters
   public static $CALENDAR_DOWNLOADABLE = "Calendar downloadable";
+  public static $LEGEND_IN_CALENDAR = "Legend in calendar";
   public static $SHOW_SECTIONS = "Show sections";
   public static $SHOW_ADDRESSES = "Show addresses";
   public static $SHOW_CONTACTS = "Show contacts";
