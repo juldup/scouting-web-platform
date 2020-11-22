@@ -52,6 +52,8 @@
         'delete_url': "{{ URL::route('edit_section_delete', array('section_id' => $section->id)) }}",
         'calendar_shortname': "{{ Helper::sanitizeForJavascript($section->calendar_shortname) }}",
         'start_age': "{{ $section->start_age }}",
+        'google_calendar_link': "{{ Helper::sanitizeForJavascript($section->google_calendar_link) }}",
+        'export_calendar_url': "{{ URL::route('export_calendar', ['section_id' => $section->id]) }}"
       };
     @endforeach
   </script>
@@ -71,133 +73,144 @@
   <div class="row">
     <div class='col-md-12'>
       
-      <div id="section_form" class="form-horizontal well"
-           @if (!Session::has('_old_input')) style="display: none;" @endif
-           >
-        {{ Form::open(array('url' => URL::route('edit_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
-          {{ Form::hidden('section_id', 0) }}
-          <legend>Modifier la section</legend>
-          <div class="form-group">
-            {{ Form::label('section_name', 'Nom', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-7">
-              {{ Form::text('section_name', '', array('class' => 'form-control', 'placeholder' => 'ex.: Waingunga')) }}
+      @if ($user->can(Privilege::$MANAGE_SECTIONS, $section))
+        <div id="section_form" class="form-horizontal well"
+             @if (!Session::has('_old_input')) style="display: none;" @endif
+             >
+          {{ Form::open(array('url' => URL::route('edit_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
+            {{ Form::hidden('section_id', 0) }}
+            <legend>Modifier la section</legend>
+            <div class="form-group">
+              {{ Form::label('section_name', 'Nom', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-7">
+                {{ Form::text('section_name', '', array('class' => 'form-control', 'placeholder' => 'ex.: Waingunga')) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            {{ Form::label('section_email', 'Adresse e-mail', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-7">
-              {{ Form::text('section_email', '', array('class' => 'form-control')) }}
+            <div class="form-group">
+              {{ Form::label('section_email', 'Adresse e-mail', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-7">
+                {{ Form::text('section_email', '', array('class' => 'form-control')) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            {{ Form::label('section_category', 'Type de section', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-7">
-              {{ Form::select('section_category', Section::categoriesForSelect(), '', array('class' => 'form-control')) }}
+            <div class="form-group">
+              {{ Form::label('section_category', 'Type de section', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-7">
+                {{ Form::select('section_category', Section::categoriesForSelect(), '', array('class' => 'form-control')) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            {{ Form::label('section_type', 'Sigle', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-9">
-              {{ Form::text('section_type', '', array('class' => 'form-control small', 'placeholder' => 'ex.: B')) }}
-              {{ Form::text('section_type_number', '', array('class' => 'form-control small', 'placeholder' => 'ex.: 1')) }}
-              <span class="horiz-divider"></span>
-              <span class="form-side-note">
-                Le sigle fédération de la section&nbsp;: symbole (B, L, E, P...) + numéro (1, 2, 3...)
-              </span>
+            <div class="form-group">
+              {{ Form::label('section_type', 'Sigle', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-9">
+                {{ Form::text('section_type', '', array('class' => 'form-control small', 'placeholder' => 'ex.: B')) }}
+                {{ Form::text('section_type_number', '', array('class' => 'form-control small', 'placeholder' => 'ex.: 1')) }}
+                <span class="horiz-divider"></span>
+                <span class="form-side-note">
+                  Le sigle fédération de la section&nbsp;: symbole (B, L, E, P...) + numéro (1, 2, 3...)
+                </span>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            {{ Form::label('section_color', 'Couleur', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-5">
-              {{ Form::hidden('section_color', '') }}
-              <p class="form-side-note">
-                <a class="color-sample"></a>
-              </p>
+            <div class="form-group">
+              {{ Form::label('section_color', 'Couleur', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-5">
+                {{ Form::hidden('section_color', '') }}
+                <p class="form-side-note">
+                  <a class="color-sample"></a>
+                </p>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-3 control-label">
-              {{ Form::label('section_calendar_shortname', 'Préfixe pour le calendrier') }}
-              <p>Précédera le nom de l'activité dans le calendrier d'unité</p>
+            <div class="form-group">
+              <div class="col-md-3 control-label">
+                {{ Form::label('section_calendar_shortname', 'Préfixe pour le calendrier') }}
+                <p>Précédera le nom de l'activité dans le calendrier d'unité</p>
+              </div>
+              <div class="col-md-7">
+                {{ Form::text('section_calendar_shortname', '', array('class' => 'form-control large', 'placeholder' => "ex.: LOU")) }}
+              </div>
             </div>
-            <div class="col-md-7">
-              {{ Form::text('section_calendar_shortname', '', array('class' => 'form-control large', 'placeholder' => "ex.: LOU")) }}
+            <div class="form-group">
+              <div class="col-md-3 control-label">
+                {{ Form::label('section_la_section', '"la section"') }}
+                <p>Utilisé pour compléter certaines phrase du site</p>
+              </div>
+              <div class="col-md-7">
+                {{ Form::text('section_la_section', '', array('class' => 'form-control large', 'placeholder' => "ex.: la meute")) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-3 control-label">
-              {{ Form::label('section_la_section', '"la section"') }}
-              <p>Utilisé pour compléter certaines phrase du site</p>
+            <div class="form-group">
+              <div class="col-md-3 control-label">
+                {{ Form::label('section_de_la_section', '"de la section"') }}
+                <p>Utilisé pour compléter certaines phrase du site</p>
+              </div>
+              <div class="col-md-7">
+                {{ Form::text('section_de_la_section', '', array('class' => 'form-control large', 'placeholder' => "ex: de la meute")) }}
+              </div>
             </div>
-            <div class="col-md-7">
-              {{ Form::text('section_la_section', '', array('class' => 'form-control large', 'placeholder' => "ex.: la meute")) }}
+            <div class="form-group">
+              <div class='col-md-3 control-label'>
+                {{ Form::label('section_subgroup_name', 'Nom des sous-groupes') }}
+                <br />
+                (au singulier)
+              </div>
+              <div class="col-md-7">
+                {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'ex.: Sizaine')) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-3 control-label">
-              {{ Form::label('section_de_la_section', '"de la section"') }}
-              <p>Utilisé pour compléter certaines phrase du site</p>
+            <div class="form-group">
+              <div class='col-md-3 control-label'>
+                {{ Form::label('section_start_age', 'Âge minimum') }}
+                <br>
+                (nombre entier)
+              </div>
+              <div class="col-md-7">
+                {{ Form::text('section_start_age', '', array('class' => 'form-control', 'placeholder' => 'ex.: 12')) }}
+              </div>
             </div>
-            <div class="col-md-7">
-              {{ Form::text('section_de_la_section', '', array('class' => 'form-control large', 'placeholder' => "ex: de la meute")) }}
+            <div class="form-group">
+              <div class='col-md-3 control-label'>
+                {{ Form::label('google_calendar_link', 'Lien Google Agenda') }}
+              </div>
+              <div class="col-md-9">
+                {{ Form::text('google_calendar_link', '', array('class' => 'form-control', 'placeholder' => 'ex.: https://calendar.google.com/calendar/u/0/r?cid=1paa6v92kavl29mp97gn20a8h5mrt7e0@import.calendar.google.com')) }}
+                URL du calendrier au format icalendar : <span id='icalendar_link'></span>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class='col-md-3 control-label'>
-              {{ Form::label('section_subgroup_name', 'Nom des sous-groupes') }}
-              <br />
-              (au singulier)
+            <div class="form-group">
+              <div class="col-md-5 col-md-offset-3">
+                {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+                <a class='btn btn-danger' id='delete_button' href="">Supprimer</a>
+                <a class='btn btn-default dismiss-form'>Fermer</a>
+              </div>
             </div>
-            <div class="col-md-7">
-              {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'ex.: Sizaine')) }}
+          {{ Form::close() }}
+        </div>
+      @else
+        <div id="section-form-limited" class="form-horizontal well"
+             @if (!Session::has('_old_input')) style="display: none;" @endif
+             >
+          {{ Form::open(array('url' => URL::route('edit_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
+            {{ Form::hidden('section_id', 0) }}
+            <legend>Modifier la section</legend>
+            <div class="form-group">
+              {{ Form::label('section_email', 'Adresse e-mail', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-7">
+                {{ Form::text('section_email', '', array('class' => 'form-control')) }}
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class='col-md-3 control-label'>
-              {{ Form::label('section_start_age', 'Âge minimum') }}
-              <br>
-              (nombre entier)
+            <div class="form-group">
+              {{ Form::label('section_subgroup_name', 'Nom des sous-groupes', array('class' => 'col-md-3 control-label')) }}
+              <div class="col-md-7">
+                {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'Patrouille, Sizaine, Hutte...')) }}
+              </div>
             </div>
-            <div class="col-md-7">
-              {{ Form::text('section_start_age', '', array('class' => 'form-control', 'placeholder' => 'ex.: 12')) }}
+            <div class="form-group">
+              <div class="col-md-5 col-md-offset-3">
+                {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+                <a class='btn btn-default dismiss-form'>Fermer</a>
+              </div>
             </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-5 col-md-offset-3">
-              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
-              <a class='btn btn-danger' id='delete_button' href="">Supprimer</a>
-              <a class='btn btn-default dismiss-form'>Fermer</a>
-            </div>
-          </div>
-        {{ Form::close() }}
-      </div>
-      
-      <div id="section-form-limited" class="form-horizontal well"
-           @if (!Session::has('_old_input')) style="display: none;" @endif
-           >
-        {{ Form::open(array('url' => URL::route('edit_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
-          {{ Form::hidden('section_id', 0) }}
-          <legend>Modifier la section</legend>
-          <div class="form-group">
-            {{ Form::label('section_email', 'Adresse e-mail', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-7">
-              {{ Form::text('section_email', '', array('class' => 'form-control')) }}
-            </div>
-          </div>
-          <div class="form-group">
-            {{ Form::label('section_subgroup_name', 'Nom des sous-groupes', array('class' => 'col-md-3 control-label')) }}
-            <div class="col-md-7">
-              {{ Form::text('section_subgroup_name', '', array('class' => 'form-control', 'placeholder' => 'Patrouille, Sizaine, Hutte...')) }}
-            </div>
-          </div>
-          <div class="form-group">
-            <div class="col-md-5 col-md-offset-3">
-              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
-              <a class='btn btn-default dismiss-form'>Fermer</a>
-            </div>
-          </div>
-        {{ Form::close() }}
-      </div>
+          {{ Form::close() }}
+        </div>
+      @endif
       
     </div>
   </div>
@@ -277,6 +290,22 @@
                     </div>
                     <div class="col-xs-9">
                       {{{ $section->subgroup_name }}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-3 member-detail-label">
+                      Âge minimum
+                    </div>
+                    <div class="col-xs-9">
+                      {{{ $section->start_age }}} {{ $section->start_age ? "ans" : "-" }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-3 member-detail-label">
+                      Lien Google Agenda
+                    </div>
+                    <div class="col-xs-9">
+                      {{{ $section->google_calendar_link }}}
                     </div>
                   </div>
                 </div>

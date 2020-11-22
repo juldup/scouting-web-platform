@@ -72,6 +72,13 @@
       Voir l'agenda sous forme de liste
     </a>
   </p>
+  @if ($google_calendar_link && !$editing)
+    <p>
+      <a href='{{{ $google_calendar_link }}}' target="_blank">
+        Intégrer à Google Agenda
+      </a>
+    </p>
+  @endif
 @stop
 
 @section('content')

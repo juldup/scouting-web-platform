@@ -199,6 +199,15 @@
               {{ Form::checkbox("show_member_history", 1, Parameter::get(Parameter::$SHOW_MEMBER_HISTORY)) }}
             </div>
           </div>
+          <div class="form-group">
+            <div class="col-sm-4 control-label">
+              {{ Form::label("unit_google_calendar_link", "Lien Google Agenda") }}
+            </div>
+            <div class="col-sm-8">
+              {{ Form::text("unit_google_calendar_link", Section::find(1)->google_calendar_link, ['class' => 'form-control']) }}
+              URL du calendrier au format icalendar : <span id='icalendar_link'>{{ URL::route('export_calendar', ['section_id' => 1]) }}</span>
+            </div>
+          </div>
           
           <legend>
             <div class="row">

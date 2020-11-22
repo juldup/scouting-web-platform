@@ -96,6 +96,8 @@ function createSection(sectionId) {
   $("#section_form [name='section_de_la_section']").val("");
   $("#section_form [name='section_subgroup_name']").val("");
   $("#section_form [name='section_start_age']").val("");
+  $("#section_form [name='google_calendar_link']").val("");
+  $("#section_form #icalendar_link").html("cette url sera disponible lorsque la section aura été créée");
   $("#section_form #delete_button").hide();
   $("#section_form #delete_button").attr('href', "");
   $("#section_form").slideDown();
@@ -119,6 +121,8 @@ function editSection(sectionId) {
   $("#section_form [name='section_de_la_section']").val(sections[sectionId].de_la_section);
   $("#section_form [name='section_subgroup_name']").val(sections[sectionId].subgroup_name);
   $("#section_form [name='section_start_age']").val(sections[sectionId].start_age);
+  $("#section_form [name='google_calendar_link']").val(sections[sectionId].google_calendar_link);
+  $("#section_form #icalendar_link").html(sections[sectionId].export_calendar_url);
   $("#section_form #delete_button").show();
   $("#section_form #delete_button").attr('href', sections[sectionId].delete_url);
   $("#section_form").slideDown();

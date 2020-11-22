@@ -243,13 +243,19 @@ class ParameterController extends BaseController {
       Log::error($e);
       $error = true;
     }
-    // Save unit e-mail address
+    // Save unit e-mail address and google calendar link
     try {
       $unitSection = Section::find(1);
       $unitEmail = Input::get('unit_email_address');
       if ($unitSection->email != $unitEmail) {
         $changesMade .= "- Adresse e-mail de l'unité&nbsp;: <del>" . $unitSection->email . "</del> <ins>$unitEmail</ins><br />";
         $unitSection->email = $unitEmail;
+        $unitSection->save();
+      }
+      $googleCalendarLink = Input::get('unit_google_calendar_link');
+      if ($unitSection->google_calendar_link != $googleCalendarLink) {
+        $changesMade .= "- Lien Google Agenda&nbsp;: <del>" . $unitSection->google_calendar_link . "</del> <ins>$googleCalendarLink</ins><br />";
+        $unitSection->google_calendar_link = $googleCalendarLink;
         $unitSection->save();
       }
     } catch (Exception $e) {

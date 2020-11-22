@@ -59,6 +59,7 @@ class SectionDataController extends BaseController {
     $de_la_section = Input::get('section_de_la_section');
     $subgroup_name = Input::get('section_subgroup_name');
     $start_age = intval(Input::get('section_start_age'));
+    $google_calendar_link = Input::get('google_calendar_link');
     // Get whether the user can change all section data or only limited data
     $fullEdit = $this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId);
     // Check validity
@@ -123,6 +124,7 @@ class SectionDataController extends BaseController {
           $section->la_section = $la_section;
           $section->de_la_section = $de_la_section;
           $section->start_age = $start_age ? $start_age : null;
+          $section->google_calendar_link = $google_calendar_link;
         }
         $section->email = $email;
         $section->subgroup_name = $subgroup_name;

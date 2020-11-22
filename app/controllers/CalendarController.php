@@ -143,6 +143,7 @@ class CalendarController extends BaseController {
         'calendar_items' => $calendarItems,
         'include_second_semester_by_default' => date('m') <= 7,
         'preselected_multi_sections' => Session::get('calendar_multi_sections') ? Session::get('calendar_multi_sections') : [],
+        'google_calendar_link' => $this->section->google_calendar_link,
     ));
   }
   
@@ -388,14 +389,17 @@ class CalendarController extends BaseController {
   /**
    * [Route] Export the calendar in ical format
    */
-  public function exportCalendar($section_slug) {
+  public function exportCalendar($section_id) {
+    $section = Section::find($section_id);
+    if (!$section) {
+      return App::abort(404);
+    }
     // Create query
     $query = CalendarItem::visibleToAllMembers();
     // Filter by the current section
-    if ($this->section->id != 1) {
-      $sectionId = $this->section->id;
-      $query = $query->where(function($query) use ($sectionId) {
-        $query->where('section_id', '=', $sectionId);
+    if ($section_id != 1) {
+      $query = $query->where(function($query) use ($section_id) {
+        $query->where('section_id', '=', $section_id);
         $query->orWhere('section_id', '=', 1);
       });
     }
@@ -413,7 +417,7 @@ class CalendarController extends BaseController {
           "END:VEVENT\n";
     }
     $ical .= "END:VCALENDAR";
-    dd($ical);
+    echo $ical;
   }
   
 }
