@@ -966,7 +966,7 @@ class RegistrationController extends GenericPageController {
    */
   public function submitPriority() {
     // Make sure the user is allowed to manage registrations
-    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
       return Helper::forbiddenResponse();
     }
     $memberId = Input::get('member_id');
@@ -1010,7 +1010,7 @@ class RegistrationController extends GenericPageController {
    */
   public function recomputeYearsInSection() {
     // Make sure the user is allowed to manage registrations
-    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
       return Helper::forbiddenResponse();
     }
     $registrations = Member::where('validated', '=', 0)->get();
@@ -1027,7 +1027,7 @@ class RegistrationController extends GenericPageController {
    */
   public function downloadRegistrationList() {
     // Make sure the user is allowed to manage registrations
-    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
       return Helper::forbiddenResponse();
     }
     $fields = [
