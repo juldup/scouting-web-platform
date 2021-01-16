@@ -461,20 +461,23 @@ class RegistrationController extends GenericPageController {
           // Is registered in priority timespan
           if ($a->registration_priority && !$b->registration_priority) return -1;
           if ($b->registration_priority && !$a->registration_priority) return 1;
-          if ($a->registration_priority && $a->year_in_section == 1) { // and therefore also $bPrioritary and $b->year_in_section == 1
+          if ($a->registration_priority /*&& $a->year_in_section == 1*/) { // and therefore also $bPrioritary and $b->year_in_section == 1
             // Siblings
             if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
             if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
             // City
+            $aInCity = false;
+            $bInCity = false;
             if ($referenceCity) {
-              if (strpos(Helper::slugify($a->city), $referenceCity) !== false
-                      && strpos(Helper::slugify($b->city), $referenceCity) == false) return -1;
-              if (strpos(Helper::slugify($b->city), $referenceCity) !== false
-                      && strpos(Helper::slugify($a->city), $referenceCity) == false) return 1;
+              $aInCity = strpos(Helper::slugify($a->city), $referenceCity) !== false;
+              $bInCity = strpos(Helper::slugify($b->city), $referenceCity) !== false;
             }
             // Former leader child
-            if (trim($a->registration_former_leader_child) && !trim($b->registration_former_leader_child)) return -1;
-            if (trim($b->registration_former_leader_child) && !trim($a->registration_former_leader_child)) return 1;
+            $aIsFormerLeaderChild = trim($a->registration_former_leader_child);
+            $bIsFormerLeaderChild = trim($b->registration_former_leader_child);
+            // Compare city and former leader child
+            if (($aInCity || $aIsFormerLeaderChild) && !($bInCity || $bIsFormerLeaderChild)) return -1;
+            if (($bInCity || $bIsFormerLeaderChild) && !($aInCity || $aIsFormerLeaderChild)) return 1;
           }
           // Date
           return strcmp($a->registration_date, $b->registration_date);
