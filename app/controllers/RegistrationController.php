@@ -433,57 +433,7 @@ class RegistrationController extends GenericPageController {
       ));
     } else { // Advanced registrations
       // Gather pending registrations
-      $pendingRegistrations = Member::where('validated', '=', false)
-              ->orderBy('section_id', 'ASC')
-              ->orderBy('registration_section_category', 'ASC')
-              ->orderBy('year_in_section', 'ASC')
-              ->get();
-      $sectionCategories = [];
-      foreach ($pendingRegistrations as $registration) {
-        $category = $registration->registration_section_category;
-        if ($category && array_key_exists($category, Section::$CATEGORIES)) {
-          $category = Section::$CATEGORIES[$category]['name'];
-        }
-        if (!$category) $category = $registration->getSection()->name;
-        $category .= " (année " . $registration->year_in_section . ")";
-        if (!array_key_exists($category, $sectionCategories)) {
-          $sectionCategories[$category] = [];
-        }
-        $sectionCategories[$category][] = $registration;
-      }
-      $referenceCity = Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY);
-      if ($referenceCity) $referenceCity = Helper::slugify($referenceCity);
-      foreach ($sectionCategories as $category => $pendingRegistrationArray) {
-        usort($pendingRegistrationArray, function($a, $b) use ($referenceCity) {
-          // Is leader
-          if ($a->is_leader && !$b->is_leader) return -1;
-          if ($b->is_leader && !$a->is_leader) return 1;
-          // Is registered in priority timespan
-          if ($a->registration_priority && !$b->registration_priority) return -1;
-          if ($b->registration_priority && !$a->registration_priority) return 1;
-          if ($a->registration_priority /*&& $a->year_in_section == 1*/) { // and therefore also $bPrioritary and $b->year_in_section == 1
-            // Siblings
-            if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
-            if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
-            // City
-            $aInCity = false;
-            $bInCity = false;
-            if ($referenceCity) {
-              $aInCity = strpos(Helper::slugify($a->city), $referenceCity) !== false;
-              $bInCity = strpos(Helper::slugify($b->city), $referenceCity) !== false;
-            }
-            // Former leader child
-            $aIsFormerLeaderChild = trim($a->registration_former_leader_child);
-            $bIsFormerLeaderChild = trim($b->registration_former_leader_child);
-            // Compare city and former leader child
-            if (($aInCity || $aIsFormerLeaderChild) && !($bInCity || $bIsFormerLeaderChild)) return -1;
-            if (($bInCity || $bIsFormerLeaderChild) && !($aInCity || $aIsFormerLeaderChild)) return 1;
-          }
-          // Date
-          return strcmp($a->registration_date, $b->registration_date);
-        });
-        $sectionCategories[$category] = $pendingRegistrationArray;
-      }
+      $sectionCategories = $this->getAdvancedRegistrationSortedByCategory();
       // Render view
       return View::make('pages.registration.manageAdvancedRegistration', array(
           'registrations' => $sectionCategories,
@@ -494,6 +444,70 @@ class RegistrationController extends GenericPageController {
           'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
       ));
     }
+  }
+  
+  private function getAdvancedRegistrationSortedByCategory() {
+    $pendingRegistrations = Member::where('validated', '=', false)
+            ->orderBy('section_id', 'ASC')
+            ->orderBy('registration_section_category', 'ASC')
+            ->orderBy('year_in_section', 'ASC')
+            ->get();
+    $sectionCategories = [];
+    foreach ($pendingRegistrations as $registration) {
+      $category = $registration->registration_section_category;
+      if ($category && array_key_exists($category, Section::$CATEGORIES)) {
+        $category = Section::$CATEGORIES[$category]['name'];
+      }
+      if (!$category) $category = $registration->getSection()->name;
+      $category .= " (année " . $registration->year_in_section . ")";
+      if (!array_key_exists($category, $sectionCategories)) {
+        $sectionCategories[$category] = [];
+      }
+      $sectionCategories[$category][] = $registration;
+    }
+    $referenceCity = Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY);
+    if ($referenceCity) $referenceCity = Helper::slugify($referenceCity);
+    foreach ($sectionCategories as $category => $pendingRegistrationArray) {
+      usort($pendingRegistrationArray, function($a, $b) use ($referenceCity) {
+        // Is leader
+        if ($a->is_leader && !$b->is_leader) return -1;
+        if ($b->is_leader && !$a->is_leader) return 1;
+        // Is registered in priority timespan
+        if ($a->registration_priority && !$b->registration_priority) return -1;
+        if ($b->registration_priority && !$a->registration_priority) return 1;
+        if ($a->registration_priority /*&& $a->year_in_section == 1*/) { // and therefore also $bPrioritary and $b->year_in_section == 1
+          // Siblings
+          if (trim($a->registration_siblings) && !trim($b->registration_siblings)) return -1;
+          if (trim($b->registration_siblings) && !trim($a->registration_siblings)) return 1;
+          // City
+          $aInCity = false;
+          $bInCity = false;
+          if ($referenceCity) {
+            $aInCity = strpos(Helper::slugify($a->city), $referenceCity) !== false;
+            $bInCity = strpos(Helper::slugify($b->city), $referenceCity) !== false;
+          }
+          // Former leader child
+          $aIsFormerLeaderChild = trim($a->registration_former_leader_child);
+          $bIsFormerLeaderChild = trim($b->registration_former_leader_child);
+          // Compare city and former leader child
+          if (($aInCity || $aIsFormerLeaderChild) && !($bInCity || $bIsFormerLeaderChild)) return -1;
+          if (($bInCity || $bIsFormerLeaderChild) && !($aInCity || $aIsFormerLeaderChild)) return 1;
+        }
+        // Date
+        return strcmp($a->registration_date, $b->registration_date);
+      });
+      $femaleCounter = 1;
+      $maleCounter = 1;
+      foreach ($pendingRegistrationArray as $registration) {
+        if ($registration->gender == "M") {
+          $registration->gender_order = "" . ($maleCounter++);
+        } else {
+          $registration->gender_order = "" . ($femaleCounter++);
+        }
+      }
+      $sectionCategories[$category] = $pendingRegistrationArray;
+    }
+    return $sectionCategories;
   }
   
   /**
@@ -1041,6 +1055,7 @@ class RegistrationController extends GenericPageController {
         "first_name" => "Prénom",
         "birth_date" => "Date de naissance",
         "gender" => "Sexe",
+        "gender_order" => "Numéro par sexe",
         "is_leader" => "Animateur",
         "registration_date" => "Date d'inscription",
         "registration_siblings" => "Frères et sœurs",
@@ -1074,17 +1089,20 @@ class RegistrationController extends GenericPageController {
         
     ];
     $firstField = "registration_section_category";
-    $registrations = Member::where('validated', '=', 0)->get();
+    //$registrations = Member::where('validated', '=', 0)->get();
+    $sectionCategories = $this->getAdvancedRegistrationSortedByCategory();
     $output = "";
     foreach ($fields as $field => $fieldName) {
       $output .= ($field != $firstField ?  "," : "") . "\"$fieldName\"";
     }
     $output .= "\n";
-    foreach ($registrations as $registration) {
-      foreach ($fields as $field => $fieldName) {
-        $output .= ($field != $firstField ?  "," : "") . "\"" . str_replace("\"", "\"\"", $registration->$field) . "\"";
+    foreach ($sectionCategories as $registrations) {
+      foreach ($registrations as $registration) {
+        foreach ($fields as $field => $fieldName) {
+          $output .= ($field != $firstField ?  "," : "") . "\"" . str_replace("\"", "\"\"", $registration->$field) . "\"";
+        }
+        $output .= "\n";
       }
-      $output .= "\n";
     }
     
     return Response::stream(

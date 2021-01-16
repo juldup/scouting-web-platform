@@ -120,11 +120,12 @@
               <th></th>
               <th>Nom</th>
               <th>Prénom</th>
+              <th title="Numéro d'ordre par sexe">Ordre</th>
               <th title="Inscription en tant qu'animateur">Animateur</th>
-              <th title="A des frères et sœurs déjà inscrits dans l'unité">Frères et sœurs</th>
-              <th>Habite {{{ Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY) }}}</th>
-              <th>Enfant d'ancien animateur</th>
-              <th>Date d'inscription</th>
+              <th title="A des frères et sœurs déjà inscrits dans l'unité">Fratrie</th>
+              <th title="Habite à {{{ Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY) }}}">{{{ Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY) }}}</th>
+              <th title="Enfant d'ancien animateur">Ancien</th>
+              <th title="Date d'inscription">Date</th>
             </tr>
           </thead>
           <tbody>
@@ -147,6 +148,7 @@
                 </td>
                 <td class="space-on-right">{{{ $member->last_name }}}</td>
                 <td class="space-on-right">{{{ $member->first_name }}}</td>
+                <td>{{{ $member->gender == "M" ? "M-" : "F-" }}}{{{ $member->gender_order }}}</td>
                 <td>{{{ $member->is_leader ? "Oui" : "Non" }}}</td>
                 <td>
                   @if ($member->registration_siblings)
