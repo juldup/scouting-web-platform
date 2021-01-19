@@ -169,4 +169,14 @@ class Section extends Eloquent {
     return 0;
   }
   
+  /**
+   * Returns the name of a category based on its slug
+   */
+  public static function getCategoryName($categorySlug) {
+    foreach (self::$CATEGORIES as $slug => $data) {
+      if ($categorySlug == $slug) return $data['name'];
+    }
+    return "";
+  }
+  
 }

@@ -84,7 +84,7 @@
       @endif
       <tr>
         <td><strong>Section</strong>&nbsp;:</td>
-        <td>{{{ $member->getSection()->name }}}</td>
+        <td>{{{ ($member->registration_section_category ? Section::getCategoryName($member->registration_section_category) : $member->getSection()->name) }}}</td>
       </tr>
       @if ($member->totem)
         <tr>
@@ -114,7 +114,7 @@
   </p>
   @if ($to_leaders)
     <p>
-      À vous maintenant de valider ou annuler cette demande inscription&nbsp;:
+      À vous maintenant de valider ou annuler cette demande d'inscription&nbsp;:
       <a href="{{ URL::route('manage_registration', array('section_slug' => $member->getSection()->slug)) }}">{{ URL::route('manage_registration', array('section_slug' => $member->getSection()->slug)) }}</a>
     </p>
     <p>

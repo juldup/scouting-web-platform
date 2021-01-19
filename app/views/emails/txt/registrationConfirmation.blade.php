@@ -55,7 +55,7 @@ E-mail des parents : {{ $member->email1 }}{{ $member->email1 && $member->email2 
 E-mail du scout : {{ $member->email_member }}
 
 @endif
-Section : {{ $member->getSection()->name }}
+Section : {{ ($member->registration_section_category ? Section::getCategoryName($member->registration_section_category) : $member->getSection()->name) }}
 
 @if ($member->totem)
 Totem et quali : {{ $member->totem }} {{ $member->quali }}
@@ -74,7 +74,7 @@ Inscription en tant qu'animateur
 @endif
 
 @if ($to_leaders)
-À vous maintenant de valider ou annuler cette demande inscription.
+À vous maintenant de valider ou annuler cette demande d'inscription.
 
 Cordialement,
 Le gestionnaire du site
