@@ -118,6 +118,7 @@
           <thead>
             <tr>
               <th></th>
+              <th title="Préinscrit"><span class="glyphicon glyphicon-ok"></span></th>
               <th>Nom</th>
               <th>Prénom</th>
               <th title="Numéro d'ordre par sexe">Ordre</th>
@@ -145,6 +146,9 @@
                   <a class="btn-sm btn-default" href="javascript:editRegistrationPriority({{ $member->id }})">
                     <span class='glyphicon glyphicon-pencil'></span>
                   </a>
+                </td>
+                <td>
+                  {{ $member->in_waiting_list ? "<strong>Oui</strong>" : "Non" }}
                 </td>
                 <td class="space-on-right">{{{ $member->last_name }}}</td>
                 <td class="space-on-right">{{{ $member->first_name }}}</td>
@@ -191,6 +195,14 @@
                       {{ Form::label('', "Nom", array("class" => "col-md-4 control-label")) }}
                       <div class="col-md-8 form-side-note">
                         {{{ $member->getFullName() }}}
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-md-4 control-label">
+                        {{ Form::label('in_waiting_list', "Préinscription", array("class" => "")) }}
+                      </div>
+                      <div class="col-md-8">
+                        {{ Form::checkbox('in_waiting_list', 1, $member->in_waiting_list ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
                       </div>
                     </div>
                     <div class="form-group">
