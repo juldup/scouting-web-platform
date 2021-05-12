@@ -1101,7 +1101,7 @@ class RegistrationController extends GenericPageController {
     foreach ($sectionCategories as $registrations) {
       foreach ($registrations as $registration) {
         foreach ($fields as $field => $fieldName) {
-          $output .= ($field != $firstField ?  "," : "") . "\"" . str_replace("\"", "\"\"", $registration->$field) . "\"";
+          $output .= ($field != $firstField ?  "," : "") . "\"" . str_replace("\"", "\"\"", preg_replace( "/\r|\n/", " ", $registration->$field)) . "\"";
         }
         $output .= "\n";
       }
