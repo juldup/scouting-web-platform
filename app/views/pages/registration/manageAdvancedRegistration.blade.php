@@ -88,6 +88,16 @@
   @endif
 @stop
 
+@section('forward_links')
+  @if ($user->can(Privilege::$EDIT_LISTING_ALL, 1))
+    <p>
+      <a href="{{ URL::route('create_temporary_registration_link', array('section_slug' => $user->currentSection->slug)) }}">
+        Créer un lien d'inscription temporaire
+      </a>
+    </p>
+  @endif
+@stop
+
 @section('content')
   
   @include('subviews.contextualHelp', array('help' => 'edit-new-registrations'))

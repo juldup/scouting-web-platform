@@ -159,6 +159,9 @@ Route::post('ajax/gestion/inscription/cotisation', array("as" => "ajax_update_su
 Route::post('gestion/inscription/priorite', array("as" => "submit_registration_priority", "uses" => "RegistrationController@submitPriority"));
 Route::get('gestion/inscription/recalculer-annees', array("as" => "recompute_years_in_section", "uses" => "RegistrationController@recomputeYearsInSection"));
 Route::get('gestion/inscription/telecharger-liste', array("as" => "download_registration_list", "uses" => "RegistrationController@downloadRegistrationList"));
+Route::get('inscription/formulaire-lien-unique/{code}', array("as" => "temporary_registration_link", "uses" => "RegistrationController@showFormWithTemporaryLink"));
+Route::get('gestion/inscription/creer-lien-temporaire/{section_slug?}', array("as" => "create_temporary_registration_link", "uses" => "RegistrationController@createTemporaryRegistrationLink"));
+Route::post('gestion/inscription/creer-lien-temporaire/{section_slug?}', array("as" => "create_temporary_registration_link", "uses" => "RegistrationController@createTemporaryRegistrationLink"));
 
 // Absences
 Route::get('absences/{section_slug?}', array("as" => "absences", "uses" => "AbsenceController@showPage"));

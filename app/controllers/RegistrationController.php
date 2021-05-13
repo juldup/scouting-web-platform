@@ -129,7 +129,11 @@ class RegistrationController extends GenericPageController {
   public function showForm() {
     // Redirect to inactive registration page if deactivated
     if (!Parameter::registrationIsActive()) {
-      return Redirect::route('registration_inactive');
+      // Check if a temporary code exists and is valid
+      $temporaryCode = Session::get('temporary_code');
+      if (!TemporaryRegistrationLink::codeIsValid($temporaryCode)) {
+        return Redirect::route('registration_inactive');
+      }
     }
     if (Session::get('registration')) {
       // Get default value from last form filled during this session
@@ -1112,6 +1116,58 @@ class RegistrationController extends GenericPageController {
         'Cache-Control'         => 'must-revalidate, post-check=0, pre-check=0',
         'Content-Disposition'   => 'attachment; filename="Inscriptions.csv"',
     ]);
+  }
+  
+  /**
+   * [Route] Displays the registration form page using a special access code
+   */
+  public function showFormWithTemporaryLink($code) {
+    // If registration is active, go directly to registration form
+    if (Parameter::registrationIsActive()) {
+      return $this->showForm();
+    }
+    // Get and check temporary link
+    $link = TemporaryRegistrationLink::where('code', '=', $code)->first();
+    if ($link) {
+      $date = $link->expiration;
+      if (date('Y-m-d H:i:s') > $date) {
+        // Temporary link has expired
+        return Redirect::route('registration_inactive')
+                ->with('error_message', "Ce lien a expiré.");
+      }
+      // Temporary link is valid, save it to session and show the registration form
+      Session::put('temporary_code', $code);
+      return $this->showForm();
+    } else {
+      // Temporary link does not exist
+      return Redirect::route('registration_inactive')
+              ->with('error_message', "Ce lien n'existe pas.");
+    }
+  }
+  
+  /**
+   * [Route] Displays the page that allows to create a temporary registration link
+   */
+  public function createTemporaryRegistrationLink($code = "") {
+    // Make sure the user is allowed to manage registrations
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    // Check if a form is being submitted
+    $days = intval(Input::get('days'));
+    if ($days) {
+      // Create temporary link
+      $link = TemporaryRegistrationLink::createWithDays($days);
+      // Redirect to result page
+      return Redirect::route('create_temporary_registration_link')
+              ->with('code', $link->code)
+              ->with('days', $days)
+              ->with('success_message', "Un nouveau lien d'inscription temporaire a été créé.");
+    }
+    // Render view
+    return View::make('pages.registration.createTemporaryRegistrationLink', array(
+        'status' => 'form',
+    ));
   }
   
 }

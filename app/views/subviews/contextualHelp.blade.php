@@ -269,6 +269,11 @@
   </p>
 @endif
 
+@if ($help == 'create-temporary-registration-link')
+  <p>Cet outil permet de créer un lien vers le formulaire d'inscription utilisable pendant une durée
+    limitée même pendant que les inscriptions sont fermées.</p>
+@endif
+
 @if ($help == 'edit-new-registrations')
   <p>Cet outil permet d'inscrire des nouveaux scouts ou animateurs ayant rempli le formulaire d'inscription. <em>Utilise les onglets pour voir les autres fonctionnalités.</em></p>
   <h3>Validation d'une nouvelle inscription</h3>
