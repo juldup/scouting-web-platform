@@ -41,7 +41,7 @@
 @section('back_links')
   <p>
     <a href='{{ URL::route('manage_registration', array('section_slug' => $user->currentSection->slug)) }}'>
-      Retour à la page d'inscription
+      Retour à la gestion des inscriptions
     </a>
   </p>
 @stop
