@@ -999,7 +999,7 @@ class RegistrationController extends GenericPageController {
       $member->registration_former_leader_child = Input::get('registration_former_leader_child');
       $member->year_in_section = intval(Input::get('year_in_section'));
       $member->registration_priority = Input::get('registration_priority') ? 1 : 0;
-      $member->in_waiting_list = Input::get('in_waiting_list') ? 1 : 0;
+      $member->registration_status = Input::get('registration_status');
       if (Input::get('section')) {
         $member->section_id = Input::get('section');
         $member->registration_section_category = null;
@@ -1055,7 +1055,7 @@ class RegistrationController extends GenericPageController {
     $fields = [
         "registration_section_category" => "Type de section",
         "year_in_section" => "Année dans la section",
-        "in_waiting_list" => "Préinscrit",
+        "registration_status" => "Status de pré-inscription",
         "registration_priority" => "Inscription prioritaire",
         "last_name" => "Nom",
         "first_name" => "Prénom",

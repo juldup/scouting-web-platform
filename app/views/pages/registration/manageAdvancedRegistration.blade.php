@@ -158,7 +158,7 @@
                   </a>
                 </td>
                 <td>
-                  {{ $member->in_waiting_list ? "<strong>Oui</strong>" : "Non" }}
+                  {{{ ($member->registration_status == "" ? "-" : $member->registration_status) }}}
                 </td>
                 <td class="space-on-right">{{{ $member->last_name }}}</td>
                 <td class="space-on-right">{{{ $member->first_name }}}</td>
@@ -209,10 +209,15 @@
                     </div>
                     <div class="form-group">
                       <div class="col-md-4 control-label">
-                        {{ Form::label('in_waiting_list', "Préinscription", array("class" => "")) }}
+                        {{ Form::label('registration_status', "Statut", array("class" => "")) }}
                       </div>
                       <div class="col-md-8">
-                        {{ Form::checkbox('in_waiting_list', 1, $member->in_waiting_list ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
+                        {{ Form::select('registration_status',
+                             ['' => 'Non traitée (-)',
+                              'Oui' => 'Pré-inscription validée (Oui)',
+                              'Non P' => 'Refus car hors période d\'inscription (Non P)',
+                              'Non C' => 'Refus car sections complètes (Non C)'],
+                             $member->registration_status, array('class' => 'form-control')) }}
                       </div>
                     </div>
                     <div class="form-group">
