@@ -236,6 +236,9 @@
                       <div class="col-md-2">
                         {{ Form::text('year_in_section', $member->year_in_section, array('class' => 'form-control')) }}
                       </div>
+                      <div class="col-md-3 form-side-note">
+                        (Date de naissance : {{ Helper::dateToHuman($member->birth_date) }})
+                      </div>
                     </div>
                     <div class="form-group">
                       {{ Form::label('registration_siblings', "Frères et sœurs dans l'unité", array("class" => "col-md-4 control-label")) }}
