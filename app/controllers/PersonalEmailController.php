@@ -184,7 +184,7 @@ class PersonalEmailController extends BaseController {
         $middlePart = " aux parents de " . $member->getFullName();
       }
     }
-    return "Voici une copie du message que vous avez envoyé$middlePart depuis de site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME);
+    return "Voici une copie du message que vous avez envoyé$middlePart depuis le site de l'unité " . Parameter::get(Parameter::$UNIT_SHORT_NAME);
   }
   
   /**
