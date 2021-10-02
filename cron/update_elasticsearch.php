@@ -24,4 +24,5 @@
 $baseURL = trim(file_get_contents(dirname(__FILE__) . "/../app/storage/site_data/website-base-url.txt"));
 
 // Call job
-file_get_contents("$baseURL/cron/mise-a-jour-elasticsearch");
+$contextOptions = ["ssl" => ["verify_peer" => false, "verify_peer_name" => false]];
+file_get_contents("$baseURL/cron/mise-a-jour-elasticsearch", false, stream_context_create($contextOptions));
