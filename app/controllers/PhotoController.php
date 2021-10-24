@@ -51,6 +51,9 @@ class PhotoController extends BaseController {
               ->where('section_id', '=', $this->section->id)
               ->where('photo_count', '!=', 0)
               ->first();
+      if ($currentAlbum->leaders_only && !$this->user->isLeader()) {
+        return Helper::forbiddenResponse();
+      }
       if (!$currentAlbum) {
         return Redirect::route('photos', array('section_slug' => $this->section->slug));
       }
@@ -87,13 +90,17 @@ class PhotoController extends BaseController {
                   $query->orWhere('date', '<', Helper::oneYearAgo());
               })
               ->where('section_id', '=', $this->section->id)
-              ->where('photo_count', '!=', 0)
+              ->where('photo_count', '!=', 0);
+      if (!$this->user->isLeader()) {
+        $albums = $albums->where('leaders_only', '=', false);
+      }
+      $albums = $albums
               ->orderBy('date', 'desc')
               ->orderBy('id')
               ->skip($page * $pageSize)
               ->take($pageSize)
               ->get();
-      // Determine whether there are furthur archive pages
+      // Determine whether there are further archive pages
       $hasArchives = count(PhotoAlbum::where(function($query) {
                   $query->where('archived', '=', true);
                   $query->orWhere('date', '<', Helper::oneYearAgo());
@@ -108,7 +115,11 @@ class PhotoController extends BaseController {
       $albums = PhotoAlbum::where('archived', '=', false)
               ->where('date', '>=', Helper::oneYearAgo())
               ->where('section_id', '=', $this->section->id)
-              ->where('photo_count', '!=', 0)
+              ->where('photo_count', '!=', 0);
+      if (!$this->user->isLeader()) {
+        $albums = $albums->where('leaders_only', '=', false);
+      }
+      $albums = $albums
               ->orderBy('position')
               ->get();
       // Determine whether there are archived albums
@@ -173,6 +184,11 @@ class PhotoController extends BaseController {
     // Get photo object
     $photo = Photo::find($photo_id);
     if (!$photo) App::abort(404, "La photo n'existe plus.");
+    // Make sure the photo is not for leader only and the current user is not a leader
+    $album = PhotoAlbum::where('id', '=', $photo->album_id)->first();
+    if (!$album || (!$this->user->isLeader() && $album->leaders_only)) {
+      return Helper::forbiddenResponse();
+    }
     // Get photo
     $path = $photo->getPhotoPath($format);
     if (file_exists($path)) {
@@ -205,6 +221,10 @@ class PhotoController extends BaseController {
     $album = PhotoAlbum::find($album_id);
     $albumName = Helper::removeSpecialCharacters($album->name);
     $outputFileName = "$albumName (photos $first_photo-$last_photo).zip";
+    // Make sure the photo is not for leader only and the current user is not a leader
+    if (!$album || (!$this->user->isLeader() && $album->leaders_only)) {
+      return Helper::forbiddenResponse();
+    }
     // Create zip file in temporary folder
     $filename = tempnam(storage_path("site_data/tmp/"), "photos.zip");
     $zip = new ZipArchive();
@@ -368,6 +388,28 @@ class PhotoController extends BaseController {
     LogEntry::log("Photos", "Réordonnancement des albums"); // TODO improve log message
     // Return success response
     return json_encode(array('result' => "Success"));
+  }
+  
+  /**
+   * [Route] Toggle album privacy (leaders only / all members)
+   */
+  public function toggleAlbumPrivacy($album_id, $status) {
+    // Get the album
+    $album = PhotoAlbum::find($album_id);
+    if (!$album) App::abort(404, "Cet album n'existe pas.");
+    $sectionId = $album->section_id;
+    // Make sure the user can delete this album
+    if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
+      return Helper::forbiddenResponse();
+    }
+    // Toggle privacy
+    $album->leaders_only = ($status ? true : false);
+    $album->save();
+    // Return to album page with success message
+    return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+              ->with('success_message',
+                      ($status ? "L'album est maintenant visible uniquement par les animateurs." :
+        "L'album est maintenant visible par tous les membres de l'unité."));
   }
   
   /**

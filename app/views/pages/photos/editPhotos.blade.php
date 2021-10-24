@@ -77,6 +77,17 @@
                     L'album est vide
                   @endif
                 </td>
+                <td class="photo-album-leaders-only-column">
+                  @if ($album->leaders_only)
+                  <a class="btn-sm btn-primary" href="{{ URL::route('toggle_photo_album_privacy', array('album_id' => $album->id, 'status' => 0)) }}">
+                      <i class="glyphicon glyphicon-lock"></i>&nbsp;&nbsp;Pour les animateurs
+                    </a>
+                  @else
+                  <a class="btn-sm btn-primary" href="{{ URL::route('toggle_photo_album_privacy', array('album_id' => $album->id, 'status' => 1)) }}">
+                      <i class="glyphicon glyphicon-eye-open"></i>&nbsp;&nbsp;Pour tous
+                    </a>
+                  @endif
+                </td>
                 <td class="photo-album-actions-column">
                   <a class="btn-sm btn-default" href="{{ URL::route('edit_photo_album', array('album_id' => $album->id)) }}">
                     Modifier l'album
@@ -96,7 +107,7 @@
           </tbody>
           <tbody>
             <tr>
-              <td colspan="2"></td>
+              <td colspan="3"></td>
               <td>
                 <a class="btn-sm btn-default" href="{{ URL::route('create_photo_album', array('section_slug' => $user->currentSection->slug)) }}">
                   Créer un nouvel album

@@ -263,6 +263,7 @@ Route::get('photo/{format}/{photo_id}/{filename?}', array("as" => "get_photo", "
 Route::get('photos/telecharger-album/{album_id}/{first_photo}/{last_photo}', array("as" => "download_photo_album", "uses" => "PhotoController@downloadAlbum"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
 Route::get('gestion/photos/{section_slug?}', array("as" => "edit_photos", "uses" => "PhotoController@showEdit"));
+Route::get('gestion/photos/changer-acces-prive/{album_id}/{status}/{section_slug?}', array("as" => "toggle_photo_album_privacy", "uses" => "PhotoController@toggleAlbumPrivacy"));
 Route::get('gestion/photos/supprimer-album/{album_id}/{section_slug?}', array("as" => "delete_photo_album", "uses" => "PhotoController@deletePhotoAlbum"));
 Route::get('gestion/photos/archiver-album/{album_id}/{section_slug?}', array("as" => "archive_photo_album", "uses" => "PhotoController@archivePhotoAlbum"));
 Route::get('gestion/photos/album/{album_id}/{section_slug?}', array("as" => "edit_photo_album", "uses" => "PhotoController@showEditAlbum"));
