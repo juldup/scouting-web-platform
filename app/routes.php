@@ -162,6 +162,7 @@ Route::get('gestion/inscription/telecharger-liste', array("as" => "download_regi
 Route::get('inscription/formulaire-lien-unique/{code}', array("as" => "temporary_registration_link", "uses" => "RegistrationController@showFormWithTemporaryLink"));
 Route::get('gestion/inscription/creer-lien-temporaire/{section_slug?}', array("as" => "create_temporary_registration_link", "uses" => "RegistrationController@createTemporaryRegistrationLink"));
 Route::post('gestion/inscription/creer-lien-temporaire/{section_slug?}', array("as" => "create_temporary_registration_link", "uses" => "RegistrationController@createTemporaryRegistrationLink"));
+Route::get('gestion/inscription/e-mail/{section_slug?}', array("as" => "advanced_registration_email", "uses" => "RegistrationController@showAdvancedRegistrationEmailPage"));
 
 // Absences
 Route::get('absences/{section_slug?}', array("as" => "absences", "uses" => "AbsenceController@showPage"));
@@ -251,6 +252,7 @@ Route::post('gestion/envoi-e-mail/submit/{section_slug}', array("as" => "send_se
 Route::get('gestion/e-mails/supprimer/{email_id}', array("as" => "manage_emails_delete", "uses" => "EmailController@deleteEmail"));
 Route::get('gestion/e-mails/archiver/{section_slug}/{email_id}', array("as" => "manage_emails_archive", "uses" => "EmailController@archiveEmail"));
 Route::get('gestion/envoi-e-mail-animateurs/{section_slug?}', array("as" => "send_leader_email", "uses" => "EmailController@sendLeaderEmail"));
+Route::post('gestion/envoi-e-mail-liste-destinataire/{section_slug?}', array("as" => "send_email_to_recipient_list", "uses" => "EmailController@sendEmailToRecipientList"));
 
 // Daily photo
 Route::get('photos-du-jour/{date?}', array("as" => "daily_photos", "uses" => "DailyPhotoController@showPage"));

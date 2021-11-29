@@ -352,6 +352,7 @@ class EmailController extends BaseController {
     $senderAddress = Input::get('sender_address');
     $files = Input::file('attachments');
     $extraRecipients = Input::get('extra_recipients');
+    $hiddenEmail = Input::get('hidden_email');
     $attachments = array();
     // Check total attachment size
     $totalSize = 0;
@@ -445,6 +446,7 @@ class EmailController extends BaseController {
           'recipient_list' => implode(", ", $recipientArray),
           'sender_name' => $senderName,
           'sender_email' => $senderAddress,
+          'deleted' => $hiddenEmail ? 1 : 0,
       ));
       foreach ($attachments as $attachment) {
         $attachment->email_id = $email->id;
@@ -537,6 +539,29 @@ class EmailController extends BaseController {
     return Redirect::route('manage_emails', array(
         "section_slug" => $email->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
+  }
+  
+  /**
+   * [Route] Shows the page to send an e-mail to a preset list of recipients
+   */
+  public function sendEmailToRecipientList() {
+    // Make sure the user can send e-mails to the members of this section
+    if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
+      return Helper::forbiddenResponse();
+    }
+    // Construct list of recipient (sorting them in categories: parents, scouts, leaders)
+    $recipientListJSON = Input::get('recipient_list');
+    $recipientList = json_decode($recipientListJSON);
+    return View::make('pages.emails.sendEmail', array(
+        'default_subject' => $this->defaultSubject(),
+        'recipients' => [],
+        'target' => 'parents',
+        'preselectedRecipients' => null,
+        'signature' => $this->user->getSignature(),
+        'maxAttachmentSize' => ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "",
+        'recipientList' => $recipientList,
+        'hiddenEmail' => true,
+    ));
   }
   
 }

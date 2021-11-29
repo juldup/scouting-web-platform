@@ -1170,4 +1170,37 @@ class RegistrationController extends GenericPageController {
     ));
   }
   
+  /*
+   * [Route] Shows the page with the form to send an e-mail to a selection of registrants
+   */
+  public function showAdvancedRegistrationEmailPage() {
+    // Make sure the user is allowed to manage registrations
+    if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
+      return Helper::forbiddenResponse();
+    }
+    // Gather pending registrations
+    $sectionCategories = $this->getAdvancedRegistrationSortedByCategory();
+    $maxOrderF = 0;
+    $maxOrderM = 0;
+    foreach ($sectionCategories as $category => $registrationList) {
+      foreach ($registrationList as $member) {
+        if ($member->gender == "F" && $member->gender_order > $maxOrderF) {
+          $maxOrderF = $member->gender_order;
+        } elseif ($member->gender == "M" && $member->gender_order > $maxOrderM) {
+          $maxOrderM = $member->gender_order;
+        }
+      }
+    }
+    // Show view
+    return View::make('pages.registration.manageAdvancedRegistrationEmail', array(
+          'registrations' => $sectionCategories,
+          'max_order_f' => $maxOrderF,
+          'max_order_m' => $maxOrderM,
+          'can_manage_registration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, 1),
+          'can_manage_reregistration' => $this->user->can(Privilege::$EDIT_LISTING_ALL, $this->section),
+          'can_manage_year_in_section' => $this->user->can(Privilege::$EDIT_LISTING_LIMITED, $this->section),
+          'can_manage_member_section' => $this->user->can(Privilege::$SECTION_TRANSFER, 1),
+          'can_manage_subscription_fee' => $this->user->can(Privilege::$MANAGE_ACCOUNTING, 1),
+        ));
+  }
 }

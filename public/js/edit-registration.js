@@ -145,3 +145,125 @@ $().ready(function() {
     }
   });
 });
+
+// Registration e-mail selection filters
+$().ready(function() {
+  // Select all registrations
+  $("#select-all-button").click(function() {
+    $(".member-row .select-recipient-checkbox").each(function() {
+      $(this).prop('checked', true);
+    });
+  });
+  // Unselect all registrations
+  $("#unselect-all-button").click(function() {
+    $(".member-row .select-recipient-checkbox").each(function() {
+      $(this).prop('checked', false);
+    });
+  });
+  // Select all registrations in a category
+  $(".select-all-category").click(function() {
+    var category = $(this).data('category');
+    $(".member-row").each(function() {
+      if ($(this).data('category') == category) {
+        $(this).find('.select-recipient-checkbox').prop('checked', true);
+      }
+    });
+  });
+  // Unselect all registrations in a category
+  $(".unselect-all-category").click(function() {
+    var category = $(this).data('category');
+    $(".member-row").each(function() {
+      if ($(this).data('category') == category) {
+        $(this).find('.select-recipient-checkbox').prop('checked', false);
+      }
+    });
+  });
+  // Apply filters to a registration
+  function selectOrUnselectAccordingToFilters() {
+    var memberId = $(this).data('member-id');
+    var member = registrations[memberId];
+    var complies = compliesToFilters(member) == true ? true : false;
+    if (complies) {
+      $(this).find(".select-recipient-checkbox").prop('checked', true);
+    } else {
+      $(this).find(".select-recipient-checkbox").prop('checked', false);
+    }
+  }
+  // Apply filters to all registrations
+  $("#apply-filters-to-all").click(function() {
+    $(".member-row").each(selectOrUnselectAccordingToFilters);
+  });
+  // Apply filters to all registrations of a category
+  $(".apply-filters-to-category").click(function() {
+    var category = $(this).data('category');
+    $(".member-row").each(function() {
+      if ($(this).data('category') == category) {
+        $(this).each(selectOrUnselectAccordingToFilters);
+      }
+    });
+  });
+  // Enable or disable filters (initially and on change)
+  function disableEnableStatusSubfilters() {
+    if ($(this).is(":checked")) $(".filter-status-subfilter").attr('disabled', false);
+    else $(".filter-status-subfilter").attr('disabled', true);
+  };
+  $("#filter-status").each(disableEnableStatusSubfilters);
+  $("#filter-status").change(disableEnableStatusSubfilters);
+  function disableEnableOrderSubfilters() {
+    if ($(this).is(":checked")) $(".filter-order-subfilter").attr('disabled', false);
+    else $(".filter-order-subfilter").attr('disabled', true);
+  };
+  $("#filter-order").each(disableEnableOrderSubfilters);
+  $("#filter-order").change(disableEnableOrderSubfilters);
+  // Submit recipient list to e-mail sending page
+  $("#send-email-to-selected").click(function() {
+    // Gather list of selected recipients
+    var recipientList = [];
+    $(".member-row").each(function() {
+      if ($(this).find(".select-recipient-checkbox").is(":checked")) {
+        var memberId = $(this).data('member-id');
+        var email = registrations[memberId].email1;
+        if (email != "") recipientList.push(email);
+        email = registrations[memberId].email2;
+        if (email != "") recipientList.push(email);
+        email = registrations[memberId].email3;
+        if (email != "") recipientList.push(email);
+        if (registrations[memberId].is_leader) {
+          email = registrations[memberId].email_member;
+          if (email != "") recipientList.push(email);
+        }
+      }
+    });
+    $("#send-email-form #recipient-list-input").val(JSON.stringify(recipientList));
+    $("#send-email-form").submit();
+  });
+});
+
+function compliesToFilters(member) {
+  if ($("#filter-status").prop('checked')) {
+    if (member.registration_status == "Oui" && !$("#filter-status-oui").prop('checked')) {
+      return false;
+    }
+    if (member.registration_status == "Non P" && !$("#filter-status-nonp").prop('checked')) {
+      return false;
+    }
+    if (member.registration_status == "Non C" && !$("#filter-status-nonc").prop('checked')) {
+      return false;
+    }
+    if (member.registration_status == "" && !$("#filter-status-nostatus").prop('checked')) {
+      return false;
+    }
+  }
+  if ($("#filter-order").prop('checked')) {
+    var memberOrder = member.gender_order;
+    var orderLimit = (member.gender == "M" ? $("#filter-order-m-limit") : $("#filter-order-f-limit")).val();
+    var orderOperator = (member.gender == "M" ? $("#filter-order-m-operator") : $("#filter-order-f-operator")).val();
+    if (orderOperator == "less" && memberOrder > orderLimit) {
+      return false;
+    }
+    if (orderOperator == "more" && memberOrder < orderLimit) {
+      return false;
+    }
+  }
+  return true;
+}

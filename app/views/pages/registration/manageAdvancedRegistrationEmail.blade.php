@@ -68,6 +68,8 @@
           'quali': "{{ Helper::sanitizeForJavascript($member->quali) }}",
           'family_in_other_units': {{{ $member->family_in_other_units }}},
           'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($member->family_in_other_units_details) }}",
+          'registration_status' : "{{{ $member->registration_status }}}",
+          'gender_order' : {{{ $member->gender_order }}},
         };
       @endforeach
     @endforeach
@@ -102,7 +104,7 @@
   
   @include('subviews.contextualHelp', array('help' => 'edit-new-registrations'))
   
-  @include('pages.registration.manageRegistrationMenu', array('selected' => 'registration'))
+  @include('pages.registration.manageRegistrationMenu', array('selected' => 'none'))
   
   @include('subviews.flashMessages')
   
@@ -117,14 +119,88 @@
   
   <div class="row">
     <div class="col-md-12">
-      <h1>Nouvelles inscriptions en attente</h1>
-      <div class="text-right">
-        <a href="{{ URL::route('recompute_years_in_section') }}" class="btn btn-default">Recalculer les années dans les sections</a>
-        <a href="{{ URL::route('download_registration_list') }}" class="btn btn-default">Télécharger la liste au format CSV</a>
-        <a href="{{ URL::route('advanced_registration_email') }}" class="btn btn-default">Envoyer un e-mail</a>
-      </div>
+      <h1>Envoyer un e-mail aux parents des inscriptions en attente</h1>
+      <form id='send-email-form' action="{{ URL::route('send_email_to_recipient_list') }}" method="POST" enctype="multipart/form-data">
+        <input id='recipient-list-input' type="hidden" name="recipient_list" value="" />
+      </form>
+      <button class="btn btn-primary" id="send-email-to-selected">Envoyer un e-mail aux parents sélectionnés</button>
+      <h2>Filtres</h2>
+        <p>
+          <button id="select-all-button" class="btn btn-default">Sélectionner toutes les inscriptions</button>
+          <button id="unselect-all-button" class="btn btn-default">Désélectionner toutes les inscriptions</button>
+          <button id="apply-filters-to-all" class="btn btn-default">Appliquer les filtres partout</button>
+        </p>
+      <p>
+        <input id="filter-status" type="checkbox" class="no-bootstrap-switch" /> Statut : <span class="horiz-divider"></span>
+        <input id="filter-status-oui" type="checkbox" class="no-bootstrap-switch filter-status-subfilter" > Oui <span class="horiz-divider"></span>
+        <input id="filter-status-nonp" type="checkbox" class="no-bootstrap-switch filter-status-subfilter" > Non P <span class="horiz-divider"></span>
+        <input id="filter-status-nonc" type="checkbox" class="no-bootstrap-switch filter-status-subfilter" > Non C <span class="horiz-divider"></span>
+        <input id="filter-status-nostatus" type="checkbox" class="no-bootstrap-switch filter-status-subfilter" > - <span class="horiz-divider"></span>
+      </p>
+      <p>
+        <input id="filter-order" type="checkbox" class="no-bootstrap-switch"  /> Ordre : <span class="horiz-divider"></span>
+          F <select id="filter-order-f-operator" class="filter-order-subfilter">
+            <option value="less">&le;</option>
+            <option value="more">&ge;</option>
+          </select>
+          <select id="filter-order-f-limit" class="filter-order-subfilter">
+            <option value="0">0</option>
+            @for ($i=1; $i<=$max_order_f; $i++)
+              <option value="{{ $i }}">{{ $i }}</option>
+            @endfor
+          </select>
+          <span class="horiz-divider"></span> 
+          M <select id="filter-order-m-operator" class="filter-order-subfilter">
+            <option value="less">&le;</option>
+            <option value="more">&ge;</option>
+          </select>
+          <select id="filter-order-m-limit" class="filter-order-subfilter">
+            <option value="0">0</option>
+            @for ($i=1; $i<=$max_order_m; $i++)
+              <option value="{{ $i }}">{{ $i }}</option>
+            @endfor
+          </select>
+      </p>
+      <!--p>
+        <input type="checkbox" class="no-bootstrap-switch"  /> Animateur : <span class="horiz-divider"></span>
+        <select>
+          <option value="oui">Oui</option>
+          <option value="non">Non</option>
+        </select>
+      </p>
+      <p>
+        <input type="checkbox" class="no-bootstrap-switch"  /> Fratrie : <span class="horiz-divider"></span>
+        <select>
+          <option value="oui">Oui</option>
+          <option value="non">Non</option>
+        </select>
+      </p>
+      <p>
+        <input type="checkbox" class="no-bootstrap-switch"  /> Malèves : <span class="horiz-divider"></span>
+        <select>
+          <option value="oui">Oui</option>
+          <option value="non">Non</option>
+        </select>
+      </p>
+      <p>
+        <input type="checkbox" class="no-bootstrap-switch"  /> Enfant d'ancien animateur : <span class="horiz-divider"></span>
+        <select>
+          <option value="oui">Oui</option>
+          <option value="non">Non</option>
+        </select>
+      </p>
+      <p>
+        <input type="checkbox" class="no-bootstrap-switch"  /> Date : <span class="horiz-divider"></span>
+        entre le <input type="text" value='1' size="1"> / <input type="text" value="1" size="1" /> / <input type="text" value="1900" size="3">
+        et le <input type="text" value="{{ date('d') }}" size="1"> / <input type="text" value="{{ date('m') }}" size="1" /> / <input type="text" value="{{ date('Y') }}" size="3">
+      </p-->
       @foreach ($registrations as $category => $registrationList)
         <h2>{{{ $category }}}</h2>
+        <p>
+          <button class="btn btn-default select-all-category" data-category="{{ Helper::sanitizeForJavascript($category) }}">Tout sélectionner</button>
+          <button class="btn btn-default unselect-all-category" data-category="{{ Helper::sanitizeForJavascript($category) }}">Tout désélectionner</button>
+          <button class="btn btn-default apply-filters-to-category" data-category="{{ Helper::sanitizeForJavascript($category) }}">Appliquer les filtres</button>
+        </p>
         <table class="table table-striped table-hover">
           <thead>
             <tr>
@@ -142,21 +218,9 @@
           </thead>
           <tbody>
             @foreach ($registrationList as $member)
-              <tr class="member-row" data-member-id="{{ $member->id }}">
+              <tr class="member-row" data-member-id="{{ $member->id }}" data-category="{{ Helper::sanitizeForJavascript($category) }}">
                 <td class="space-on-right">
-                  <a class="btn-sm btn-primary" href="javascript:editRegistration({{ $member->id }})">
-                    Inscrire
-                  </a>
-                  &nbsp;
-                  <a class="btn-sm btn-danger delete-registration-button"
-                     href="{{ URL::route('edit_delete_registration', array('member_id' => $member->id)) }})"
-                     onclick="confirm('Supprimer cette demande d\'inscription ?')">
-                    Supprimer
-                  </a>
-                  &nbsp;
-                  <a class="btn-sm btn-default" href="javascript:editRegistrationPriority({{ $member->id }})">
-                    <span class='glyphicon glyphicon-pencil'></span>
-                  </a>
+                  <input type='checkbox' class='select-recipient-checkbox no-bootstrap-switch' />
                 </td>
                 <td>
                   {{{ ($member->registration_status == "" ? "-" : $member->registration_status) }}}

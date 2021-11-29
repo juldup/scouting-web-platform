@@ -209,23 +209,34 @@
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('extra_recipients', "Destinataires supplémentaires", array('class' => 'col-md-3')) }}
+            @if (isset($recipientList) && count($recipientList))
+              {{ Form::label('extra_recipients', "Destinataires", array('class' => 'col-md-3')) }}
+            @else
+              {{ Form::label('extra_recipients', "Destinataires supplémentaires", array('class' => 'col-md-3')) }}
+            @endif
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::textarea('extra_recipients', '', array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) }}
+              {{ Form::textarea('extra_recipients', isset($recipientList) ? implode(", ", $recipientList) : "", array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) }}
             </div>
           </div>
           
           <legend>Envoyer</legend>
-          @if ($target != 'leaders')
-            <p class="alert alert-danger">
-              ATTENTION ! Les e-mails envoyés via cette page seront visibles sur le site par <strong>TOUS LES MEMBRES</strong> de l'unité.
-              N'envoie pas d'e-mails à caractère personnel.
-            </p>
+          {{ Form::hidden('hidden_email', isset($hiddenEmail) && $hiddenEmail ? true : false) }}
+          @if (!(isset($hiddenEmail) && $hiddenEmail))
+            @if ($target != 'leaders')
+              <p class="alert alert-danger">
+                ATTENTION ! Les e-mails envoyés via cette page seront visibles sur le site par <strong>TOUS LES MEMBRES</strong> de l'unité.
+                N'envoie pas d'e-mails à caractère personnel.
+              </p>
+            @else
+              <p class="alert alert-danger">
+                Cet e-mail sera visibles sur le site par <strong>TOUS LES ANIMATEURS</strong> de l'unité.
+              </p>
+            @endif
           @else
-            <p class="alert alert-danger">
-              Cet e-mail sera visibles sur le site par <strong>TOUS LES ANIMATEURS</strong> de l'unité.
+            <p class="alert alert-info">
+              Cet e-mail ne sera pas visible sur le site par les membres ou les animateurs.
             </p>
           @endif
           <div class="form-group">
