@@ -224,7 +224,7 @@ class User extends Eloquent {
   /**
    * Returns whether the user is logged in and is a member
    */
-  public function isMember() {
+  public function isMember($includeGuests = true) {
     if ($this->isMember === null) {
       // If the user is not connected, they cannot be a member
       if (!$this->isConnected) {
@@ -234,8 +234,11 @@ class User extends Eloquent {
       if (!$this->verified) {
         return false;
       }
-      // Check if there is an associated member
-      $this->isMember = count($this->getAssociatedMembers(Parameter::get(Parameter::$CONSIDER_SCOUTS_AS_MEMBERS))) != 0;
+      // Check if there is an associated member that is not a guest
+      $associatedMembers = $this->getAssociatedMembers(Parameter::get(Parameter::$CONSIDER_SCOUTS_AS_MEMBERS));
+      foreach ($associatedMembers as $member) {
+        if ($includeGuests || !$member->is_guest) $this->isMember = true;
+      }
       // If the user is webmaster, they are a member
       if ($this->is_webmaster) $this->isMember = true;
     }
