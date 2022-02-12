@@ -43,8 +43,14 @@
 @section('content')
   <div class="row page_body">
     <div class="col-md-12">
+      @if (Session::has('success_message'))
+        <p class='alert alert-success'>{{ Session::get('success_message') }}</p>
+      @endif
       <h1>{{{ $page_title }}}</h1>
       {{ $page_body }}
+      @if ($additional_content)
+        @include($additional_content)
+      @endif
     </div>
   </div>
 @stop

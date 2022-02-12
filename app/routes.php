@@ -186,6 +186,12 @@ Route::get('charte/{section_slug?}', array("as" => "unit_policy", "uses" => "Uni
 Route::get('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page", "uses" => "UnitPolicyPageController@showEdit"));
 Route::post('gestion/charte/{section_slug?}', array("as" => "edit_unit_policy_page_submit", "uses" => "UnitPolicyPageController@savePage"));
 
+// Leader policy
+Route::get('charte-animateurs/{section_slug?}', array("as" => "leader_policy", "uses" => "LeaderPolicyPageController@showPage"));
+Route::get('gestion/charte-animateurs/{section_slug?}', array("as" => "edit_leader_policy_page", "uses" => "LeaderPolicyPageController@showEdit"));
+Route::post('gestion/charte-animateurs/{section_slug?}', array("as" => "edit_leader_policy_page_submit", "uses" => "LeaderPolicyPageController@savePage"));
+Route::post('signature-charte-animateurs', array("as" => "submit_leader_policy_signature", "uses" => "LeaderPolicyPageController@submitSignature"));
+
 // GDPR
 Route::get('rgpd/{section_slug?}', array("as" => "gdpr", "uses" => "GDPRPageController@showPage"));
 Route::get('gestion/rgpd/{section_slug?}', array("as" => "edit_gdpr_page", "uses" => "GDPRPageController@showEdit"));

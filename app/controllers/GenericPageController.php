@@ -84,6 +84,14 @@ abstract class GenericPageController extends BaseController {
   }
   
   /**
+   * Returns a view with additional information to be displayed
+   * on the page
+   */
+  protected function getAdditionalContentSubview() {
+    return null;
+  }
+  
+  /**
    * Returns true if the page can be displayed (cf. site parameters)
    */
   protected abstract function canDisplayPage();
@@ -120,6 +128,7 @@ abstract class GenericPageController extends BaseController {
         'edit_url' => $editURL,
         'can_edit' => $this->canEdit(),
         'is_home_page' => $this->isHomePage,
+        'additional_content' => $this->getAdditionalContentSubview(),
     ));
   }
   

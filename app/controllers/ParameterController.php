@@ -317,6 +317,10 @@ class ParameterController extends BaseController {
             'description' => "Afficher la page \"charte d'unité\"",
             'parameter_name' => Parameter::$SHOW_UNIT_POLICY
         ),
+        'page_leader_policy' => array(
+            'description' => "Afficher la page \"charte des animateurs\"",
+            'parameter_name' => Parameter::$SHOW_LEADER_POLICY
+        ),
         'page_gdpr' => array(
             'description' => "Afficher la page \"RGPD\"",
             'parameter_name' => Parameter::$SHOW_GDPR

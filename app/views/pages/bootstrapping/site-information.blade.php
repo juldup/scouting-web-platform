@@ -28,6 +28,7 @@
   <li><a target="_blank" href="{{ URL::route('annual_feast') }}">La page de la fête d'unité</a></li>
   <li><a target="_blank" href="{{ URL::route('registration') }}">La page d'inscription</a> (déjà préremplie)</li>
   <li><a target="_blank" href="{{ URL::route('unit_policy') }}">La charte d'unité</a></li>
+  <li><a target="_blank" href="{{ URL::route('leader_policy') }}">La charte des animateurs</a></li>
   <li><a target="_blank" href="{{ URL::route('gdpr') }}">Le RGPD</a></li>
   <li><a target="_blank" href="{{ URL::route('help') }}">La page d'aide</a> (déjà préremplie)</li>
   <li>

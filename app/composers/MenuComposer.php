@@ -113,6 +113,8 @@ class MenuComposer {
     $leaderCategory = array();
     $leaderCategory["Coin des animateurs"] = 'leader_corner';
 //      $leaderCategory["Aide sur la gestion du site"] = 'leader_help';
+    if (Parameter::get(Parameter::$SHOW_LEADER_POLICY))
+      $leaderCategory["Charte des animateurs"] = 'leader_policy';
     
     $leaderCategory["Opérations courantes"] = 'title';
     if (Parameter::get(Parameter::$SHOW_CALENDAR)) {
