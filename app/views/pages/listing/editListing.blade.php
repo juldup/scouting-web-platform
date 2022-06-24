@@ -124,14 +124,14 @@
             @foreach ($members as $member)
               @if ($member->is_guest && !$guestTitleShown)
                 <tr>
-                  <td colspan="2"></td>
-                  <th colspan="{{ 4 + ($user->currentSection->id == 1 ? 1 : 0)
+                  <th colspan="{{ 6 + ($user->currentSection->id == 1 ? 1 : 0)
                           + ($show_totem ? 1 : 0)
                           + ($show_subgroup ? 1 : 0)
                           + ($show_role ? 1 : 0) }}">
                     Invités
                   </th>
                 </tr>
+                <?php $guestTitleShown = true; ?>
               @endif
               <tr>
                 <td>
