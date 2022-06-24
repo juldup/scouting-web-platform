@@ -928,6 +928,7 @@ class RegistrationController extends GenericPageController {
     }
     // List scouts
     $members = Member::where('validated', '=', true)
+            ->where('is_guest', '=', false)
             ->orderBy('last_name', 'ASC')
             ->orderBy('first_name', 'ASC')
             ->get();

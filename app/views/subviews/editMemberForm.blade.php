@@ -183,6 +183,14 @@
             {{ Form::file('picture', array('class' => 'btn btn-default', $edit_photo ? "enabled" : "disabled")) }}
           </div>
         </div>
+        <div class="form-group">
+          {{ Form::label('is_guest', "Invité", array('class' => 'control-label col-md-4')) }}
+          <div class='col-md-8'>
+            <div class="checkbox">
+              {{ Form::checkbox('is_guest', 1, '') }}
+            </div>
+          </div>
+        </div>
         @if ($leader_only)
           {{ Form::hidden('is_leader', true) }}
         @else

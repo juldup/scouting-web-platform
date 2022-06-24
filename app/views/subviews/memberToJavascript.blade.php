@@ -28,6 +28,7 @@
   'address': "{{ Helper::sanitizeForJavascript($member->address) }}",
   'postcode': "{{ Helper::sanitizeForJavascript($member->postcode) }}",
   'city': "{{ Helper::sanitizeForJavascript($member->city) }}",
+  'is_guest': {{ $member->is_guest ? "true" : "false" }},
   'has_handicap': {{ $member->has_handicap ? "true" : "false" }},
   'handicap_details': "{{ Helper::sanitizeForJavascript($member->handicap_details) }}",
   'comments': "{{ Helper::sanitizeForJavascript($member->comments) }}",

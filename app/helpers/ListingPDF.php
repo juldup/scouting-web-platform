@@ -269,6 +269,7 @@ class ListingPDF {
     // Check whether this section has subgroups, totems, qualis, roles
     $hasSubgroup = $csvMode ? true :
       Member::where('validated', '=', 1)
+              ->where('is_guest', '=', false)
               ->where('is_leader', '=', false)
               ->whereIn('section_id', $sectionIds)
               ->whereNotNull('subgroup')
@@ -276,6 +277,7 @@ class ListingPDF {
               ->first() ? true : false;
     $hasRole = $csvMode ? true :
       Member::where('validated', '=', 1)
+              ->where('is_guest', '=', false)
               ->where('is_leader', '=', false)
               ->whereIn('section_id', $sectionIds)
               ->whereNotNull('role')
@@ -283,6 +285,7 @@ class ListingPDF {
               ->first() ? true : false;
     $hasTotem = $csvMode ? true :
       Member::where('validated', '=', 1)
+              ->where('is_guest', '=', false)
               ->where('is_leader', '=', false)
               ->whereIn('section_id', $sectionIds)
               ->whereNotNull('totem')
@@ -290,6 +293,7 @@ class ListingPDF {
               ->first() ? true : false;
     $hasQuali = $csvMode ? true :
       Member::where('validated', '=', 1)
+              ->where('is_guest', '=', false)
               ->where('is_leader', '=', false)
               ->whereIn('section_id', $sectionIds)
               ->whereNotNull('quali')
@@ -396,6 +400,7 @@ class ListingPDF {
     }
     // Get listing
     $query = Member::where('validated', '=', true)
+            ->where('is_guest', '=', false)
             ->whereIn('section_id', $sectionIds)
             ->orderBy('is_leader', 'ASC')
             ->orderBy('last_name')
@@ -518,6 +523,7 @@ class ListingPDF {
               }
             });
     $query->where('is_leader', '=', false);
+    $query->where('is_guest', '=', false);
     $query->orderBy('section_id')
           ->orderBy('last_name')
           ->orderBy('first_name');

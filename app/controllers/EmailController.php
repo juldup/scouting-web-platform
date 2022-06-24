@@ -177,6 +177,7 @@ class EmailController extends BaseController {
       $parents = array();
       $scouts = array();
       $leaders = array();
+      $guests = array();
       $sections = Section::where('id', '!=', 1)
               ->orderBy('position')
               ->get();
@@ -185,20 +186,23 @@ class EmailController extends BaseController {
         if (array_key_exists('parents', $recipientList)) $parents['Parents ' . $section->de_la_section] = $recipientList['parents'];
         if (array_key_exists('scouts', $recipientList)) $scouts['Scouts ' . $section->de_la_section] = $recipientList['scouts'];
         if (array_key_exists('leaders', $recipientList)) $leaders['Animateurs ' . $section->de_la_section] = $recipientList['leaders'];
+        if (array_key_exists('guests', $recipientList)) $guests['Invités ' . $section->de_la_section] = $recipientList['guests'];
       }
       $recipientList = $this->getRecipientsForSection(1, Session::has("subscriptionFeeEmail"));
       if (array_key_exists('leaders', $recipientList)) $leaders["Équipe d'unité"] = $recipientList['leaders'];
       if (count($parents)) $recipients['Parents'] = $parents;
       if (count($scouts)) $recipients['Scouts'] = $scouts;
       if (count($leaders)) $recipients['Animateurs'] = $leaders;
+      if (count($guests)) $recipients['Invités'] = $guests;
     } else {
       // Non-unit section
       $recipientList = $this->getRecipientsForSection($this->section->id);
       if (array_key_exists('parents', $recipientList)) $recipients['Parents'] = $recipientList['parents'];
       if (array_key_exists('scouts', $recipientList)) $recipients['Scouts'] = $recipientList['scouts'];
       if (array_key_exists('leaders', $recipientList)) $recipients['Animateurs ' . $this->section->de_la_section] = $recipientList['leaders'];
-      $recipientList = $this->getRecipientsForSection(1);
-      if (array_key_exists('leaders', $recipientList)) $recipients["Équipe d'unité"] = $recipientList['leaders'];
+      $recipientListUnitLeaders = $this->getRecipientsForSection(1);
+      if (array_key_exists('leaders', $recipientListUnitLeaders)) $recipients["Équipe d'unité"] = $recipientListUnitLeaders['leaders'];
+      if (array_key_exists('guests', $recipientList)) $recipients['Invités'] = $recipientList['guests'];
       $recipients = array($recipients);
     }
     return View::make('pages.emails.sendEmail', array(
@@ -268,12 +272,13 @@ class EmailController extends BaseController {
   /**
    * Returns the list of recipients belonging to the given section, in the form
    * of an array (with the keys being 'parents', 'scouts', 'leaders') of arrays with the keys
-   * being the member ids and the elements being arrays containing {'member'=>{the Member object}, 'type'=>{'parent' or 'member'}}
+   * being the member ids and the elements being arrays containing {'member'=>{the Member object}, 'type'=>{'parent', 'member' or 'guest'}}
    */
   private function getRecipientsForSection($sectionId, $preselectUnpaidFee = false) {
     $parents = array();
     $scouts = array();
     $leaders = array();
+    $guests = array();
     $members = Member::where('validated', '=', true)
             ->where('section_id', '=', $sectionId)
             ->orderBy('last_name')
@@ -282,6 +287,8 @@ class EmailController extends BaseController {
     foreach ($members as $member) {
       if ($member->is_leader) {
         $leaders[] = array('member' => $member, 'type' => 'member', "preselected" => ($preselectUnpaidFee && !$member->subscription_paid ? true : false));
+      } elseif ($member->is_guest) {
+        $guests[] = array('member' => $member, 'type' => 'guest', "preselected" => false);
       } else {
         if ($member->email1 || $member->email2 || $member->email3) {
           $parents[$member->id] = array('member' => $member, 'type' => 'parent', "preselected" => ($preselectUnpaidFee && !$member->subscription_paid ? true : false));
@@ -295,6 +302,7 @@ class EmailController extends BaseController {
     if (count($parents)) $recipients['parents'] = $parents;
     if (count($scouts)) $recipients['scouts'] = $scouts;
     if (count($leaders)) $recipients['leaders'] = $leaders;
+    if (count($guests)) $recipients['guests'] = $guests;
     return $recipients;
   }
   
@@ -410,6 +418,16 @@ class EmailController extends BaseController {
         $member = Member::find($memberId);
         if ($member) {
           if ($target == 'parents' || $member->is_leader) {
+            if ($member->email_member && !in_array($member->email_member, $recipientArray))
+                    $recipientArray[] = $member->email_member;
+          }
+        }
+      }
+      if (strpos($key, "guest_") === 0) {
+        $memberId = substr($key, strlen("guest_"));
+        $member = Member::find($memberId);
+        if ($member) {
+          if ($member->is_guest) {
             if ($member->email_member && !in_array($member->email_member, $recipientArray))
                     $recipientArray[] = $member->email_member;
           }

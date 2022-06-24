@@ -39,6 +39,7 @@
  *   - family_in_other_units:         The number of direct relatives (same family) registered in other scout units
  *   - family_in_other_units_details: Explanation about the previous field
  *   - comments:                      A short optional comment about this member
+ *   - is_guest:                      Whether the scout has the guest status
  *   Contact
  *   - address:                       The main address (street and number) of this member
  *   - postcode:                      The postcode of the address
@@ -320,6 +321,8 @@ class Member extends Eloquent {
       $this->subgroup = $data['subgroup'];
       $this->role = $data['role'];
     }
+    // Guest status
+    $this->is_guest = $data['is_guest'];
     // Update leader information
     if ($canEditLeader) {
       $this->is_leader = $data['is_leader'];
@@ -448,6 +451,7 @@ class Member extends Eloquent {
     $familyMembers = Input::get('family_in_other_units');
     $familyDetails = Input::get('family_in_other_units_details');
     $isLeader = Input::get('is_leader') ? true : false;
+    $isGuest = Input::get('is_guest') ? true : false;
     $registrationSiblings = trim(Input::get('registration_siblings'));
     $registrationFormerLeaderChild = trim(Input::get('registration_former_leader_child'));
     // Error message is initially empty
@@ -577,6 +581,7 @@ class Member extends Eloquent {
           'quali' => $quali,
           'family_in_other_units' => $familyMembers,
           'family_in_other_units_details' => $familyDetails,
+          'is_guest' => $isGuest,
           'is_leader' => $isLeader,
           'registration_siblings' => $registrationSiblings,
           'registration_former_leader_child' => $registrationFormerLeaderChild,

@@ -68,6 +68,7 @@ function editMember(memberId) {
   $("#member_form [name='address']").val(members[memberId].address);
   $("#member_form [name='postcode']").val(members[memberId].postcode);
   $("#member_form [name='city']").val(members[memberId].city);
+  $("#member_form [name='is_guest']").prop("checked", members[memberId].is_guest).trigger("change");
   $("#member_form [name='has_handicap']").prop("checked", members[memberId].has_handicap).trigger("change");
   $("#member_form [name='handicap_details']").val(members[memberId].handicap_details);
   $("#member_form [name='comments']").val(members[memberId].comments);

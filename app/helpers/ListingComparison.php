@@ -17,7 +17,7 @@ class ListingComparison {
     $this->fuzzyAddressComparison = $fuzzyAddressComparison;
 //    dd($ignoreAccentErrors);
     usort($deskMembers, array('ListingComparison', 'compareMembers'));
-    $localMembers = Member::where('validated', '=', true)->orderBy('last_name')->orderBy('first_name')->get();
+    $localMembers = Member::where('validated', '=', true)->where('is_guest', '=', false)->orderBy('last_name')->orderBy('first_name')->get();
     $deskIndex = 0;
     $localIndex = 0;
     while ($deskIndex < count($deskMembers) || $localIndex < count($localMembers)) {

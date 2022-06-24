@@ -56,6 +56,7 @@ class ListingController extends BaseController {
       $members = Member::where('validated', '=', true)
               ->where('section_id', '=', $section->id)
               ->where('is_leader', '=', false)
+              ->where('is_guest', '=', false)
               ->orderBy('last_name')
               ->orderBy('first_name')
               ->get();
@@ -129,6 +130,7 @@ class ListingController extends BaseController {
     if ($this->user->currentSection->id == 1) {
       $members = Member::where('validated', '=', true)
               ->where('is_leader', '=', false)
+              ->orderBy('is_guest', 'ASC')
               ->orderBy('last_name')
               ->orderBy('first_name')
               ->get();
@@ -136,6 +138,7 @@ class ListingController extends BaseController {
       $members = Member::where('validated', '=', true)
               ->where('section_id', '=', $this->section->id)
               ->where('is_leader', '=', false)
+              ->orderBy('is_guest', 'ASC')
               ->orderBy('last_name')
               ->orderBy('first_name')
               ->get();
@@ -523,6 +526,7 @@ class ListingController extends BaseController {
     $members = Member::where('validated', '=', true)
             ->where('section_id', '=', $this->section->id)
             ->where('is_leader', '=', false)
+            ->where('is_guest', '=', false)
             ->orderBy('subgroup')
             ->orderBy('last_name')
             ->orderBy('first_name')
@@ -606,6 +610,7 @@ class ListingController extends BaseController {
       $members = Member::where('validated', '=', true)
               ->where('section_id', '=', $section->id)
               ->where('is_leader', '=', false)
+              ->where('is_guest', '=', false)
               ->orderBy('last_name')
               ->orderBy('first_name')
               ->get();
