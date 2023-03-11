@@ -995,7 +995,9 @@ class RegistrationController extends GenericPageController {
     $newValue = $status == "true" ? 1 : 0;
     // Update status for all members
     try {
-      Member::where('subscription_paid','=',1-$newValue)->update(['subscription_paid' => $newValue]);
+      Member::where('validated', '=', true)
+            ->where('is_guest', '=', false)
+            ->update(['subscription_paid' => $newValue]);
       LogEntry::log("Inscription", "Mise à jour du statut de paiement de cotisation de tous les membres : " . ($newValue ? "Payé" : "Non payé"));
     } catch (Exception $e) {
       Log::error($e);
