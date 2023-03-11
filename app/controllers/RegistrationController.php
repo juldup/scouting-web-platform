@@ -984,6 +984,32 @@ class RegistrationController extends GenericPageController {
   }
   
   /**
+   * [Route] Sets all subscription fee status to on/off
+   */
+  public function setAllSubscriptionFees($status) {
+    // Make sure the user is allowed to change the fee payment status
+    if (!$this->user->can(Privilege::$MANAGE_ACCOUNTING, 1)) {
+      return json_encode(array('result' => 'Failure'));
+    }
+    // Get status
+    $newValue = $status == "true" ? 1 : 0;
+    // Update status for all members
+    try {
+      Member::where('subscription_paid','=',1-$newValue)->update(['subscription_paid' => $newValue]);
+      LogEntry::log("Inscription", "Mise à jour du statut de paiement de cotisation de tous les membres : " . ($newValue ? "Payé" : "Non payé"));
+    } catch (Exception $e) {
+      Log::error($e);
+      $error = true;
+      $message .= "$e ";
+      return Redirect::route('manage_subscription_fee', array('section_slug' => $this->section->slug))
+                ->with('error_message', "Une erreur est survenue.");
+    }
+    // Redirect with status message
+    return Redirect::route('manage_subscription_fee', array('section_slug' => $this->section->slug))
+              ->with('success_message', "La modification a été effectuée.");
+  }
+    
+  /**
    * [Route] Updates the priority fields of a registration record
    */
   public function submitPriority() {

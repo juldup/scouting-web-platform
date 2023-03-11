@@ -156,6 +156,7 @@ Route::get('gestion/inscription/changer-de-section/{section_slug?}', array("as" 
 Route::post('gestion/inscription/changer-de-section/submit/{section_slug}', array("as" => "manage_member_section_submit", "uses" => "RegistrationController@submitUpdateSection"));
 Route::get('gestion/inscription/cotisation/{section_slug?}', array("as" => "manage_subscription_fee", "uses" => "RegistrationController@manageSubscriptionFee"));
 Route::post('ajax/gestion/inscription/cotisation', array("as" => "ajax_update_subscription_fee", "uses" => "RegistrationController@updateSubscriptionFee"));
+Route::get('gestion/inscription/reinitialisation-cotisations/{status}', array("as" => "set_all_suscription_fees", "uses" => "RegistrationController@setAllSubscriptionFees"));
 Route::post('gestion/inscription/priorite', array("as" => "submit_registration_priority", "uses" => "RegistrationController@submitPriority"));
 Route::get('gestion/inscription/recalculer-annees', array("as" => "recompute_years_in_section", "uses" => "RegistrationController@recomputeYearsInSection"));
 Route::get('gestion/inscription/telecharger-liste', array("as" => "download_registration_list", "uses" => "RegistrationController@downloadRegistrationList"));

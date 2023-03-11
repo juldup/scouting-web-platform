@@ -48,11 +48,29 @@
   <div class="row">
     <div class="col-md-12">
       <p class='float-right'>
-          <a href="{{ URL::route('send_unpaid_subscription_fee_email') }}" class="btn-sm btn-default">
-            Envoyer un e-mail aux parents et animateurs qui n'ont pas encore payé la cotisation
-          </a>
-        </p>
+        <a href="{{ URL::route('send_unpaid_subscription_fee_email') }}" class="btn-sm btn-default">
+          Envoyer un e-mail aux parents et animateurs qui n'ont pas encore payé la cotisation
+        </a>
+      </p>
       <h1>Paiement des cotisations</h1>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col-md-12">
+      <p class="float-right">
+        Réinitialisation pour tous les membres :
+        <a href="{{ URL::route('set_all_suscription_fees', array('status' => 'false')) }}" class="btn-sm btn-default"
+           onclick="return confirm('Es-tu sûr·e de vouloir réinitialiser les statuts de paiement de tous les membres ?');"
+           >
+          <span class="glyphicon glyphicon-arrow-left"></span>
+        </a>
+        <a href="{{ URL::route('set_all_suscription_fees', array('status' => 'true')) }}" class="btn-sm btn-primary"
+           onclick="return confirm('Es-tu sûr·e de vouloir mettre les statuts de tous les membres à \'payé\' ?');"
+           >
+          <span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+      </p>
     </div>
   </div>
   
