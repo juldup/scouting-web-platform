@@ -428,8 +428,10 @@ class EmailController extends BaseController {
         $member = Member::find($memberId);
         if ($member) {
           if ($member->is_guest) {
-            if ($member->email_member && !in_array($member->email_member, $recipientArray))
-                    $recipientArray[] = $member->email_member;
+            if ($member->email_member && !in_array($member->email_member, $recipientArray)) $recipientArray[] = $member->email_member;
+            if ($member->email1 && !in_array($member->email1, $recipientArray)) $recipientArray[] = $member->email1;
+            if ($member->email2 && !in_array($member->email2, $recipientArray)) $recipientArray[] = $member->email2;
+            if ($member->email3 && !in_array($member->email3, $recipientArray)) $recipientArray[] = $member->email3;
           }
         }
       }
