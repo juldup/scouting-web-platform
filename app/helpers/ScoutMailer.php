@@ -16,37 +16,45 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+ use PHPMailer\PHPMailer\PHPMailer;
+ use PHPMailer\PHPMailer\Exception;
+
+require 'phpmailer/Exception.php';
+require 'phpmailer/PHPMailer.php';
+require 'phpmailer/SMTP.php';
+
 /**
  * ScoutMailer provides functions to send e-mails through an SMTP server
  */
 class ScoutMailer {
   
   // The mailer (stored for reuse)
-  protected static $mailer;
+  //protected static $mailer;
   
   /**
    * Sends the given e-mail. Returns whether the e-mail was sent.
    */
-  public static function send(Swift_Message $message) {
+  public static function send(PHPMailer $mail) {
     // Try sending e-mail
-    $mailer = self::getMailer();
-    return $mailer->send($message);
+    $result = $mail->send();
+    return $result;
   }
   
   /**
-   * Returns (and generates if needed) the mailer
+   * Creates a new PHPMailer instance with the connection configuration
    */
-  protected static function getMailer() {
-    if (!self::$mailer) {
-      $transport = Swift_SmtpTransport::newInstance(
-              Parameter::get(Parameter::$SMTP_HOST),
-              Parameter::get(Parameter::$SMTP_PORT),
-              Parameter::get(Parameter::$SMTP_SECURITY))
-              ->setUsername(Parameter::get(Parameter::$SMTP_USERNAME))
-              ->setPassword(Parameter::get(Parameter::$SMTP_PASSWORD));
-      self::$mailer = Swift_Mailer::newInstance($transport);
-    }
-    return self::$mailer;
+  public static function newMail() {
+    // Create mailer
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = Parameter::get(Parameter::$SMTP_HOST);
+    $mail->SMTPAuth = true;
+    $mail->Username = Parameter::get(Parameter::$SMTP_USERNAME);
+    $mail->Password = Parameter::get(Parameter::$SMTP_PASSWORD);
+    $mail->SMTPSecure = Parameter::get(Parameter::$SMTP_SECURITY);
+    $mail->Port = Parameter::get(Parameter::$SMTP_PORT);
+    $mail->CharSet = "UTF-8";
+    return $mail;
   }
   
   /**
