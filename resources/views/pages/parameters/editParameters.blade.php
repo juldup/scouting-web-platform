@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\Section;
+
 ?>
 
 @section('title')
@@ -23,7 +31,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-parameters.js') }}"></script>
+  @vite(['resources/js/edit-parameters.js'])
 @stop
 
 @section('content')
@@ -39,7 +47,7 @@
   <div class="row">
     <div class='col-md-12'>
       <div id="website-parameters-form" class="form-horizontal well">
-        {{ Form::open(array('files' => true, 'url' => URL::route('edit_parameters_submit', array('section_slug' => $user->currentSection->slug)))) }}
+        {!! Form::open(array('files' => true, 'url' => URL::route('edit_parameters_submit', array('section_slug' => $user->currentSection->slug)))) !!}
           <legend>
             <div class="row">
               <div class="col-sm-8">
@@ -56,18 +64,18 @@
           </div>
           <div class="form-group">
             <div class="col-sm-6 col-md-4"><label class="control-label">1 membre dans la famille</label></div>
-            <div class="col-sm-3 col-lg-2">{{ Form::text('price_1_child', $prices['1 child'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
-            <div class="col-sm-3">{{ Form::text('price_1_leader', $prices['1 leader'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
+            <div class="col-sm-3 col-lg-2">{!! Form::text('price_1_child', $prices['1 child'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3">{!! Form::text('price_1_leader', $prices['1 leader'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
           </div>
           <div class="form-group">
             <div class="col-sm-6 col-md-4"><label class="control-label">2 membres dans la famille</label></div>
-            <div class="col-sm-3 col-lg-2">{{ Form::text('price_2_children', $prices['2 children'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
-            <div class="col-sm-3">{{ Form::text('price_2_leaders', $prices['2 leaders'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
+            <div class="col-sm-3 col-lg-2">{!! Form::text('price_2_children', $prices['2 children'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3">{!! Form::text('price_2_leaders', $prices['2 leaders'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
           </div>
           <div class="form-group">
             <div class="col-sm-6 col-md-4"><label class="control-label">3 membres ou plus dans la famille</label></div>
-            <div class="col-sm-3 col-lg-2">{{ Form::text('price_3_children', $prices['3 children'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
-            <div class="col-sm-3">{{ Form::text('price_3_leaders', $prices['3 leaders'], array('class' => 'form-control small')) }}&nbsp;&euro;</div>
+            <div class="col-sm-3 col-lg-2">{!! Form::text('price_3_children', $prices['3 children'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3">{!! Form::text('price_3_leaders', $prices['3 leaders'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
           </div>
           
           <legend>
@@ -82,50 +90,50 @@
           </legend>
           <div class="form-group">
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("registration_active", "Activer les inscriptions") }}
+              {!! Form::label("registration_active", "Activer les inscriptions") !!}
               <span class="horiz-divider"></span>
-              {{ Form::checkbox("registration_active", 1, $registration_active) }}
+              {!! Form::checkbox("registration_active", 1, $registration_active) !!}
             </div>
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("reregistration_active", "Activer les réinscriptions") }}
+              {!! Form::label("reregistration_active", "Activer les réinscriptions") !!}
               <span class="horiz-divider"></span>
-              {{ Form::checkbox("reregistration_active", 1, $reregistration_active) }}
+              {!! Form::checkbox("reregistration_active", 1, $reregistration_active) !!}
             </div>
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("registration_automatic", "Activation automatique") }}
+              {!! Form::label("registration_automatic", "Activation automatique") !!}
               <span class="horiz-divider"></span>
-              {{ Form::checkbox("registration_automatic", 1, $registration_automatic) }}
+              {!! Form::checkbox("registration_automatic", 1, $registration_automatic) !!}
             </div>
             <div class="col-lg-6 col-md-6 col-sm-9 form-side-note">
               <div class="registration_automatic_only">
                 <span class='glyphicon glyphicon-arrow-right'></span>
                 <span class='horiz-divider'></span>
-                {{ Form::label("registration_start_date", "du", ['class' => 'control-label']) }}
+                {!! Form::label("registration_start_date", "du", ['class' => 'control-label']) !!}
                 <span class="horiz-divider"></span>
-                {{ Form::text('registration_start_date', Parameter::get(Parameter::$REGISTRATION_START_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+                {!! Form::text('registration_start_date', Parameter::get(Parameter::$REGISTRATION_START_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) !!}
                 <span class="horiz-divider"></span>
-                {{ Form::label("registration_end_date", "au", ['class' => 'control-label']) }}
+                {!! Form::label("registration_end_date", "au", ['class' => 'control-label']) !!}
                 <span class="horiz-divider"></span>
-                {{ Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) }}
+                {!! Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) !!}
               </div>
             </div>
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-              {{ Form::label("advanced_registrations", "Inscriptions avancées") }}
+              {!! Form::label("advanced_registrations", "Inscriptions avancées") !!}
               <span class="horiz-divider"></span>
-              {{ Form::checkbox("advanced_registrations", 1, $advanced_registrations) }}
+              {!! Form::checkbox("advanced_registrations", 1, $advanced_registrations) !!}
             </div>
             <div class="col-lg-5 col-md-6 col-sm-9 form-side-note advanced-registration-only">
               <span class='glyphicon glyphicon-arrow-right'></span>
               <span class='horiz-divider'></span>
-              {{ Form::label("registration_priority_city", "Localité prioritaire", ['class' => 'control-label']) }}
+              {!! Form::label("registration_priority_city", "Localité prioritaire", ['class' => 'control-label']) !!}
               <span class="horiz-divider"></span>
-              {{ Form::text("registration_priority_city", Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY), ['class' => 'form-control medium']) }}
+              {!! Form::text("registration_priority_city", Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY), ['class' => 'form-control medium']) !!}
               <br />
               <span class='glyphicon glyphicon-arrow-right'></span>
               <span class='horiz-divider'></span>
-              {{ Form::label("registration_generic_sections", "Utiliser les sections génériques", ['class' => 'control-label']) }}
+              {!! Form::label("registration_generic_sections", "Utiliser les sections génériques", ['class' => 'control-label']) !!}
               <span class="horiz-divider"></span>
-              {{ Form::checkbox("registration_generic_sections", 1, Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS) ? 1 : 0) }}
+              {!! Form::checkbox("registration_generic_sections", 1, Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS) ? 1 : 0) !!}
             </div>
           </div>
           
@@ -142,9 +150,9 @@
           <div class="form-group">
             @foreach ($pages as $page=>$pageData)
               <div class="col-lg-5 col-md-6 col-sm-9 control-label">
-                {{ Form::label($page, $pageData['description']) }}
+                {!! Form::label($page, $pageData['description']) !!}
                 <span class="horiz-divider"></span>
-                {{ Form::checkbox($page, 1, $pageData['active']) }}
+                {!! Form::checkbox($page, 1, $pageData['active']) !!}
               </div>
               <div class="col-lg-1"></div>
             @endforeach
@@ -162,18 +170,18 @@
           </legend>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label("grouped_section_menu", "Regrouper les menus de section") }}
+              {!! Form::label("grouped_section_menu", "Regrouper les menus de section") !!}
             </div>
             <div class="col-sm-1">
-              {{ Form::checkbox("grouped_section_menu", 1, $grouped_section_menu) }}
+              {!! Form::checkbox("grouped_section_menu", 1, $grouped_section_menu) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('allow_personal_contact', "Contact personnel") }}
+              {!! Form::label('allow_personal_contact', "Contact personnel") !!}
             </div>
             <div class="col-sm-1">
-              {{ Form::checkbox('allow_personal_contact', 1, $allow_personal_contact) }}
+              {!! Form::checkbox('allow_personal_contact', 1, $allow_personal_contact) !!}
             </div>
             <div class='col-sm-7'>
               Si cette case est cochée, il sera possible de contacter les animateurs
@@ -182,10 +190,10 @@
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label("consider_scouts_as_members", "Accès aux pages confidentielles pour les scouts") }}
+              {!! Form::label("consider_scouts_as_members", "Accès aux pages confidentielles pour les scouts") !!}
             </div>
             <div class="col-sm-1">
-              {{ Form::checkbox("consider_scouts_as_members", 1, $consider_scouts_as_members) }}
+              {!! Form::checkbox("consider_scouts_as_members", 1, $consider_scouts_as_members) !!}
             </div>
             <div class='col-sm-7 form-side-note'>
               (Le mot «&nbsp;scout&nbsp;» est à considérer au sens large.)
@@ -193,18 +201,18 @@
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label("show_member_history", "Historique des membres dans l'unité") }}
+              {!! Form::label("show_member_history", "Historique des membres dans l'unité") !!}
             </div>
             <div class="col-sm-1">
-              {{ Form::checkbox("show_member_history", 1, Parameter::get(Parameter::$SHOW_MEMBER_HISTORY)) }}
+              {!! Form::checkbox("show_member_history", 1, Parameter::get(Parameter::$SHOW_MEMBER_HISTORY)) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label("unit_google_calendar_link", "Lien Google Agenda") }}
+              {!! Form::label("unit_google_calendar_link", "Lien Google Agenda") !!}
             </div>
             <div class="col-sm-8">
-              {{ Form::text("unit_google_calendar_link", Section::find(1)->google_calendar_link, ['class' => 'form-control']) }}
+              {!! Form::text("unit_google_calendar_link", Section::find(1)->google_calendar_link, ['class' => 'form-control']) !!}
               URL du calendrier au format icalendar : <span id='icalendar_link'>{{ URL::route('export_calendar', ['section_id' => 1]) }}</span>
             </div>
           </div>
@@ -221,7 +229,7 @@
           </legend>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('document_categories', "Catégories") }}
+              {!! Form::label('document_categories', "Catégories") !!}
               <p>
                 NOTE : La catégorie ayant pour nom "Pour&nbsp;les&nbsp;scouts" sera déclinée en "Pour&nbsp;les&nbsp;baladins",
                 "Pour&nbsp;les&nbsp;louveteaux", "Pour&nbsp;les&nbsp;éclaireurs", etc. suivant la section.
@@ -232,7 +240,7 @@
                 @if ($category)
                   <div class="row document-category-row">
                     <div class="col-xs-10">
-                      {{ Form::text('document_categories[]', $category, array("class" => "form-control document-category")) }}
+                      {!! Form::text('document_categories[]', $category, array("class" => "form-control document-category")) !!}
                     </div>
                     <div class="col-xs-2">
                       <p class="form-side-note">
@@ -244,7 +252,7 @@
               @endforeach
               <div class="row document-category-row document-category-prototype" style="display: none;">
                 <div class="col-xs-10">
-                  {{ Form::text('document_categories[]', "", array("class" => "form-control document-category")) }}
+                  {!! Form::text('document_categories[]', "", array("class" => "form-control document-category")) !!}
                 </div>
                 <div class="col-xs-2">
                   <p class="form-side-note">
@@ -254,7 +262,7 @@
               </div>
               <div class="row">
                 <div class="col-xs-10">
-                  {{ Form::text('', 'Divers', array("class" => "form-control", "disabled")) }}
+                  {!! Form::text('', 'Divers', array("class" => "form-control", "disabled")) !!}
                 </div>
                 <div class="col-xs-2">
                   <p class="form-side-note">
@@ -277,68 +285,68 @@
           </legend>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('unit_long_name', "Nom de l'unité") }}
+              {!! Form::label('unit_long_name', "Nom de l'unité") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('unit_long_name', Parameter::get(Parameter::$UNIT_LONG_NAME), array("class" => "form-control")) }}
+              {!! Form::text('unit_long_name', Parameter::get(Parameter::$UNIT_LONG_NAME), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('unit_short_name', "Sigle de l'unité") }}
+              {!! Form::label('unit_short_name', "Sigle de l'unité") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('unit_short_name', Parameter::get(Parameter::$UNIT_SHORT_NAME), array("class" => "form-control")) }}
+              {!! Form::text('unit_short_name', Parameter::get(Parameter::$UNIT_SHORT_NAME), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('unit_bank_account', "N° de compte en banque de l'unité") }}
+              {!! Form::label('unit_bank_account', "N° de compte en banque de l'unité") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('unit_bank_account', Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), array("class" => "form-control")) }}
+              {!! Form::text('unit_bank_account', Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('logo', "Logo du site") }}
+              {!! Form::label('logo', "Logo du site") !!}
             </div>
             <div class="col-sm-8">
               <img src="{{ URL::route('website_logo') }}" class="website-logo-preview" />
-              {{ Form::file('logo', array('class' => 'btn btn-default website-logo-file-selector')) }}
+              {!! Form::file('logo', array('class' => 'btn btn-default website-logo-file-selector')) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('logo_two_lines', "Logo sur deux lignes") }}
+              {!! Form::label('logo_two_lines', "Logo sur deux lignes") !!}
             </div>
             <div class="col-sm-8">
-              {{ Form::checkbox('logo_two_lines', 1, $logo_two_lines) }}
+              {!! Form::checkbox('logo_two_lines', 1, $logo_two_lines) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('icon', "Icône du site") }}
+              {!! Form::label('icon', "Icône du site") !!}
             </div>
             <div class="col-sm-8">
               <img src="{{ URL::route('website_icon') }}" class="website-icon-preview" />
-              {{ Form::file('icon', array('class' => 'btn btn-default website-logo-file-selector')) }}
+              {!! Form::file('icon', array('class' => 'btn btn-default website-logo-file-selector')) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('anu_denomination', "Appellation du responsable d'unité (AnU)") }}
+              {!! Form::label('anu_denomination', "Appellation du responsable d'unité (AnU)") !!}
             </div>
             <div class="col-sm-8">
-              {{ Form::select('anu_denomination', $anuDenominationList, Parameter::get(Parameter::$ANU_DENOMINATION), array('class' => 'form-control large')) }}
+              {!! Form::select('anu_denomination', $anuDenominationList, Parameter::get(Parameter::$ANU_DENOMINATION), array('class' => 'form-control large')) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('asu_denomination', "Appellation des équipiers d'unité (AsU)") }}
+              {!! Form::label('asu_denomination', "Appellation des équipiers d'unité (AsU)") !!}
             </div>
             <div class="col-sm-8">
-              {{ Form::select('asu_denomination', $asuDenominationList, Parameter::get(Parameter::$ASU_DENOMINATION), array('class' => 'form-control large')) }}
+              {!! Form::select('asu_denomination', $asuDenominationList, Parameter::get(Parameter::$ASU_DENOMINATION), array('class' => 'form-control large')) !!}
             </div>
           </div>
           
@@ -354,18 +362,18 @@
           </legend>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('website_meta_description', "Description du site") }}
+              {!! Form::label('website_meta_description', "Description du site") !!}
             </div>
             <div class="col-sm-7">
-              {{ Form::textarea('website_meta_description', Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION), array("class" => "form-control", "rows" => 3, "placeholder" => "Cette description apparaitra dans les résultats des moteurs de recherche")) }}
+              {!! Form::textarea('website_meta_description', Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION), array("class" => "form-control", "rows" => 3, "placeholder" => "Cette description apparaitra dans les résultats des moteurs de recherche")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('website_meta_keywords', "Mots-clés de recherche") }}
+              {!! Form::label('website_meta_keywords', "Mots-clés de recherche") !!}
             </div>
             <div class="col-sm-7">
-              {{ Form::textarea('website_meta_keywords', Parameter::get(Parameter::$WEBSITE_META_KEYWORDS), array("class" => "form-control", "rows" => 3, "placeholder" => "Séparés par des virgules, ils permettent aux moteurs de recherche de favoriser ce site dans les résultats quand ces mots-clés sont recherchés")) }}
+              {!! Form::textarea('website_meta_keywords', Parameter::get(Parameter::$WEBSITE_META_KEYWORDS), array("class" => "form-control", "rows" => 3, "placeholder" => "Séparés par des virgules, ils permettent aux moteurs de recherche de favoriser ce site dans les résultats quand ces mots-clés sont recherchés")) !!}
             </div>
           </div>
           
@@ -402,7 +410,7 @@
               <p>Vous venez de faire une demande d'inscription sur le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}.<br />
                 Voici les détails de la demande d'inscription&nbsp;:</p>
               <p><em>(Ici apparait la liste des champs complétés lors de la demande d'inscription : nom, prénom, etc.)</em></p>
-              {{ Form::textarea('registration_form_filled', Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED), array("class" => "form-control", "rows" => 5)) }}
+              {!! Form::textarea('registration_form_filled', Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED), array("class" => "form-control", "rows" => 5)) !!}
             </div>
             <div id="email2" class="email-content-pane col-md-10 col-md-offset-1" style="display: none;">
               <p class="email-description">
@@ -414,7 +422,7 @@
                 Note : si ce champ est vide, aucun e-mail ne sera envoyé.
               </p>
               <p><strong>Objet : Confirmation de l'inscription de ((NOM))</strong></p>
-              {{ Form::textarea('registration_validated', Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED), array("class" => "form-control", "rows" => 10)) }}
+              {!! Form::textarea('registration_validated', Parameter::get(Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED), array("class" => "form-control", "rows" => 10)) !!}
             </div>
           </div>
           
@@ -430,11 +438,11 @@
           </legend>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('facebook_app_id', "Facebook App ID") }}
+              {!! Form::label('facebook_app_id', "Facebook App ID") !!}
               <p>Pour activer les fonctionnalités Facebook, <a href="https://developers.facebook.com/apps" target="_blank">créez une application Facebook</a> et entrez ici son ID.</p>
             </div>
             <div class="col-sm-5">
-              {{ Form::text('facebook_app_id', Parameter::get(Parameter::$FACEBOOK_APP_ID ), array("class" => "form-control")) }}
+              {!! Form::text('facebook_app_id', Parameter::get(Parameter::$FACEBOOK_APP_ID ), array("class" => "form-control")) !!}
             </div>
           </div>
           
@@ -450,16 +458,16 @@
           </legend>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('additional_head_html', "Contenu additionnel du champ &lt;head&gt;") }}
+              {!! Form::label('additional_head_html', "Contenu additionnel du champ &lt;head&gt;") !!}
               <p>Ce champ permet par exemple d'insérer les tags de google analytics dans toutes les pages du site.</p>
             </div>
             <div class="col-sm-7">
-              {{ Form::textarea('additional_head_html', Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML), array("class" => "form-control", "rows" => 3)) }}
+              {!! Form::textarea('additional_head_html', Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML), array("class" => "form-control", "rows" => 3)) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('photos_public', "Photos publiques") }}
+              {!! Form::label('photos_public', "Photos publiques") !!}
               <p>
                 <span class="glyphicon glyphicon-warning-sign danger"></span>
                 Si oui, toutes les photos de tous les albums seront visibles par tous les internautes. <br />
@@ -467,7 +475,7 @@
               </p>
             </div>
             <div class="col-sm-7">
-              {{ Form::checkbox('photos_public', 1, Parameter::get(Parameter::$PHOTOS_PUBLIC), array("class" => "photos-public-checkbox")) }}
+              {!! Form::checkbox('photos_public', 1, Parameter::get(Parameter::$PHOTOS_PUBLIC), array("class" => "photos-public-checkbox")) !!}
             </div>
           </div>
           
@@ -492,81 +500,81 @@
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('webmaster_email', "Adresse e-mail du webmaster") }}
+              {!! Form::label('webmaster_email', "Adresse e-mail du webmaster") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('webmaster_email', Parameter::get(Parameter::$WEBMASTER_EMAIL), array("class" => "form-control")) }}
+              {!! Form::text('webmaster_email', Parameter::get(Parameter::$WEBMASTER_EMAIL), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('default_email_from_address', "Adresse e-mail du site") }} <br />(pour l'envoi des e-mails personnels)
+              {!! Form::label('default_email_from_address', "Adresse e-mail du site") !!} <br />(pour l'envoi des e-mails personnels)
             </div>
             <div class="col-sm-5">
-              {{ Form::text('default_email_from_address', Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), array("class" => "form-control")) }}
+              {!! Form::text('default_email_from_address', Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('unit_email_address', "Adresse e-mail de l'unité") }} <br />(pour l'envoi des e-mails d'unité)
+              {!! Form::label('unit_email_address', "Adresse e-mail de l'unité") !!} <br />(pour l'envoi des e-mails d'unité)
             </div>
             <div class="col-sm-5">
-              {{ Form::text('unit_email_address', Section::find(1)->email, array("class" => "form-control")) }}
+              {!! Form::text('unit_email_address', Section::find(1)->email, array("class" => "form-control")) !!}
               <br />
               Envoyer les demandes d'inscription à cette adresse :
               <span class="horiz-divider"></span>
-              {{ Form::checkbox("send_registrations_to_unit_email_address", 1, Parameter::get(Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS)) }}
+              {!! Form::checkbox("send_registrations_to_unit_email_address", 1, Parameter::get(Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS)) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('smtp_host', "Hôte SMTP pour l'envoi des e-mails") }}
+              {!! Form::label('smtp_host', "Hôte SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('smtp_host', Parameter::get(Parameter::$SMTP_HOST), array("class" => "form-control")) }}
+              {!! Form::text('smtp_host', Parameter::get(Parameter::$SMTP_HOST), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('smtp_port', "Port SMTP pour l'envoi des e-mails") }}
+              {!! Form::label('smtp_port', "Port SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('smtp_port', Parameter::get(Parameter::$SMTP_PORT), array("class" => "form-control")) }}
+              {!! Form::text('smtp_port', Parameter::get(Parameter::$SMTP_PORT), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('smtp_username', "Login SMTP pour l'envoi des e-mails") }}
+              {!! Form::label('smtp_username', "Login SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('smtp_username', Parameter::get(Parameter::$SMTP_USERNAME), array("class" => "form-control")) }}
+              {!! Form::text('smtp_username', Parameter::get(Parameter::$SMTP_USERNAME), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('smtp_password', "Mot de passe SMTP pour l'envoi des e-mails") }}
+              {!! Form::label('smtp_password', "Mot de passe SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('smtp_password', Parameter::get(Parameter::$SMTP_PASSWORD), array("class" => "form-control")) }}
+              {!! Form::text('smtp_password', Parameter::get(Parameter::$SMTP_PASSWORD), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('smtp_security', "Sécurité SMTP pour l'envoi des e-mails") }}
+              {!! Form::label('smtp_security', "Sécurité SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {{ Form::text('smtp_security', Parameter::get(Parameter::$SMTP_SECURITY), array("class" => "form-control")) }}
+              {!! Form::text('smtp_security', Parameter::get(Parameter::$SMTP_SECURITY), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-sm-4 control-label">
-              {{ Form::label('email_safe_list[]', "Liste des adresses e-mail vérifiées") }}
+              {!! Form::label('email_safe_list[]', "Liste des adresses e-mail vérifiées") !!}
             </div>
             <div class="col-sm-5">
               @foreach ($safe_emails as $safe_email)
                 <div class="row safe-email-row">
                   <div class="col-xs-10">
-                    {{ Form::text('email_safe_list[]', $safe_email, array("class" => "form-control safe-email")) }}
+                    {!! Form::text('email_safe_list[]', $safe_email, array("class" => "form-control safe-email")) !!}
                   </div>
                   <div class="col-xs-2">
                     <p class="form-side-note">
@@ -577,7 +585,7 @@
               @endforeach
               <div class="row safe-email-row safe-email-row-prototype" style="display: none;">
                 <div class="col-xs-10">
-                  {{ Form::text('email_safe_list[]', "", array("class" => "form-control safe-email")) }}
+                  {!! Form::text('email_safe_list[]', "", array("class" => "form-control safe-email")) !!}
                 </div>
                 <div class="col-xs-2">
                   <p class="form-side-note">
@@ -601,7 +609,7 @@
               <input type="submit" class="btn-sm btn-default" value="Enregistrer tous les changements"/>
             </div>
           </div>
-        {{ Form::close() }}
+        {!! Form::close() !!}
       </div>
     </div>
   </div>

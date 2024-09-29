@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -38,6 +45,7 @@
     <div class="col-md-12">
       <div class="well">
         <form name="login" class="form-horizontal" method="post" action="{{ URL::route('login_submit') }}" onSubmit="return checkLogin();">
+          @csrf
           <legend>Entrez votre adresse e-mail et votre mot de passe.</legend>
           @if ($error_login)
             <p class='alert alert-danger'>Mauvais pseudo, e-mail ou mot de passe. Réessayez.</p>
@@ -103,12 +111,13 @@
     <a name="nouvel-utilisateur"></a>
     <div class="col-md-12">
       <div class="well">
-        {{ Form::open(array('name' => 'create', 'class' => 'form-horizontal new-user-account-form obfuscated-form', 'data-action-url' => URL::route('create_user') )) }}
+        <form name="create" method="post" class="form-horizontal new-user-account-form obfuscated-form" data-action-url={{ URL::route('create_user') }}>
+          @csrf
           <legend>Créez votre compte d'utilisateur.</legend>
           <div class='form-group'>
-            {{ Form::label('create_username', "Pseudo", array('class' => "col-md-2 control-label")) }}
+            <label for="create_username" class="col-md-2 control-label">Pseudo</label>
             <div class="col-md-3">
-              {{ Form::text('create_username', "", array('class' => 'form-control')) }}
+              <input type="text" name="create_username" value="" class="form-control" />
             </div>
             <div class='col-md-7'>
               <p class="form-side-note">
@@ -124,9 +133,9 @@
             </div>
           @endif
           <div class='form-group'>
-            {{ Form::label('create_email', "Adresse e-mail",array('class' => "col-md-2 control-label")) }}
+            <label for="create_email" class="col-md-2 control-label">Adresse e-mail</label>
             <div class="col-md-3">
-              {{ Form::text('create_email', "", array('class' => 'form-control')) }}
+              <input type="text" name="create_email" class="form-control" />
             </div>
             <div class='col-md-7'>
               <p class="form-side-note">Si vous êtes membre ou parent de l'unité, veillez à utiliser l'adresse mentionnée lors de l'inscription dans l'unité.</p>
@@ -140,9 +149,9 @@
             </div>
           @endif
           <div class='form-group'>
-            {{ Form::label('create_password', "Mot de passe", array('class' => "col-md-2 control-label")) }}
+            <label for="create_password" class="col-md-2 control-label">Mot de passe</label>
             <div class="col-md-3">
-              {{ Form::password('create_password', array('class' => 'form-control')) }}
+              <input type="password" name="create_password" class="form-control" />
             </div>
             <div class='col-md-7'>
               <p class="form-side-note">Choisissez un mot de passe secret.</p>
@@ -156,10 +165,10 @@
             </div>
           @endif
           <div class='form-group'>
-            {{ Form::label('create_remember', "Mémoriser (*)", array('class' => "col-md-2 control-label")) }}
+            <label for="create_remember" class="col-md-2 control-label">Mémoriser (*)</label>
             <div class="col-md-3">
               <div class="checkbox">
-                {{ Form::checkbox('create_remember', 1, false) }}
+                <input type="checkbox" name="create_remember" value="1" />
               </div>
             </div>
             <div class='col-md-7'>
@@ -171,10 +180,10 @@
           </div>
           <div class="form-group">
             <div class="col-md-10 col-md-offset-2">
-              {{ Form::submit('Activez le javascript pour créer un compte', array('class' => "btn btn-primary", 'data-text' => 'Créer un compte', 'disabled')) }}
+              <input type="submit" value="Activez le javascript pour créer un compte" class="btn btn-primary" data-text="Créer un compte" disabled />
             </div>
           </div>
-        {{ Form::close() }}
+        </form>
       </div>
     </div>
   </div>

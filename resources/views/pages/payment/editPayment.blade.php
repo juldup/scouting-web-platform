@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -31,16 +38,16 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/libs/angular-1.2.15.min.js') }}"></script>
+  @vite(['resources/js/libs/angular-1.2.15.min.js'])
   <script>
     var commitPaymentChangesURL = "{{ URL::route('upload_payment', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
     var postNewEventURL = "{{ URL::route('add_payment_event', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
     var deleteEventURL = "{{ URL::route('delete_payment_event', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
     var canEdit = {{ $canEdit ? "true" : "false" }};
-    var members = {{ json_encode($members); }};
-    var events = {{ json_encode($events); }};
+    var members = {!! json_encode($members); !!};
+    var events = {!! json_encode($events); !!};
   </script>
-  <script src="{{ asset('js/payment-angular.js') }}"></script>
+  @vite(['resources/js/payment-angular.js'])
 @stop
 
 @section('content')

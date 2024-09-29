@@ -1,6 +1,6 @@
 {{--
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -17,8 +17,8 @@
 <div id="footer">
   <div class="container">
     <p class="text-muted">
-      Site <a target='_blank' href="https://github.com/juldup/scouting-web-platform/blob/master/lisez-moi.md">open source</a>
-      réalisé par
+      Plateforme <a target='_blank' href="https://github.com/juldup/scouting-web-platform/blob/master/lisez-moi.md">open source</a>
+      réalisée par
       <a target='_blank' href='http://www.jdupuis.com'>Julien Dupuis</a>.
     </p>
   </div>

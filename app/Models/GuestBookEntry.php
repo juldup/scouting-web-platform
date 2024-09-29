@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents an entry in the guest book
  * 
@@ -23,7 +26,7 @@
  *   - body:   The text of the guest book entry
  *   - author: The name of the author
  */
-class GuestBookEntry extends Eloquent {
+class GuestBookEntry extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   

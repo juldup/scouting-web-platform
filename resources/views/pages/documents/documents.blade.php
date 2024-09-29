@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -117,14 +125,14 @@
         <p>
           Si vous êtes membre de l'unité, vous pouvez également recevoir un document directement par e-mail (donnez une adresse que nous connaissons) :
         </p>
-        {{ Form::open(array('route' => 'send_document_by_email')) }}
+        {!! Form::open(array('route' => 'send_document_by_email')) !!}
           M'envoyer le document
-          {{ Form::select('document_id', $documentSelectList, null, array('class' => 'form-control large')) }}
+          {!! Form::select('document_id', $documentSelectList, null, array('class' => 'form-control large')) !!}
           à l'adresse
-          {{ Form::text('email', '', array('size' => 35, 'class' => 'form-control large')) }}
+          {!! Form::text('email', '', array('size' => 35, 'class' => 'form-control large')) !!}
           <span class="horiz-divider"></span>
-          {{ Form::submit('Envoyer', array('class' => 'btn btn-primary')) }}
-        {{ Form::close() }}
+          {!! Form::submit('Envoyer', array('class' => 'btn btn-primary')) !!}
+        {!! Form::close() !!}
       </div>
     </div>
   @endif

@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
+
 /**
  * This Eloquent class reprents a log entry that logs a user action on the website
  * 
@@ -27,7 +32,7 @@
  *   - data:       Data associated with the log (key-values in json format)
  *   - is_error:   Whether this log is for an error
  */
-class LogEntry extends Eloquent {
+class LogEntry extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   

@@ -1,6 +1,6 @@
 {{--
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 --}}
+
 <ul class="nav navbar-nav navbar-right user-box">
   @if (!$user->isConnected())
     {{-- The visitor is not connected --}}

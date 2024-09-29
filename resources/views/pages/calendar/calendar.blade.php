@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -27,7 +35,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-calendar.js') }}"></script>
+  @vite(['resources/js/edit-calendar.js'])
   <script>
     var currentMonth = {{{ $month }}};
     var currentYear = {{{ $year }}};
@@ -121,57 +129,57 @@
         <div id="calendar_event_form" class="form-horizontal well"
              @if (!Session::has('_old_input')) style="display: none;" @endif
              >
-          {{ Form::open(array('url' => URL::route('manage_calendar_submit', array('year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)))) }}
-            {{ Form::hidden('event_id', 0) }}
+          {!! Form::open(array('url' => URL::route('manage_calendar_submit', array('year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)))) !!}
+            {!! Form::hidden('event_id', 0) !!}
             <legend>Modifier un événement</legend>
             <div class='form-group'>
-              {{ Form::label('start_date_day', "Date de début", array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('start_date_day', "Date de début", array('class' => 'col-md-4 control-label')) !!}
               <div class='col-md-6'>
-                {{ Form::text('start_date_day', '', array('class' => 'form-control small', 'placeholder' => 'Jour')) }} /
-                {{ Form::text('start_date_month', '', array('class' => 'form-control small', 'placeholder' => 'Mois')) }} /
-                {{ Form::text('start_date_year', '', array('class' => 'form-control small', 'placeholder' => 'Année')) }}
+                {!! Form::text('start_date_day', '', array('class' => 'form-control small', 'placeholder' => 'Jour')) !!} /
+                {!! Form::text('start_date_month', '', array('class' => 'form-control small', 'placeholder' => 'Mois')) !!} /
+                {!! Form::text('start_date_year', '', array('class' => 'form-control small', 'placeholder' => 'Année')) !!}
               </div>
             </div>
             <div class='form-group'>
-              {{ Form::label('duration_in_days', "Durée (jours)", array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('duration_in_days', "Durée (jours)", array('class' => 'col-md-4 control-label'))  !!}
               <div class='col-md-1'>
-                {{ Form::text('duration_in_days', '', array('class' => 'form-control small')) }}
+                {!! Form::text('duration_in_days', '', array('class' => 'form-control small')) !!}
               </div>
               <div class='col-md-6'>
                 <p class="form-side-note">Compte le premier et le dernier jour de l'activité.</p>
               </div>
             </div>
             <div class='form-group'>
-              {{ Form::label('event_name', "Activité", array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('event_name', "Activité", array('class' => 'col-md-4 control-label')) !!}
               <div class='col-md-6'>
-                {{ Form::text('event_name', '', array('class' => 'form-control', 'placeholder' => "Nom de l'activité")) }}
+                {!! Form::text('event_name', '', array('class' => 'form-control', 'placeholder' => "Nom de l'activité")) !!}
               </div>
             </div>
             <div class='form-group'>
-              {{ Form::label('description', "Description", array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('description', "Description", array('class' => 'col-md-4 control-label')) !!}
               <div class='col-md-6'>
-                {{ Form::textarea('description', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Description, horaire, infos pratiques")) }}
+                {!! Form::textarea('description', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Description, horaire, infos pratiques")) !!}
               </div>
             </div>
             <div class='form-group'>
-              {{ Form::label('event_type', "Type d'événement", array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('event_type', "Type d'événement", array('class' => 'col-md-4 control-label')) !!}
               <div class='col-md-6'>
-                {{ Form::select('event_type', $event_types, '', array('class' => 'form-control')) }}
+                {!! Form::select('event_type', $event_types, '', array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class='form-group'>
-              {{ Form::label('section', "Section", array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('section', "Section", array('class' => 'col-md-4 control-label')) !!}
               <div class='col-md-6'>
-                {{ Form::select('section', $sections, '', array('class' => 'form-control')) }}
+                {!! Form::select('section', $sections, '', array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class='form-group multi-section-subform' style="display: none;">
               <div class='col-md-6 col-md-offset-4'>
                 <div class="row">
                   @foreach ($sectionList as $section)
-                    {{ Form::label('multi_section' . $section->id, $section->name, array('class' => 'col-md-4 control-label')) }}
+                    {!! Form::label('multi_section' . $section->id, $section->name, array('class' => 'col-md-4 control-label')) !!}
                     <div class='col-md-1'>
-                      {{ Form::checkbox('multi_section_' . $section->id, 1, in_array($section->id, $preselected_multi_sections) ? '1' : '0') }}
+                      {!! Form::checkbox('multi_section_' . $section->id, 1, in_array($section->id, $preselected_multi_sections) ? '1' : '0') !!}
                     </div>
                   @endforeach
                 </div>
@@ -179,12 +187,12 @@
             </div>
             <div class='form-group'>
               <div class='col-md-5 col-md-offset-3'>
-                {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+                {!! Form::submit('Enregistrer', array('class' => 'btn btn-primary')) !!}
                 <a class="btn btn-danger" id='delete_link' style="display: none;" href="">Supprimer</a>
                 <a class="btn btn-default" href="javascript:dismissEvent()">Fermer</a>
               </div>
             </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       @endif
     </div>

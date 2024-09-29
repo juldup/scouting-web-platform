@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -27,7 +34,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-members.js') }}"></script>
+  @vite(['resources/js/edit-members.js'])
   <script>
     var members = new Array();
     @foreach ($members as $member)
@@ -158,13 +165,13 @@
                 @if ($show_subgroup)
                   <td>
                     <span style="display: none;">{{{ $member->subgroup }}}</span>
-                    {{ Form::select('select_subgroup', ['' => 'Aucun(e)'] + $subgroup_choices + ['select_other_subgroup' => "Créer un groupe"], $member->subgroup, ['class' => 'form-control medium', 'data-member_id' => $member->id]) }}
+                    {!! Form::select('select_subgroup', ['' => 'Aucun(e)'] + $subgroup_choices + ['select_other_subgroup' => "Créer un groupe"], $member->subgroup, ['class' => 'form-control medium', 'data-member_id' => $member->id]) !!}
                   </td>
                 @endif
                 @if ($show_role)
                   <td>
                     <span style="display: none;">{{{ $member->role }}}</span>
-                    {{ Form::select('select_role', ['' => 'Aucun'] + $role_choices + ['select_other_role' => "Créer un rôle"], $member->role, ['class' => 'form-control medium', 'data-member_id' => $member->id]) }}
+                    {!! Form::select('select_role', ['' => 'Aucun'] + $role_choices + ['select_other_role' => "Créer un rôle"], $member->role, ['class' => 'form-control medium', 'data-member_id' => $member->id]) !!}
                   </td>
                 @endif
                 <td data-text="{{ $member->birth_date }}">{{{ $member->getHumanBirthDate() }}}</td>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * The calendar shows the unit's event (meeting, etc.) to the visitors.
@@ -44,7 +97,7 @@ class CalendarController extends BaseController {
   private function showCalendar($year = null, $month = null, $editing = false) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_CALENDAR)) {
-      return App::abort(404);
+      abort(404);
     }
     // Select default year
     if ($year == null || $month == null) {
@@ -150,17 +203,17 @@ class CalendarController extends BaseController {
   /**
    * [Route] Downloads the calendar in PDF format
    */
-  public function downloadCalendar() {
+  public function downloadCalendar(Request $request) {
     // Get semester(s)
-    $firstSemester = Input::has('semester_1');
-    $secondSemester = Input::has('semester_2');
+    $firstSemester = $request->has('semester_1');
+    $secondSemester = $request->has('semester_2');
     if (!$firstSemester && !$secondSemester) {
-      return Redirect::route('calendar')->with('error_message', "Vous n'avez sélectionné aucun semestre.");
+      return redirect()->route('calendar')->with('error_message', "Vous n'avez sélectionné aucun semestre.");
     }
     // Get section(s)
     $sections = array();
     foreach (Section::orderBy('position')->get() as $section) {
-      if (Input::has("section_" . $section->id)) {
+      if ($request->has("section_" . $section->id)) {
         $sections[] = $section;
       }
     }
@@ -174,7 +227,7 @@ class CalendarController extends BaseController {
   public function showEdit($year = null, $month = null) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_CALENDAR)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the user has access the calendar edition mode for this section
     if (!$this->user->can(Privilege::$EDIT_CALENDAR, $this->user->currentSection)) {
@@ -187,22 +240,22 @@ class CalendarController extends BaseController {
   /**
    * Updates or creates a calendar event in the database
    */
-  public function submitItem($year, $month, $section_slug) {
+  public function submitItem(Request $request, $year, $month, $section_slug) {
     // Get input data
-    $eventId = Input::get('event_id');
-    $startDateTimestamp = strtotime(Input::get('start_date_year') . "-" . Input::get('start_date_month') . "-" . Input::get('start_date_day'));
+    $eventId = $request->input('event_id');
+    $startDateTimestamp = strtotime($request->input('start_date_year') . "-" . $request->input('start_date_month') . "-" . $request->input('start_date_day'));
     $startDate = date('Y-m-d', $startDateTimestamp);
-    $duration = Input::get('duration_in_days');
+    $duration = $request->input('duration_in_days');
     $endDate = date('Y-m-d', $startDateTimestamp + 3600 * 24 * ($duration-1) + 2 * 3600);
-    $eventName = Input::get('event_name');
-    $description = Input::get('description');
-    $eventType = Input::get('event_type');
-    $sectionId = Input::get('section');
+    $eventName = $request->input('event_name');
+    $description = $request->input('description');
+    $eventType = $request->input('event_type');
+    $sectionId = $request->input('section');
     if ($sectionId == "multi") {
       $sectionIds = [];
       $sectionList = Section::where('id', '!=', 1)->get();
       foreach ($sectionList as $section) {
-        if (Input::get('multi_section_' . $section->id)) {
+        if ($request->input('multi_section_' . $section->id)) {
           $sectionIds[] = $section->id;
         }
       }
@@ -222,9 +275,9 @@ class CalendarController extends BaseController {
     }
     // Make some basic tests on the input
     $success = false;
-    if (date('Y', $startDateTimestamp) != Input::get('start_date_year') ||
-            date('m', $startDateTimestamp) != Input::get('start_date_month') ||
-            date('d', $startDateTimestamp) != Input::get('start_date_day')) {
+    if (date('Y', $startDateTimestamp) != $request->input('start_date_year') ||
+            date('m', $startDateTimestamp) != $request->input('start_date_month') ||
+            date('d', $startDateTimestamp) != $request->input('start_date_day')) {
       // Wrong start date
       $success = false;
       $message = "L'événement n'a pas été enregistré : la date de début n'est pas une date correcte.";
@@ -266,7 +319,7 @@ class CalendarController extends BaseController {
               'start_date' => $startDate,
               'end_date' => $endDate,
               'event' => $eventName,
-              'description' => $description,
+              'description' => $description ? $description : "",
               'type' => $eventType,
               'section_id' => $sectionId,
           );
@@ -275,6 +328,7 @@ class CalendarController extends BaseController {
             $success = true;
             $message = "L'événement a été créé.";
           } catch (Illuminate\Database\QueryException $e) {
+            dd("Erreur");
             Log::error($e);
             $success = false;
             $message = "Une erreur s'est produite. L'événement n'a pas été enregistré.";
@@ -283,7 +337,7 @@ class CalendarController extends BaseController {
       }
     }
     // Redirect back to calendar edition page
-    $redirect = Redirect::route('manage_calendar_month', array(
+    $redirect = redirect()->route('manage_calendar_month', array(
         "year" => $year,
         "month" => $month,
         "section_slug" => $section_slug,
@@ -326,7 +380,7 @@ class CalendarController extends BaseController {
       LogEntry::error("Calendrier", "Erreur lors de la suppression d'un événement du calendrier");
     }
     // Redirect back to calendar edition page
-    return Redirect::route('manage_calendar_month', array(
+    return redirect()->route('manage_calendar_month', array(
         "year" => $year,
         "month" => $month,
         "section_slug" => $section_slug,
@@ -339,7 +393,7 @@ class CalendarController extends BaseController {
   public function showCalendarAsList() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_CALENDAR)) {
-      return App::abort(404);
+      abort(404);
     }
     // Select current year
     $year = date('Y');
@@ -392,7 +446,7 @@ class CalendarController extends BaseController {
   public function exportCalendar($section_id) {
     $section = Section::find($section_id);
     if (!$section) {
-      return App::abort(404);
+      abort(404);
     }
     // Create query
     $query = CalendarItem::visibleToAllMembers();
@@ -418,6 +472,18 @@ class CalendarController extends BaseController {
     }
     $ical .= "END:VCALENDAR";
     echo $ical;
+  }
+  
+  /**
+   * [Route] Returns the image corresponding to the type
+   */
+  public function getCalendarIcon(Request $request, $type) {
+    $type = Helper::removeSpecialCharacters($type); // for security
+    $path = "../resources/images/calendar/" . $type . ".png";
+    return response(file_get_contents($path), 200, array(
+        "Content-Type" => "image",
+        "Content-Length" => filesize($path),
+    ));
   }
   
 }

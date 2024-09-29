@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
+
 /**
  * This Eloquent page represents an image within an editable page (see class Page)
  * of the website
@@ -23,12 +27,12 @@
  * Columns:
  *   - original_name: Filename of the image
  */
-class PageImage extends Eloquent {
+class PageImage extends Model {
   
   protected $fillable = array('page_id', 'original_name');
   
   // Folder in the file system (relative to storage folder) where the page images are stored
-  protected static $FOLDER_PATH = "site_data/images/pages/";
+  protected static $FOLDER_PATH = "app/site_data/images/pages/";
   
   /**
    * Returns the URL to access this image

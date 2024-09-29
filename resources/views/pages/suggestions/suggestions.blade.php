@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\User;
+
 ?>
 
 @section('title')
@@ -24,7 +32,7 @@
 
 @section('additional_javascript')
   @if ($managing)
-    <script src="{{ asset('js/edit-suggestions.js') }}"></script>
+    @vite(['resources/js/edit-suggestions.js'])
   @endif
 @stop
 
@@ -72,13 +80,13 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-horizontal well">
-          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('suggestions_submit'))) }}
+          {!! Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('suggestions_submit'))) !!}
             <legend>
               Nouvelle suggestion
             </legend>
             <div class="form-group">
               <div class="col-md-10 col-md-offset-1">
-                {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre suggestion")) }}
+                {!! Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre suggestion")) !!}
               </div>
             </div>
             <div class="form-group">
@@ -87,10 +95,10 @@
                   Attention ! Votre suggestion sera visible publiquement. Pour envoyer un message privé, visitez
                   la <a href="{{ URL::route('contacts') }}">page de contacts</a>.
                 </p>
-                {{ Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Soumettre', 'disabled')) }}
+                {!! Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Soumettre', 'disabled')) !!}
               </div>
             </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       </div>
     </div>
@@ -144,18 +152,18 @@
                   </div>
                 @endif
                 <div class="form-horizontal suggestion-edit-response" style="display:none;">
-                  {{ Form::open(array('url' => URL::route('edit_suggestions_submit_response', array('suggestion_id' => $suggestion->id)))) }}
+                  {!! Form::open(array('url' => URL::route('edit_suggestions_submit_response', array('suggestion_id' => $suggestion->id)))) !!}
                     <div class="form-group">
                       <div class="col-md-12">
-                        {{ Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) }}
+                        {!! Form::textarea('response_' . $suggestion->id, $suggestion->response, array('class' => 'form-control', 'rows' => 5, 'placeholder' => "Réponse à la suggestion")) !!}
                       </div>
                     </div>
                     <div class="form-group">
                       <div class="col-md-12">
-                        {{ Form::submit('Enregistrer', array('class' => "btn btn-primary")) }}
+                        {!! Form::submit('Enregistrer', array('class' => "btn btn-primary")) !!}
                       </div>
                     </div>
-                  {{ Form::close() }}
+                  {!! Form::close() !!}
                 </div>
               @endif
             </div>

@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This Eloquent class represents a section of the unit
@@ -32,7 +35,7 @@
  *   - subgroup_name:       Designation of the subgroups in this section (e.g. 'Sizaine', 'Patrouille')
  *   - start_age:           Used for advanced registrations : the age of the youngest members
  */
-class Section extends Eloquent {
+class Section extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   

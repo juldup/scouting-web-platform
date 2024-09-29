@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 <?php if (!isset($leader_corner_page)) $leader_corner_page = false; ?>
@@ -195,7 +202,7 @@
   </p>
   <p>
      Si un document doit absolument être supprimé car son contenu n'est pas adéquat,
-     contacte le <a href="{{ URL::route('personal_email', array('type' => 'webmaster', 'member_id' => 0)) }}">webmaster du site</a>.
+     contacte le <a href="{{ URL::route('personal_email', array('contact_type' => 'webmaster', 'member_id' => 0)) }}">webmaster du site</a>.
   </p>
 @endif
 

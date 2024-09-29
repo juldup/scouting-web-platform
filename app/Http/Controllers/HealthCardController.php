@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Parents can fill in their children's health cards online. This controller
@@ -33,7 +86,7 @@ class HealthCardController extends BaseController {
   public function showPage() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_HEALTH_CARDS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Get list of members owned by the current user
     $ownedMembers = $this->user->getAssociatedMembers();
@@ -62,7 +115,7 @@ class HealthCardController extends BaseController {
   public function showEdit($member_id) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_HEALTH_CARDS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the member belongs to the current user
     if (!$this->user->isOwnerOfMember($member_id)) {
@@ -84,15 +137,15 @@ class HealthCardController extends BaseController {
   /**
    * [Route] Submits the changes made to a health card
    */
-  public function submit() {
+  public function submit(Request $request) {
     // Get the member id
-    $memberId = Input::get('member_id');
+    $memberId = $request->input('member_id');
     // Make sure the current user owns this member
     if (!$this->user->isOwnerOfMember($memberId)) {
       return Helper::forbiddenResponse();
     }
     // Get all input
-    $inputAll = Input::except('_token');
+    $inputAll = $request->except('_token');
     // Complete missing booleans from checkboxes
     foreach (array('has_no_constrained_activities',
         'has_tetanus_vaccine',
@@ -183,7 +236,7 @@ class HealthCardController extends BaseController {
     }
     // Redirect with status message
     if ($errorMessage || $warningMessage) {
-      $redirect = Redirect::to(URL::previous());
+      $redirect = redirect(URL::previous());
       if ($warningMessage) $redirect = $redirect->with('warning_message', "ATTENTION ! " . $warningMessage);
       if ($errorMessage) {
         return $redirect->with('error_message', $errorMessage)->withInput();
@@ -192,7 +245,7 @@ class HealthCardController extends BaseController {
       }
     } else {
       // Success
-      return Redirect::to(URL::route('health_card'))->with('success_message', 'La fiche santé a été enregistrée.');
+      return redirect(URL::route('health_card'))->with('success_message', 'La fiche santé a été enregistrée.');
     }
   }
   
@@ -202,7 +255,7 @@ class HealthCardController extends BaseController {
   public function download($member_id) {
     // Get the member
     $member = Member::find($member_id);
-    if (!$member) App::abort(404, "Ce membre n'existe pas.");
+    if (!$member) abort(404, "Ce membre n'existe pas.");
     // Make sure the current leader can view this health card
     if (!$this->user->isOwnerOfMember($member_id) &&
             !$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $member->section_id)) {
@@ -240,7 +293,7 @@ class HealthCardController extends BaseController {
   public function showManage() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_HEALTH_CARDS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the user has access to this section's health cards
     if (!$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $this->section)) {

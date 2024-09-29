@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This Eloquent class represents an e-mail sent to a section and displayed
@@ -32,7 +35,7 @@
  *   - archived:       Whether this e-mail has been archived
  *   - deleted:        Whether this e-mail has been deleted and should no longer be displayed
  */
-class Email extends Eloquent {
+class Email extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   

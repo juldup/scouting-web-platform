@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -68,36 +68,36 @@
           sera créée automatiquement pour vous dans le système de fichiers.
         </p>
         <div class="well form-horizontal">
-          {{ Form::open() }}
+          {!! Form::open() !!}
           <legend>Entrez les paramètres de connexion à votre base de données</legend>
             <div class="form-group">
-              {{ Form::label('driver', "Type de base de données", array('class' => 'control-label text-right col-sm-4')) }}
+              {!! Form::label('driver', "Type de base de données", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {{ Form::select('driver', array('sqlite' => 'sqlite', 'mysql' => 'mysql', 'pgsql' => 'pgsql', 'sqlsrv' => 'sqlsrv'), $driver, array('class' => 'form-control')) }}
+                {!! Form::select('driver', array('sqlite' => 'sqlite', 'mysql' => 'mysql', 'pgsql' => 'pgsql', 'sqlsrv' => 'sqlsrv'), $driver, array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('host', "Hôte", array('class' => 'control-label text-right col-sm-4')) }}
+              {!! Form::label('host', "Hôte", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {{ Form::text('host', $host, array('class' => 'form-control')) }}
+                {!! Form::text('host', $host, array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('database', "Base de données", array('class' => 'control-label text-right col-sm-4')) }}
+              {!! Form::label('database', "Base de données", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {{ Form::text('database', $database, array('class' => 'form-control')) }}
+                {!! Form::text('database', $database, array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('username', "Utilisateur", array('class' => 'control-label text-right col-sm-4')) }}
+              {!! Form::label('username', "Utilisateur", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {{ Form::text('username', $username, array('class' => 'form-control')) }}
+                {!! Form::text('username', $username, array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('password', "Mot de passe", array('class' => 'control-label text-right col-sm-4')) }}
+              {!! Form::label('password', "Mot de passe", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {{ Form::text('password', $password, array('class' => 'form-control')) }}
+                {!! Form::text('password', $password, array('class' => 'form-control')) !!}
               </div>
             </div>
           <div class="form-group">
@@ -105,7 +105,7 @@
               <input type="submit" class="btn btn-primary">
             </div>
           </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       @endif
     </div>

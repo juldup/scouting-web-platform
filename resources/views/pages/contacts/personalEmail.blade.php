@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+use App\Http\Controllers\PersonalEmailController;
+
 ?>
 
 @section('title')
@@ -37,7 +46,8 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-horizontal well">
-          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : ($section ? $section->id : 0))))) }}
+          <form method="post" action="" class="obfuscated-form" data-action-url="{{ URL::route('personal_email_submit', array('contact_type' => $contact_type, 'member_id' => $member ? $member->id : ($section ? $section->id : 0))) }}" >
+            @csrf
             <legend>
               @if ($contact_type == PersonalEmailController::$CONTACT_TYPE_PARENTS)
                 <h2>Envoyer un e-mail aux parents de {{{ $member->first_name }}} {{{ $member->last_name }}}</h2>
@@ -53,27 +63,27 @@
             </legend>
             @include('subviews.flashMessages')
             <div class="form-group">
-              {{ Form::label('subject', "Sujet", array('class' => 'control-label col-md-3')) }}
+              <label for="subject" class="control-label col-md-3">Sujet</label>
               <div class="col-md-7">
-                {{ Form::text('subject', null, array('class' => 'form-control')) }}
+                <input type="text" name="subject" value="{{ old('subject') }}" class="form-control" />
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('body', "Message", array('class' => 'control-label col-md-3')) }}
+              <label for="body" class="control-label col-md-3">Message</label>
               <div class="col-md-7">
-                {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 10)) }}
+                <textarea name="body" class="form-control" rows="10">{{ old('body') }}</textarea>
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('sender_name', "Votre nom", array('class' => 'control-label col-md-3')) }}
+              <label for="sender_name" class="control-label col-md-3">Votre nom</label>
               <div class="col-md-4">
-                {{ Form::text('sender_name', null, array('class' => 'form-control')) }}
+                <input type="text" name="sender_name" value="{{ old('sender_name') }}" class="form-control" />
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('sender_email', "Votre adresse e-mail", array('class' => 'control-label col-md-3')) }}
+              <label for="sender_email" class="control-label col-md-3">Votre adresse e-mail</label>
               <div class="col-md-4">
-                {{ Form::text('sender_email', null, array('class' => 'form-control')) }}
+                <input type="text" name="sender_email" value="{{ old('sender_email') }}" class="form-control" />
               </div>
               <div class="col-md-5">
                 <p class="form-side-note">
@@ -83,10 +93,11 @@
             </div>
             <div class="form-group">
               <div class="col-md-7 col-md-offset-3">
-                {{ Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Envoyer', 'disabled')) }}
+                <input type="submit" value="Activez le javascript pour soumettre" class="btn btn-primary"
+                       data-text="Envoyer" disabled />
               </div>
             </div>
-          {{ Form::close() }}
+          </form>
         </div>
       </div>
     </div>

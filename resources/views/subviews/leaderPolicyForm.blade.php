@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\Member;
+
 ?>
 
 <?php
@@ -26,22 +34,22 @@
 ?>
 
 <h2>Signature de la charte</h2>
-{{ Form::open(array('class' => 'form-horizontal well', 'url' => URL::route('submit_leader_policy_signature', array('section_slug' => $user->currentSection->slug)))) }}
+{!! Form::open(array('class' => 'form-horizontal well', 'url' => URL::route('submit_leader_policy_signature', array('section_slug' => $user->currentSection->slug)))) !!}
   @if ($signed)
     <p class='alert alert-info'>Tu as déjà signé la charte des animateurs</p>
   @else
     <p class='alert alert-danger'>Tu n'as pas encore signé la charte des animateurs</p>
   @endif
   <div class='form-group'>
-    {{ Form::label('leader_policy_signed', "J'adhère à la charte des animateurs", array("class" => "col-sm-4 control-label")) }}
+    {!! Form::label('leader_policy_signed', "J'adhère à la charte des animateurs", array("class" => "col-sm-4 control-label")) !!}
     <div class="col-sm-1">
-      {{ Form::checkbox('leader_policy_signed') }}
+      {!! Form::checkbox('leader_policy_signed') !!}
     </div>
     <div class="col-sm-7">
-      {{ Form::submit('Signer la charte', array('class' => 'btn-primary form-control medium')) }}
+      {!! Form::submit('Signer la charte', array('class' => 'btn-primary form-control medium')) !!}
     </div>
   </div>
-{{ Form::close() }}
+{!! Form::close() !!}
 
 <div class="row">
   <div class='col-sm-12'>

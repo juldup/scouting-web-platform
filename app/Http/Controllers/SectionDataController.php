@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * The unit is composed of sections. These sections can be created, deleted and
@@ -45,21 +98,21 @@ class SectionDataController extends BaseController {
   /**
    * [Route] Updates the data of a given section
    */
-  public function submitSectionData() {
+  public function submitSectionData(Request $request) {
     // Get input data
-    $sectionId = Input::get('section_id');
-    $name = Input::get('section_name');
-    $email = Input::get('section_email');
-    $sectionCategory = Input::get('section_category');
-    $sectionType = Input::get('section_type');
-    $sectionTypeNumber = Input::get('section_type_number');
-    $color = Input::get('section_color');
-    $calendarShortname = Input::get('section_calendar_shortname');
-    $la_section = Input::get('section_la_section');
-    $de_la_section = Input::get('section_de_la_section');
-    $subgroup_name = Input::get('section_subgroup_name');
-    $start_age = intval(Input::get('section_start_age'));
-    $google_calendar_link = Input::get('google_calendar_link');
+    $sectionId = $request->input('section_id');
+    $name = $request->input('section_name');
+    $email = $request->input('section_email');
+    $sectionCategory = $request->input('section_category');
+    $sectionType = $request->input('section_type');
+    $sectionTypeNumber = $request->input('section_type_number');
+    $color = $request->input('section_color');
+    $calendarShortname = $request->input('section_calendar_shortname');
+    $la_section = $request->input('section_la_section');
+    $de_la_section = $request->input('section_de_la_section');
+    $subgroup_name = $request->input('section_subgroup_name');
+    $start_age = intval($request->input('section_start_age'));
+    $google_calendar_link = $request->input('google_calendar_link');
     // Get whether the user can change all section data or only limited data
     $fullEdit = $this->user->can(Privilege::$MANAGE_SECTIONS, $sectionId);
     // Check validity
@@ -98,7 +151,7 @@ class SectionDataController extends BaseController {
       $errorMessage .= "L'usage des majuscules dans le nom des sous-groupes n'est pas correct. ";
     // If validity check did not pass, redirect with error message
     if ($errorMessage) {
-      return Redirect::route('section_data')
+      return redirect()->route('section_data')
               ->withInput()
               ->with('error_message', $errorMessage);
     }
@@ -132,18 +185,18 @@ class SectionDataController extends BaseController {
         try {
           $section->save();
           LogEntry::log("Sections", "Modification des données d'une section", array("Section" => $section->name)); // TODO improve log message
-          return Redirect::route('section_data')->with('success_message', "Les changements ont été enregistrés.");
+          return redirect()->route('section_data')->with('success_message', "Les changements ont été enregistrés.");
         } catch (Exception $e) {
           // An error has occured while saving
           Log::error($e);
           LogEntry::error("Sections", "Erreur lors de la modification des données d'une section", array("Erreur" => $e->getMessage()));
-          return Redirect::route('section_data')
+          return redirect()->route('section_data')
                   ->withInput()
                   ->with('error_message', "Une erreur est survenue.");
         }
       } else {
         // The section was not found, redirect with error message
-        return Redirect::route('section_data')
+        return redirect()->route('section_data')
                   ->with('error_message', "Une erreur est survenue : la section n'existe pas.");
       }
     } else {
@@ -172,12 +225,12 @@ class SectionDataController extends BaseController {
         // Log
         LogEntry::log("Sections", "Création d'une nouvelle section", array("Section" => $name)); // TODO improve log message
         // Redirect with success message
-        return Redirect::route('section_data')->with('success_message', "La section a été créée avec succès. N'oublie pas de mettre à jour l'ordre des sections.");
+        return redirect()->route('section_data')->with('success_message', "La section a été créée avec succès. N'oublie pas de mettre à jour l'ordre des sections.");
       } catch (Exception $ex) {
         // An error has occured, redirect with error message
         Log::error($ex);
         LogEntry::error("Sections", "Erreur lors de la création d'une nouvelle section", array("Erreur" => $ex->getMessage()));
-        return Redirect::route('section_data')
+        return redirect()->route('section_data')
                   ->withInput()
                   ->with('error_message', "Une erreur est survenue. La section n'a pas pu être créée.");
       }
@@ -187,7 +240,7 @@ class SectionDataController extends BaseController {
   /**
    * [Route] Ajax call to save section order
    */
-  public function changeSectionOrder() {
+  public function changeSectionOrder(Request $request) {
     // Prepare error response
     $errorResponse = json_encode(array("result" => "Failure"));
     // Check that the user has the right to modify the section order
@@ -195,7 +248,7 @@ class SectionDataController extends BaseController {
       return $errorResponse;
     }
     // Get new order from input
-    $sectionIdsInOrder = Input::get('section_order');
+    $sectionIdsInOrder = $request->input('section_order');
     $sectionIdsInOrderArray = explode(" ", $sectionIdsInOrder);
     // Retrieve sections
     $sections = Section::where('id', '!=', 1)->get();
@@ -251,7 +304,7 @@ class SectionDataController extends BaseController {
     // Get the section
     $section = Section::find($section_id);
     if (!$section) {
-      return Redirect::route('section_data')
+      return redirect()->route('section_data')
               ->with('error_message', "Cette section n'existe pas.");
     }
     // Check that this section does not have any members
@@ -260,7 +313,7 @@ class SectionDataController extends BaseController {
             ->where('is_leader', '=', false)
             ->count();
     if ($memberCount) {
-      return Redirect::route('section_data')
+      return redirect()->route('section_data')
               ->with('error_message', "Cette section contient des membres. Il faut <a href='"
                       . URL::route('manage_listing', array('section_slug' => $section->slug)) . 
                       "'>supprimer ou changer de section tous les membres</a> avant de supprimer la section.");
@@ -271,7 +324,7 @@ class SectionDataController extends BaseController {
             ->where('is_leader', '=', true)
             ->count();
     if ($memberCount) {
-      return Redirect::route('section_data')
+      return redirect()->route('section_data')
               ->with('error_message', "Cette section contient des animateurs. Il faut <a href='"
                       . URL::route('edit_leaders', array('section_slug' => $section->slug)) . 
                       "'>supprimer ou changer de section tous les animateurs</a> avant de supprimer la section.");
@@ -280,12 +333,12 @@ class SectionDataController extends BaseController {
     try {
       $section->delete();
       LogEntry::log("Sections", "Suppression d'une section", array("Section" => $section->name));
-      return Redirect::route('section_data')
+      return redirect()->route('section_data')
               ->with('success_message', "La section " . $section->name . " a été supprimée avec succès.");
     } catch (Exception $e) {
       Log::error($e);
       LogEntry::error("Sections", "Erreur lors de la suppression d'une section", array("Erreur" => $e->getMessage()));
-      return Redirect::route('section_data')
+      return redirect()->route('section_data')
               ->withInput()
               ->with('error_message', "La section " . $section->name . " n'a été supprimée.");
     }

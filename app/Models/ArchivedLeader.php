@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use App\Helpers\DateHelper;
+use Illuminate\Http\Request;
+use App\Helpers\Helper;
 
 /**
  * This Eloquent class represents the data of a former leader. Each leader of
@@ -41,7 +47,7 @@
  *   - has_picture:          Whether there is a picture for this leader
  *   - picture_filename:     The file name of the picture (if any)
  */
-class ArchivedLeader extends Eloquent {
+class ArchivedLeader extends Model {
   
   var $guarded = array('id', 'created_at', 'updated_at');
   
@@ -109,21 +115,21 @@ class ArchivedLeader extends Eloquent {
    * the an array containg the data. If it is invalid, returns a string
    * containing an error message.
    */
-  public static function checkInputData($canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
+  public static function checkInputData(Request $request, $canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
     // Get data from input
-    $firstName = Input::get('first_name');
-    $lastName = Input::get('last_name');
-    $gender = Input::get('gender');
-    $leaderName = Input::get('leader_name');
-    $leaderInCharge = Input::get('leader_in_charge') ? true : false;
-    $leaderDescription = Input::get('leader_description');
-    $leaderRole = Input::get('leader_role');
-    $sectionId = Input::get('section');
-    $phoneMemberUnformatted = Input::get('phone_member');
-    $phoneMemberPrivate = Input::get('phone_member_private');
-    $emailMember = strtolower(Input::get('email_member'));
-    $totem = Input::get('totem');
-    $quali = Input::get('quali');
+    $firstName = $request->input('first_name');
+    $lastName = $request->input('last_name');
+    $gender = $request->input('gender');
+    $leaderName = $request->input('leader_name');
+    $leaderInCharge = $request->input('leader_in_charge') ? true : false;
+    $leaderDescription = $request->input('leader_description');
+    $leaderRole = $request->input('leader_role');
+    $sectionId = $request->input('section');
+    $phoneMemberUnformatted = $request->input('phone_member');
+    $phoneMemberPrivate = $request->input('phone_member_private');
+    $emailMember = strtolower($request->input('email_member'));
+    $totem = $request->input('totem');
+    $quali = $request->input('quali');
     // Error message is initially empty
     $errorMessage = "";
     // Check all fields for errors
@@ -182,9 +188,9 @@ class ArchivedLeader extends Eloquent {
    * to mark it as having a leader picture. Returns this member instance, or
    * a string in case of error.
    */
-  public function uploadPictureFromInput() {
+  public function uploadPictureFromInput(Request $request) {
     // Get picture file
-    $pictureFile = Input::file('picture');
+    $pictureFile = $request->file('picture');
     if ($pictureFile) {
       if (!$pictureFile->getSize()) {
         // An upload error has occured

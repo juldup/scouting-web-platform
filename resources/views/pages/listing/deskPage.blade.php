@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -27,7 +34,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-desk-listing.js') }}"></script>
+  @vite(['resources/js/edit-desk-listing.js'])
 @stop
 
 @section('back_links')
@@ -54,7 +61,7 @@
   <div class="row">
     <div class="col-md-12">
       <h1>Listing Desk</h1>
-      {{ Form::open(array('route' => 'desk_listing', 'files' => true, 'class' => 'form-horizontal well')) }}
+      {!! Form::open(array('route' => 'desk_listing', 'files' => true, 'class' => 'form-horizontal well')) !!}
         <legend>Comparer le listing du site au listing Desk</legend>
         <p>Rends-toi sur Desk et exporte le listing au format TXT.</p>
         <div class='alert alert-info'>
@@ -70,7 +77,7 @@
             <label for='listingFile'>Ficher TXT&nbsp;:</label>
           </div>
           <div class="col-sm-4 upload-desk-listing" @if (isset($fileDate)) style="display: none;" @endif>
-            {{ Form::file("listingFile", array('class' => 'form-control')) }}
+            {!! Form::file("listingFile", array('class' => 'form-control')) !!}
           </div>
           <div class='col-sm-6 existing-desk-listing'>
             @if (isset($fileDate))
@@ -84,7 +91,7 @@
             <label for='caseInsensisive'>Ignorer les différences de majuscules/minuscules&nbsp;:</label>
           </div>
           <div class="col-sm-2">
-            {{ Form::checkbox('caseInsensitive', 1, $caseInsensitive) }}
+            {!! Form::checkbox('caseInsensitive', 1, $caseInsensitive) !!}
           </div>
         </div>
         <div class="form-group">
@@ -92,7 +99,7 @@
             <label for='caseInsensisive'>Ignorer les erreurs d'accents&nbsp;:</label>
           </div>
           <div class="col-sm-2">
-            {{ Form::checkbox('ignoreAccentErrors', 1, $ignoreAccentErrors) }}
+            {!! Form::checkbox('ignoreAccentErrors', 1, $ignoreAccentErrors) !!}
           </div>
         </div>
         <div class="form-group">
@@ -100,15 +107,15 @@
             <label for='caseInsensisive'>Comparer les adresses de manière approximative&nbsp;:</label>
           </div>
           <div class="col-sm-2">
-            {{ Form::checkbox('fuzzyAddressComparison', 1, $fuzzyAddressComparison) }}
+            {!! Form::checkbox('fuzzyAddressComparison', 1, $fuzzyAddressComparison) !!}
           </div>
         </div>
         <div class="form-group">
           <div class="col-sm-6 col-sm-offset-5">
-            {{ Form::submit("Afficher la liste de différences", array('class' => 'btn btn-primary')) }}
+            {!! Form::submit("Afficher la liste de différences", array('class' => 'btn btn-primary')) !!}
           </div>
         </div>
-      {{ Form::close() }}
+      {!! Form::close() !!}
     </div>
   </div>
   

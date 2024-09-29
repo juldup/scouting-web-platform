@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -43,11 +43,11 @@
           <p class="alert alert-danger">{{ $error_message }}</p>
         @endif
         <div class="well form-horizontal">
-          {{ Form::open() }}
+          {!! Form::open() !!}
             <div class='form-group'>
-              {{ Form::label('username', "Pseudo", array('class' => "col-md-2 control-label")) }}
+              {!! Form::label('username', "Pseudo", array('class' => "col-md-2 control-label")) !!}
               <div class="col-md-3">
-                {{ Form::text('username', "Webmaster", array('class' => 'form-control')) }}
+                {!! Form::text('username', "Webmaster", array('class' => 'form-control')) !!}
               </div>
               <div class='col-md-7'>
                 <p class="form-side-note">
@@ -63,9 +63,9 @@
               </div>
             @endif
             <div class='form-group'>
-              {{ Form::label('email', "Adresse e-mail",array('class' => "col-md-2 control-label")) }}
+              {!! Form::label('email', "Adresse e-mail",array('class' => "col-md-2 control-label")) !!}
               <div class="col-md-3">
-                {{ Form::text('email', "", array('class' => 'form-control')) }}
+                {!! Form::text('email', "", array('class' => 'form-control')) !!}
               </div>
               <div class='col-md-7'>
                 <p class="form-side-note">Adresse e-mail du webmaster. Pourra être changée par la suite.</p>
@@ -79,9 +79,9 @@
               </div>
             @endif
             <div class='form-group'>
-              {{ Form::label('password', "Mot de passe", array('class' => "col-md-2 control-label")) }}
+              {!! Form::label('password', "Mot de passe", array('class' => "col-md-2 control-label")) !!}
               <div class="col-md-3">
-                {{ Form::password('password', array('class' => 'form-control')) }}
+                {!! Form::password('password', array('class' => 'form-control')) !!}
               </div>
               <div class='col-md-7'>
                 <p class="form-side-note">
@@ -105,7 +105,7 @@
                 <button class="btn btn-primary" type='submit'>Créer un compte</button>
               </div>
             </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       @endif
     </div>

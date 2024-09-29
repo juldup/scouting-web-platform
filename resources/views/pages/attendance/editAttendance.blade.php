@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -31,17 +39,15 @@
 @stop
 
 @section('additional_javascript')
-  <!--<script src="{{ asset('js/libs/jquery-ui-1.10.4.js') }}"></script>-->
-  <script src="{{ asset('js/libs/angular-1.2.15.min.js') }}"></script>
-  <!--<script src="{{ asset('js/libs/angular-ui-0.4.0.js') }}"></script>-->
+  @vite(['resources/js/libs/angular-1.2.15.min.js'])
   <script>
     var commitAttendanceChangesURL = "{{ URL::route('upload_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
     var canEdit = {{ $canEdit ? "true" : "false" }};
-    var members = {{ json_encode($members); }};
-    var monitoredEvents = {{ json_encode($monitoredEvents); }};
-    var unmonitoredEvents = {{ json_encode($unmonitoredEvents); }};
+    var members = {!! json_encode($members); !!};
+    var monitoredEvents = {!! json_encode($monitoredEvents); !!};
+    var unmonitoredEvents = {!! json_encode($unmonitoredEvents); !!};
   </script>
-  <script src="{{ asset('js/attendance-angular.js') }}"></script>
+  @vite(['resources/js/attendance-angular.js'])
 @stop
 
 @section('content')

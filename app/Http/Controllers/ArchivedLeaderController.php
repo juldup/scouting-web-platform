@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Methods for managing the list of former leaders.
@@ -63,7 +116,7 @@ class ArchivedLeaderController extends BaseController {
     $leader = ArchivedLeader::find($archived_leader_id);
     if ($leader && $leader->has_picture) {
       $path = $leader->getPicturePath();
-      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+      return response(file_get_contents($path), 200, array(
           "Content-Type" => "image",
           "Content-Length" => filesize($path),
       ));
@@ -73,12 +126,12 @@ class ArchivedLeaderController extends BaseController {
   /**
    * [Route] Used to submit the modified data of an archived leader or add a new archived leader
    */
-  public function submitLeader($archive) {
+  public function submitLeader(Request $request, $archive) {
     if (!$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
       return Helper::forbiddenResponse();
     }
     // Check data integrity
-    $inputData = ArchivedLeader::checkInputData();
+    $inputData = ArchivedLeader::checkInputData($request);
     if (is_string($inputData)) {
       $success = false;
       $message = $inputData;
@@ -88,7 +141,7 @@ class ArchivedLeaderController extends BaseController {
         $inputData['section_id'] = $this->section->id;
       }
       // Get the leader from input data
-      $memberId = Input::get('member_id');
+      $memberId = $request->input('member_id');
       // Update database
       if ($memberId) {
         // Existing leader
@@ -99,7 +152,7 @@ class ArchivedLeaderController extends BaseController {
           // Save
           try {
             $leader->save();
-            if ($leader->uploadPictureFromInput()) {
+            if ($leader->uploadPictureFromInput($request)) {
               $success = true;
               $message = "Les données de l'animateur ont été modifiées.";
             } else {
@@ -127,11 +180,11 @@ class ArchivedLeaderController extends BaseController {
     if ($success) {
       $section = Section::find($leader->section_id);
       LogEntry::log("Animateurs", $memberId ? "Modification d'un ancien animateur" : "Ajout d'un ancien animateur",
-              array("Nom" => Input::get('first_name') . " " . Input::get('last_name'), "Section" => $section->name)); // TODO improve log message
-      return Redirect::to(URL::route('edit_archived_leaders', array('section_slug' => $section->slug, 'archive' => $archive)))
+              array("Nom" => $request->input('first_name') . " " . $request->input('last_name'), "Section" => $section->name)); // TODO improve log message
+      return redirect(URL::route('edit_archived_leaders', array('section_slug' => $section->slug, 'archive' => $archive)))
               ->with('success_message', $message);
     } else {
-      return Redirect::to(URL::previous())
+      return redirect(URL::previous())
             ->with('error_message', $message)
             ->withInput();
     }
@@ -151,14 +204,14 @@ class ArchivedLeaderController extends BaseController {
     try {
       $member->delete();
       LogEntry::log("Animateurs", "Suppression d'un ancien animateur", array("Nom" => $member->first_name . " " . $member->last_name, "Année" => $member->year));
-      return Redirect::route('edit_archived_leaders', array('section_slug' => $this->section->slug, 'archive' => $archive))
+      return redirect()->route('edit_archived_leaders', array('section_slug' => $this->section->slug, 'archive' => $archive))
               ->with('success_message', $member->first_name . " " . $member->last_name
                       . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement des anciens animateurs (" . $member->year . ").");
     } catch (Exception $ex) {
       Log::error($ex);
       LogEntry::error("Animateurs", "Erreur lors de la suppression d'un ancien animateur", array("Erreur" => $ex->getMessage()));
     }
-    return Redirect::route('edit_archived_leaders', array('section_slug' => $this->section->slug, 'archive' => $archive))
+    return redirect()->route('edit_archived_leaders', array('section_slug' => $this->section->slug, 'archive' => $archive))
             ->with('error_message', "Une erreur est survenue. L'ancien animateur n'a pas été supprimé.");
   }
   

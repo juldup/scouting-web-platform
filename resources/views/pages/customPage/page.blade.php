@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -27,6 +35,9 @@
     <meta name="description" content="{{{ Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION) }}}" />
     <meta name="keywords" content="{{{ Parameter::get(Parameter::$WEBSITE_META_KEYWORDS) }}}" />
   @endif
+  @vite(['resources/css/ckeditor/imageresize.css'])
+  @vite(['resources/css/ckeditor/imagestyle.css'])
+  @vite(['resources/css/ckeditor/ckeditor-fix.css'])
 @stop
 
 @section('forward_links')
@@ -47,7 +58,9 @@
         <p class='alert alert-success'>{{ Session::get('success_message') }}</p>
       @endif
       <h1>{{{ $page_title }}}</h1>
-      {{ $page_body }}
+      <div class="ck-content">
+        {!! $page_body !!}
+      </div>
       @if ($additional_content)
         @include($additional_content)
       @endif

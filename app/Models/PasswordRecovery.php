@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class reprents a code to reset a forgotten password
  * 
@@ -24,7 +27,7 @@
  *   - code:      An access code to update the password
  *   - timestamp: The time at which the password recovery was requested (the code is only valid for a few hours or days)
  */
-class PasswordRecovery extends Eloquent {
+class PasswordRecovery extends Model {
   
   protected $fillable = array('user_id', 'code', 'timestamp');
   

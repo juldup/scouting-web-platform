@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Several pages of the website can be edited by the leaders. This class
@@ -107,7 +160,7 @@ abstract class GenericPageController extends BaseController {
   public function showPage() {
     // Make sure this page can be displayed
     if (!$this->canDisplayPage()) {
-      return App::abort(404);
+      abort(404);
     }
     // Get the page
     $page = $this->getPage();
@@ -138,7 +191,7 @@ abstract class GenericPageController extends BaseController {
   public function showEdit() {
     // Make sure this page can be displayed
     if (!$this->canDisplayPage()) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the user can edit this page
     if (!$this->canEdit()) {
@@ -158,13 +211,18 @@ abstract class GenericPageController extends BaseController {
   /**
    * [Route] Saves the page that has been modified
    */
-  public function savePage() {
+  public function savePage(Request $request) {
     // Make sure the user can edit this page
     if (!$this->canEdit()) {
       return Helper::forbiddenResponse();
     }
+    // Get new page content from request
+    $newBody = stripslashes($request->input('page_body'));
+    // These next 3 lines fix a html/css bug in ckeditor
+    $patterns = '/(<img .*) height="\d*"/';
+    $replace = "\\1";
+    $newBody = preg_replace($patterns, $replace, $newBody);
     // Update page
-    $newBody = stripslashes(Input::get('page_body'));
     $page = $this->getPage();
     $page->body_html = $newBody;
     $page->save();
@@ -174,7 +232,7 @@ abstract class GenericPageController extends BaseController {
       $routeParameters["section_slug"] = View::shared('user')->currentSection->slug;
     }
     LogEntry::log("Page", "Modification d'une page", array("Page" => $this->getPageTitle() ?: "Page d'accueil")); // TODO improve log message
-    return Redirect::route($this->getShowRouteName(), $routeParameters);
+    return redirect()->route($this->getShowRouteName(), $routeParameters);
   }
   
   /**

@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents a file attached to a section e-mail
  * 
@@ -23,13 +26,13 @@
  *   - email_id: The e-mail this file is attached to
  *   - filename: The name of the file stored in the file system
  */
-class EmailAttachment extends Eloquent {
+class EmailAttachment extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
   // Folder (relative to storage folder) in which the e-mail attachment are
   // stored in the file system
-  protected static $FOLDER_PATH = "site_data/email_attachments/";
+  protected static $FOLDER_PATH = "app/site_data/email_attachments/";
   
   /**
    * Creates a new instance of EmailAttachment for the given file

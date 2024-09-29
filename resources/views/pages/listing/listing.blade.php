@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Http\Controllers\PersonalEmailController;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -27,7 +36,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-members.js') }}"></script>
+  @vite(['resources/js/edit-members.js'])
   <script>
     var members = new Array();
     @foreach ($editable_members as $member)

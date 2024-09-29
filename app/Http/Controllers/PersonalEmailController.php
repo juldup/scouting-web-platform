@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * This tools presents a page for visitors and members to contact other members by e-mail
@@ -47,8 +100,8 @@ class PersonalEmailController extends BaseController {
       // Nothing to do
     } elseif ($contact_type == self::$CONTACT_TYPE_SECTION) {
       $section = Section::find($member_id);
-      if (!$section) App::abort(404, "Impossible d'envoyer un message : cette section n'existe pas.");
-      if (!$section->email) App::abort(404, "Impossible d'envoyer un message à " . $section->la_section . " car son adresse e-mail est inconnue.");
+      if (!$section) abort(404, "Impossible d'envoyer un message : cette section n'existe pas.");
+      if (!$section->email) abort(404, "Impossible d'envoyer un message à " . $section->la_section . " car son adresse e-mail est inconnue.");
     } else {
       // Get recipient member
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER) {
@@ -56,7 +109,7 @@ class PersonalEmailController extends BaseController {
       } else {
         $member = Member::find($member_id);
       }
-      if (!$member) App::abort(404, "Impossible d'envoyer un message personnel : ce membre n'existe pas ou plus.");
+      if (!$member) abort(404, "Impossible d'envoyer un message personnel : ce membre n'existe pas ou plus.");
       // Not members cannot contact non-leader members
       if (!$member->is_leader && !$this->user->isMember()) {
         return Helper::forbiddenResponse();
@@ -75,11 +128,11 @@ class PersonalEmailController extends BaseController {
       }
       // Check that there is a parent's e-mail address to write to
       if (($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress())) {
-        App::abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
+        abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
       }
       // Check that there is a personnal e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->email_member) {
-        App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
+        abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
     }
     // Make view
@@ -96,12 +149,12 @@ class PersonalEmailController extends BaseController {
    * @param string $contact_type  The kind of contact (see the list at the top of this class)
    * @param string $member_id  The id of the member to contact (or anything for the webmaster)
    */
-  public function submit($contact_type, $member_id) {
+  public function submit(Request $request, $contact_type, $member_id) {
     // Get input data
-    $subject = Input::get('subject');
-    $body = Input::get('body');
-    $senderName = Input::get('sender_name');
-    $senderEmail = Input::get('sender_email');
+    $subject = $request->input('subject');
+    $body = $request->input('body');
+    $senderName = $request->input('sender_name');
+    $senderEmail = $request->input('sender_email');
     // Check that all fields are non-empty
     $errorMessage = "";
     if (!$subject) $errorMessage .= "Vous devez entrer un sujet. ";
@@ -112,7 +165,7 @@ class PersonalEmailController extends BaseController {
             $errorMessage .= "L'adresse $senderEmail n'est pas correcte. ";
     if ($errorMessage) {
       // One of the fields is incorrect, redirect with error message
-      return Redirect::route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
+      return redirect()->route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
               ->withInput()
               ->with('error_message', $errorMessage);
     } else {
@@ -151,7 +204,7 @@ class PersonalEmailController extends BaseController {
       // Log
       LogEntry::log("E-mail personnel", "Envoi d'un e-mail personnel", array("De" => $senderEmail, "Type" => $contact_type, "Destinataire" => $member_id)); // TODO improve log message
       // Redirect with success message
-      return Redirect::route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
+      return redirect()->route('personal_email', array('contact_type' => $contact_type, 'member_id' => $member_id))
               ->with('success_message', "Votre e-mail a bien été envoyé.");
     }
     
@@ -198,8 +251,8 @@ class PersonalEmailController extends BaseController {
       return array(Parameter::get(Parameter::$WEBMASTER_EMAIL));
     } elseif ($contact_type == self::$CONTACT_TYPE_SECTION) {
       $section = Section::find($member_id);
-      if (!$section) App::abort(404, "Impossible d'envoyer un message : cette section n'existe pas.");
-      if (!$section->email) App::abort(404, "Impossible d'envoyer un message à " . $section->la_section . " car son adresse e-mail est inconnue.");
+      if (!$section) abort(404, "Impossible d'envoyer un message : cette section n'existe pas.");
+      if (!$section->email) abort(404, "Impossible d'envoyer un message à " . $section->la_section . " car son adresse e-mail est inconnue.");
       return array($section->email);
     } else {
       // Get recipient member
@@ -208,29 +261,29 @@ class PersonalEmailController extends BaseController {
       } else {
         $member = Member::find($member_id);
       }
-      if (!$member) App::abort(404, "Impossible d'envoyer un message personnel : ce membre n'existe plus.");
+      if (!$member) abort(404, "Impossible d'envoyer un message personnel : ce membre n'existe plus.");
       // Not members cannot contact non-leader members
       if ($contact_type != self::$CONTACT_TYPE_ARCHIVED_LEADER && !$member->is_leader && !$this->user->isMember()) {
-        App::abort(\Illuminate\Http\Response::HTTP_FORBIDDEN);
+        abort(403);
       }
       // Nobody can contact non-leader members personnally
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->is_leader) {
-        App::abort(\Illuminate\Http\Response::HTTP_FORBIDDEN);
+        abort(403);
       }
       // Nobody can contact a leader's parents
       if ($contact_type == self::$CONTACT_TYPE_PARENTS && $member->is_leader) {
-        App::abort(\Illuminate\Http\Response::HTTP_FORBIDDEN);
+        abort(403);
       }
       // Check that there is a parent's e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PARENTS && !$member->hasParentsEmailAddress()) {
-        App::abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
+        abort(404, "Impossible de contacter les parents de " . $member->getFullName() . ". Leur adresse e-mail est inconnue.");
       }
       // Check that there is a personnal e-mail address to write to
       if ($contact_type == self::$CONTACT_TYPE_PERSONAL && !$member->email_member) {
-        App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
+        abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
       if ($contact_type == self::$CONTACT_TYPE_ARCHIVED_LEADER && !$member->email_member) {
-        App::abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
+        abort(404, "Impossible de contacter " . $member->getFullName() . ". Son adresse e-mail est inconnue.");
       }
       if ($contact_type == self::$CONTACT_TYPE_PARENTS) {
         return $member->getParentsEmailAddresses();

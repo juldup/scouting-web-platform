@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,7 +30,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-registration.js') }}"></script>
+  @vite(['resources/js/edit-registration.js'])
   <script>
     var registrations = new Array();
     @foreach ($registrations as $registrationList)
@@ -264,91 +271,91 @@
                   <div class="close-button">
                     <span class="glyphicon glyphicon-remove"></span>
                   </div>
-                  {{ Form::open(array('url' => URL::route('submit_registration_priority', array('section_slug' => $user->currentSection->slug)))) }}
-                    {{ Form::hidden('member_id', $member['id']) }}
+                  {!! Form::open(array('url' => URL::route('submit_registration_priority', array('section_slug' => $user->currentSection->slug)))) !!}
+                    {!! Form::hidden('member_id', $member['id']) !!}
                     <div class="form-group">
-                      {{ Form::label('', "Nom", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('', "Nom", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8 form-side-note">
                         {{{ $member->getFullName() }}}
                       </div>
                     </div>
                     <div class="form-group">
                       <div class="col-md-4 control-label">
-                        {{ Form::label('registration_status', "Statut", array("class" => "")) }}
+                        {!! Form::label('registration_status', "Statut", array("class" => "")) !!}
                       </div>
                       <div class="col-md-8">
-                        {{ Form::select('registration_status',
+                        {!! Form::select('registration_status',
                              ['' => 'Non traitée (-)',
                               'Oui' => 'Pré-inscription validée (Oui)',
                               'Non P' => 'Refus car hors période d\'inscription (Non P)',
                               'Non C' => 'Refus car sections complètes (Non C)'],
-                             $member->registration_status, array('class' => 'form-control')) }}
+                             $member->registration_status, array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('section_category', "Section", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('section_category', "Section", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-2">
                         @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS))
-                          {{ Form::select('section_category', Section::getExistingCategoriesForSelect(), $member->registration_section_category, array('class' => 'form-control')) }}
+                          {!! Form::select('section_category', Section::getExistingCategoriesForSelect(), $member->registration_section_category, array('class' => 'form-control')) !!}
                         @else
-                          {{ Form::select('section', Section::getSectionsForSelect(), $member->section_id, array('class' => 'form-control')) }}
+                          {!! Form::select('section', Section::getSectionsForSelect(), $member->section_id, array('class' => 'form-control')) !!}
                         @endif
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('registration_is_leader', "Animateur", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('registration_is_leader', "Animateur", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {{ Form::checkbox('registration_is_leader', 1, $member->is_leader ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
+                        {!! Form::checkbox('registration_is_leader', 1, $member->is_leader ? 1 : 0, ['class' => "no-bootstrap-switch"]) !!}
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('year_in_section', "Année dans la section", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('year_in_section', "Année dans la section", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-2">
-                        {{ Form::text('year_in_section', $member->year_in_section, array('class' => 'form-control')) }}
+                        {!! Form::text('year_in_section', $member->year_in_section, array('class' => 'form-control')) !!}
                       </div>
                       <div class="col-md-3 form-side-note">
                         (Date de naissance : {{ Helper::dateToHuman($member->birth_date) }})
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('registration_siblings', "Frères et sœurs dans l'unité", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('registration_siblings', "Frères et sœurs dans l'unité", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {{ Form::text('registration_siblings', $member->registration_siblings, array('class' => 'form-control')) }}
+                        {!! Form::text('registration_siblings', $member->registration_siblings, array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('registration_city', "Localité", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('registration_city', "Localité", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {{ Form::text('registration_city', $member->city, array('class' => 'form-control')) }}
+                        {!! Form::text('registration_city', $member->city, array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {{ Form::text('registration_former_leader_child', $member->registration_former_leader_child, array('class' => 'form-control')) }}
+                        {!! Form::text('registration_former_leader_child', $member->registration_former_leader_child, array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
-                      {{ Form::label('registration_date', "Date de la demande d'inscription", array("class" => "col-md-4 control-label")) }}
+                      {!! Form::label('registration_date', "Date de la demande d'inscription", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {{ Form::text('registration_date', $member->registration_date, array('class' => 'form-control')) }}
+                        {!! Form::text('registration_date', $member->registration_date, array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
                       <div class="col-md-4 control-label">
-                        {{ Form::label('registration_priority', "Inscription prioritaire", array("class" => "")) }}
+                        {!! Form::label('registration_priority', "Inscription prioritaire", array("class" => "")) !!}
                         <span class="glyphicon glyphicon-star danger"></span>
                       </div>
                       <div class="col-md-8">
-                        {{ Form::checkbox('registration_priority', 1, $member->registration_priority ? 1 : 0, ['class' => "no-bootstrap-switch"]) }}
+                        {!! Form::checkbox('registration_priority', 1, $member->registration_priority ? 1 : 0, ['class' => "no-bootstrap-switch"]) !!}
                       </div>
                     </div>
                     <div class='form-group'>
                       <div class="col-md-2 col-md-offset-4">
-                        {{ Form::submit('Appliquer', ["class" => "btn btn-primary"]) }}
+                        {!! Form::submit('Appliquer', ["class" => "btn btn-primary"]) !!}
                       </div>
                     </div>
-                  {{ Form::close() }}
+                  {!! Form::close() !!}
                 </div>
               </div>
             @endforeach

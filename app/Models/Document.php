@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This Eloquent class represents a document that can be
@@ -30,12 +33,12 @@
  *   - public:      Whether the document is public or private
  *   - archived:    Whether the document has been archived
  */
-class Document extends Eloquent {
+class Document extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
   // Folder within in the storage folder where the documents are saved
-  protected static $FOLDER_PATH = "site_data/documents/";
+  protected static $FOLDER_PATH = "app/site_data/documents/";
   
   /**
    * Returns the section of this document

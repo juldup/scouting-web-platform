@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Accounting is a tool for the leaders to manage the section or unit finances.
@@ -128,16 +181,16 @@ class AccountingController extends BaseController {
         'inherit_bank' => ($inheritTransaction->bankin_cents - $inheritTransaction->bankout_cents) / 100.0,
         'can_edit' => $canEdit,
         'locked_by_user' => $lockedByUser,
-        'lock_id' => $accountingLock ? $accountingLock->id : "",
+        'lock_id' => $accountingLock ? $accountingLock->id : "none",
     ));
   }
   
   /**
    * [Route] Ajax call to update the lock of an accounting instance
    */
-  public function ajaxUpdateLock($lockId) {
+  public function ajaxUpdateLock($lock_id) {
     // Get lock
-    $lock = AccountingLock::where('id', '=', $lockId)
+    $lock = AccountingLock::where('id', '=', $lock_id)
             ->where('timestamp', '>', time() - 30)
             ->where('invalidated', '=', false)
             ->where('user_id', '=', $this->user->id)
@@ -149,22 +202,22 @@ class AccountingController extends BaseController {
       return json_encode(array("result" => "Success"));
     } else {
       // Lock does not exist, return error message
-      return json_encode(array("result" => "Failure", "message" => "Cette page n'est plus réservée. $lockId"));
+      return json_encode(array("result" => "Failure", "message" => "Cette page n'est plus réservée. $lock_id"));
     }
   }
   
   /**
    * [Route] Ajax call to update the changes to the accounting data
    * 
-   * @param string $lockId  Id of the accounting lock
+   * @param string $lock_id  Id of the accounting lock
    */
-  public function commitChanges($lockId) {
+  public function commitChanges(Request $request, $lock_id) {
     if (!$this->user->isLeader() || !$this->user->can(Privilege::$MANAGE_ACCOUNTING, $this->section)) {
       // Access denied, return error result
       return json_encode(array("result" => "Failure", "message" => "Vous n'avez pas les privilèges pour modifier les comptes de cette section."));
     }
     // Check lock
-    $lock = AccountingLock::where('id', '=', $lockId)
+    $lock = AccountingLock::where('id', '=', $lock_id)
             ->where('timestamp', '>', time() - 30)
             ->where('invalidated', '=', false)
             ->where('section_id', '=', $this->section->id)
@@ -178,11 +231,11 @@ class AccountingController extends BaseController {
     try {
       // Basic request checks
       if (!$year) throw new Exception("Year parameter is missing");
-      if (!Input::has('data')) throw new Exception("There is no transaction data");
+      if (!$request->has('data')) throw new Exception("There is no transaction data");
       $error = false;
       $changesMade = "";
       // Get data and unescape it if necessary
-      $data = Input::get('data');
+      $data = $request->input('data');
       if (strpos($data, "[{\\\"") === 0) $data = str_replace("\\\"", "\"", $data);
       // Get the new list of transactions
       $categories = json_decode($data);
@@ -323,7 +376,7 @@ class AccountingController extends BaseController {
           'year' => $year,
           'section_id' => $this->section->id,
           'category_name' => AccountingItem::$INHERIT,
-          'date' => "0000-00-00",
+          'date' => "1900-01-01",
           'comment' => '',
           'receipt' => '',
           'position' => 0,
@@ -369,7 +422,7 @@ class AccountingController extends BaseController {
    */
   private function cashAmountToCents($cash) {
     $cash = str_replace(",", ".", $cash);
-    return $cash * 100;
+    return intval($cash) * 100;
   }
   
   /**

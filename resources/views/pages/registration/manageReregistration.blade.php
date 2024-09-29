@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -23,7 +31,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-reregistration.js') }}"></script>
+  @vite(['resources/js/edit-reregistration.js'])
   <script>
     var reregisterMemberURL = "{{ URL::route('ajax_reregister') }}";
     var unreregisterMemberURL = "{{ URL::route('ajax_cancel_reregistration') }}";
@@ -65,22 +73,22 @@
                 <span class="member-name">
                   {{{ $member->first_name }}} {{{ $member->last_name }}}
                 </span>
-                <span class="reregistered" {{ $reregistered }}>
+                <span class="reregistered" {!! $reregistered !!}>
                   est réinscrit
                 </span>
               </th>
               <td>
-                <a class='btn-sm btn-primary unreregistered reregister-member-button' href="" {{ $unreregistered }}>
+                <a class='btn-sm btn-primary unreregistered reregister-member-button' href="" {!! $unreregistered !!}>
                   Réinscrire
                 </a>
               </td>
               <td>
-                <a class='btn-sm btn-warning unreregistered delete-member-button' href="" {{ $unreregistered }}>
+                <a class='btn-sm btn-warning unreregistered delete-member-button' href="" {!! $unreregistered !!}>
                   Désinscrire
                 </a>
               </td>
               <td>
-                <a class='btn-sm btn-default cancel-reregistration-button reregistered' href="" {{ $reregistered }}>
+                <a class='btn-sm btn-default cancel-reregistration-button reregistered' href="" {!! $reregistered !!}>
                   Annuler la réinscription
                 </a>
               </td>

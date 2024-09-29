@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,60 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 /**
  * The listing is an access restricted page that presents the listing
@@ -32,7 +86,7 @@ class ListingController extends BaseController {
   public function showPage() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_LISTING)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the current user is a member an therefore has access to this page
     if (!$this->user->isMember()) {
@@ -214,10 +268,10 @@ class ListingController extends BaseController {
   /**
    * [Route] Updates the database with the modified data of a member
    */
-  public function submit() {
+  public function submit(Request $request) {
     // Get member
-    $memberId = Input::get('member_id');
-    $sectionId = Input::get('section_id');
+    $memberId = $request->input('member_id');
+    $sectionId = $request->input('section_id');
     $member = Member::find($memberId);
     // Update database with input data
     if ($member) {
@@ -245,7 +299,7 @@ class ListingController extends BaseController {
         return Helper::forbiddenResponse();
       }
       // Update mmember
-      $result = $member->updateFromInput($memberPrivileges, true, $sectionTransferPrivileges, $leaderPrivileges, $leaderPrivileges, $leaderPrivileges);
+      $result = $member->updateFromInput($request, $memberPrivileges, true, $sectionTransferPrivileges, $leaderPrivileges, $leaderPrivileges, $leaderPrivileges);
       // Set status message
       if ($result === true) {
         $success = true;
@@ -262,10 +316,10 @@ class ListingController extends BaseController {
     // Redirect with status message
     if ($success) {
       LogEntry::log("Listing", "Modification d'un membre", array("Membre" => $member->getFullName())); // TODO improve log message
-      return Redirect::to(URL::to(URL::previous()))
+      return redirect(URL::to(URL::previous()))
               ->with($success ? 'success_message' : 'error_message', $message);
     } else {
-      return Redirect::to(URL::previous())
+      return redirect(URL::previous())
             ->with($success ? 'success_message' : 'error_message', $message)
             ->withInput();
     }
@@ -287,7 +341,7 @@ class ListingController extends BaseController {
       try {
         $member->delete();
         LogEntry::log("Listing", "Suppression d'un membre", array("Membre" => $member->getFullName()));
-        return Redirect::route('manage_listing')
+        return redirect()->route('manage_listing')
                 ->with('success_message', $member->getFullName()
                         . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
       } catch (Exception $ex) {
@@ -296,7 +350,7 @@ class ListingController extends BaseController {
       }
     }
     // An error has occurred
-    return Redirect::route('manage_listing')
+    return redirect()->route('manage_listing')
             ->with('error_message', "Une erreur est survenue. Le membre n'a pas été supprimé.");
   }
   
@@ -375,7 +429,7 @@ class ListingController extends BaseController {
   /**
    * [Route] Post request to download the listing with options
    */
-  public function downloadListingWithOptions() {
+  public function downloadListingWithOptions(Request $request) {
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
@@ -383,17 +437,17 @@ class ListingController extends BaseController {
     $sections = Section::all();
     $selectedSections = array();
     foreach ($sections as $section) {
-      if (Input::get('section_' . $section->id)) {
+      if ($request->input('section_' . $section->id)) {
         $selectedSections[] = $section;
       }
     }
     // Get members to include
-    $includeScouts = Input::get('include_scouts');
-    $includeLeaders = Input::get('include_leaders');
+    $includeScouts = $request->input('include_scouts');
+    $includeLeaders = $request->input('include_leaders');
     // Get format
-    $format = Input::get('format');
-    $full = Input::get('full');
-    $groupBySection = Input::get('group_by_section');
+    $format = $request->input('format');
+    $full = $request->input('full');
+    $groupBySection = $request->input('group_by_section');
     // Download the listing
     ListingPDF::downloadListing($selectedSections, $format, $full, $includeScouts, $includeLeaders, $groupBySection);
   }
@@ -401,27 +455,27 @@ class ListingController extends BaseController {
   /**
    * [Route] Show the Desk listing page
    */
-  public function showDeskPage() {
+  public function showDeskPage(Request $request) {
     if (!$this->user->isLeader() || !$this->user->can(Privilege::$EDIT_LISTING_ALL, 1)) {
       return Helper::forbiddenResponse();
     }
     ini_set("auto_detect_line_endings", true);
     // Save uploaded file
-    if (Request::isMethod('post')) {
-      $file = Input::file('listingFile');
+    if ($request->isMethod('post')) {
+      $file = $request->file('listingFile');
       if ($file) {
-        $dirname = storage_path("site_data/tmp/");
+        $dirname = storage_path("app/site_data/tmp/");
         $filename = "deskListing_" . date("Y-m-d_H-i-s") . "_" . substr(sha1(time() . rand(0, 999999999)), 0, 8) . ".csv";
         $file->move($dirname, $filename);
         // Remember file name in session
         Session::put('desk_listing_file', $dirname . $filename);
       }
       // Remember option
-      Session::put('desk_listing_case_insensitive', Input::get('caseInsensitive'));
-      Session::put('desk_listing_ignore_accent_errors', Input::get('ignoreAccentErrors'));
-      Session::put('desk_listing_fuzzy_address_comparison', Input::get('fuzzyAddressComparison'));
+      Session::put('desk_listing_case_insensitive', $request->input('caseInsensitive'));
+      Session::put('desk_listing_ignore_accent_errors', $request->input('ignoreAccentErrors'));
+      Session::put('desk_listing_fuzzy_address_comparison', $request->input('fuzzyAddressComparison'));
       // Redirect to page with listing
-      return Redirect::route('desk_listing');
+      return redirect()->route('desk_listing');
     }
     // Get file and options
     $filename = Session::get('desk_listing_file');
@@ -508,7 +562,7 @@ class ListingController extends BaseController {
   public function showSubgroupPage() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_LISTING)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the current user is a member an therefore has access to this page
     if (!$this->user->isMember()) {
@@ -516,7 +570,7 @@ class ListingController extends BaseController {
     }
     // Redirect to normal listing if current section is the unit
     if ($this->section->id == 1) {
-      return Redirect::route('listing');
+      return redirect()->route('listing');
     }
     // Gather members per section
     $sectionArray = array();
@@ -548,7 +602,7 @@ class ListingController extends BaseController {
       $subgroups[$member->subgroup][] = $member;
     }
     if (!$subgroupsExist) {
-      return Redirect::route('listing');
+      return redirect()->route('listing');
     }
     // Make view
     return View::make('pages.listing.listing-subgroups', array(
@@ -574,7 +628,7 @@ class ListingController extends BaseController {
     $member = Member::find($member_id);
     if ($member && $member->has_picture && ($member->is_leader || $this->user->isMember())) {
       $path = $member->getPicturePath();
-      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+      return response(file_get_contents($path), 200, array(
           "Content-Type" => "image",
           "Content-Length" => filesize($path),
       ));
@@ -587,7 +641,7 @@ class ListingController extends BaseController {
   public function showMemberPicturePage() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_LISTING)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the current user is a member an therefore has access to this page
     if (!$this->user->isMember()) {
@@ -666,13 +720,13 @@ class ListingController extends BaseController {
   /**
    * [Route] Ajax call to change the subgroup or role of a member
    */
-  public function ajaxChangeSubgroupOrRole() {
+  public function ajaxChangeSubgroupOrRole(Request $request) {
     // Create member history if needed
     MemberHistory::createHistoryIfNeeded();
     // Get input data
-    $memberId = Input::get('member_id');
-    $field = Input::get('field');
-    $value = Input::get('value');
+    $memberId = $request->input('member_id');
+    $field = $request->input('field');
+    $value = $request->input('value');
     if ($field != 'subgroup' && $field != 'role') return json_encode(['result' => 'Failure']);
     if (!$memberId) return json_encode(['result' => 'Failure', 'message' => "Erreur : ce membre n'existe pas."]);
     $member = Member::find($memberId);

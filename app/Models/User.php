@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Helper;
 
 /**
  * This Eloquent class represents a user (visitor) of the website
@@ -30,7 +34,7 @@
  *   - verification_code: A code sent by e-mail to the user to verify their e-mail address
  *   - verified:          Whether the e-mail address ownership has been verified with the verification code
  */
-class User extends Eloquent {
+class User extends Model {
   
   protected $fillable = array('username', 'password', 'email', 'default_section');
   
@@ -382,7 +386,7 @@ class User extends Eloquent {
     }
     // Convert action to operation
     $operation = $action;
-    if (!is_string($operation)) $operation = $action['id'];
+    if (!is_string($operation)) $operation = array_get ($action, 'id');
     // Search privileges for all leaders associated with this user
     foreach ($this->getAssociatedLeaderMembers() as $leaderMember) {
       $privileges = Privilege::where('member_id', '=', $leaderMember->id)->where("operation", "=", $operation)->get();

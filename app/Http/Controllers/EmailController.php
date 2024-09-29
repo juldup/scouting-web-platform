@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,60 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Leaders can send e-mails to the parents and scouts of their section.
@@ -34,7 +88,7 @@ class EmailController extends BaseController {
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_EMAILS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Get e-mail list
     if ($showArchives) {
@@ -101,8 +155,8 @@ class EmailController extends BaseController {
   /**
    * [Route] Shows list of archived e-mails
    */
-  public function showArchives($section_slug = null) {
-    $page = Input::get('page');
+  public function showArchives(Request $request, $section_slug = null) {
+    $page = $request->input('page');
     if (!$page) $page = 0;
     return $this->showPage($section_slug, true, $page);
   }
@@ -115,16 +169,16 @@ class EmailController extends BaseController {
     if (!$this->user->isMember()) return Helper::forbiddenResponse();
     // Get attachment
     $attachment = EmailAttachment::find($attachment_id);
-    if (!$attachment) App::abort(404, "Ce document n'existe plus.");
+    if (!$attachment) abort(404, "Ce document n'existe plus.");
     // Get e-mail corresponding to attachment, to make sure it has not been deleted
     $email = Email::find($attachment->email_id);
-    if (!$email || $email->deleted) App::abort(404, "Cet e-mail a été supprimé. Il n'est plus possible d'accéder à ses pièces jointes.");
+    if (!$email || $email->deleted) abort(404, "Cet e-mail a été supprimé. Il n'est plus possible d'accéder à ses pièces jointes.");
     // Output file
     $path = $attachment->getPath();
     $filename = str_replace("\"", "", $attachment->filename);
     if (file_exists($path)) {
       LogEntry::log("E-mails", "Téléchargement d'une pièce jointe", array("Sujet de l'e-mail" => $email->subject, "Date" => Helper::dateToHuman($email->date), "Pièce jointe" => $attachment->filename));
-      return Response::make(file_get_contents($path), 200, array(
+      return response(file_get_contents($path), 200, array(
           'Content-Type' => 'application/octet-stream',
           'Content-length' => filesize($path),
           'Content-Transfer-Encoding' => 'Binary',
@@ -133,7 +187,7 @@ class EmailController extends BaseController {
     } else {
       // The file has not been found
       LogEntry::error("E-mails", "Pièce jointe non trouvée", array("Filename" => $filename, "Path" => $path));
-      return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus.");
+      return redirect(URL::previous())->with('error_message', "Ce document n'existe plus.");
     }
   }
   
@@ -143,7 +197,7 @@ class EmailController extends BaseController {
   public function showManage() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_EMAILS)) {
-      return App::abort(404);
+      abort(404);
     }
     if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
       return Helper::forbiddenResponse();
@@ -211,7 +265,7 @@ class EmailController extends BaseController {
         'target' => 'parents',
         'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
         'signature' => $this->user->getSignature(),
-        'maxAttachmentSize' => ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "",
+        'maxAttachmentSize' => (((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100) . "",
     ));
   }
   
@@ -220,7 +274,7 @@ class EmailController extends BaseController {
    */
   public function sendUnpaidSubscriptionFeeEmail() {
     Session::flash("subscriptionFeeEmail", true);
-    return Redirect::route("send_section_email", ["section_slug" => 'unite']);
+    return redirect()->route("send_section_email", ["section_slug" => 'unite']);
   }
   
   /**
@@ -265,7 +319,7 @@ class EmailController extends BaseController {
         'target' => 'leaders',
         'preselectedRecipients' => Session::has("subscriptionFeeEmail"),
         'signature' => $this->user->getSignature(),
-        'maxAttachmentSize' => ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "",
+        'maxAttachmentSize' => ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 . "",
     ));
   }
   
@@ -337,9 +391,9 @@ class EmailController extends BaseController {
   /**
    * [Route] Submits an e-mail and a list of recipients for sending
    */
-  public function submitSectionEmail() {
+  public function submitSectionEmail(Request $request) {
     // Make sure the current user can send e-mails to this section
-    $target = Input::get('target'); // Target is either 'parents' or 'leaders'
+    $target = $request->input('target'); // Target is either 'parents' or 'leaders'
     if ($target == 'parents') {
       if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
         return Helper::forbiddenResponse();
@@ -352,55 +406,59 @@ class EmailController extends BaseController {
       return Helper::forbiddenResponse();
     }
     // Gather input
-    $subject = Input::get('subject');
-    $body = Input::get('body');
+    $subject = $request->input('subject');
+    $body = $request->input('body');
     $body = utf8_encode($body); // To avoid error generated by special characters
-    if (Input::get('sign_email')) $body .= "<p>" . $this->user->getSignature() . "</p>";
-    $senderName = Input::get('sender_name');
-    $senderAddress = Input::get('sender_address');
-    $files = Input::file('attachments');
-    $extraRecipients = Input::get('extra_recipients');
-    $hiddenEmail = Input::get('hidden_email');
+    if ($request->input('sign_email')) $body .= "<p>" . $this->user->getSignature() . "</p>";
+    $senderName = $request->input('sender_name');
+    $senderAddress = $request->input('sender_address');
+    $files = $request->file('attachments');
+    $extraRecipients = $request->input('extra_recipients');
+    $hiddenEmail = $request->input('hidden_email');
     $attachments = array();
     // Check total attachment size
     $totalSize = 0;
-    foreach ($files as $file) {
-      if ($file != null) {
-        try {
-          $totalSize += $file->getSize();
-        } catch (Exception $ex) {
-          Log::error($ex);
-          LogEntry::error("E-mails", "Erreur lors du calcul de la taille des pièces jointes d'un e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
-          return Redirect::route('send_section_email')
-                  ->withInput()
-                  ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
+    if (isset($files)) {
+      foreach ($files as $file) {
+        if ($file != null) {
+          try {
+            $totalSize += $file->getSize();
+          } catch (Exception $ex) {
+            Log::error($ex);
+            LogEntry::error("E-mails", "Erreur lors du calcul de la taille des pièces jointes d'un e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
+            return redirect()->route('send_section_email')
+                    ->withInput()
+                    ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
+          }
         }
       }
     }
     if ($totalSize > Config::get('app.maximumEmailAttachmentSize')) {
       $totalSizeString = ((int)(($totalSize / 1024 / 1024) * 100))/100 + "";
       $limitSizeString = ((int)((Config::get('app.maximumEmailAttachmentSize') / 1024 / 1024) * 100))/100 + "";
-      return Redirect::route('send_section_email')
+      return redirect()->route('send_section_email')
                   ->withInput()
                   ->with('error_message', "La taille totale des pièces jointes ($totalSizeString MB) dépasse la limite autorisée ($limitSizeString MB). Aucun e-mail n'a été envoyé. Attention, les pièces jointes ont été retirées.");
     }
     // Create attachments
-    foreach ($files as $file) {
-      if ($file != null) {
-        try {
-          $attachments[] = EmailAttachment::newFromFile($file);
-        } catch (Exception $ex) {
-          Log::error($ex);
-          LogEntry::error("E-mails", "Erreur lors de l'enregistrement des pièces jointes d'un e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
-          return Redirect::route('send_section_email')
-                  ->withInput()
-                  ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
+    if (isset($files)) {
+      foreach ($files as $file) {
+        if ($file != null) {
+          try {
+            $attachments[] = EmailAttachment::newFromFile($file);
+          } catch (Exception $ex) {
+            Log::error($ex);
+            LogEntry::error("E-mails", "Erreur lors de l'enregistrement des pièces jointes d'un e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
+            return redirect()->route('send_section_email')
+                    ->withInput()
+                    ->with('error_message', "Une erreur s'est produite lors de l'enregistrement des pièces jointes. L'e-mail n'a pas été envoyé.");
+          }
         }
       }
     }
     // Gather recipients
     $recipientArray = array();
-    $allInput = Input::all();
+    $allInput = $request->all();
     foreach ($allInput as $key=>$value) {
       if ($target == 'parents') {
         if (strpos($key, "parent_") === 0) {
@@ -473,7 +531,7 @@ class EmailController extends BaseController {
     } catch (Exception $ex) {
       Log::error($ex);
       LogEntry::error("E-mails", "Erreur lors d'un envoi d'e-mail de section", array("Sujet" => $subject, "Erreur" => $ex->getMessage()));
-      return Redirect::route('send_section_email')
+      return redirect()->route('send_section_email')
               ->withInput()
               ->with('error_message', "Une erreur s'est produite. L'e-mail n'a pas été envoyé. $ex");
     }
@@ -490,7 +548,7 @@ class EmailController extends BaseController {
       ));
     }
     LogEntry::log("E-mails", $target == 'leaders' ? "Envoi d'un e-mail aux animateurs" : "Envoi d'un e-mail de section", array("Sujet" => $subject)); // TODO improve log message
-    return Redirect::route($this->user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : 'emails')
+    return redirect()->route($this->user->can(Privilege::$SEND_EMAILS) ? 'manage_emails' : 'emails')
             ->with('success_message', "L'e-mail a été enregistré avec succès et est en cours d'envoi.");
   }
   
@@ -500,7 +558,7 @@ class EmailController extends BaseController {
   public function deleteEmail($email_id) {
     // Retrieve e-mail
     $email = Email::find($email_id);
-    if (!$email) App::abort(404, "Cet e-mail n'existe pas.");
+    if (!$email) abort(404, "Cet e-mail n'existe pas.");
     // Make sure the user can delete this e-mail
     if (!$this->user->can(Privilege::$SEND_EMAILS, $email->section_id)) {
       return Helper::forbiddenResponse();
@@ -512,17 +570,17 @@ class EmailController extends BaseController {
         $email->deleted = true;
         $email->save();
         LogEntry::log("E-mails", "Suppression d'un e-mail de section", array("Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
-        return Redirect::route('manage_emails')
+        return redirect()->route('manage_emails')
                 ->with('success_message', "L'e-mail a été supprimé.");
       } catch (Exception $ex) {
         Log::error($ex);
         LogEntry::error("E-mails", "Erreur lors de la suppression d'un e-mail", array("Erreur" => $ex->getMessage(), "Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
-        return Redirect::route('manage_emails')
+        return redirect()->route('manage_emails')
                 ->with('error_message', "Une erreur est survenue. L'e-mail n'a pas pu être supprimé.");
       }
     } else {
       // The e-mail is too old and cannot be deleted
-      return Redirect::route('manage_emails')
+      return redirect()->route('manage_emails')
               ->with('error_message', "Cet e-mail est trop vieux. Il ne peut plus être supprimé mais peut être archivé.");
     }
   }
@@ -534,7 +592,7 @@ class EmailController extends BaseController {
     // Get e-mail
     $email = Email::find($email_id);
     if (!$email) {
-      App::abort(404, "Cet e-mail n'existe pas.");
+      abort(404, "Cet e-mail n'existe pas.");
     }
     // Make sure the user can archive this e-mail
     if (!$this->user->can(Privilege::$SEND_EMAILS, $email->section_id)) {
@@ -554,7 +612,7 @@ class EmailController extends BaseController {
       LogEntry::error("E-mails", "Erreur lors de l'archivage d'un e-mail de section", array("Sujet" => $email->subject, "Date" => Helper::dateToHuman($email->date)));
     }
     // Redirect with status message
-    return Redirect::route('manage_emails', array(
+    return redirect()->route('manage_emails', array(
         "section_slug" => $email->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
   }
@@ -562,13 +620,13 @@ class EmailController extends BaseController {
   /**
    * [Route] Shows the page to send an e-mail to a preset list of recipients
    */
-  public function sendEmailToRecipientList() {
+  public function sendEmailToRecipientList(Request $request) {
     // Make sure the user can send e-mails to the members of this section
     if (!$this->user->can(Privilege::$SEND_EMAILS, $this->section)) {
       return Helper::forbiddenResponse();
     }
     // Construct list of recipient (sorting them in categories: parents, scouts, leaders)
-    $recipientListJSON = Input::get('recipient_list');
+    $recipientListJSON = $request->input('recipient_list');
     $recipientList = json_decode($recipientListJSON);
     return View::make('pages.emails.sendEmail', array(
         'default_subject' => $this->defaultSubject(),

@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,10 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use App\Helpers\DateHelper;
+
 /**
  * This Eloquent class represents a member's history entry (a member, a section, a year)
  * 
@@ -26,7 +30,7 @@
  *   - subgroup:                      The subgroup in the section this member belonged to
  *   - role:                          The role of the member had in the section
  */
-class MemberHistory extends Eloquent {
+class MemberHistory extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   

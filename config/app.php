@@ -4,6 +4,12 @@ use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
 return [
+  
+  // Number of photos to put in each photo album download chunk
+  'photoAlbumDownloadPartSize' => 40,
+  
+  // Maximum size for e-mail attachements
+  'maximumEmailAttachmentSize' => 8388608, // 8 MB
 
     /*
     |--------------------------------------------------------------------------
@@ -55,7 +61,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => trim(file_exists(__DIR__ . "/../storage/app/site_data/website-base-url.txt") ? file_get_contents(__DIR__ . "/../storage/app/site_data/website-base-url.txt") : ""),
 
     'asset_url' => env('ASSET_URL'),
 
@@ -70,7 +76,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Brussels',
 
     /*
     |--------------------------------------------------------------------------
@@ -168,6 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ViewServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -182,7 +189,6 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
 ];

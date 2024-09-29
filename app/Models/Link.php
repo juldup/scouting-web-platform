@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class reprents a link instance in the public link page
  * 
@@ -24,7 +27,7 @@
  *   - url:         The absolute URL of the link
  *   - description: A short description of the link
  */
-class Link extends Eloquent {
+class Link extends Model {
   
   protected $fillable = array('title', 'url', 'description');
   

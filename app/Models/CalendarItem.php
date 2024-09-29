@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
+use App\Helpers\Helper;
+
 /**
  * This Eloquent class represents an event in the calendar
  * 
@@ -27,7 +32,7 @@
  *   - description: A short description of the event
  *   - type:        The type (category) of event
  */
-class CalendarItem extends Eloquent {
+class CalendarItem extends Model {
   
   protected $fillable = array('start_date', 'end_date', 'section_id', 'event', 'description', 'type');
   
@@ -54,7 +59,8 @@ class CalendarItem extends Eloquent {
    * Returns the URL of the icon of this event's type
    */
   public function getIcon() {
-    return URL::route('home') . "/images/calendar/" . $this->type . ".png";
+    return URL::route('calendar_icon', ['type' => $this->type]);
+//    return URL::route('home') . "/images/calendar/" . $this->type . ".png";
   }
   
   /**

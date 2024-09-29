@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This eloquent class represents an entry associated with an e-mail address,
  * with a field telling whether the e-mail address is banned and no mail should be
@@ -26,7 +29,7 @@
  *   - ban_code: A code sent along the e-mails in a link to ban the e-mail address
  *   - banned:   Whether this e-mail address is banned
  */
-class BannedEmail extends Eloquent {
+class BannedEmail extends Model {
   
   var $guarded = array('id', 'created_at', 'updated_at');
   

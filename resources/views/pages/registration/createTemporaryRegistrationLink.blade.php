@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -71,17 +78,17 @@
       </div>
     </div>
   @else
-    {{ Form::open(array('url' => URL::route('create_temporary_registration_link'), 'class' => 'form-horizontal')) }}
+    {!! Form::open(array('url' => URL::route('create_temporary_registration_link_post'), 'class' => 'form-horizontal')) !!}
     <div class="row">
       <div class="col-md-12">
         Créer un lien valide pendant&nbsp;
-        {{ Form::text('days', 7, array('class' => 'form-control small')) }}
+        {!! Form::text('days', 7, array('class' => 'form-control small')) !!}
         &nbsp;jours.
         <span class='horiz-divider'></span>
-        {{ Form::submit('Créer maintenant', array('class' => 'btn btn-primary')) }}
+        {!! Form::submit('Créer maintenant', array('class' => 'btn btn-primary')) !!}
       </div>
     </div>
-    {{ Form::close() }}
+    {!! Form::close() !!}
   @endif
   
 @stop

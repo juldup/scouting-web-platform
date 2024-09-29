@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,7 +30,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-links.js') }}"></script>
+  @vite(['resources/js/edit-links.js'])
   <script>
     var links = new Array();
     @foreach ($links as $link)
@@ -62,34 +69,34 @@
       <div id="link_form" class="form-horizontal well"
            @if (!Session::has('_old_input')) style="display: none;" @endif
            >
-        {{ Form::open(array('url' => URL::route('edit_links_submit'))) }}
-          {{ Form::hidden('link_id', 0) }}
+        {!! Form::open(array('url' => URL::route('edit_links_submit'))) !!}
+          {!! Form::hidden('link_id', 0) !!}
           <div class="form-group">
-            {{ Form::label('link_title', "Nom du lien", array('class' => "col-md-2 control-label")) }}
+            {!! Form::label('link_title', "Nom du lien", array('class' => "col-md-2 control-label")) !!}
             <div class="col-md-5">
-              {{ Form::text('link_title', null, array('class' => 'form-control')) }}
+              {!! Form::text('link_title', null, array('class' => 'form-control')) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('link_url', "URL de la page", array('class' => "col-md-2 control-label")) }}
+            {!! Form::label('link_url', "URL de la page", array('class' => "col-md-2 control-label")) !!}
             <div class="col-md-5">
-              {{ Form::text('link_url', null, array('class' => 'form-control')) }}
+              {!! Form::text('link_url', null, array('class' => 'form-control')) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('link_description', "Description", array('class' => "col-md-2 control-label")) }}
+            {!! Form::label('link_description', "Description", array('class' => "col-md-2 control-label")) !!}
             <div class="col-md-8">
-              {{ Form::textarea('link_description', null, array('class' => 'form-control', 'rows' => 3)) }}
+              {!! Form::textarea('link_description', null, array('class' => 'form-control', 'rows' => 3)) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-5 col-md-offset-2">
-              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+              {!! Form::submit('Enregistrer', array('class' => 'btn btn-primary')) !!}
               <a class="btn btn-danger" id='delete_link' style="display: none;" href="">Supprimer</a>
               <a class="btn btn-default" href="javascript:dismissLinkForm()">Fermer</a>
             </div>
           </div>
-        {{ Form::close() }}
+        {!! Form::close() !!}
       </div>
       
     </div>

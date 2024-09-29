@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,7 +30,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-parameters.js') }}"></script>
+  @vite(['resources/js/edit-parameters.js'])
 @stop
 
 @section('content')
@@ -50,33 +57,33 @@
     </div>
   </div>
   
-  {{ Form::open(array('route' => 'edit_css_submit', 'method' => 'post', 'files' => true, 'class' => 'form-horizontal')) }}
+  {!! Form::open(array('route' => 'edit_css_submit', 'method' => 'post', 'files' => true, 'class' => 'form-horizontal')) !!}
     <div class="form-group">
       <div class="col-md-12">
         Tu peux modifier le CSS du site ci-dessous. Celui-ci s'ajoutera au CSS de base.
-        {{ Form::textarea('newCSS', $additional_CSS, array('class' => "form-control edit-css-textarea")) }}
+        {!! Form::textarea('newCSS', $additional_CSS, array('class' => "form-control edit-css-textarea")) !!}
       </div>
     </div>
     <div class="form-group">
       <div class="col-sm-9">
         Ou remplacer ce contenu par le contenu de ce ficher&nbsp;:
-        {{ Form::file('cssFile', ['class' => "form-control large btn btn-default"]) }}
+        {!! Form::file('cssFile', ['class' => "form-control large btn btn-default"]) !!}
       </div>
       <div class="col-sm-3">
-        {{ Form::button(Session::get('testing-css') ? 'Enregistrer sans rendre public' : 'Enregistrer sans publier', ['class' => "form-control btn " . (Session::get('testing-css') ? "btn-primary" : "btn-default"), 'name' => 'action', 'type' => 'submit', 'value' => 'save']) }}
+        {!! Form::button(Session::get('testing-css') ? 'Enregistrer sans rendre public' : 'Enregistrer sans publier', ['class' => "form-control btn " . (Session::get('testing-css') ? "btn-primary" : "btn-default"), 'name' => 'action', 'type' => 'submit', 'value' => 'save']) !!}
       </div>
     </div>
     @if (!Session::get('testing-css'))
       <div class='form-group'>
         <div class='col-sm-3 col-sm-offset-9'>
-          {{ Form::button('Tester ce CSS sans le publier', ['class' => "form-control btn btn-primary", 'name' => 'action', 'type' => 'submit', 'value' => 'test']) }}
+          {!! Form::button('Tester ce CSS sans le publier', ['class' => "form-control btn btn-primary", 'name' => 'action', 'type' => 'submit', 'value' => 'test']) !!}
         </div>
       </div>
     @endif
     <div class='form-group'>
       <div class='col-sm-3 col-sm-offset-9'>
-        {{ Form::button('Appliquer au site public', ['class' => "form-control btn btn-danger", 'name' => 'action', 'type' => 'submit', 'value' => 'apply']) }}
+        {!! Form::button('Appliquer au site public', ['class' => "form-control btn btn-danger", 'name' => 'action', 'type' => 'submit', 'value' => 'apply']) !!}
       </div>
     </div>
-  {{ Form::close() }}
+  {!! Form::close() !!}
 @stop

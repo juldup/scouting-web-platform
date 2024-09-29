@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Helper;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
+use App\Helpers\Resizer;
 
 /**
  * This Eloquent class represents a member (scout or leader) registered in the unit
@@ -81,12 +88,12 @@
  *   - validated:                     Whether this member's registration has been validated by the leaders (the member is
  *                                    not actually a member as long as this field is false)
  */
-class Member extends Eloquent {
+class Member extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
   // Folder in the file system (relative to the storage folder) in which leader pictures are stored
-  public static $PICTURE_FOLDER_PATH = "site_data/leader_pictures/";
+  public static $PICTURE_FOLDER_PATH = "app/site_data/leader_pictures/";
   
   /**
    * Returns the section this member belongs to
@@ -123,6 +130,7 @@ class Member extends Eloquent {
    * Returns whether the member is reregistered for the next year
    */
   public function isReregistered() {
+    if ($this->last_reregistration != "2023-2024")
     return $this->last_reregistration == date('Y') . "-" . (date('Y') + 1);
   }
   
@@ -269,12 +277,12 @@ class Member extends Eloquent {
    * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali, subgroup and role
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
-  public function updateFromInput($canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader, $canEditPhoto) {
+  public function updateFromInput(Request $request, $canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader, $canEditPhoto) {
     // Archive leaders and create history
     ArchivedLeader::archiveLeadersIfNeeded();
     MemberHistory::createHistoryIfNeeded();
     // Get input data and check it for errors
-    $data = self::checkInputData(false, $canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
+    $data = self::checkInputData($request, false, $canEditIdentity, $canEditContact, $canEditSection, $canEditTotem, $canEditLeader);
     if (is_string($data)) {
       // An error has occured
       return $data;
@@ -343,7 +351,7 @@ class Member extends Eloquent {
     // Save
     try {
       $this->save();
-      return $this->uploadPictureFromInput() ? true : false;
+      return $this->uploadPictureFromInput($request) ? true : false;
     } catch (Exception $ex) {
       Log::error($ex);
       return false;
@@ -356,7 +364,7 @@ class Member extends Eloquent {
    * 
    * @param boolean $validate  If true, the newly created member is immediately marked as registered
    */
-  public static function createFromInput($validate = false) {
+  public static function createFromInput(Request $request, $validate = false) {
     // Archive leaders and create history
     ArchivedLeader::archiveLeadersIfNeeded();
     MemberHistory::createHistoryIfNeeded();
@@ -381,7 +389,7 @@ class Member extends Eloquent {
       // Set last reregistration year
       $member->last_reregistration = date('Y') . '-' . (date('Y') + 1);
       $member->save();
-      return $member->uploadPictureFromInput();
+      return $member->uploadPictureFromInput($request);
     } catch (Exception $e) {
       Log::error($e);
       return false;
@@ -400,60 +408,60 @@ class Member extends Eloquent {
    * @param type $canEditTotem  Whether the current user is allowed to edit totem, quali, subgroup and role
    * @param type $canEditLeader  Whether the current user is allowed to edit leader information
    */
-  private static function checkInputData($newMember = true, $canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
+  private static function checkInputData(Request $request, $newMember = true, $canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
     // Get data from input
-    $firstName = Input::get('first_name');
-    $lastName = Input::get('last_name');
-    $birthDateDay = Input::get('birth_date_day');
-    $birthDateMonth = Input::get('birth_date_month');
-    $birthDateYear = Input::get('birth_date_year');
+    $firstName = $request->input('first_name');
+    $lastName = $request->input('last_name');
+    $birthDateDay = $request->input('birth_date_day');
+    $birthDateMonth = $request->input('birth_date_month');
+    $birthDateYear = $request->input('birth_date_year');
     $birthDate = Helper::checkAndReturnDate($birthDateYear, $birthDateMonth, $birthDateDay);
-    $gender = Input::get('gender');
-    $nationality = mb_strtoupper(Input::get('nationality'));
-    $address = Input::get('address');
-    $postcode = Input::get('postcode');
-    $city = Input::get('city');
-    $hasHandicap = Input::get('has_handicap') ? true : false;
-    $handicapDetails = Input::get('handicap_details');
-    $comments = Input::get('comments');
-    $leaderName = Input::get('leader_name');
-    $leaderInCharge = Input::get('leader_in_charge') ? true : false;
-    $listOrder = intval(Input::get('list_order'));
-    $leaderDescription = Input::get('leader_description');
-    $leaderRole = Input::get('leader_role');
-    $leaderRoleInContactPage = Input::get('leader_role_in_contact_page') ? true : false;
+    $gender = $request->input('gender');
+    $nationality = mb_strtoupper($request->input('nationality'));
+    $address = $request->input('address');
+    $postcode = $request->input('postcode');
+    $city = $request->input('city');
+    $hasHandicap = $request->input('has_handicap') ? true : false;
+    $handicapDetails = $request->input('handicap_details');
+    $comments = $request->input('comments');
+    $leaderName = $request->input('leader_name');
+    $leaderInCharge = $request->input('leader_in_charge') ? true : false;
+    $listOrder = intval($request->input('list_order'));
+    $leaderDescription = $request->input('leader_description');
+    $leaderRole = $request->input('leader_role');
+    $leaderRoleInContactPage = $request->input('leader_role_in_contact_page') ? true : false;
     if ($newMember && Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS)) {
       $sectionId = 1;
-      $registrationSectionCategory = Input::get('section_category');
+      $registrationSectionCategory = $request->input('section_category');
     } else {
-      $sectionId = Input::get('section');
+      $sectionId = $request->input('section');
       $registrationSectionCategory = null;
     }
-    $subgroup = Input::get('subgroup');
-    $role = Input::get('role');
-    $phone1Unformatted = Input::get('phone1');
-    $phone1Owner = Input::get('phone1_owner');
-    $phone1Private = Input::get('phone1_private') ? true : false;
-    $phone2Unformatted = Input::get('phone2');
-    $phone2Owner = Input::get('phone2_owner');
-    $phone2Private = Input::get('phone2_private') ? true : false;
-    $phone3Unformatted = Input::get('phone3');
-    $phone3Owner = Input::get('phone3_owner');
-    $phone3Private = Input::get('phone3_private') ? true : false;
-    $phoneMemberUnformatted = Input::get('phone_member');
-    $phoneMemberPrivate = Input::get('phone_member_private');
-    $email1 = strtolower(Input::get('email1'));
-    $email2 = strtolower(Input::get('email2'));
-    $email3 = strtolower(Input::get('email3'));
-    $emailMember = strtolower(Input::get('email_member'));
-    $totem = Input::get('totem');
-    $quali = Input::get('quali');
-    $familyMembers = Input::get('family_in_other_units');
-    $familyDetails = Input::get('family_in_other_units_details');
-    $isLeader = Input::get('is_leader') ? true : false;
-    $isGuest = Input::get('is_guest') ? true : false;
-    $registrationSiblings = trim(Input::get('registration_siblings'));
-    $registrationFormerLeaderChild = trim(Input::get('registration_former_leader_child'));
+    $subgroup = $request->input('subgroup');
+    $role = $request->input('role');
+    $phone1Unformatted = $request->input('phone1');
+    $phone1Owner = $request->input('phone1_owner');
+    $phone1Private = $request->input('phone1_private') ? true : false;
+    $phone2Unformatted = $request->input('phone2');
+    $phone2Owner = $request->input('phone2_owner');
+    $phone2Private = $request->input('phone2_private') ? true : false;
+    $phone3Unformatted = $request->input('phone3');
+    $phone3Owner = $request->input('phone3_owner');
+    $phone3Private = $request->input('phone3_private') ? true : false;
+    $phoneMemberUnformatted = $request->input('phone_member');
+    $phoneMemberPrivate = $request->input('phone_member_private');
+    $email1 = strtolower($request->input('email1'));
+    $email2 = strtolower($request->input('email2'));
+    $email3 = strtolower($request->input('email3'));
+    $emailMember = strtolower($request->input('email_member'));
+    $totem = $request->input('totem');
+    $quali = $request->input('quali');
+    $familyMembers = $request->input('family_in_other_units');
+    $familyDetails = $request->input('family_in_other_units_details');
+    $isLeader = $request->input('is_leader') ? true : false;
+    $isGuest = $request->input('is_guest') ? true : false;
+    $registrationSiblings = trim($request->input('registration_siblings'));
+    $registrationFormerLeaderChild = trim($request->input('registration_former_leader_child'));
     // Error message is initially empty
     $errorMessage = "";
     // Check all fields for errors
@@ -596,9 +604,9 @@ class Member extends Eloquent {
    * to mark it as having a leader picture. Returns this member instance, or
    * a string in case of error.
    */
-  public function uploadPictureFromInput() {
+  public function uploadPictureFromInput(Request $request) {
     // Get picture file
-    $pictureFile = Input::file('picture');
+    $pictureFile = $request->file('picture');
     if ($pictureFile) {
       if (!$pictureFile->getSize()) {
         // An upload error has occured

@@ -33,10 +33,10 @@
     var keepaliveURL = "{{ URL::route('session_keepalive'); }}";
   </script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="{{ asset('js/libs/jquery-1.11.0.min.js') }}"><\/script>')</script>
-  <script src="{{ asset('js/libs/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/application.js') }}"></script>
-  <script src="{{ asset('js/libs/bootstrap-switch.min.js') }}"></script>
+  <script>window.jQuery || document.write('@vite(['resources/js/libs/jquery-1.11.0.min.js') }}"><\/script>')</script>
+  @vite(['resources/js/libs/bootstrap.min'])
+  @vite(['resources/js/application.js'])
+  @vite(['resources/js/libs/bootstrap-switch.min.js'])
   @yield('additional_javascript')
 </body>
 </html>

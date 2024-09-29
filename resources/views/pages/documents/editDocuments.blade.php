@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -23,7 +31,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-documents.js') }}"></script>
+  @vite(['resources/js/edit-documents.js'])
   <script>
     var currentSection = {{ $user->currentSection->id }};
     var documents = new Array();
@@ -65,43 +73,43 @@
       <div id="document_form" class="form-horizontal well"
            @if (!Session::has('_old_input')) style="display: none;" @endif
            >
-        {{ Form::open(array('files' => true, 'url' => URL::route('manage_documents_submit', array('section_slug' => $user->currentSection->slug)))) }}
-          {{ Form::hidden('doc_id', 0) }}
+        {!! Form::open(array('files' => true, 'url' => URL::route('manage_documents_submit', array('section_slug' => $user->currentSection->slug)))) !!}
+          {!! Form::hidden('doc_id', 0) !!}
           <legend>Nouveau document</legend>
           <div class="form-group">
-            {{ Form::label('doc_title', 'Titre', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('doc_title', 'Titre', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::text('doc_title', '', array('class' => 'form-control', 'placeholder' => "Nom du document")) }}
+              {!! Form::text('doc_title', '', array('class' => 'form-control', 'placeholder' => "Nom du document")) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('description', 'Description', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('description', 'Description', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::textarea('description', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Description du document")) }}
+              {!! Form::textarea('description', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Description du document")) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('document', 'Document', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('document', 'Document', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::file('document', array('class' => 'btn btn-default')) }}
+              {!! Form::file('document', array('class' => 'btn btn-default')) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('filename', 'Nom du fichier', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('filename', 'Nom du fichier', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::text('filename', '', array('class' => 'form-control', 'placeholder' => 'Laisse ce champ vide pour garder le nom original')) }}
+              {!! Form::text('filename', '', array('class' => 'form-control', 'placeholder' => 'Laisse ce champ vide pour garder le nom original')) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('category', 'Catégorie', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('category', 'Catégorie', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::select('category', $categories, null, array('class' => 'form-control')) }}
+              {!! Form::select('category', $categories, null, array('class' => 'form-control')) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('public', 'Public', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('public', 'Public', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-1">
-              {{ Form::checkbox('public') }}
+              {!! Form::checkbox('public') !!}
             </div>
             <div class="col-md-8">
               <p class="form-side-note">
@@ -111,12 +119,12 @@
           </div>
           <div class="form-group">
             <div class="col-md-5 col-md-offset-3">
-              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+              {!! Form::submit('Enregistrer', array('class' => 'btn btn-primary')) !!}
               <a class='btn btn-danger' id='delete_link' style="display: none;" href="">Supprimer</a>
               <a class='btn btn-default' href="javascript:dismissDocumentForm()">Fermer</a>
             </div>
           </div>
-        {{ Form::close() }}
+        {!! Form::close() !!}
       </div>
       
     </div>

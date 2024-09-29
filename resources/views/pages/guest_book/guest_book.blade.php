@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -23,7 +31,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/guest-book.js') }}"></script>
+  @vite(['resources/js/guest-book.js'])
 @stop
 
 @section('back_links')
@@ -72,31 +80,31 @@
         <div class="form-horizontal well guest-book-form"
              @if (!Session::has('_old_input')) style="display: none;" @endif
              >
-          {{ Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('guest_book_submit'))) }}
+          {!! Form::open(array('url' => "", 'class' => 'obfuscated-form', 'data-action-url' => URL::route('guest_book_submit'))) !!}
             <legend>
               Nouveau message pour le livre d'or
             </legend>
             <div class="form-group">
-              {{ Form::label('author', 'Qui êtes-vous ?', array('class' => 'control-label col-md-2')) }}
+              {!! Form::label('author', 'Qui êtes-vous ?', array('class' => 'control-label col-md-2')) !!}
               <div class="col-md-8">
-                {{ Form::text('author', null, array('class' => 'form-control', 'placeholder' => "Votre nom, qui vous êtes par rapport à l'unité")) }}
+                {!! Form::text('author', null, array('class' => 'form-control', 'placeholder' => "Votre nom, qui vous êtes par rapport à l'unité")) !!}
               </div>
             </div>
             <div class="form-group">
-              {{ Form::label('body', 'Message', array('class' => 'control-label col-md-2')) }}
+              {!! Form::label('body', 'Message', array('class' => 'control-label col-md-2')) !!}
               <div class="col-md-8">
-                {{ Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre message")) }}
+                {!! Form::textarea('body', null, array('class' => 'form-control', 'rows' => 6, 'placeholder' => "Entrez ici votre message")) !!}
               </div>
             </div>
             <div class="form-group">
               <div class="col-md-8 col-md-offset-2">
-                {{ Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Soumettre', 'disabled')) }}
+                {!! Form::submit('Activez le javascript pour soumettre', array('class' => "btn btn-primary", 'data-text' => 'Soumettre', 'disabled')) !!}
                 <a href="" class="btn btn-default guest-book-cancel">
                   Annuler
                 </a>
               </div>
             </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       </div>
     </div>

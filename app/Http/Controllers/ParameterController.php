@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Parameters are global parameters for the website. This controller provides tools
@@ -74,7 +127,7 @@ class ParameterController extends BaseController {
   /**
    * [Route] Updates the parameters. The whole set of parameters is updated with this action.
    */
-  function submitParameters() {
+  function submitParameters(Request $request) {
     // Check that the user can edit the parameters
     if (!$this->user->can(Privilege::$EDIT_GLOBAL_PARAMETERS, 1)) {
       return Helper::forbiddenResponse();
@@ -84,32 +137,32 @@ class ParameterController extends BaseController {
     $errorMessage = "";
     $parameterNewValues = [
         // Prices
-        ["name" => "Prix un membre - enfant", "key" => Parameter::$PRICE_1_CHILD, "value" => Helper::formatCashAmount(Input::get('price_1_child'))],
-        ["name" => "Prix un membre - animateur", "key" => Parameter::$PRICE_1_LEADER, "value" => Helper::formatCashAmount(Input::get('price_1_leader'))],
-        ["name" => "Prix deux membres - enfant", "key" => Parameter::$PRICE_2_CHILDREN, "value" => Helper::formatCashAmount(Input::get('price_2_children'))],
-        ["name" => "Prix deux membres - animateur", "key" => Parameter::$PRICE_2_LEADERS, "value" => Helper::formatCashAmount(Input::get('price_2_leaders'))],
-        ["name" => "Prix trois membres ou plus - enfant", "key" => Parameter::$PRICE_3_CHILDREN, "value" => Helper::formatCashAmount(Input::get('price_3_children'))],
-        ["name" => "Prix trois membres ou plus - animateur", "key" => Parameter::$PRICE_3_LEADERS, "value" => Helper::formatCashAmount(Input::get('price_3_leaders'))],
+        ["name" => "Prix un membre - enfant", "key" => Parameter::$PRICE_1_CHILD, "value" => Helper::formatCashAmount($request->input('price_1_child'))],
+        ["name" => "Prix un membre - animateur", "key" => Parameter::$PRICE_1_LEADER, "value" => Helper::formatCashAmount($request->input('price_1_leader'))],
+        ["name" => "Prix deux membres - enfant", "key" => Parameter::$PRICE_2_CHILDREN, "value" => Helper::formatCashAmount($request->input('price_2_children'))],
+        ["name" => "Prix deux membres - animateur", "key" => Parameter::$PRICE_2_LEADERS, "value" => Helper::formatCashAmount($request->input('price_2_leaders'))],
+        ["name" => "Prix trois membres ou plus - enfant", "key" => Parameter::$PRICE_3_CHILDREN, "value" => Helper::formatCashAmount($request->input('price_3_children'))],
+        ["name" => "Prix trois membres ou plus - animateur", "key" => Parameter::$PRICE_3_LEADERS, "value" => Helper::formatCashAmount($request->input('price_3_leaders'))],
         // Registration
-        ["name" => "Inscriptions", "key" => Parameter::$REGISTRATION_ACTIVE, "value" => (Input::get('registration_active') ? "true" : "false"),
+        ["name" => "Inscriptions", "key" => Parameter::$REGISTRATION_ACTIVE, "value" => ($request->input('registration_active') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
-        ["name" => "Réinscriptions", "key" => Parameter::$REREGISTRATION_ACTIVE, "value" => (Input::get('reregistration_active') ? "true" : "false"),
+        ["name" => "Réinscriptions", "key" => Parameter::$REREGISTRATION_ACTIVE, "value" => ($request->input('reregistration_active') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
-        ["name" => "Inscriptions activation automatique", "key" => Parameter::$REGISTRATION_AUTOMATIC, "value" => (Input::get('registration_automatic') ? "true" : "false"),
+        ["name" => "Inscriptions activation automatique", "key" => Parameter::$REGISTRATION_AUTOMATIC, "value" => ($request->input('registration_automatic') ? "true" : "false"),
             "valueNames" => ["true" => "oui", "false" => "non"]],
-        ["name" => "Inscriptions avancées", "key" => Parameter::$ADVANCED_REGISTRATIONS, "value" => (Input::get('advanced_registrations') ? "true" : "false"),
+        ["name" => "Inscriptions avancées", "key" => Parameter::$ADVANCED_REGISTRATIONS, "value" => ($request->input('advanced_registrations') ? "true" : "false"),
             "valueNames" => ["true" => "actives", "false" => "désactivées"]],
         ["name" => "Localité prioritaire", "key" => Parameter::$REGISTRATION_PRIORITY_CITY,
-            "value" => Input::get('registration_priority_city') ? Input::get('registration_priority_city') : Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY)],
-        ["name" => "Sections génériques pour les inscriptions", "key" => Parameter::$REGISTRATION_GENERIC_SECTIONS, "value" => (Input::get('registration_generic_sections') ? "true" : "false"),
+            "value" => $request->input('registration_priority_city') ? $request->input('registration_priority_city') : Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY)],
+        ["name" => "Sections génériques pour les inscriptions", "key" => Parameter::$REGISTRATION_GENERIC_SECTIONS, "value" => ($request->input('registration_generic_sections') ? "true" : "false"),
             "valueNames" => ["true" => "oui", "false" => "non"]],
         // Section menu
-        ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => (Input::get('grouped_section_menu') ? "true" : "false"),
+        ["name" => "Menu de section", "key" => Parameter::$GROUPED_SECTION_MENU, "value" => ($request->input('grouped_section_menu') ? "true" : "false"),
             "valueNames" => ["true" => "groupé", "false" => "séparé"]],
     ];
     // Automatic registration start and end dates
-    if (Input::get('registration_automatic')) {
-      $registrationStartDate = Input::get('registration_start_date');
+    if ($request->input('registration_automatic')) {
+      $registrationStartDate = $request->input('registration_start_date');
       if (DateHelper::checkMMDDHHMMFormat($registrationStartDate)) {
         $parameterNewValues = array_merge($parameterNewValues, [
             ["name" => "Date début inscriptions", "key" => Parameter::$REGISTRATION_START_DATE, "value" => $registrationStartDate],
@@ -118,7 +171,7 @@ class ParameterController extends BaseController {
         $error = true;
         $errorMessage .= "<br>Le format de la date de début des inscriptions n'est pas valide : il doit être de la forme \"MM-JJ hh:mm\" (p. ex. \"01-15 20:00\").";
       }
-      $registrationEndDate = Input::get('registration_end_date');
+      $registrationEndDate = $request->input('registration_end_date');
       if (DateHelper::checkMMDDHHMMFormat($registrationEndDate)) {
         $parameterNewValues = array_merge($parameterNewValues, [
             ["name" => "Date fin inscriptions", "key" => Parameter::$REGISTRATION_END_DATE, "value" => $registrationEndDate],
@@ -133,12 +186,12 @@ class ParameterController extends BaseController {
       $parameterNewValues[] = [
           "name" => $pageData['description'],
           "key" => $pageData['parameter_name'],
-          "value" => Input::get($page) ? "true" : "false",
+          "value" => $request->input($page) ? "true" : "false",
           "valueNames" => ["true" => "oui", "false" => "non"],
       ];
     }
     // Document categories
-    $documentCategoryArray = Input::get('document_categories');
+    $documentCategoryArray = $request->input('document_categories');
     $documentCategories = "";
     foreach ($documentCategoryArray as $categoryName) {
       if ($categoryName) {
@@ -149,43 +202,43 @@ class ParameterController extends BaseController {
     $parameterNewValues = array_merge($parameterNewValues, [
         ["name" => "Catégories de documents", "key" => Parameter::$DOCUMENT_CATEGORIES, "value" => $documentCategories],
         // Unit parameters
-        ["name" => "Nom de l'unité", "key" => Parameter::$UNIT_LONG_NAME, "value" => Input::get('unit_long_name')],
-        ["name" => "Sigle de l'unité", "key" => Parameter::$UNIT_SHORT_NAME, "value" => Input::get('unit_short_name')],
-        ["name" => "N° de compte", "key" => Parameter::$UNIT_BANK_ACCOUNT, "value" => Input::get('unit_bank_account')],
-        ["name" => "Logo", "key" => Parameter::$LOGO_TWO_LINES, "value" => Input::get('logo_two_lines') ? 1 : 0,
+        ["name" => "Nom de l'unité", "key" => Parameter::$UNIT_LONG_NAME, "value" => $request->input('unit_long_name')],
+        ["name" => "Sigle de l'unité", "key" => Parameter::$UNIT_SHORT_NAME, "value" => $request->input('unit_short_name')],
+        ["name" => "N° de compte", "key" => Parameter::$UNIT_BANK_ACCOUNT, "value" => $request->input('unit_bank_account')],
+        ["name" => "Logo", "key" => Parameter::$LOGO_TWO_LINES, "value" => $request->input('logo_two_lines') ? 1 : 0,
             "valueNames" => ["1" => "sur deux lignes", "0" => "sur une ligne"]],
-        ["name" => "Appellation AnU", "key" => Parameter::$ANU_DENOMINATION, "value" => Input::get('anu_denomination')],
-        ["name" => "Appellation AsU", "key" => Parameter::$ASU_DENOMINATION, "value" => Input::get('asu_denomination')],
-        ["name" => "Contact personnel", "key" => Parameter::$ALLOW_PERSONAL_CONTACT, "value" => Input::get('allow_personal_contact') ? 1 : 0,
+        ["name" => "Appellation AnU", "key" => Parameter::$ANU_DENOMINATION, "value" => $request->input('anu_denomination')],
+        ["name" => "Appellation AsU", "key" => Parameter::$ASU_DENOMINATION, "value" => $request->input('asu_denomination')],
+        ["name" => "Contact personnel", "key" => Parameter::$ALLOW_PERSONAL_CONTACT, "value" => $request->input('allow_personal_contact') ? 1 : 0,
             "valueNames" => ["1" => "oui", "0" => "non"]],
-        ["name" => "Accès aux pages confidentielles pour les scouts", "key" => Parameter::$CONSIDER_SCOUTS_AS_MEMBERS, "value" => Input::get('consider_scouts_as_members') ? 1 : 0,
+        ["name" => "Accès aux pages confidentielles pour les scouts", "key" => Parameter::$CONSIDER_SCOUTS_AS_MEMBERS, "value" => $request->input('consider_scouts_as_members') ? 1 : 0,
             "valueNames" => ["1" => "oui", "0" => "non"]],
-        ["name" => "Historique des membres", "key" => Parameter::$SHOW_MEMBER_HISTORY, "value" => Input::get('show_member_history') ? 1 : 0,
+        ["name" => "Historique des membres", "key" => Parameter::$SHOW_MEMBER_HISTORY, "value" => $request->input('show_member_history') ? 1 : 0,
             "valueNames" => ["1" => "oui", "0" => "non"]],
         // Search engine
-        ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => Input::get('website_meta_description')],
-        ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => Input::get('website_meta_keywords')],
+        ["name" => "Description du site", "key" => Parameter::$WEBSITE_META_DESCRIPTION, "value" => $request->input('website_meta_description')],
+        ["name" => "Mots-clés de recherche", "key" => Parameter::$WEBSITE_META_KEYWORDS, "value" => $request->input('website_meta_keywords')],
         // Automatic e-mail content
-        ["name" => "Contenu e-mail automatique demande d'inscription", "key" => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED, "value" => Input::get('registration_form_filled')],
-        ["name" => "Contenu e-mail automatique inscription validée", "key" => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED, "value" => Input::get('registration_validated')],
+        ["name" => "Contenu e-mail automatique demande d'inscription", "key" => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_FORM_FILLED, "value" => $request->input('registration_form_filled')],
+        ["name" => "Contenu e-mail automatique inscription validée", "key" => Parameter::$AUTOMATIC_EMAIL_CONTENT_REGISTRATION_VALIDATED, "value" => $request->input('registration_validated')],
         // Facebook app id
-        ["name" => "Facebook App ID", "key" => Parameter::$FACEBOOK_APP_ID, "value" => Input::get('facebook_app_id')],
+        ["name" => "Facebook App ID", "key" => Parameter::$FACEBOOK_APP_ID, "value" => $request->input('facebook_app_id')],
         // Save the advanced site parameters
-        ["name" => "Contenu additionnel &lt;head&gt;", "key" => Parameter::$ADDITIONAL_HEAD_HTML, "value" => Input::get('additional_head_html')],
-        ["name" => "Photos", "key" => Parameter::$PHOTOS_PUBLIC, "value" => Input::get('photos_public') ? "true" : "false",
+        ["name" => "Contenu additionnel &lt;head&gt;", "key" => Parameter::$ADDITIONAL_HEAD_HTML, "value" => $request->input('additional_head_html')],
+        ["name" => "Photos", "key" => Parameter::$PHOTOS_PUBLIC, "value" => $request->input('photos_public') ? "true" : "false",
             "valueNames" => ["true" => "publiques", "false" => "privées"]],
         // E-mail parameters
-        ["name" => "Adresse e-mail du webmaster", "key" => Parameter::$WEBMASTER_EMAIL, "value" => Input::get('webmaster_email')],
-        ["name" => "Adresse e-mail du site", "key" => Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, "value" => Input::get('default_email_from_address')],
-        ["name" => "Hôte SMTP", "key" => Parameter::$SMTP_HOST, "value" => Input::get('smtp_host')],
-        ["name" => "Port SMTP", "key" => Parameter::$SMTP_PORT, "value" => Input::get('smtp_port')],
-        ["name" => "Login SMTP", "key" => Parameter::$SMTP_USERNAME, "value" => Input::get('smtp_username')],
-        ["name" => "Mot de passe SMTP", "key" => Parameter::$SMTP_PASSWORD, "value" => Input::get('smtp_password')],
-        ["name" => "Sécurité SMTP", "key" => Parameter::$SMTP_SECURITY, "value" => Input::get('smtp_security')],
-        ["name" => "Envoyer les demandes d'inscription à l'adresse d'unité", "key" => Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS, "value" => Input::get('send_registrations_to_unit_email_address') ? "true" : "false"],
+        ["name" => "Adresse e-mail du webmaster", "key" => Parameter::$WEBMASTER_EMAIL, "value" => $request->input('webmaster_email')],
+        ["name" => "Adresse e-mail du site", "key" => Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, "value" => $request->input('default_email_from_address')],
+        ["name" => "Hôte SMTP", "key" => Parameter::$SMTP_HOST, "value" => $request->input('smtp_host')],
+        ["name" => "Port SMTP", "key" => Parameter::$SMTP_PORT, "value" => $request->input('smtp_port')],
+        ["name" => "Login SMTP", "key" => Parameter::$SMTP_USERNAME, "value" => $request->input('smtp_username')],
+        ["name" => "Mot de passe SMTP", "key" => Parameter::$SMTP_PASSWORD, "value" => $request->input('smtp_password')],
+        ["name" => "Sécurité SMTP", "key" => Parameter::$SMTP_SECURITY, "value" => $request->input('smtp_security')],
+        ["name" => "Envoyer les demandes d'inscription à l'adresse d'unité", "key" => Parameter::$SEND_REGISTRATIONS_TO_UNIT_EMAIL_ADDRESS, "value" => $request->input('send_registrations_to_unit_email_address') ? "true" : "false"],
     ]);
     // Verified e-mail sender list
-    $verifiedSendersArray = Input::get('email_safe_list');
+    $verifiedSendersArray = $request->input('email_safe_list');
     $verifiedSenders = "";
     foreach ($verifiedSendersArray as $verifiedSender) {
       if ($verifiedSender && strpos($verifiedSender, ";") === false) {
@@ -218,7 +271,7 @@ class ParameterController extends BaseController {
       }
     }
     // Save the logo
-    $logoFile = Input::file('logo');
+    $logoFile = $request->file('logo');
     try {
       if ($logoFile) {
         $filename = $logoFile->getClientOriginalName();
@@ -231,7 +284,7 @@ class ParameterController extends BaseController {
       $error = true;
     }
     // Save the icon
-    $iconFile = Input::file('icon');
+    $iconFile = $request->file('icon');
     try {
       if ($iconFile) {
         $filename = $iconFile->getClientOriginalName();
@@ -246,13 +299,13 @@ class ParameterController extends BaseController {
     // Save unit e-mail address and google calendar link
     try {
       $unitSection = Section::find(1);
-      $unitEmail = Input::get('unit_email_address');
+      $unitEmail = $request->input('unit_email_address');
       if ($unitSection->email != $unitEmail) {
         $changesMade .= "- Adresse e-mail de l'unité&nbsp;: <del>" . $unitSection->email . "</del> <ins>$unitEmail</ins><br />";
         $unitSection->email = $unitEmail;
         $unitSection->save();
       }
-      $googleCalendarLink = Input::get('unit_google_calendar_link');
+      $googleCalendarLink = $request->input('unit_google_calendar_link');
       if ($unitSection->google_calendar_link != $googleCalendarLink) {
         $changesMade .= "- Lien Google Agenda&nbsp;: <del>" . $unitSection->google_calendar_link . "</del> <ins>$googleCalendarLink</ins><br />";
         $unitSection->google_calendar_link = $googleCalendarLink;
@@ -267,11 +320,11 @@ class ParameterController extends BaseController {
       if ($changesMade) {
         LogEntry::log("Paramètres", "Modification des paramètres du site", ["Changements" => $changesMade], true);
       }
-      return Redirect::route('edit_parameters')
+      return redirect()->route('edit_parameters')
               ->with('success_message', 'Les paramètres ont été enregistrés avec succès.');
     } else {
       LogEntry::error("Paramètres", "Erreur lors de la modification des paramètres du site", ["Changements" => $changesMade]);
-      return Redirect::route('edit_parameters')
+      return redirect()->route('edit_parameters')
               ->with('error_message', 'Une erreur est survenue. Tous les paramètres n\'ont peut-être pas été enregistrés. ' . $errorMessage);
     }
   }
@@ -414,16 +467,16 @@ class ParameterController extends BaseController {
   /**
    * [Route] Updates the CSS. Depending on the action, applies it to the public site or enter test mode.
    */
-  function submitCSS() {
+  function submitCSS(Request $request) {
     // Check that the user can edit the parameters
     if (!$this->user->can(Privilege::$EDIT_STYLE, 1)) {
       return Helper::forbiddenResponse();
     }
     // Get input
-    $newCSS = Input::get('newCSS');
-    $action = Input::get('action');
+    $newCSS = $request->input('newCSS');
+    $action = $request->input('action');
     if (!$newCSS) $newCSS = "";
-    $cssFile = Input::file('cssFile');
+    $cssFile = $request->file('cssFile');
     $error = false;
     try {
       if ($cssFile) {
@@ -439,21 +492,21 @@ class ParameterController extends BaseController {
       // Apply to public website
       Parameter::set(Parameter::$ADDITIONAL_CSS, $newCSS);
       // Quit testing mode
-      Session::remove('testing-css');
+      session()->remove('testing-css');
     }
     if ($action == 'test') {
       // Enter testing mode
-      Session::set('testing-css', true);
+      session(['testing-css' => true]);
     }
     // Redirect
-    if ($error) return Redirect::route('edit_css')->with('error_message', "Une erreur est survenue lors de l'upload du fichier.");
-    elseif ($action == 'apply') return Redirect::route('edit_css')->with('success_message', "Le nouveau style a été enregistré et appliqué au site public.");
-    else return Redirect::route('edit_css')->with('success_message', "Le nouveau style a été enregistré mais pas appliqué au site public.");
+    if ($error) return redirect()->route('edit_css')->with('error_message', "Une erreur est survenue lors de l'upload du fichier.");
+    elseif ($action == 'apply') return redirect()->route('edit_css')->with('success_message', "Le nouveau style a été enregistré et appliqué au site public.");
+    else return redirect()->route('edit_css')->with('success_message', "Le nouveau style a été enregistré mais pas appliqué au site public.");
   }
   
   public function exitCSSTestMode() {
-    Session::remove('testing-css');
-    return Redirect::route('edit_css');
+    session()->remove('testing-css');
+    return redirect()->route('edit_css');
   }
   
 }

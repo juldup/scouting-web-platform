@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -57,20 +65,23 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/send-section-email.js') }}"></script>
-  <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-  <script>
-    CKEDITOR.replace('body', {
-      language: 'fr',
-      extraPlugins: 'divarea,mediaembed',
-      height: '250px',
-      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}"
-    });
-    CKEDITOR.on("instanceReady", function(event) {
+  @vite(['resources/js/send-section-email.js'])
+  @vite(['resources/js/ckeditor/ckeditor.js'])
+  <script type='module'>
+    ClassicEditor.create(document.querySelector('#body'), {
+      simpleUpload: {
+        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content')
+      }
+    })
+    .then(editor => {
+      console.log( editor );
       // Move signature below e-mail body
       $('.cke_contents').after($('.email-signature-wrapper'));
+    })
+    .catch(error => {
+      console.error( error );
     });
-    var defaultSubject = "{{ Helper::sanitizeForJavascript($default_subject) }}";
+    window.defaultSubject = "{{ Helper::sanitizeForJavascript($default_subject) }}";
   </script>
 @stop
 
@@ -92,51 +103,51 @@
   <div class="row">
     <div class="col-md-12">
       <div class="form-horizontal well">
-        {{ Form::open(array('id' => "email-form", 'files' => true,
-                  'url' => URL::route('send_section_email_submit', array('section_slug' => $user->currentSection->slug)))) }}
-          {{ Form::hidden('target', $target) }}
+        {!! Form::open(array('id' => "email-form", 'files' => true,
+                  'url' => URL::route('send_section_email_submit', array('section_slug' => $user->currentSection->slug)))) !!}
+          {!! Form::hidden('target', $target) !!}
           <legend>E-mail</legend>
           <div class="form-group">
-            {{ Form::label('subject', "Sujet", array('class' => 'col-md-2 control-label')) }}
+            {!! Form::label('subject', "Sujet", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::text('subject', $default_subject, array('class' => "form-control")) }}
+              {!! Form::text('subject', $default_subject, array('class' => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('body', "Message", array('class' => 'col-md-2 control-label')) }}
+            {!! Form::label('body', "Message", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-10">
-              {{ Form::textarea('body', '', array('class' => 'form-control')) }}
+              {!! Form::textarea('body', '', array('class' => 'form-control')) !!}
             </div>
           </div>
           <div class="email-signature-wrapper">
             <hr>
             <div class="email-signature-toggler">
-              {{ Form::label('sender_address', "Afficher la signature", array('class' => 'control-label')) }}
+              {!! Form::label('sender_address', "Afficher la signature", array('class' => 'control-label')) !!}
               <span class="horiz-divider"></span>
-              {{ Form::checkbox('sign_email', 1, true) }}
+              {!! Form::checkbox('sign_email', 1, true) !!}
             </div>
             <div class="email-signature">{{ $signature }}</div>
           </div>
           <div class="form-group">
-            {{ Form::label('sender_address', "Expéditeur", array('class' => 'col-md-2 control-label')) }}
+            {!! Form::label('sender_address', "Expéditeur", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-10">
-              {{ Form::label('sender_name', 'Nom') }} :
-              {{ Form::text('sender_name', $user->currentSection->name, array('class' => 'form-control large')) }}
+              {!! Form::label('sender_name', 'Nom') !!} :
+              {!! Form::text('sender_name', $user->currentSection->name, array('class' => 'form-control large')) !!}
               <span class="horiz-divider"></span>
               <span class="no-wrap">
-                {{ Form::label('sender_address', 'Adresse') }} :
-                {{ Form::text('sender_address', $user->currentSection->email, array('class' => 'form-control large')) }}
+                {!! Form::label('sender_address', 'Adresse') !!} :
+                {!! Form::text('sender_address', $user->currentSection->email, array('class' => 'form-control large')) !!}
               </span>
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('attachments', "Pièces jointes", array('class' => 'col-md-2 control-label')) }}
+            {!! Form::label('attachments', "Pièces jointes", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-5">
               <div class="attachment-input-wrapper" style='display: none;'>
-                {{ Form::file('attachments[0]', array('class' => 'btn-sm btn-default')) }}
+                {!! Form::file('attachments[0]', array('class' => 'btn-sm btn-default')) !!}
                 <a class="remove-attachment"><span class="glyphicon glyphicon-remove"></span></a>
               </div>
-              <a id="add-attachment-button" class="btn-sm btn-default">Ajouter</a> (taille totale maximum des fichiers : {{ $maxAttachmentSize }} MB)
+              <a id="add-attachment-button" class="btn-sm btn-default">Ajouter</a> (taille totale maximum des fichiers : {!! $maxAttachmentSize !!} MB)
             </div>
           </div>
           
@@ -158,7 +169,7 @@
                   @if ($superCategory)
                     <div class="form-group">
                       <div class="col-md-12">
-                        {{ Form::label(null, $superCategory, array('class' => 'recipient-category')) }}
+                        {!! Form::label(null, $superCategory, array('class' => 'recipient-category')) !!}
                         &nbsp;
                         &nbsp;
                         <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
@@ -176,7 +187,7 @@
                           @else
                             <div class="col-md-12">
                           @endif
-                            {{ Form::label(null, $category, array('class' => 'recipient-category')); }}
+                            {!! Form::label(null, $category, array('class' => 'recipient-category')); !!}
                             &nbsp;
                             &nbsp;
                             <a class="btn-sm btn-default recipient-check-all" href=""><span class="glyphicon glyphicon-check"></span></a>
@@ -193,7 +204,7 @@
                             @foreach ($members as $member)
                               <div class="col-md-4">
                                 <p>
-                                  {{ Form::checkbox($member['type'] . "_" . $member['member']->id, 1, $preselectedRecipients ? $member['preselected'] : $member['type'] != 'former_leader' && $member['type'] != 'guest', array('class' => 'recipient-checkbox')) }}
+                                  {!! Form::checkbox($member['type'] . "_" . $member['member']->id, 1, $preselectedRecipients ? $member['preselected'] : $member['type'] != 'former_leader' && $member['type'] != 'guest', array('class' => 'recipient-checkbox')) !!}
                                   &nbsp;&nbsp;
                                   {{{ $member['member']->first_name }}} {{{ $member['member']->last_name }}}
                                 </p>
@@ -210,19 +221,19 @@
           </div>
           <div class="form-group">
             @if (isset($recipientList) && count($recipientList))
-              {{ Form::label('extra_recipients', "Destinataires", array('class' => 'col-md-3')) }}
+              {!! Form::label('extra_recipients', "Destinataires", array('class' => 'col-md-3')) !!}
             @else
-              {{ Form::label('extra_recipients', "Destinataires supplémentaires", array('class' => 'col-md-3')) }}
+              {!! Form::label('extra_recipients', "Destinataires supplémentaires", array('class' => 'col-md-3')) !!}
             @endif
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {{ Form::textarea('extra_recipients', isset($recipientList) ? implode(", ", $recipientList) : "", array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) }}
+              {!! Form::textarea('extra_recipients', isset($recipientList) ? implode(", ", $recipientList) : "", array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) !!}
             </div>
           </div>
           
           <legend>Envoyer</legend>
-          {{ Form::hidden('hidden_email', isset($hiddenEmail) && $hiddenEmail ? true : false) }}
+          {!! Form::hidden('hidden_email', isset($hiddenEmail) && $hiddenEmail ? true : false) !!}
           @if (!(isset($hiddenEmail) && $hiddenEmail))
             @if ($target != 'leaders')
               <p class="alert alert-danger">
@@ -241,10 +252,10 @@
           @endif
           <div class="form-group">
             <div class="col-md-8 col-md-offset-2">
-              {{ Form::submit('Envoyer maintenant', array('class' => 'btn btn-primary')) }}
+              {!! Form::submit('Envoyer maintenant', array('class' => 'btn btn-primary')) !!}
             </div>
           </div>
-        {{ Form::close() }}
+        {!! Form::close() !!}
       </div>
     </div>
   </div>

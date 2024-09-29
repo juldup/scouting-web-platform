@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Presents a list of the sections' leaders.
@@ -34,7 +87,7 @@ class LeaderController extends BaseController {
   public function showPage($section_slug = null, $archive = null) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_LEADERS)) {
-      return App::abort(404);
+      abort(404);
     }
     
     if ($archive == null) {
@@ -167,13 +220,13 @@ class LeaderController extends BaseController {
   /**
    * [Route] Used when a scout to be turned into a leader is selected
    */
-  public function postMemberToLeader($section_slug) {
-    $memberId = Input::get('member_id');
+  public function postMemberToLeader(Request $request, $section_slug) {
+    $memberId = $request->input('member_id');
     if ($memberId) {
-      return Redirect::route('edit_leaders_member_to_leader',
+      return redirect()->route('edit_leaders_member_to_leader',
               array('member_id' => $memberId, 'section_slug' => $section_slug));
     } else {
-      return Redirect::route('edit_leaders', array('section_slug' => $section_slug));
+      return redirect()->route('edit_leaders', array('section_slug' => $section_slug));
     }
   }
   
@@ -184,7 +237,7 @@ class LeaderController extends BaseController {
     $leader = ArchivedLeader::find($archived_leader_id);
     if ($leader && $leader->has_picture) {
       $path = $leader->getPicturePath();
-      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+      return response(file_get_contents($path), 200, array(
           "Content-Type" => "image",
           "Content-Length" => filesize($path),
       ));
@@ -194,16 +247,16 @@ class LeaderController extends BaseController {
   /**
    * [Route] Used to submit the modified data of a leader
    */
-  public function submitLeader() {
+  public function submitLeader(Request $request) {
     // Get the leader from input data
-    $memberId = Input::get('member_id');
-    $sectionId = Input::get('section_id');
+    $memberId = $request->input('member_id');
+    $sectionId = $request->input('section_id');
     if (!$sectionId) $sectionId = $this->section->id;
     // Determine which fields can be edited by the current leader
     $editionLevel = $this->editionLevelAllowed($memberId, $sectionId);
     $canChangeSection = $this->user->can(Privilege::$SECTION_TRANSFER, 1);
     if (!$editionLevel) {
-      return Redirect::to(URL::previous())
+      return redirect(URL::previous())
               ->withInput()
               ->with('error_message', "Tu n'as pas le droit de faire cette modification.");
     }
@@ -214,7 +267,7 @@ class LeaderController extends BaseController {
       $wasLeaderBefore = $leader->is_leader;
       if ($leader) {
         // Update existing leader
-        $result = $leader->updateFromInput($editionLevel == "full", true, $canChangeSection, true, true, true);
+        $result = $leader->updateFromInput($request, $editionLevel == "full", true, $canChangeSection, true, true, true);
         if ($result === true) {
           if (!$wasLeaderBefore) Privilege::addBasePrivilegesForLeader($leader);
           $success = true;
@@ -231,11 +284,11 @@ class LeaderController extends BaseController {
     } else {
       // New leader
       if ($editionLevel != "full") {
-        return Redirect::to(URL::previous())
+        return redirect(URL::previous())
                 ->with('error_message', "Tu n'as pas le droit d'inscrire un nouvel animateur.");
       }
       // Create leader
-      $result = Member::createFromInput(true);
+      $result = Member::createFromInput($request, true);
       if (is_string($result)) {
         // An error has occured
         $success = false;
@@ -251,11 +304,11 @@ class LeaderController extends BaseController {
     if ($success) {
       $section = $leader->getSection();
       LogEntry::log("Animateurs", $memberId ? "Modification d'un animateur" : "Ajout d'un animateur",
-              array("Nom" => Input::get('first_name') . " " . Input::get('last_name'), "Section" => $section->name)); // TODO improve log message
-      return Redirect::to(URL::route('edit_leaders', array('section_slug' => $section->slug)))
+              array("Nom" => $request->input('first_name') . " " . $request->input('last_name'), "Section" => $section->name)); // TODO improve log message
+      return redirect(URL::route('edit_leaders', array('section_slug' => $section->slug)))
               ->with('success_message', $message);
     } else {
-      return Redirect::to(URL::previous())
+      return back()
             ->with('error_message', $message)
             ->withInput();
     }
@@ -280,7 +333,7 @@ class LeaderController extends BaseController {
       try {
         $member->delete();
         LogEntry::log("Animateurs", "Suppression d'un animateur", array("Nom" => $member->getFullName()));
-        return Redirect::route('edit_leaders')
+        return redirect()->route('edit_leaders')
                 ->with('success_message', $member->getFullName()
                         . " a été supprimé" . ($member->gender == 'F' ? 'e' : '') . " définitivement du listing.");
       } catch (Exception $ex) {
@@ -288,7 +341,7 @@ class LeaderController extends BaseController {
         LogEntry::error("Animateurs", "Erreur lors de la suppression d'un animateur", array("Erreur" => $ex->getMessage()));
       }
     }
-    return Redirect::route('edit_leaders')
+    return redirect()->route('edit_leaders')
             ->with('error_message', "Une erreur est survenue. L'animateur n'a pas été supprimé.");
   }
   

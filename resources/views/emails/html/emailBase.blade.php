@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 <!doctype html>
 <head>
@@ -42,12 +50,12 @@
                 <span style="font-size: .8em; color: #333333;">
                   @if ($email_is_in_listing)
                     Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }} dont vous êtes membre.<br />
-                    Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez contacter {{{ Parameter::adaptAnUDenomination("l'animateur d'unité") }}}&nbsp;: <a href='{{ URL::route('contacts') }}'>{{ URL::route('contacts') }}</a>
+                    Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez contacter {{{ Parameter::adaptAnUDenomination("l'animateur d'unité") }}}&nbsp;: <a href='{{ url()->route('contacts') }}'>{{ url()->route('contacts') }}</a>
                   @else
                     Cet e-mail a été envoyé depuis le site de l'unité {{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}.
                     Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis notre site, veuillez cliquer sur le lien suivant.<br />
                     This e-mail was sent because you are a member of our scout group. To unsubscribe, please click on the following link.<br />
-                    <a href='{{ URL::route('ban_email', array("code" => $ban_email_code)) }}'>{{ URL::route('ban_email', array("code" => $ban_email_code)) }}</a>
+                    <a href='{{ URL::route('ban_email', array("ban_code" => $ban_email_code)) }}'>{{ URL::route('ban_email', array("ban_code" => $ban_email_code)) }}</a>
                   @endif
                 </span>
               </center>

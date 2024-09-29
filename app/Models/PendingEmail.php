@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use App\Helpers\ScoutMailer;
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Log;
 
 /**
  * This Eloquent class represents an e-mail that must be sent. The e-mails are
@@ -37,7 +44,7 @@
  *   - sent:                 Whether this e-mail has been successfully sent
  *   - last_retry:           Timestamp of the last retry (to avoid successive retries, and to lock the e-mail between processes)
  */
-class PendingEmail extends Eloquent {
+class PendingEmail extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
@@ -69,18 +76,18 @@ class PendingEmail extends Eloquent {
     // Send e-mail
     try {
       // Create Swift message to encapsulate this e-mail
-      $message = Swift_Message::newInstance();
+      $message = ScoutMailer::newMail();
       // Set subject
-      $message->setSubject($this->subject);
+      $message->Subject = $this->subject;
       // Set sender
       if (Parameter::isVerifiedSender($this->sender_email)) {
         $message->setFrom($this->sender_email, $this->sender_name ? $this->sender_name : null);
       } else {
         $message->setFrom(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), $this->sender_name ? $this->sender_name : null);
-        $message->setReplyTo($this->sender_email, $this->sender_name ? $this->sender_name : null);
+        $message->addReplyTo($this->sender_email, $this->sender_name ? $this->sender_name : null);
       }
       // Set recipient
-      $message->setTo($this->recipient);
+      $message->addAddress($this->recipient);
       // Set body
       if ($this->section_email_id) {
         // This is a section e-mail
@@ -88,26 +95,26 @@ class PendingEmail extends Eloquent {
         // Add attachments
         $attachments = EmailAttachment::where('email_id', '=', $email->id)->get();
         foreach ($attachments as $attachment) {
-          $message->attach(Swift_Attachment::newInstance(file_get_contents($attachment->getPath()), $attachment->filename));
+          $message->addAttachment($attachment->getPath(), $attachment->filename);
         }
         // Generate e-mail content
         $emailContent = Helper::renderEmail('pureHtmlEmail', $this->recipient, array(
             'html_body' => $email->body_html,
         ));
-        $message->setBody($emailContent['html'], 'text/html', 'utf-8');
-        $message->addPart($emailContent['txt'], 'text/plain', 'utf-8');
+        $message->Body = $emailContent['html'];
+        $message->AltBody = $emailContent['txt'];
       } else {
         // This is a regular e-mail, not a section e-mail
         // Add html body
         if ($this->html_body) {
-          $message->setBody($this->html_body, 'text/html', 'utf-8');
+          $message->Body = $this->html_body;
         }
         // Add raw body
         if ($this->raw_body) {
           if ($this->html_body) {
-            $message->addPart($this->raw_body, 'text/plain', 'utf-8');
+            $message->AltBody = $this->raw_body;
           } else {
-            $message->setBody($this->raw_body, 'text/plain', 'utf-8');
+            $message->AltBody = $this->raw_body;
           }
         }
       }
@@ -115,12 +122,15 @@ class PendingEmail extends Eloquent {
       if ($this->attached_document_id) {
         $document = Document::find($this->attached_document_id);
         if ($document) {
-          $message->attach(Swift_Attachment::newInstance(file_get_contents($document->getPath()), $document->filename));
+          $message->addAttachment($document->getPath(), $document->filename);
         }
       }
       // Send-email
       $result = ScoutMailer::send($message);
     } catch (Exception $ex) {
+      Log::error($ex);
+      $result = false;
+    } catch (\PHPMailer\PHPMailer\Exception $ex) {
       Log::error($ex);
       $result = false;
     }

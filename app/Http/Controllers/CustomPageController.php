@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * The leaders can add and edit custom pages.
@@ -41,14 +94,14 @@ class CustomPageController extends GenericPageController {
     return "edit_custom_page_submit";
   }
   protected function getEditRouteParameters() {
-    if (!$this->customPage) return App::abort(404);
+    if (!$this->customPage) abort(404);
     return array('page_slug' => $this->customPage->slug);
   }
   protected function getShowRouteName() {
     return "custom_page";
   }
   protected function getShowRouteParameters() {
-    if (!$this->customPage) return App::abort(404);
+    if (!$this->customPage) abort(404);
     return array('page_slug' => $this->customPage->slug);
   }
   protected function getPageType() {
@@ -58,7 +111,7 @@ class CustomPageController extends GenericPageController {
     return false;
   }
   protected function getPageTitle() {
-    if (!$this->customPage) return App::abort(404);
+    if (!$this->customPage) abort(404);
     return $this->customPage->title;
   }
   protected function canDisplayPage() {
@@ -67,7 +120,7 @@ class CustomPageController extends GenericPageController {
   }
   
   protected function getPage() {
-    if (!$this->customPage) return App::abort(404);
+    if (!$this->customPage) abort(404);
     return $this->customPage;
   }
 
@@ -82,18 +135,18 @@ class CustomPageController extends GenericPageController {
   /**
    * [Route] Adds a new custom page to the website
    */
-  public function addCustomPage() {
+  public function addCustomPage(Request $request) {
     if (!$this->user->can(Privilege::$EDIT_PAGES, 1)) return Helper::forbiddenResponse();
-    $pageTitle = Input::get('page_title');
-    $leadersOnly = Input::get('leaders_only');
+    $pageTitle = $request->input('page_title');
+    $leadersOnly = $request->input('leaders_only');
     // Check that page title is valid
     if (!$pageTitle) {
-      return Redirect::route('edit_pages')->with('error_message', 'Le titre de la page ne peut pas être vide.');
+      return redirect()->route('edit_pages')->with('error_message', 'Le titre de la page ne peut pas être vide.');
     }
     $slug = Helper::slugify($pageTitle);
     $existingPage = Page::where('slug', '=', $slug)->first();
     if ($existingPage) {
-      return Redirect::route('edit_pages')->with('error_message', 'Cette page existe déjà.');
+      return redirect()->route('edit_pages')->with('error_message', 'Cette page existe déjà.');
     }
     // Create new page
     $page = Page::create(array(
@@ -107,7 +160,7 @@ class CustomPageController extends GenericPageController {
     $page->position = $page->id;
     $page->save();
     LogEntry::log("Page", "Création d'une page", array('Titre' => $pageTitle));
-    return Redirect::route('edit_custom_page', array('page_slug' => $slug));
+    return redirect()->route('edit_custom_page', array('page_slug' => $slug));
   }
   
   /**
@@ -118,9 +171,9 @@ class CustomPageController extends GenericPageController {
     if ($this->customPage) {
       $this->customPage->delete();
       LogEntry::log("Page", "Suppression d'une page", array('Titre' => $this->customPage->title));
-      return Redirect::route('edit_pages')->with('success_message', "La page <strong>" . htmlspecialchars($this->customPage->title) . "</strong> a été supprimée");
+      return redirect()->route('edit_pages')->with('success_message', "La page <strong>" . htmlspecialchars($this->customPage->title) . "</strong> a été supprimée");
     } else {
-      return Redirect::route('edit_pages')->with('error_message', "Cette page n'existe plus");
+      return redirect()->route('edit_pages')->with('error_message', "Cette page n'existe plus");
     }
   }
   
@@ -135,7 +188,7 @@ class CustomPageController extends GenericPageController {
       return $errorResponse;
     }
     // Get list of pages in order
-    $pageIdsInOrder = Input::get('page_order');
+    $pageIdsInOrder = $request->input('page_order');
     $pageIdsInOrderArray = explode(" ", $pageIdsInOrder);
     // Retrieve pages
     $pages = Page::where('type', '=', 'custom')

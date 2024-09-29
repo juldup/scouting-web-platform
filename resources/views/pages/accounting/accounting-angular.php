@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,16 +15,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
-<div ng-controller="AccountingController" class="accounting">
+<div ng-controller="AccountingController" class="accounting" style="display: none;">
   <div class="row">
     <div class="col-sm-6 col-xs-8 text-right">
       <label>Total à l'actif :</label>
     </div>
     <div class="col-xs-4">
       <span ng-class="{true:'positive', false:'negative'}[bigTotal('cash') + bigTotal('bank') >= 0]">
-        <strong>{{formatCurrency(bigTotal('cash') + bigTotal('bank'))}}</strong>
+        <strong>{{ formatCurrency(bigTotal('cash') + bigTotal('bank')) }}</strong>
       </span>
     </div>
   </div>
@@ -34,7 +42,7 @@
     </div>
     <div class="col-xs-4">
       <span ng-class="{true:'positive', false:'negative'}[bigTotal('cash') >= 0]">
-        <strong>{{formatCurrency(bigTotal('cash'))}}</strong>
+        <strong>{{ formatCurrency(bigTotal('cash')) }}</strong>
       </span>
     </div>
   </div>

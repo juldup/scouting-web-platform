@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\Section;
+
 ?>
 
 @section('title')
@@ -23,7 +31,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-change-section.js') }}"></script>
+  @vite(['resources/js/edit-change-section.js'])
 @stop
 
 @section('back_links')
@@ -65,10 +73,10 @@
     <div class="row">
       <div class="col-md-12">
         <div class="form-horizontal">
-          {{ Form::open(array('url' => URL::route('manage_member_section_submit', array('section_slug' => $user->currentSection->slug)))) }}
+          {!! Form::open(array('url' => URL::route('manage_member_section_submit', array('section_slug' => $user->currentSection->slug)))) !!}
             <div class="form-group">
               <div class="col-sm-2 col-sm-offset-7 text-center">
-                {{ Form::submit('Enregistrer les transferts', array('class' => 'btn btn-primary submit-button', 'disabled' => 'disabled')) }}
+                {!! Form::submit('Enregistrer les transferts', array('class' => 'btn btn-primary submit-button', 'disabled' => 'disabled')) !!}
               </div>
             </div>
             <div class="form-group">
@@ -79,13 +87,13 @@
                 <label class="form-side-note">Vers</label>
               </div>
               <div class="col-xs-4 col-sm-5">
-                {{ Form::select('destination', Section::getSectionsForSelect(array(1, $user->currentSection)), null, array('class' => 'form-control large section-selector')) }}
+                {!! Form::select('destination', Section::getSectionsForSelect(array(1, $user->currentSection)), null, array('class' => 'form-control large section-selector')) !!}
               </div>
             </div>
             @foreach ($active_members as $member)
               <div class="form-group member-row">
                 <div class="hidden">
-                  {{ Form::checkbox('members[' . $member->id . "]", 1, false, array('class' => 'transfered-checkbox')) }}
+                  {!! Form::checkbox('members[' . $member->id . "]", 1, false, array('class' => 'transfered-checkbox')) !!}
                 </div>
                 <div class="col-xs-4 col-sm-5 text-right">
                   <span class="untransfered">
@@ -111,7 +119,7 @@
                 </div>
               </div>
             @endforeach
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       </div>
     </div>

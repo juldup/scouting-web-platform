@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents an editable page of the website
  * 
@@ -24,7 +27,7 @@
  *   - section_id: Determines to which section this page belongs
  *   - body_html:  The content of the page in html
  */
-class Page extends Eloquent {
+class Page extends Model {
   
   protected $fillable = array('type', 'section_id', 'body_html', 'title', 'slug', 'position', 'leaders_only');
   

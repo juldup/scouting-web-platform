@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -31,33 +39,19 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-  <script>
-    // Init CKEditor
-    CKEDITOR.replace('page_body', {
-      language: 'fr',
-      extraPlugins: 'divarea,mediaembed',
-      height: '400px',
-      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
-      on: {
-        save: function(event) {
-          // Cancel warning before leaving page
-          cancelCheckDirty();
-        }
+  @vite(['resources/js/ckeditor/ckeditor.js'])
+  <script type='module'>
+    ClassicEditor.create(document.querySelector('#page_body'), {
+      simpleUpload: {
+        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content')
       }
+    })
+    .then(editor => {
+      console.log( editor );
+    })
+    .catch(error => {
+      console.error( error );
     });
-    // Warning when exiting the page with unsaved modifications
-    function checkDirty(event) {
-      if (CKEDITOR.instances['page_body'].checkDirty()) {
-        event.returnValue = "Tu n'as pas sauvé les modifications effectuées sur la page.";
-      }
-    }
-    function cancelCheckDirty() {
-      window.removeEventListener('beforeunload', checkDirty);
-    }
-    window.addEventListener('beforeunload', checkDirty);
-    // Disable leave page warning on submit
-    document.getElementById("edit_page_form").onsubmit = cancelCheckDirty;
   </script>
 @stop
 
@@ -67,13 +61,19 @@
   
   <div class="row page_body form-horizontal">
     <form name="edit_page" method="post" action="" id="edit_page_form">
+      @csrf
       <h1>{{{ $page_title }}}</h1>
       @if ($additional_information_subview)
         @include($additional_information_subview)
       @endif
       <div class="form-group">
+        <div class="col-md-10">
+          <button class="btn btn-primary" type="submit">Enregistrer</button>
+        </div>
+      </div>
+      <div class="form-group">
         <div class="col-md-12">
-          <textarea cols="80" id="page_body" name="page_body" rows="10">{{ $page_body }}</textarea>
+          <textarea cols="80" id="page_body" name="page_body" rows="10">{!! $page_body !!}</textarea>
         </div>
       </div>
       <div class="form-group">

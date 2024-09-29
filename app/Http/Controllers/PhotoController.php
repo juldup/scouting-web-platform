@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,60 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
+use Illuminate\Support\Facades\Config;
 
 /**
  * Photos can be posted on the website by the leaders. Photos are arrange by section in
@@ -36,7 +90,7 @@ class PhotoController extends BaseController {
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_PHOTOS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the current user has access to the photos
     if (!$this->user->isMember() && !$this->user->isFormerLeader() && !Parameter::get(Parameter::$PHOTOS_PUBLIC)) {
@@ -55,7 +109,7 @@ class PhotoController extends BaseController {
         return Helper::forbiddenResponse();
       }
       if (!$currentAlbum) {
-        return Redirect::route('photos', array('section_slug' => $this->section->slug));
+        return redirect()->route('photos', array('section_slug' => $this->section->slug));
       }
       if ($currentAlbum->archived || $currentAlbum->date < Helper::oneYearAgo()) {
         // Showing an archived album
@@ -164,8 +218,8 @@ class PhotoController extends BaseController {
   /**
    * [Route] Shows the archived photos (with page number as route parameter)
    */
-  public function showArchives($section_slug = null) {
-    $page = Input::get('page');
+  public function showArchives(Request $request, $section_slug = null) {
+    $page = $request->input('page');
     if (!$page) $page = 0;
     return $this->showPage($section_slug, true, $page);
   }
@@ -183,7 +237,7 @@ class PhotoController extends BaseController {
     }
     // Get photo object
     $photo = Photo::find($photo_id);
-    if (!$photo) App::abort(404, "La photo n'existe plus.");
+    if (!$photo) abort(404, "La photo n'existe plus.");
     // Make sure the photo is not for leader only and the current user is not a leader
     $album = PhotoAlbum::where('id', '=', $photo->album_id)->first();
     if (!$album || (!$this->user->isLeader() && $album->leaders_only)) {
@@ -193,13 +247,13 @@ class PhotoController extends BaseController {
     $path = $photo->getPhotoPath($format);
     if (file_exists($path)) {
       // Output photo
-      return Illuminate\Http\Response::create(file_get_contents($path), 200, array(
+      return response(file_get_contents($path), 200, array(
           "Content-Type" => "image",
           "Content-Length" => filesize($path),
       ));
     } else {
       // Photo not found
-      throw App::abort(404, "La photo n'existe plus.");
+      abort(404, "La photo n'existe plus.");
     }
   }
   
@@ -216,7 +270,7 @@ class PhotoController extends BaseController {
               ->orderBy('position')
               ->get();
     if (!count($photos)) {
-      return App::abort(404, "Cet album est vide.");
+      abort(404, "Cet album est vide.");
     }
     $album = PhotoAlbum::find($album_id);
     $albumName = Helper::removeSpecialCharacters($album->name);
@@ -226,7 +280,7 @@ class PhotoController extends BaseController {
       return Helper::forbiddenResponse();
     }
     // Create zip file in temporary folder
-    $filename = tempnam(storage_path("site_data/tmp/"), "photos.zip");
+    $filename = tempnam(storage_path("app/site_data/tmp/"), "photos.zip");
     $zip = new ZipArchive();
     $zip->open($filename);
     // Add each photo in the zip file
@@ -265,7 +319,7 @@ class PhotoController extends BaseController {
     } else {
       // An error has occured
       LogEntry::error("Photos", "Erreur lors du téléchargement d'un album", "Le fichier n'a pas pu être créé");
-      throw App::abort(500, "Une erreur est survenue.");
+      throw abort(500, "Une erreur est survenue.");
     }
   }
   
@@ -275,7 +329,7 @@ class PhotoController extends BaseController {
   public function showEdit() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_PHOTOS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the user has access to this page
     if (!$this->user->can(Privilege::$POST_PHOTOS, $this->section)) {
@@ -320,11 +374,11 @@ class PhotoController extends BaseController {
       // The album could not be created
       if ($album) $album.delete();
       LogEntry::error("Photos", "Erreur lors de la création d'un album", array("Erreur" => $ex->getMessage()));
-      return Redirect::route('edit_photos')
+      return redirect()->route('edit_photos')
               ->with('error_message', "Une erreur est survenue. L'album n'a pas pu être créé.");
     }
     // Redirect to photo management page with the newly created album selected
-    return Redirect::route('edit_photos')
+    return redirect()->route('edit_photos')
             ->with('album_id', $album->id);
   }
   
@@ -335,7 +389,7 @@ class PhotoController extends BaseController {
     // Error message, ready to be sent
     $errorResponse = json_encode(array("result" => "Failure"));
     // Get list of albums in order
-    $albumIdsInOrder = Input::get('album_order');
+    $albumIdsInOrder = $request->input('album_order');
     $albumIdsInOrderArray = explode(" ", $albumIdsInOrder);
     // Retrieve albums
     $albums = PhotoAlbum::where('archived', '=', false)
@@ -396,7 +450,7 @@ class PhotoController extends BaseController {
   public function toggleAlbumPrivacy($album_id, $status) {
     // Get the album
     $album = PhotoAlbum::find($album_id);
-    if (!$album) App::abort(404, "Cet album n'existe pas.");
+    if (!$album) abort(404, "Cet album n'existe pas.");
     $sectionId = $album->section_id;
     // Make sure the user can delete this album
     if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
@@ -406,7 +460,7 @@ class PhotoController extends BaseController {
     $album->leaders_only = ($status ? true : false);
     $album->save();
     // Return to album page with success message
-    return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+    return redirect()->route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
               ->with('success_message',
                       ($status ? "L'album est maintenant visible uniquement par les animateurs." :
         "L'album est maintenant visible par tous les membres de l'unité."));
@@ -418,7 +472,7 @@ class PhotoController extends BaseController {
   public function deletePhotoAlbum($album_id) {
     // Get the album
     $album = PhotoAlbum::find($album_id);
-    if (!$album) App::abort(404, "Cet album n'existe pas.");
+    if (!$album) abort(404, "Cet album n'existe pas.");
     $sectionId = $album->section_id;
     // Make sure the user can delete this album
     if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
@@ -426,7 +480,7 @@ class PhotoController extends BaseController {
     }
     // Make sure the album is empty
     if ($album->photo_count != 0) {
-      return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+      return redirect()->route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
               ->with('error_message', "Cet album n'est pas vide et ne peut pas être supprimé.");
     }
     // Delete the album
@@ -437,11 +491,11 @@ class PhotoController extends BaseController {
       // Album could not be deleted, redirect with error message
       Log::error($ex);
       LogEntry::error("Photos", "Erreur lors de la suppression d'un album", array("Erreur" => $ex->getMessage()));
-      return Redirect::route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
+      return redirect()->route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
               ->with('error_message', "Une erreur est survenue. L'album n'as pas été supprimé.");
     }
     // Redirect with success message
-    return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+    return redirect()->route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
               ->with('success_message', "L'album a été supprimé.");
   }
   
@@ -451,7 +505,7 @@ class PhotoController extends BaseController {
   public function archivePhotoAlbum($album_id) {
     // Get photo album
     $album = PhotoAlbum::find($album_id);
-    if (!$album) App::abort(404, "Cet album n'existe pas.");
+    if (!$album) abort(404, "Cet album n'existe pas.");
     $sectionId = $album->section_id;
     // Make sure the user can archive this photo album
     if (!$this->user->can(Privilege::$POST_PHOTOS, $sectionId)) {
@@ -466,23 +520,23 @@ class PhotoController extends BaseController {
       // An error has occured
       Log::error($ex);
       LogEntry::error("Photos", "Erreur lors de l'archivage d'un album", array("Erreur" => $ex->getMessage()));
-      return Redirect::route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
+      return redirect()->route('edit_photos', array('section_slug' => Section::find($sectionId)->slug))
               ->with('error_message', "Une erreur est survenue. L'album n'as pas été archivé.");
     }
     // Redirect with success message
-    return Redirect::route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
+    return redirect()->route('edit_photos', array('section_slug', Section::find($sectionId)->slug))
               ->with('success_message', "L'album a été archivé.");
   }
   
   /**
    * [Route] Ajax call to rename a photo album
    */
-  public function changeAlbumName() {
+  public function changeAlbumName(Request $request) {
     // Error message ready to be sent
     $errorResponse = json_encode(array("result" => "Failure"));
     // Get album and new name
-    $albumId = Input::get('id');
-    $newName = Input::get('value');
+    $albumId = $request->input('id');
+    $newName = $request->input('value');
     $album = PhotoAlbum::find($albumId);
     $sectionId = $album ? $album->section_id : null;
     // Make sure that the user can change the name of this album and that the input data is correct
@@ -510,14 +564,14 @@ class PhotoController extends BaseController {
   public function showEditAlbum($album_id) {
     // Get album
     $album = PhotoAlbum::find($album_id);
-    if (!$album) App::abort(404, "Cet album n'existe pas.");
+    if (!$album) abort(404, "Cet album n'existe pas.");
     // Make sure the user can edit this album
     if (!$this->user->can(Privilege::$POST_PHOTOS, $album->section_id)) {
       return Helper::forbiddenResponse();
     }
     // If the current section does not correspond to the album's section (i.e. a new tab has been selected), redirect to edit photos page
     if ($album->section_id != $this->section->id) {
-      return Redirect::route('edit_photos');
+      return redirect()->route('edit_photos');
     }
     // Get album's photo list
     $photos = Photo::where('album_id', '=', $album->id)
@@ -533,11 +587,11 @@ class PhotoController extends BaseController {
   /**
    * [Route] Ajax call to reorder the photos of an album
    */
-  public function changePhotoOrder() {
+  public function changePhotoOrder(Request $request) {
     // Error response ready to be sent
     $errorResponse = json_encode(array("result" => "Failure"));
     // Get new order from input
-    $photoIdsInOrder = Input::get('photo_order');
+    $photoIdsInOrder = $request->input('photo_order');
     $photoIdsInOrderArray = explode(" ", $photoIdsInOrder);
     // Retrieve photos
     $photos = Photo::where(function($query) use ($photoIdsInOrderArray) {
@@ -594,9 +648,9 @@ class PhotoController extends BaseController {
   /**
    * [Route] Ajax call to delete a photo
    */
-  public function deletePhoto() {
+  public function deletePhoto(Request $request) {
     // Get photo
-    $photoId = Input::get('photo_id');
+    $photoId = $request->input('photo_id');
     $photo = Photo::find($photoId);
     $album = $photo ? PhotoAlbum::find($photo->album_id) : null;
     $sectionId = $album ? $album->section_id : null;
@@ -648,11 +702,11 @@ class PhotoController extends BaseController {
   /**
    * [Route] Ajax call to add a photo to an album
    */
-  public function addPhoto() {
+  public function addPhoto(Request $request) {
     // Get input data
-    $file = Input::file('file');
-    $uploadId = Input::get('id', 0);
-    $albumId = Input::get('album_id');
+    $file = $request->file('file');
+    $uploadId = $request->input('id', 0);
+    $albumId = $request->input('album_id');
     $album = PhotoAlbum::find($albumId);
     $sectionId = $album ? $album->section_id : null;
     // Prepare error response
@@ -710,12 +764,12 @@ class PhotoController extends BaseController {
   /**
    * [Route] Ajax call to update a photo's caption
    */
-  public function changePhotoCaption() {
+  public function changePhotoCaption(Request $request) {
     // Prepare error response
     $errorResponse = json_encode(array("result" => "Failure"));
     // Get input data
-    $photoId = Input::get('id');
-    $newCaption = Input::get('value', "");
+    $photoId = $request->input('id');
+    $newCaption = $request->input('value', "");
     $photo = Photo::find($photoId);
     $albumId = $photo ? $photo->album_id : null;
     $album = PhotoAlbum::find($albumId);
@@ -742,12 +796,12 @@ class PhotoController extends BaseController {
   /**
    * [Route] Ajax call to rotate a photo
    */
-  public function rotatePhoto() {
+  public function rotatePhoto(Request $request) {
     // Prepare error response
     $errorResponse = json_encode(array("result" => "Failure"));
     // Get input data
-    $photoId = Input::get('photo_id');
-    $clockwise = Input::get('clockwise') == "true" ? true : false;
+    $photoId = $request->input('photo_id');
+    $clockwise = $request->input('clockwise') == "true" ? true : false;
     $photo = Photo::find($photoId);
     $albumId = $photo ? $photo->album_id : null;
     $album = PhotoAlbum::find($albumId);

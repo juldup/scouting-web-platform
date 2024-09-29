@@ -6,8 +6,13 @@
         "build": "vite build"
     },
     "devDependencies": {
+        "@ckeditor/vite-plugin-ckeditor5": "^0.1.3",
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.8.0",
         "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@ckeditor/ckeditor5-style": "^40.1.0",
+        "@ckeditor/ckeditor5-theme-lark": "^40.0.0"
     }
 }

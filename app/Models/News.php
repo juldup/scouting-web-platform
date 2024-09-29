@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents a news entry displayed on
  * the news page
@@ -26,7 +29,7 @@
  *   - title:      The name of the news
  *   - body:       The text of the news
  */
-class News extends Eloquent {
+class News extends Model {
   
   protected $fillable = array('title', 'body', 'news_date', 'section_id');
   

@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use App\Helpers\ScoutMailer;
 
 /**
  * This Eloquent class represents the health card of a member, filled in by their parents.
@@ -55,7 +59,7 @@
  *   - drugs_autonomy
  *   - comments
  */
-class HealthCard extends Eloquent {
+class HealthCard extends Model {
   
   protected $guarded = array('id', 'signatory_id', 'signatory_email',
       'reminder_sent', 'signature_date', 'created_at', 'updated_at');

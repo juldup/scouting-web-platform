@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * Leaders can share documents with the parents and scouts. Documents are filed
@@ -37,7 +90,7 @@ class DocumentController extends BaseController {
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_DOCUMENTS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Get documents
     if ($showArchives) {
@@ -98,8 +151,8 @@ class DocumentController extends BaseController {
   /**
    * [Route] Shows the archived documents page
    */
-  public function showArchives($section_slug = null) {
-    $page = Input::get('page');
+  public function showArchives(Request $request, $section_slug = null) {
+    $page = $request->input('page');
     if (!$page) $page = 0;
     return $this->showPage($section_slug, true, $page);
   }
@@ -180,7 +233,7 @@ class DocumentController extends BaseController {
   public function downloadDocument($document_id) {
     // Get document
     $document = Document::find($document_id);
-    if (!$document) App::abort("Ce document n'existe plus.");
+    if (!$document) abort("Ce document n'existe plus.");
     // Make sure the user has access to this document
     if (!$document->public && !$this->user->isMember()) {
       return Helper::forbiddenResponse();
@@ -189,7 +242,7 @@ class DocumentController extends BaseController {
     $path = $document->getPath();
     $filename = str_replace("\"", "", $document->filename);
     if (file_exists($path)) {
-      return Response::make(file_get_contents($path), 200, array(
+      return response(file_get_contents($path), 200, array(
           'Content-Type' => 'application/octet-stream',
           'Content-length' => filesize($path),
           'Content-Transfer-Encoding' => 'Binary',
@@ -197,7 +250,7 @@ class DocumentController extends BaseController {
       ));
     } else {
       // File does not exist, redirect to previous page with error message
-      return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe plus.");
+      return redirect(URL::previous())->with('error_message', "Ce document n'existe plus.");
     }
   }
   
@@ -205,13 +258,13 @@ class DocumentController extends BaseController {
    * [Route] Sends the selected document by e-mail to the desired recipient
    * if they are a member of the unit
    */
-  public function sendByEmail() {
+  public function sendByEmail(Request $request) {
     // Get e-mail address and document id from input
-    $emailAddress = strtolower(Input::get('email'));
-    $documentId = Input::get('document_id');
+    $emailAddress = strtolower($request->input('email'));
+    $documentId = $request->input('document_id');
     // Make sure the e-mail address is non-empty
     if ($emailAddress == "") {
-      return Redirect::to(URL::previous())
+      return redirect(URL::previous())
               ->with('error_message', "Veuillez entrer une adresse e-mail pour recevoir le document.")
               ->withInput();
     }
@@ -219,7 +272,7 @@ class DocumentController extends BaseController {
     if (Member::existWithEmail($emailAddress)) {
       // Send document by e-mail
       $document = Document::find($documentId);
-      if (!$document) return Redirect::to(URL::previous())->with('error_message', "Ce document n'existe pas.")->withInput();
+      if (!$document) return redirect(URL::previous())->with('error_message', "Ce document n'existe pas.")->withInput();
       $emailContent = Helper::renderEmail('sendDocument', $emailAddress, array(
           'document' => $document,
       ));
@@ -237,10 +290,10 @@ class DocumentController extends BaseController {
       // Log
       LogEntry::log("Documents", "Envoi d'un document par e-mail", array('Document' => $document->title, 'Destinataire' => $emailAddress));
       // Redirect to previous page with success message
-      return Redirect::to(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$emailAddress</strong>.");
+      return redirect(URL::previous())->with('success_message', "Le document vous a été envoyé à l'adresse <strong>$emailAddress</strong>.");
     } else {
       // The e-mail address does not belong to a member, redirect to previous page with an error message
-      return Redirect::to(URL::previous())
+      return redirect(URL::previous())
               ->with('error_message', "Désolés, l'adresse <strong>$emailAddress</strong> ne fait pas partie de notre listing.")
               ->withInput();
     }
@@ -249,15 +302,15 @@ class DocumentController extends BaseController {
   /**
    * [Route] Used to submit a new or modified document by a leader
    */
-  public function submitDocument($section_slug) {
+  public function submitDocument(Request $request, $section_slug) {
     // Get input data
-    $docId = Input::get('doc_id');
-    $title = Input::get('doc_title');
-    $description = Input::get('description');
-    $category = Input::get('category');
-    $public = Input::get('public') ? true : false;
-    $file = Input::file('document');
-    $filename = Input::get('filename');
+    $docId = $request->input('doc_id');
+    $title = $request->input('doc_title');
+    $description = $request->input('description');
+    $category = $request->input('category');
+    $public = $request->input('public') ? true : false;
+    $file = $request->file('document');
+    $filename = $request->input('filename');
     $actualFileName = ($file ? $file->getClientOriginalName() : null);
     // Make sure the user can edit documents
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $this->section)) {
@@ -347,7 +400,7 @@ class DocumentController extends BaseController {
       }
     }
     // Redirect with success or error message accordingly
-    $response = Redirect::route('manage_documents', array(
+    $response = redirect()->route('manage_documents', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) {
@@ -368,7 +421,7 @@ class DocumentController extends BaseController {
     // Get document
     $document = Document::find($document_id);
     if (!$document) {
-      App::abort(404, "Ce document n'existe pas.");
+      abort(404, "Ce document n'existe pas.");
     }
     // Make sure the user can delete documents of this section
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
@@ -395,7 +448,7 @@ class DocumentController extends BaseController {
       }
     }
     // Redirect to previous page with success or error message
-    return Redirect::route('manage_documents', array(
+    return redirect()->route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
   }
@@ -407,7 +460,7 @@ class DocumentController extends BaseController {
     // Get the document
     $document = Document::find($document_id);
     if (!$document) {
-      App::abort(404, "Ce document n'existe pas.");
+      abort(404, "Ce document n'existe pas.");
     }
     // Make sure the user can archive documents of this section
     if (!$this->user->can(Privilege::$EDIT_DOCUMENTS, $document->section_id)) {
@@ -427,7 +480,7 @@ class DocumentController extends BaseController {
       LogEntry::error("Documents", "Erreur lors de l'archivage d'un document", array("Erreur" => $e->getMessage()));
     }
     // Redirect with status message
-    return Redirect::route('manage_documents', array(
+    return redirect()->route('manage_documents', array(
         "section_slug" => $document->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
   }

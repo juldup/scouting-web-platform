@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -109,12 +116,12 @@
             @endif
           </legend>
 
-          {{ Form::open(array('class' => 'form-horizontal')) }}
+          {!! Form::open(array('class' => 'form-horizontal')) !!}
             @if ($action != 'section')
               <div class="form-group">
-                {{ Form::label('old_password', "Mot de passe actuel", array('class' => "col-md-2 control-label")) }}
+                {!! Form::label('old_password', "Mot de passe actuel", array('class' => "col-md-2 control-label")) !!}
                 <div class='col-md-3'>
-                  {{ Form::password('old_password', array('class' => 'form-control')) }}
+                  {!! Form::password('old_password', array('class' => 'form-control')) !!}
                 </div>
               </div>
               @if ($errors->first('old_password'))
@@ -127,9 +134,9 @@
             @endif
             @if ($action == 'email')
               <div class="form-group">
-                {{ Form::label('email', "Nouvelle adresse", array('class' => "col-md-2 control-label")) }}
+                {!! Form::label('email', "Nouvelle adresse", array('class' => "col-md-2 control-label")) !!}
                 <div class='col-md-3'>
-                  {{ Form::text('email', '', array('class' => 'form-control')) }}
+                  {!! Form::text('email', '', array('class' => 'form-control')) !!}
                 </div>
               </div>
               @if ($errors->first('email'))
@@ -141,9 +148,9 @@
               @endif
             @elseif ($action == 'password')
               <div class="form-group">
-                {{ Form::label('password', "Mot de passe désiré", array('class' => "col-md-2 control-label")) }}
+                {!! Form::label('password', "Mot de passe désiré", array('class' => "col-md-2 control-label")) !!}
                 <div class='col-md-3'>
-                  {{ Form::password('password', array('class' => 'form-control')) }}
+                  {!! Form::password('password', array('class' => 'form-control')) !!}
                 </div>
               </div>
               @if ($errors->first('password'))
@@ -155,18 +162,18 @@
               @endif
             @elseif ($action == 'section')
               <div class="form-group">
-                {{ Form::label('default_section', "Section par défaut", array('class' => "col-md-2 control-label")) }}
+                {!! Form::label('default_section', "Section par défaut", array('class' => "col-md-2 control-label")) !!}
                <div class='col-md-3'>
-                  {{ Form::select('default_section', $sections, $user->default_section, array('class' => 'form-control')) }}
+                  {!! Form::select('default_section', $sections, $user->default_section, array('class' => 'form-control')) !!}
                 </div>
               </div>
             @endif
             <div class="form-group">
               <div class='col-md-offset-2 col-md-10'>
-                {{ Form::submit('Valider', array('class' => "btn btn-primary")) }}
+                {!! Form::submit('Valider', array('class' => "btn btn-primary")) !!}
               </div>
             </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
 
         </div>
       </div>

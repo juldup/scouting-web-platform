@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * News can be added to the news page. Each section has its own news.
@@ -38,7 +91,7 @@ class NewsController extends BaseController {
   public function showPage($section_slug = null, $showArchives = false, $page = 0) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Build query
     $oneYearAgo = Helper::oneYearAgo();
@@ -85,12 +138,12 @@ class NewsController extends BaseController {
   public function showSingleNews($news_id) {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Build query
     $newsItem = News::find($news_id);
     if (!$newsItem) {
-      return App::abort(404);
+      abort(404);
     }
     // Make view
     return View::make('pages.news.single-news', array(
@@ -105,7 +158,7 @@ class NewsController extends BaseController {
    */
   public function showGlobalNewsPage() {
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Get all recent news
     $oneYearAgo = Helper::oneYearAgo();
@@ -129,8 +182,8 @@ class NewsController extends BaseController {
   /**
    * [Route] Shows the news page with archived news
    */
-  public function showArchives($section_slug = null) {
-    $page = Input::get('page');
+  public function showArchives(Request $request, $section_slug = null) {
+    $page = $request->input('page');
     if (!$page) $page = 0;
     return $this->showPage($section_slug, true, $page);
   }
@@ -141,7 +194,7 @@ class NewsController extends BaseController {
   public function showEdit() {
     // Make sure this page can be displayed
     if (!Parameter::get(Parameter::$SHOW_NEWS)) {
-      return App::abort(404);
+      abort(404);
     }
     // Make sure the user has access to this page
     if (!$this->user->can(Privilege::$EDIT_NEWS, $this->user->currentSection)) {
@@ -168,12 +221,12 @@ class NewsController extends BaseController {
   /**
    * [Route] Creates or updates a piece of news in the database
    */
-  public function submitNews($section_slug) {
+  public function submitNews(Request $request, $section_slug) {
     // Gather input
-    $newsId = Input::get('news_id');
-    $title = Input::get('news_title');
-    $body = Input::get('news_body');
-    $sectionId = Input::get('section');
+    $newsId = $request->input('news_id');
+    $title = $request->input('news_title');
+    $body = $request->input('news_body');
+    $sectionId = $request->input('section');
     // Make sure the current user can edit news for this section
     if (!$this->user->can(Privilege::$EDIT_NEWS, $sectionId)) {
       return Helper::forbiddenResponse();
@@ -233,7 +286,7 @@ class NewsController extends BaseController {
       }
     }
     // Redirect with status
-    $response = Redirect::route('manage_news', array(
+    $response = redirect()->route('manage_news', array(
         "section_slug" => $section_slug,
     ))->with($success ? "success_message" : "error_message", $message);
     if ($success) {
@@ -252,7 +305,7 @@ class NewsController extends BaseController {
     // Get the news
     $news = News::find($news_id);
     if (!$news) {
-      App::abort(404, "Cette nouvelle n'existe pas.");
+      abort(404, "Cette nouvelle n'existe pas.");
     }
     // Make sure the current user can delete this piece of news
     if (!$this->user->can(Privilege::$EDIT_NEWS, $news->section_id)) {
@@ -272,7 +325,7 @@ class NewsController extends BaseController {
       LogEntry::error("Actualités", "Erreur lors de la suppression d'une nouvelle", array("Erreur" => $e->getMessage()));
     }
     // Redirect with status message
-    return Redirect::route('manage_news', array(
+    return redirect()->route('manage_news', array(
         "section_slug" => $news->getSection()->slug,
     ))->with($success ? "success_message" : "error_message", $message);
   }

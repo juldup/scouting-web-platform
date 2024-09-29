@@ -1,6 +1,6 @@
 {{--
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 --}}
-<form action="{{ URL::route('search') }}" method='POST' class='search-box'>
+<form action="{{ URL::route('search_post') }}" method='POST' class='search-box'>
+  @csrf
   <input type="text" class="form-control" name="search_string" placeholder="Rechercher" />
   <span class="nav-link">
     <button type='submit' class="glyphicon glyphicon-search"></button>

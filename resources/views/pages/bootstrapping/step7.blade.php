@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -27,7 +27,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/libs/bootstrap-colorpicker.min.js') }}"></script>
+  @vite(['resources/js/libs/bootstrap-colorpicker.min.js'])
   <script>
     $().ready(function() {
       // Add new section
@@ -144,7 +144,7 @@
     <div class="col-sm-12">
       <h1>Étape 7 : Créer les sections</h1>
       @if ($error_message)
-      <p class="alert alert-danger">{{ $error_message }}</p>
+      <p class="alert alert-danger">{{ $error_message !!}</p>
       @endif
       <table class="table table-bordered" id='section-table'>
         <thead>
@@ -182,7 +182,7 @@
   </div>
   <div class="row">
     <div class="col-sm-4"> 
-      {{ Form::select('new-section', array_merge(array("" => "Ajouter une section de type..."), Section::categoriesForSelect()), '', array('class' => "form-control large")) }}
+      {!! Form::select('new-section', array_merge(array("" => "Ajouter une section de type..."), Section::categoriesForSelect()), '', array('class' => "form-control large")) !!}
     </div>
     <div class="col-sm-4">
       <button id="submit-sections" class="btn btn-primary">Valider les sections</button>

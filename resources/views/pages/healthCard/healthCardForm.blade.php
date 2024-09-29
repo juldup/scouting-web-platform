@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -27,7 +35,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/health-card.js') }}"></script>
+  @vite(['resources/js/health-card.js'])
 @stop
 
 @section('back_links')
@@ -59,14 +67,14 @@ N’hésitez pas à ajouter des informations écrites ou orales auprès des anim
 semble utile.</strong></p>
         
         <div class="well form-horizontal">
-          {{ Form::model($health_card, array('url' => URL::route('health_card_submit'))) }}
-          {{ Form::hidden('member_id') }}
+          {!! Form::model($health_card, array('url' => URL::route('health_card_submit'))) !!}
+          {!! Form::hidden('member_id') !!}
           <legend>Identité du participant</legend>
           
           <div class='col-md-4'>
             
             <div class='row'>
-              {{ Form::label('', 'Nom', array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('', 'Nom', array('class' => 'col-md-4 control-label')) !!}
               <div class="col-md-8">
                 <p class='form-side-note'>
                   {{{ $member->first_name }}} {{{ $member->last_name }}}
@@ -75,7 +83,7 @@ semble utile.</strong></p>
             </div>
             
             <div class='form-group'>
-              {{ Form::label('', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('', 'Adresse', array('class' => 'col-md-4 control-label')) !!}
               <div class="col-md-8">
                 <p class='form-side-note'>
                   {{{ $member->address }}} <br />
@@ -85,7 +93,7 @@ semble utile.</strong></p>
             </div>
             
             <div class='row'>
-              {{ Form::label('', 'Né' . ($il == "il" ? "" : "e") . ' le', array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('', 'Né' . ($il == "il" ? "" : "e") . ' le', array('class' => 'col-md-4 control-label')) !!}
               <div class="col-md-4">
                 <p class='form-side-note'>
                   {{ $member->getHumanBirthDate() }}
@@ -97,14 +105,14 @@ semble utile.</strong></p>
           <div class='col-md-8'>
             
             <div class='form-group'>
-              {{ Form::label('national_id', 'Numéro de registre national', array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('national_id', 'Numéro de registre national', array('class' => 'col-md-4 control-label')) !!}
               <div class="col-md-8">
-                {{ Form::text('national_id', null, array('class' => 'form-control')) }}
+                {!! Form::text('national_id', null, array('class' => 'form-control')) !!}
               </div>
             </div>
             
             <div class='form-group'>
-              {{ Form::label('', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('', 'Téléphone', array('class' => 'col-md-4 control-label')) !!}
               <div class="col-md-4">
                 <p class='form-side-note'>
                   {{{ $member->getPersonalPhone() }}}
@@ -113,7 +121,7 @@ semble utile.</strong></p>
             </div>
             
             <div class='form-group'>
-              {{ Form::label('', 'E-mail', array('class' => 'col-md-4 control-label')) }}
+              {!! Form::label('', 'E-mail', array('class' => 'col-md-4 control-label')) !!}
               <div class="col-md-8">
                 <p class='form-side-note'>
                   {{{ $member->email_member }}}
@@ -134,41 +142,41 @@ semble utile.</strong></p>
           <div class='row'>
             <div class="col-md-6">
               <div class="form-group">
-                {{ Form::label('contact1_name', 'Nom', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact1_name', 'Nom', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact1_name', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact1_name', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact1_relationship', 'Lien de parenté', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact1_relationship', 'Lien de parenté', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact1_relationship', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact1_relationship', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact1_address', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact1_address', 'Adresse', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::textarea('contact1_address', null, array('class' => 'form-control', 'rows' => 2)) }}
+                  {!! Form::textarea('contact1_address', null, array('class' => 'form-control', 'rows' => 2)) !!}
                 </div>
               </div>
             </div>
             <div class='col-md-6'>
               <div class="form-group">
-                {{ Form::label('contact1_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact1_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact1_phone', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact1_phone', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact1_email', 'E-mail', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact1_email', 'E-mail', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact1_email', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact1_email', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact1_comment', 'Remarques', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact1_comment', 'Remarques', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::textarea('contact1_comment', null, array('class' => 'form-control', 'rows' => 2)) }}
+                  {!! Form::textarea('contact1_comment', null, array('class' => 'form-control', 'rows' => 2)) !!}
                 </div>
               </div>
             </div>
@@ -185,41 +193,41 @@ semble utile.</strong></p>
           <div class='row'>
             <div class="col-md-6">
               <div class="form-group">
-                {{ Form::label('contact2_name', 'Nom', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact2_name', 'Nom', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact2_name', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact2_name', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact2_relationship', 'Lien de parenté', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact2_relationship', 'Lien de parenté', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact2_relationship', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact2_relationship', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact2_address', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact2_address', 'Adresse', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::textarea('contact2_address', null, array('class' => 'form-control', 'rows' => 2)) }}
+                  {!! Form::textarea('contact2_address', null, array('class' => 'form-control', 'rows' => 2)) !!}
                 </div>
               </div>
             </div>
             <div class='col-md-6'>
               <div class="form-group">
-                {{ Form::label('contact2_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact2_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact2_phone', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact2_phone', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact2_email', 'E-mail', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact2_email', 'E-mail', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('contact2_email', null, array('class' => 'form-control')) }}
+                  {!! Form::text('contact2_email', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('contact2_comment', 'Remarques', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('contact2_comment', 'Remarques', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::textarea('contact2_comment', null, array('class' => 'form-control', 'rows' => 2)) }}
+                  {!! Form::textarea('contact2_comment', null, array('class' => 'form-control', 'rows' => 2)) !!}
                 </div>
               </div>
             </div>
@@ -236,23 +244,23 @@ semble utile.</strong></p>
           <div class='row'>
             <div class="col-md-6">
               <div class="form-group">
-                {{ Form::label('doctor_name', 'Nom', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('doctor_name', 'Nom', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('doctor_name', null, array('class' => 'form-control')) }}
+                  {!! Form::text('doctor_name', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
               <div class="form-group">
-                {{ Form::label('doctor_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('doctor_phone', 'Téléphone', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::text('doctor_phone', null, array('class' => 'form-control')) }}
+                  {!! Form::text('doctor_phone', null, array('class' => 'form-control')) !!}
                 </div>
               </div>
             </div>
             <div class="col-md-6">
               <div class='form-group'>
-                {{ Form::label('doctor_address', 'Adresse', array('class' => 'col-md-4 control-label')) }}
+                {!! Form::label('doctor_address', 'Adresse', array('class' => 'col-md-4 control-label')) !!}
                 <div class="col-md-8">
-                  {{ Form::textarea('doctor_address', null, array('class' => 'form-control', 'rows' => 2)) }}
+                  {!! Form::textarea('doctor_address', null, array('class' => 'form-control', 'rows' => 2)) !!}
                 </div>
               </div>
             </div>
@@ -265,17 +273,17 @@ semble utile.</strong></p>
             <div class="col-md-12">
               <p>
                 <label>
-                  {{ $counter++ }}. {{ Form::label('height', 'Taille') }} : 
+                  {{ $counter++ }}. {!! Form::label('height', 'Taille') !!} : 
                 </label>
                 <span class="horiz-divider"></span>
-                {{ Form::text('height', null, array('class' => 'form-control large')) }}
+                {!! Form::text('height', null, array('class' => 'form-control large')) !!}
                 <span class="horiz-divider"></span>
                 <span class="horiz-divider"></span>
                 <label>
-                  {{ $counter++ }}. {{ Form::label('weight', 'Poids') }} :
+                  {{ $counter++ }}. {!! Form::label('weight', 'Poids') !!} :
                 </label>
                 <span class="horiz-divider"></span>
-                {{ Form::text('weight', null, array('class' => 'form-control large')) }}
+                {!! Form::text('weight', null, array('class' => 'form-control large')) !!}
               </p>
             </div>
           </div>
@@ -288,14 +296,14 @@ semble utile.</strong></p>
                 <label>
                   {{ $counter++ }}. Peut-{{ $il }} prendre part à toutes les activités proposées ? (sport, excursions, jeux, baignade, ...)
                 </label>
-                <span class='horiz-divider'></span>{{ Form::checkbox('has_no_constrained_activities') }}
+                <span class='horiz-divider'></span>{!! Form::checkbox('has_no_constrained_activities') !!}
               </p>
             </div>
             <div class="col-md-12">
               <p>
                 Si non, raisons et détails d'une éventuelle non-participation : 
               </p>
-              {{ Form::textarea('constrained_activities_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('constrained_activities_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -307,9 +315,9 @@ semble utile.</strong></p>
                 {{ $counter++ }}. Sait-{{ $il }} nager ?
               </label>
               <span class="horiz-divider"></span>
-              {{ Form::select('can_swim', ["" => "", "Très bien" => "Très bien",
+              {!! Form::select('can_swim', ["" => "", "Très bien" => "Très bien",
                               "Bien" => "Bien", "Moyennement bien" => "Moyennement bien",
-                              "Difficilement" => "Difficilement", "Pas du tout" => "Pas du tout"], null, array('class' => 'form-control large', 'rows' => 2, 'placeholder' => "Néant")) }}
+                              "Difficilement" => "Difficilement", "Pas du tout" => "Pas du tout"], null, array('class' => 'form-control large', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -327,7 +335,7 @@ semble utile.</strong></p>
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('medical_data', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('medical_data', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -340,7 +348,7 @@ semble utile.</strong></p>
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('medical_history', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('medical_history', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -355,7 +363,7 @@ semble utile.</strong></p>
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('other_important_information', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('other_important_information', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -367,14 +375,14 @@ semble utile.</strong></p>
                 <label>
                   {{ $counter++ }}. Est-{{ $il }} en ordre de vaccination contre le tétanos ?
                 </label>
-                <span class='horiz-divider'></span>{{ Form::checkbox('has_tetanus_vaccine') }}
+                <span class='horiz-divider'></span>{!! Form::checkbox('has_tetanus_vaccine') !!}
               </p>
             </div>
             <div class="col-md-12">
               <p>
                 Date du dernier rappel :
               </p>
-              {{ Form::text('tetanus_vaccine_details', null, array('class' => 'form-control', 'placeholder' => "Néant")) }}
+              {!! Form::text('tetanus_vaccine_details', null, array('class' => 'form-control', 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -386,20 +394,20 @@ semble utile.</strong></p>
                 <label>
                   {{ $counter++ }}. Est-{{ $il }} allergique à certaines substances, aliments ou médicaments ?
                 </label>
-                <span class='horiz-divider'></span>{{ Form::checkbox('has_allergy') }}
+                <span class='horiz-divider'></span>{!! Form::checkbox('has_allergy') !!}
               </p>
             </div>
             <div class="col-md-12">
               <p>
                 Si oui, lesquels ?
               </p>
-              {{ Form::textarea('allergy_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('allergy_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
             <div class="col-md-12">
               <p class="form-side-note">
                 Quelles en sont les conséquences ?
               </p>
-              {{ Form::textarea('allergy_consequences', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('allergy_consequences', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -411,14 +419,14 @@ semble utile.</strong></p>
                 <label>
                   {{ $counter++ }}. A-t-{{ $il }} un régime alimentaire particulier ?
                 </label>
-                <span class='horiz-divider'></span>{{ Form::checkbox('has_special_diet') }}
+                <span class='horiz-divider'></span>{!! Form::checkbox('has_special_diet') !!}
               </p>
             </div>
             <div class="col-md-12">
               <p>
                 Si oui, lequel ?
               </p>
-              {{ Form::textarea('special_diet_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('special_diet_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -430,20 +438,20 @@ semble utile.</strong></p>
                 <label>
                   {{ $counter++ }}. Doit-{{ $il }} prendre des médicaments quotidiennement ?
                 </label>
-                <span class='horiz-divider'></span>{{ Form::checkbox('has_drugs') }}
+                <span class='horiz-divider'></span>{!! Form::checkbox('has_drugs') !!}
               </p>
             </div>
             <div class="col-md-12">
               <p>
                 Si oui, lesquels ? Quand ? Précisez le dosage et les quantités.
               </p>
-              {{ Form::textarea('drugs_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('drugs_details', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
             <div class="col-md-12">
               <p class="form-side-note">
                 Est-{{ $il }} autonome dans la prise de ces médicaments ? (Nous rappelons que les médicaments
                 ne peuvent pas être partagés entre les participants.)
-                <span class='horiz-divider'></span>{{ Form::checkbox('drugs_autonomy') }}
+                <span class='horiz-divider'></span>{!! Form::checkbox('drugs_autonomy') !!}
               </p>
               
             </div>
@@ -458,19 +466,19 @@ semble utile.</strong></p>
                 
               </label>
               <span class='horiz-divider'></span>
-              {{ Form::checkbox('covid_19_risk_group') }}
+              {!! Form::checkbox('covid_19_risk_group') !!}
             </div>
             <div class="col-md-12">
               Si oui :
               - celui-ci a reçu un avis favorable de son médecin traitant quant à sa
                 participation aux activités scoutes :
-              {{ Form::checkbox('covid_19_physician_agreement') }}
+              {!! Form::checkbox('covid_19_physician_agreement') !!}
             </div>
             <div class="col-md-12">
               <span class="invisible">Si oui :</span>
               - les coordonnées complètes du médecin traitant ont été renseignées sur
                 cette fiche santé :
-              {{ Form::checkbox('covid_19_physician_contact_information_given') }}
+              {!! Form::checkbox('covid_19_physician_contact_information_given') !!}
             </div>
           </div>
           
@@ -484,7 +492,7 @@ semble utile.</strong></p>
               </label>
             </div>
             <div class="col-md-12">
-              {{ Form::textarea('comments', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) }}
+              {!! Form::textarea('comments', null, array('class' => 'form-control', 'rows' => 2, 'placeholder' => "Néant")) !!}
             </div>
           </div>
           
@@ -523,22 +531,22 @@ semble utile.</strong></p>
                 </em>
               </label>
             </div>
-            {{ Form::label('', 'Dernière mise à jour', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('', 'Dernière mise à jour', array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-9">
               <p class="form-side-note">
                 {{ Helper::dateToHuman($health_card->signature_date) ? Helper::dateToHuman($health_card->signature_date) : "-" }}
               </p>
             </div>
             
-            {{ Form::label('', 'Signature', array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('', 'Signature', array('class' => 'col-md-3 control-label')) !!}
             
             <div class="col-md-9">
-              {{ Form::submit('Enregistrer et signer la fiche santé', array('class' => 'btn btn-primary')) }}
+              {!! Form::submit('Enregistrer et signer la fiche santé', array('class' => 'btn btn-primary')) !!}
               <span class="horiz-divider"></span>Cliquer sur ce bouton a la valeur d'une signature.
             </div>
           </div>
           
-          
+          {!! Form::close() !!}
         </div>
       </div>
     </div>

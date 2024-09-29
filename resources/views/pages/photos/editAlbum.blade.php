@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,9 +30,9 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/reorder-list.js') }}"></script>
-  <script src="{{ asset('js/edit-album.js') }}"></script>
-  <script src="{{ asset('js/editable-text.js') }}"></script>
+  @vite(['resources/js/reorder-list.js'])
+  @vite(['resources/js/edit-album.js'])
+  @vite(['resources/js/editable-text.js'])
   <script>
     var savePhotoOrderURL = "{{ URL::route('ajax_change_photo_order') }}";
     var deletePhotoURL = "{{ URL::route('ajax_delete_photo') }}";
@@ -66,8 +73,8 @@
               <td class="photo-data-column">
                 <div>
                   <strong>Tourner: </strong>
-                  <img class="rotate-icon rotate-anticlockwise-button" src="{{ asset('images/photos/rotate-anticlockwise.png') }}" />
-                  <img class="rotate-icon rotate-clockwise-button" src="{{ asset('images/photos/rotate-clockwise.png') }}" />
+                  <img class="rotate-icon rotate-anticlockwise-button" src="{{ URL::route('static_image', ['filename' => 'rotate-anticlockwise.png']) }}" />
+                  <img class="rotate-icon rotate-clockwise-button" src="{{ URL::route('static_image', ['filename' => 'rotate-clockwise.png']) }}" />
                 </div>
                 <div>
                   <span class="editable-text"
@@ -96,7 +103,7 @@
           <tr style="display: none;" id="upload-row-prototype" class="photo-row">
             <td class="photo-thumnail-column">
               <div class="photo-thumbnail">
-                <img src="{{ asset('images/loading.gif') }}" />
+                <img src="{{ URL::route('static_image', ['filename' => 'loading.gif']) }}" />
               </div>
             </td>
             <td></td>
@@ -111,8 +118,8 @@
             <td class="photo-data-column">
               <div>
                 <strong>Tourner: </strong>
-                <img class="rotate-icon rotate-anticlockwise-button" src="{{ asset('images/photos/rotate-anticlockwise.png') }}" />
-                <img class="rotate-icon rotate-clockwise-button" src="{{ asset('images/photos/rotate-clockwise.png') }}" />
+                <img class="rotate-icon rotate-anticlockwise-button" src="{{ URL::route('static_image', ['filename' => 'rotate-anticlockwise.png']) }}" />
+                <img class="rotate-icon rotate-clockwise-button" src="{{ URL::route('static_image', ['filename' => 'rotate-clockwise.png']) }}" />
               </div>
               <div>
                 <span class="editable-text"

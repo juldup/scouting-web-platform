@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -61,9 +69,9 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/libs/jquery-ui-1.10.4.js') }}"></script>
-  <script src="{{ asset('js/libs/angular-1.2.15.min.js') }}"></script>
-  <script src="{{ asset('js/libs/angular-ui-0.4.0.js') }}"></script>
+  @vite(['resources/js/libs/jquery-ui-1.10.4.js'])
+  @vite(['resources/js/libs/angular-1.2.15.min.js'])
+  @vite(['resources/js/libs/angular-ui-0.4.0.js'])
   <script>
     var commitAccountingChangesURL = "{{ URL::route('ajax-accounting-commit-changes', array('section_slug' => $user->currentSection->slug, 'lock_id' => $lock_id))}}";
     var inheritanceCash = {{ $inherit_cash }};
@@ -95,7 +103,7 @@
     @endforeach
     ];
   </script>
-  <script src="{{ asset('js/accounting-angular.js') }}"></script>
+  @vite(['resources/js/accounting-angular.js'])
 @stop
 
 @section('content')

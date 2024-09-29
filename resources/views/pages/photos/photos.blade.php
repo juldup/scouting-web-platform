@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,7 +30,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/photos.js') }}"></script>
+  @vite(['resources/js/photos.js'])
 @stop
 
 @section('back_links')
@@ -126,8 +133,7 @@
     </div>
   </div>
   
-  
-  @if (count($photos))  
+  @if ($photos and count($photos))
     <div class="row">
       <div class="col-md-12">
         <h2>{{{ $current_album->name }}}</h2>

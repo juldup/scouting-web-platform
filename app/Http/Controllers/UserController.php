@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,59 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
 
 /**
  * This controller manages the user account creation, modification and validation
@@ -44,11 +97,11 @@ class UserController extends BaseController {
   /**
    * [Route] Logs the user in if the login data is valid
    */
-  public function submitLogin() {
+  public function submitLogin(Request $request) {
     // Get input
-    $username = Input::get('login_username');
-    $password = Input::get('login_password');
-    $remember = Input::get('login_remember');
+    $username = $request->input('login_username');
+    $password = $request->input('login_password');
+    $remember = $request->input('login_remember');
     // Find user that corresponds to this login data
     $user = User::getWithUsernameAndPassword($username, $password);
     if ($user) {
@@ -63,10 +116,10 @@ class UserController extends BaseController {
       // Redirect to previous page
       $referrer = Session::get('login_referrer', URL::route('home'));
       Session::forget('login_referrer');
-      return Redirect::to($referrer);
+      return redirect($referrer);
     }
     // No matching user
-    return Redirect::route('login')
+    return redirect()->route('login')
             ->withInput()
             ->with('action', 'login');
   }
@@ -81,18 +134,18 @@ class UserController extends BaseController {
     Cookie::queue(User::getCookieUsernameName(), null, -1);
     Cookie::queue(User::getCookiePasswordName(), null, -1);
     // Redirect to previous page
-    return Redirect::to(URL::previous());
+    return back();
   }
   
   /**
    * [Route] Creates a new user with the input data
    */
-  public function create() {
+  public function create(Request $request) {
     // Retrieve data from form
-    $username = Input::get('create_username');
-    $email = trim(strtolower(Input::get('create_email')));
-    $password = Input::get('create_password');
-    $remember = Input::get('create_remember');
+    $username = $request->input('create_username');
+    $email = trim(strtolower($request->input('create_email')));
+    $password = $request->input('create_password');
+    $remember = $request->input('create_remember');
     // Validate data
     $validator = Validator::make(
             array(
@@ -115,7 +168,7 @@ class UserController extends BaseController {
             )
     );
     if ($validator->fails()) {
-      return Redirect::to(URL::route('login') . '#nouvel-utilisateur')->withInput()->withErrors($validator)->with('action', 'create');
+      return redirect(URL::route('login') . '#nouvel-utilisateur')->withInput()->withErrors($validator)->with('action', 'create');
     }
     // Validation passed, create user
     $user = User::createWith($username, $email, $password);
@@ -144,7 +197,7 @@ class UserController extends BaseController {
     }
     // Redirect to previous page
     LogEntry::log("Utilisateur", "Nouvel utilisateur", array("Nom d'utilisateur" => $username, "E-mail" => $email));
-    return Redirect::route('user_created');
+    return redirect()->route('user_created');
   }
   
   /**
@@ -209,18 +262,18 @@ class UserController extends BaseController {
    * @param string $action  The data that is being edited (null, 'section', 'password' or 'email')
    * @return type
    */
-  public function editUser($action = null) {
+  public function editUser(Request $request, $action = null) {
     // Make sure the current user is logged in
     if (!$this->user->isConnected()) {
-      return Redirect::route('login');
+      return redirect()->route('login');
     }
-    if (Request::isMethod('post')) {
+    if ($request->isMethod('post')) {
       // Post: data is being modified
       // Get input data (some of these will be defined, depending on the action)
-      $oldPassword = Input::get('old_password');
-      $email = trim(strtolower(Input::get('email')));
-      $password = Input::get('password');
-      $defaultSection = Input::get('default_section');
+      $oldPassword = $request->input('old_password');
+      $email = trim(strtolower($request->input('email')));
+      $password = $request->input('password');
+      $defaultSection = $request->input('default_section');
       // Check that the old password is valid (for 'section' action, there is no password)
       $oldPasswordValid = User::testPassword($oldPassword, $this->user->password);
       if ($oldPasswordValid || $action == 'section') {
@@ -236,7 +289,7 @@ class UserController extends BaseController {
                   )
           );
           if ($validator->fails()) {
-            return Redirect::to(URL::route('edit_user_email') . "#modification")
+            return redirect(URL::route('edit_user_email') . "#modification")
                     ->withInput()
                     ->withErrors($validator);
           }
@@ -258,7 +311,7 @@ class UserController extends BaseController {
           $pendingEmail->send();
           // Redirect with success message
           LogEntry::log("Utilisateur", "Changement d'adresse e-mail", array("Utilisateur" => $this->user->username, "E-mail" => $email)); // TODO improve log message
-          return Redirect::route('edit_user')
+          return redirect()->route('edit_user')
                   ->with('success_message', 'Votre adresse e-mail a été modifiée avec succès. Un lien de validation vous a été envoyé par e-mail.');
         } elseif ($action == 'password') {
           // Updating password
@@ -272,7 +325,7 @@ class UserController extends BaseController {
                   )
           );
           if ($validator->fails()) {
-            return Redirect::to(URL::route('edit_user_password') . "#modification")
+            return redirect(URL::route('edit_user_password') . "#modification")
                     ->withInput()
                     ->withErrors($validator);
           }
@@ -280,7 +333,7 @@ class UserController extends BaseController {
           $this->user->changePassword($password);
           // Redirect with success message
           LogEntry::log("Utilisateur", "Changement de mot de passe", array("Utilisateur" => $this->user->username));
-          return Redirect::route('edit_user')
+          return redirect()->route('edit_user')
                   ->with('success_message', 'Votre mot de passe a été modifié avec succès.');
         } elseif ($action == 'section') {
           // Updating default section
@@ -290,7 +343,7 @@ class UserController extends BaseController {
                   array("default_section" => "required|integer")
           );
           if ($validator->fails()) {
-            return Redirect::to(URL::route('edit_user_section') . "#modification")
+            return redirect(URL::route('edit_user_section') . "#modification")
                     ->withInput()
                     ->withErrors($validator);
           }
@@ -298,12 +351,12 @@ class UserController extends BaseController {
           $this->user->changeDefaultSection($defaultSection);
           // Redirect with success message
           LogEntry::log("Utilisateur", "Changement de section par défaut", array("Utilisateur" => $this->user->username, "Section" => Section::find($defaultSection)->name)); // TODO improve log message
-          return Redirect::route('edit_user')
+          return redirect()->route('edit_user')
                   ->with('success_message', 'Votre section par défaut a été modifiée avec succès.');
         }
       } else {
         // Old password required, but is erroneous, redirect with error message
-        return Redirect::to(URL::current() . "#modification")
+        return redirect(URL::current() . "#modification")
                 ->withInput()
                 ->withErrors(array('old_password' => 'Le mot de passe actuel est erronné'));
       }
@@ -325,24 +378,24 @@ class UserController extends BaseController {
    * [Route] (GET) Shows the edit e-mail page 
    *         (POST) updates the e-mail
    */
-  public function editEmail() {
-    return $this->editUser('email');
+  public function editEmail(Request $request) {
+    return $this->editUser($request, 'email');
   }
   
   /**
    * [Route] (GET) Shows the edit password page 
    *         (POST) updates the password
    */
-  public function editPassword() {
-    return $this->editUser('password');
+  public function editPassword(Request $request) {
+    return $this->editUser($request, 'password');
   }
   
   /**
    * [Route] (GET) Shows the edit default section page 
    *         (POST) updates the default section
    */
-  public function editSection() {
-    return $this->editUser('section');
+  public function editSection(Request $request) {
+    return $this->editUser($request, 'section');
   }
   
   /**
@@ -369,7 +422,7 @@ class UserController extends BaseController {
     ));
     $pendingEmail->send();
     // Redirect with success message
-    return Redirect::to(URL::previous())
+    return redirect(URL::previous())
             ->with('success_message', 'Un e-mail avec le lien de validation vous a été envoyé.');
   }
   
@@ -377,11 +430,11 @@ class UserController extends BaseController {
    * [Route] (GET) Shows a page where the user can change their password if forgotten
    *         (POST) Sends an e-mail with a link to change their password
    */
-  public function retrievePassword() {
+  public function retrievePassword(Request $request) {
     // Post method
-    if (Request::isMethod('post')) {
+    if ($request->isMethod('post')) {
       // Get e-mail address
-      $email = strtolower(Input::get('email'));
+      $email = strtolower($request->input('email'));
       // Find user(s) with this e-mail address
       $users = User::where('email', '=', $email)->get();
       if (count($users)) {
@@ -407,12 +460,12 @@ class UserController extends BaseController {
         $pendingEmail->send();
         // Redirect with success message
         LogEntry::log("Utilisateur", "Envoi d'un e-mail pour récupérer son mot de passe", array("Adresse e-mail" => $email));
-        return Redirect::to(URL::current())
+        return redirect(URL::current())
                 ->with('success_message', "Un e-mail a été envoyé à $email.");
       } else {
         // No user with this e-mail address, redirect with error message
         LogEntry::log("Utilisateur", "Adresse inconnue pour la récupération de mot de passe", array("Adresse e-mail" => $email));
-        return Redirect::to(URL::current())->with('error_message', "Aucun utilisateur n'est enregistré avec l'adresse $email.");
+        return redirect(URL::current())->with('error_message', "Aucun utilisateur n'est enregistré avec l'adresse $email.");
       }
     }
     // Get method
@@ -424,7 +477,7 @@ class UserController extends BaseController {
    * [Route] (GET) Shows a page to update the user's password with a validation code
    *         (POST) Updates the user's password
    */
-  public function changePassword($code) {
+  public function changePassword(Request $request, $code) {
     if ($code != 'done') {
       // Find the password recovery entry corresponding to the code
       $passwordRecovery = PasswordRecovery::where('code', '=', $code)
@@ -435,10 +488,10 @@ class UserController extends BaseController {
         $status = 'unknown';
       } else {
         // Password recovery entry found
-        if (Request::isMethod('post')) {
+        if ($request->isMethod('post')) {
           // Updating the password
           // Get password and make sure it is correct
-          $password = Input::get('password');
+          $password = $request->input('password');
           $validator = Validator::make(
                   array("password" => $password),
                   array("password" => "required|min:6"),
@@ -449,7 +502,7 @@ class UserController extends BaseController {
           );
           if ($validator->fails()) {
             // Validation failed, redirect with error message
-            return Redirect::route('change_password', array('code' => $code))
+            return redirect()->route('change_password', array('code' => $code))
                     ->withErrors($validator);
           } else {
             // Update password
@@ -459,7 +512,7 @@ class UserController extends BaseController {
             $passwordRecovery->delete();
             // Redirect with 'done' status
             LogEntry::log("Utilisateur", "Changement de mot de passe via e-mail", array("Utilisateur" => $user->username, "E-mail" => $user->email));
-            return Redirect::route('change_password', array('code' => 'done'));
+            return redirect()->route('change_password', array('code' => 'done'));
           }
         } else {
           // GET method, simply show a page with the form to update the password
@@ -509,7 +562,7 @@ class UserController extends BaseController {
         $user->delete();
         // Redirect with success message
         LogEntry::log("Utilisateur", "Suppression d'un utilisateur", array("Utilisateur" => $user->username, "E-mail" => $user->email));
-        return Redirect::route('user_list')
+        return redirect()->route('user_list')
                 ->with("success_message", "L'utilisateur " . $user->username . " a été supprimé du site.");
       } catch (Exception $e) {
         Log::error($e);
@@ -517,7 +570,7 @@ class UserController extends BaseController {
       }
     }
     // User not found or another error, redirect with error message
-    return Redirect::route('user_list')
+    return redirect()->route('user_list')
             ->with('error_message', "Une erreur est survenue. L'utilisateur n'a pas été supprimé");
   }
   

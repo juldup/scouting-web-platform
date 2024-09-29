@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents an event for which payments can be made. The payments
  * of the members are stored using the class Payment.
@@ -25,7 +28,7 @@
  *   - year:       The YYYY-YYYY year of the event
  *   - name:       The name of the event (must be distinct for different events of the same year)
  */
-class PaymentEvent extends Eloquent {
+class PaymentEvent extends Model {
   
   protected $fillable = array('name', 'section_id', 'year');
   

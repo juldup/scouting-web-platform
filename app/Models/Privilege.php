@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This Eloquent class represents a privilege of a leader
@@ -31,7 +34,7 @@
  *   S: Unit co-leader
  *   U: Unit main leader
  */
-class Privilege extends Eloquent {
+class Privilege extends Model {
   
   var $guarded = array('id', 'created_at', 'updated_at');
   

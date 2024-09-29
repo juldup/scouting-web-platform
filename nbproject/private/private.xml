@@ -3,8 +3,20 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/bootstrap/app.php</file>
-            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/HomePageController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/resources/views/errors/503.blade.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/ListingController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/PhotoController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Models/Member.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/WebsiteBootstrappingController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/DailyPhotoController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/RegistrationController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/PersonalEmailController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/resources/views/errors/forbidden.blade.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/EmailController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/config/app.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Http/Controllers/CommentController.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/routes/web.php</file>
+            <file>file:/home/julien/Websites/scouting-web-platform-upgrade/scouting-web-platform/app/Models/EmailAttachment.php</file>
         </group>
     </open-files>
 </project-private>

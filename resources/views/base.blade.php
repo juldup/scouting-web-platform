@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 <!doctype html>
 <html lang="fr" @yield('html_parameters')>
@@ -25,10 +32,12 @@
   <title>
     {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}} - @yield('title')
   </title>
-  {{ Less::to('styles') }}
+  {{-- Less::to('styles') --}}
+  @vite(['resources/css/styles.css'])
   <link media="all" type="text/css" rel="stylesheet" href="{{ URL::route('additional_css') }}">
   @yield('head')
   {{ Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) }}
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
 </head>
 <body>
   @yield('body_top')
@@ -44,15 +53,24 @@
   <script>
     var keepaliveURL = "{{ URL::route('session_keepalive'); }}";
   </script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
-  <script>window.jQuery || document.write('<script src="{{ asset('js/libs/jquery-1.11.0.min.js') }}"><\/script>')</script>
-  <script src="{{ asset('js/libs/bootstrap.min.js') }}"></script>
-  <script src="{{ asset('js/application.js') }}"></script>
-  <script src="{{ asset('js/libs/bootstrap-switch.min.js') }}"></script>
-  <script src="{{ asset('js/libs/jquery.tablesorter.js') }}"></script>
-  <script>
-    $('.sort-by-column').tablesorter();
+  @vite(['resources/js/libs/jquery-1.11.0.js',
+         'resources/js/libs/jquery-ui-1.10.4.js',
+         'resources/js/libs/bootstrap.min.js',
+         'resources/js/application.js',
+         'resources/js/libs/bootstrap-switch.min.js',
+         'resources/js/libs/jquery.tablesorter.js'
+        ])
+  <script type="module">
+    $().ready(function() {
+      // CSRF for ajax post requests
+      $.ajaxSetup({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+      });
+      // initialize sortable tables
+      $('.sort-by-column').tablesorter();
+    });
   </script>
   @yield('additional_javascript')
 </body>

@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -35,13 +42,13 @@
   </div>
   
   @if ($status == 'normal')
-    {{ Form::open() }}
+    {!! Form::open(['url' => url()->current()]) !!}
       <div class="form-group">
         <div class='col-lg-12'>
           <p>Entrez votre nouveau mot de passe.</p>
-          {{ Form::label('email', 'Mot de passe :') }}
-          {{ Form::password('password', array('class' => 'form-control large')) }}
-          {{ Form::submit('Changer', array('class' => 'btn btn-primary')) }}
+          {!! Form::label('email', 'Mot de passe :') !!}
+          {!! Form::password('password', array('class' => 'form-control large')) !!}
+          {!! Form::submit('Changer', array('class' => 'btn btn-primary')) !!}
         </div>
       </div>
       <div class="form-group">
@@ -51,7 +58,7 @@
           @endif
         </div>
       </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
   @elseif ($status == 'unknown')
     <div class="row">
       <div class='col-lg-12'>

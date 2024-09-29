@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 
 @section('title')
@@ -27,7 +35,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/absences.js') }}"></script>
+  @vite(['resources/js/absences.js'])
 @stop
 
 @section('forward_links')
@@ -64,34 +72,34 @@
     @endforeach
     @foreach ($members as $member)
       <div class="form-horizontal well absence-form" id='form-{{ $member['id'] }}' style='display: none;'>
-        {{ Form::open(array('url' => URL::route('submit_absence', array('section_slug' => $user->currentSection->slug)))) }}
-          {{ Form::hidden('member_id', $member['id']) }}
+        {!! Form::open(array('url' => URL::route('submit_absence', array('section_slug' => $user->currentSection->slug)))) !!}
+          {!! Form::hidden('member_id', $member['id']) !!}
           <div class='form-group'>
-            {{ Form::label('', "Nom du scout", array("class" => "col-md-2 control-label")) }}
+            {!! Form::label('', "Nom du scout", array("class" => "col-md-2 control-label")) !!}
             <div class="col-md-8 form-side-note">
               {{ $member['full_name'] }}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('event_id' . $member['id'], "Activité", array("class" => "col-md-2 control-label")) }}
+            {!! Form::label('event_id' . $member['id'], "Activité", array("class" => "col-md-2 control-label")) !!}
             <div class="col-md-8">
-              {{ Form::select('event_id' . $member['id'], ['' => 'Sélectionnez une activité'] + $member['events'], '', array('class' => 'form-control select-event')) }}
-              {{ Form::text('other_event' . $member['id'], '', array('class' => 'form-control input-other-event', 'placeholder' => "Nom et date de l'activité", 'style' => 'display: none;')) }}
+              {!! Form::select('event_id' . $member['id'], ['' => 'Sélectionnez une activité'] + $member['events'], '', array('class' => 'form-control select-event')) !!}
+              {!! Form::text('other_event' . $member['id'], '', array('class' => 'form-control input-other-event', 'placeholder' => "Nom et date de l'activité", 'style' => 'display: none;')) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('explanation' . $member['id'], "Justification", array("class" => "col-md-2 control-label")) }}
+            {!! Form::label('explanation' . $member['id'], "Justification", array("class" => "col-md-2 control-label")) !!}
             <div class="col-md-8">
-              {{ Form::textarea('explanation' . $member['id'], '', array('class' => 'form-control', 'rows' => 3)) }}
+              {!! Form::textarea('explanation' . $member['id'], '', array('class' => 'form-control', 'rows' => 3)) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-8 col-md-offset-2">
-              {{ Form::submit('Envoyer', array('class' => 'btn-primary form-control medium enabled-submit', 'style' => 'display: none;')) }}
+              {!! Form::submit('Envoyer', array('class' => 'btn-primary form-control medium enabled-submit', 'style' => 'display: none;')) !!}
               <button class='btn-disabled form-control medium disabled-submit' disabled="disabled">Envoyer</button>
             </div>
           </div>
-        {{ Form::close() }}
+        {!! Form::close() !!}
       </div>
     @endforeach
   @else

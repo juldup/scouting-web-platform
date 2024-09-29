@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents the selected daily photo of a given date. Daily
  * photos are picked randomly within the photo database.
@@ -24,7 +27,7 @@
  *   - date:     The date
  *   - photo_id: The selected photo for the date
  */
-class DailyPhoto extends Eloquent {
+class DailyPhoto extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   

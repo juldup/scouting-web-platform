@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,7 +30,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-year-in-section.js') }}"></script>
+  @vite(['resources/js/edit-year-in-section.js'])
   <script>
     var changeYearURL = "{{ URL::route('ajax_update_year_in_section') }}";
     var currentSectionId = {{ $user->currentSection->id }};

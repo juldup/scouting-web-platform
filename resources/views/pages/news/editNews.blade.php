@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,7 +30,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-news.js') }}"></script>
+  @vite(['resources/js/edit-news.js'])
   <script>
     var currentSection = {{ $user->currentSection->id }};
     var news = new Array();
@@ -36,15 +43,22 @@
       };
     @endforeach
   </script>
-  <script src="{{ asset('ckeditor/ckeditor.js') }}"></script>
-  <script>
-    CKEDITOR.replace('news_body', {
+  @vite(['resources/js/ckeditor/ckeditor.js'])
+  <script type="module">
+    ClassicEditor.create(document.querySelector('#news_body'))
+    .then(editor => {
+      console.log( editor );
+    })
+    .catch(error => {
+      console.error( error );
+    });
+/*    CKEDITOR.replace('news_body', {
       language: 'fr',
       extraPlugins: 'divarea,mediaembed',
       height: '200px',
       filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
     });
-  </script>
+*/  </script>
 @stop
 
 @section('back_links')
@@ -61,7 +75,6 @@
   
   <div class="row">
     <div class="col-lg-12">
-  
       <h1>Actualités {{{ $user->currentSection->de_la_section }}}</h1>
       @include('subviews.flashMessages')
     </div>
@@ -73,34 +86,34 @@
       <div id="news_form" class="form-horizontal well"
            @if (!Session::has('_old_input')) style="display: none;" @endif
            >
-        {{ Form::open(array('url' => URL::route('manage_news_submit', array('section_slug' => $user->currentSection->slug)))) }}
-          {{ Form::hidden('news_id', 0) }}
+        {!! Form::open(array('url' => URL::route('manage_news_submit', array('section_slug' => $user->currentSection->slug)))) !!}
+          {!! Form::hidden('news_id', 0) !!}
           <div class="form-group">
-            {{ Form::label('news_title', "Titre", array("class" => "col-md-2 control-label")) }}
+            {!! Form::label('news_title', "Titre", array("class" => "col-md-2 control-label")) !!}
             <div class="col-md-5">
-              {{ Form::text('news_title', '', array('class' => 'form-control', 'placeholder' => "Titre de la nouvelle")) }}
+              {!! Form::text('news_title', '', array('class' => 'form-control', 'placeholder' => "Titre de la nouvelle")) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('news_body', "Contenu", array("class" => "col-md-2 control-label")) }}
+            {!! Form::label('news_body', "Contenu", array("class" => "col-md-2 control-label")) !!}
             <div class="col-md-10">
-              {{ Form::textarea('news_body', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) }}
+              {!! Form::textarea('news_body', '', array('class' => 'form-control', 'rows' => 3, 'placeholder' => "Contenu de la nouvelle")) !!}
             </div>
           </div>
           <div class="form-group">
-            {{ Form::label('section', "Section", array("class" => "col-md-2 control-label")) }}
+            {!! Form::label('section', "Section", array("class" => "col-md-2 control-label")) !!}
             <div class="col-md-5">
-              {{ Form::select('section', $sections, $user->currentSection->id, array('class' => 'form-control')) }}
+              {!! Form::select('section', $sections, $user->currentSection->id, array('class' => 'form-control')) !!}
             </div>
           </div>
           <div class="form-group">
             <div class="col-md-5 col-md-offset-2">
-              {{ Form::submit('Enregistrer', array('class' => 'btn btn-primary')) }}
+              {!! Form::submit('Enregistrer', array('class' => 'btn btn-primary')) !!}
               <a class="btn btn-danger" id='delete_link' style="display: none;" href="">Supprimer</a>
               <a class="btn btn-default" href="javascript:dismissNewsForm()">Fermer</a>
             </div>
           </div>
-        {{ Form::close() }}
+        {!! Form::close() !!}
       </div>
       
     </div>

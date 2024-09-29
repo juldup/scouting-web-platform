@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+use App\Models\Section;
+use App\Models\Page;
+
 ?>
 
 @section('title')
@@ -23,8 +33,8 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-pages.js') }}"></script>
-  <script src="{{ asset('js/reorder-list.js') }}"></script>
+  @vite(['resources/js/edit-pages.js'])
+  @vite(['resources/js/reorder-list.js'])
   <script>
     var savePageOrderURL = "{{ URL::route('ajax_change_custom_page_order') }}";
   </script>
@@ -227,13 +237,13 @@
             <tr>
               <th>Ajouter une page<span class='horiz-divider'></span></th>
               <td>
-                {{ Form::open(array('route' => 'add_custom_page')) }}
-                {{ Form::text('page_title', null, array('class' => 'form-control large', 'placeholder' => 'Titre de la page')) }}
+                {!! Form::open(array('route' => 'add_custom_page')) !!}
+                {!! Form::text('page_title', null, array('class' => 'form-control large', 'placeholder' => 'Titre de la page')) !!}
                 <span class='horiz-divider'></span>
-                Page privée : {{ Form::checkbox('leaders_only', 1, 0) }}
+                Page privée : {!! Form::checkbox('leaders_only', 1, 0) !!}
                 <span class='horiz-divider'></span>
-                {{ Form::submit('Ajouter', array('class' => 'btn btn-primary')) }}
-                {{ Form::close() }}
+                {!! Form::submit('Ajouter', array('class' => 'btn btn-primary')) !!}
+                {!! Form::close() !!}
               </td>
             </tr>
           </tbody>

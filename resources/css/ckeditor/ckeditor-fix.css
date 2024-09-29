@@ -1,7 +1,6 @@
-<?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,13 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
-?>
 
-@if (!$error)
-  <script type="text/javascript">
-    window.parent.CKEDITOR.tools.callFunction({{ $funcNum }}, "{{ $imageURL }}");
-  </script>
-  Upload terminé.
-@else
-  {{ $error }}
-@endif
+
+.ck-content {
+        & .image_resized {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        & .image {
+            text-align: center;
+        }
+}

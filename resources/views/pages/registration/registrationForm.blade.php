@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Member;
+
 ?>
 
 @section('title')
@@ -23,7 +32,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/registration-form.js') }}"></script>
+  @vite(['resources/js/registration-form.js'])
 @stop
 
 @section('forward_links')
@@ -79,7 +88,7 @@
     <div class="col-md-12">
       <div class="well">
         <div id="registration_form">
-          {{ Form::open(array('url' => URL::route('registration_form_submit'), 'class' => 'form-horizontal')) }}
+          {!! Form::open(array('url' => URL::route('registration_form_submit'), 'class' => 'form-horizontal')) !!}
           
           <legend>Identité du scout</legend>
           <p class='registration-form-subsection-information'>
@@ -87,9 +96,9 @@
           </p>
           
           <div class='form-group'>
-            {{ Form::label('first_name', "Prénom", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('first_name', "Prénom", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('first_name', '', array('class' => 'form-control')) }}
+              {!! Form::text('first_name', '', array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -99,9 +108,9 @@
           </div>
           
           <div class="form-group">
-            {{ Form::label('last_name', "Nom", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('last_name', "Nom", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('last_name', $default['last_name'], array('class' => 'form-control')) }}
+              {!! Form::text('last_name', $default['last_name'], array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -111,11 +120,11 @@
           </div>
           
           <div class="form-group">
-            {{ Form::label('birth_date', "Date de naissance", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('birth_date', "Date de naissance", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('birth_date_day', '', array('class' => 'small form-control', 'placeholder' => 'Jour')) }} /
-              {{ Form::text('birth_date_month', '', array('class' => 'small form-control', 'placeholder' => 'Mois')) }} /
-              {{ Form::text('birth_date_year', '', array('class' => 'small form-control', 'placeholder' => 'Année')) }}
+              {!! Form::text('birth_date_day', '', array('class' => 'small form-control', 'placeholder' => 'Jour')) !!} /
+              {!! Form::text('birth_date_month', '', array('class' => 'small form-control', 'placeholder' => 'Mois')) !!} /
+              {!! Form::text('birth_date_year', '', array('class' => 'small form-control', 'placeholder' => 'Année')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -125,9 +134,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('gender', "Sexe", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('gender', "Sexe", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::select('gender', array('M' => 'Garçon', 'F' => 'Fille'), 'M', array('class' => 'form-control')) }}
+              {!! Form::select('gender', array('M' => 'Garçon', 'F' => 'Fille'), 'M', array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -137,9 +146,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('nationality', "Nationalité", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('nationality', "Nationalité", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('nationality', $default['nationality'], array('class' => 'small form-control')) }}
+              {!! Form::text('nationality', $default['nationality'], array('class' => 'small form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -154,9 +163,9 @@
           </p>
           
           <div class='form-group'>
-            {{ Form::label('address', "Rue et numéro", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('address', "Rue et numéro", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('address', $default['address'], array('class' => 'form-control')) }}
+              {!! Form::text('address', $default['address'], array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -166,9 +175,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('postcode', "Code postal", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('postcode', "Code postal", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('postcode', $default['postcode'], array('class' => 'small form-control')) }}
+              {!! Form::text('postcode', $default['postcode'], array('class' => 'small form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -178,9 +187,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('city', "Localité", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('city', "Localité", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('city', $default['city'], array('class' => 'form-control')) }}
+              {!! Form::text('city', $default['city'], array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -196,46 +205,46 @@
           
           <div class="row">
             <div class="col-md-3">
-              <p>{{ Form::label('phone1', "Téléphone/GSM des parents", array('class' => 'control-label', 'style' => 'display: block;')) }}</p>
+              <p>{!! Form::label('phone1', "Téléphone/GSM des parents", array('class' => 'control-label', 'style' => 'display: block;')) !!}</p>
               <p class="registration-form-side-information">
                 {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE)) }}
               </p>
             </div>
             <div class="col-md-9">
-              {{ Form::text('phone1', $default['phone1'], array('placeholder' => "Numéro principal", 'class' => "form-control medium")) }}
+              {!! Form::text('phone1', $default['phone1'], array('placeholder' => "Numéro principal", 'class' => "form-control medium")) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone1_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone1_private', 1, $default['phone1_private']) }}
+              {!! Form::label('phone1_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
+              {!! Form::checkbox('phone1_private', 1, $default['phone1_private']) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone1_owner', 'Téléphone de', array('class' => 'control-label')) }}
-              {{ Form::text('phone1_owner', $default['phone1_owner'], array('placeholder' => "Ex: maison", 'class' => "medium form-control")) }}
+              {!! Form::label('phone1_owner', 'Téléphone de', array('class' => 'control-label')) !!}
+              {!! Form::text('phone1_owner', $default['phone1_owner'], array('placeholder' => "Ex: maison", 'class' => "medium form-control")) !!}
               <br />
-              {{ Form::text('phone2', $default['phone2'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
+              {!! Form::text('phone2', $default['phone2'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone2_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone2_private', 1, $default['phone2_private']) }}
+              {!! Form::label('phone2_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
+              {!! Form::checkbox('phone2_private', 1, $default['phone2_private']) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone2_owner', 'Téléphone de', array('class' => 'control-label')) }}
-              {{ Form::text('phone2_owner', $default['phone2_owner'], array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) }}
+              {!! Form::label('phone2_owner', 'Téléphone de', array('class' => 'control-label')) !!}
+              {!! Form::text('phone2_owner', $default['phone2_owner'], array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) !!}
               <br />
-              {{ Form::text('phone3', $default['phone3'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) }}
+              {!! Form::text('phone3', $default['phone3'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone3_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone3_private', 1, $default['phone3_private']) }}
+              {!! Form::label('phone3_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
+              {!! Form::checkbox('phone3_private', 1, $default['phone3_private']) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone3_owner', 'Téléphone de', array('class' => 'control-label')) }}
-              {{ Form::text('phone3_owner', $default['phone3_owner'], array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) }}
+              {!! Form::label('phone3_owner', 'Téléphone de', array('class' => 'control-label')) !!}
+              {!! Form::text('phone3_owner', $default['phone3_owner'], array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) !!}
               <br />&nbsp;
             </div>
           </div>
           
           <div class='form-group'>
-            {{ Form::label('phone_member', "GSM du scout", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('phone_member', "GSM du scout", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-9">
-              {{ Form::text('phone_member', '', array('placeholder' => "GSM du scout", 'class' => "medium form-control")) }}
+              {!! Form::text('phone_member', '', array('placeholder' => "GSM du scout", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
-              {{ Form::label('phone_member_private', "Confidentiel (*) :", array('class' => 'control-label')) }}
-              {{ Form::checkbox('phone_member_private') }}
+              {!! Form::label('phone_member_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
+              {!! Form::checkbox('phone_member_private') !!}
               <span class='horiz-divider'></span>
               <span class="registration-form-side-information">
                 {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE_MEMBER)) }}
@@ -244,11 +253,11 @@
           </div>
           
           <div class='row'>
-            {{ Form::label('email1', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('email1', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('email1', $default['email1'], array('class' => 'form-control')) }}
-              {{ Form::text('email2', $default['email2'], array('class' => 'form-control')) }}
-              {{ Form::text('email3', $default['email3'], array('class' => 'form-control')) }} <br />
+              {!! Form::text('email1', $default['email1'], array('class' => 'form-control')) !!}
+              {!! Form::text('email2', $default['email2'], array('class' => 'form-control')) !!}
+              {!! Form::text('email3', $default['email3'], array('class' => 'form-control')) !!} <br />
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -258,9 +267,9 @@
           </div>
           
           <div class="form-group">
-            {{ Form::label('email_member', "Adresse e-mail du scout", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('email_member', "Adresse e-mail du scout", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('email_member', '', array('placeholder' => "", 'class' => 'form-control')) }}
+              {!! Form::text('email_member', '', array('placeholder' => "", 'class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -283,12 +292,12 @@
           </p>
           
           <div class='form-group'>
-            {{ Form::label('section', "Section", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('section', "Section", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
               @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS) && Parameter::get(Parameter::$REGISTRATION_GENERIC_SECTIONS))
-                {{ Form::select('section_category', Section::getExistingCategoriesForSelect(), '', array('class' => 'form-control')) }}
+                {!! Form::select('section_category', Section::getExistingCategoriesForSelect(), '', array('class' => 'form-control')) !!}
               @else
-                {{ Form::select('section', Section::getSectionsForSelect(), $user->currentSection->id, array('class' => 'form-control')) }}
+                {!! Form::select('section', Section::getSectionsForSelect(), $user->currentSection->id, array('class' => 'form-control')) !!}
               @endif
             </div>
             <div class="col-md-5">
@@ -299,9 +308,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('totem', "Totem", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('totem', "Totem", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('totem', '', array('class' => 'form-control')) }}
+              {!! Form::text('totem', '', array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -311,9 +320,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('quali', "Quali", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('quali', "Quali", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {{ Form::text('quali', '', array('class' => 'form-control')) }}
+              {!! Form::text('quali', '', array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -323,10 +332,10 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('is_leader', "Inscription d'un animateur", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('is_leader', "Inscription d'un animateur", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
               <div class="checkbox">
-                {{ Form::checkbox('is_leader') }}
+                {!! Form::checkbox('is_leader') !!}
               </div>
             </div>
             <div class="col-md-5">
@@ -339,32 +348,32 @@
           <div class="leader_specific" style="display:none;">
             
             <div class='form-group'>
-              {{ Form::label('leader_name', "Nom d'animateur", array('class' => 'col-md-3 control-label')) }}
+              {!! Form::label('leader_name', "Nom d'animateur", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-4">
-                {{ Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section", 'class' => 'form-control')) }}
+                {!! Form::text('leader_name', '', array('placeholder' => "Nom utilisé dans sa section", 'class' => 'form-control')) !!}
               </div>
             </div>
             
             <div class='form-group'>
-              {{ Form::label('leader_in_charge', "Animateur responsable", array('class' => 'col-md-3 control-label')) }}
+              {!! Form::label('leader_in_charge', "Animateur responsable", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-8">
                 <div class="checkbox">
-                  {{ Form::checkbox('leader_in_charge') }}
+                  {!! Form::checkbox('leader_in_charge') !!}
                 </div>
               </div>
             </div>
             
             <div class='form-group'>
-              {{ Form::label('leader_description', "Description de l'animateur", array('class' => 'col-md-3 control-label')) }}
+              {!! Form::label('leader_description', "Description de l'animateur", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-6">
-                {{ Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs", 'rows' => 3, 'class' => 'form-control')) }}
+                {!! Form::textarea('leader_description', '', array('placeholder' => "Petite description qui apparaitra sur la page des animateurs", 'rows' => 3, 'class' => 'form-control')) !!}
               </div>
             </div>
             
             <div class='form-group'>
-              {{ Form::label('leader_role', "Rôle de l'animateur", array('class' => 'col-md-3 control-label')) }}
+              {!! Form::label('leader_role', "Rôle de l'animateur", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-6">
-                {{ Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control')) }}
+                {!! Form::text('leader_role', '', array('placeholder' => "Rôle particulier dans le staff", 'class' => 'form-control')) !!}
               </div>
             </div>
             
@@ -376,12 +385,12 @@
           </p>
           
           <div class='row'>
-            {{ Form::label('has_handicap', "Handicap", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('has_handicap', "Handicap", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
               <div class="checkbox">
-                {{ Form::checkbox('has_handicap') }}
+                {!! Form::checkbox('has_handicap') !!}
               </div>
-              {{ Form::textarea('handicap_details', '', array('placeholder' => "Détails du handicap", 'rows' => 3, 'class' => 'form-control')) }}
+              {!! Form::textarea('handicap_details', '', array('placeholder' => "Détails du handicap", 'rows' => 3, 'class' => 'form-control')) !!}
               <br />
             </div>
             <div class="col-md-4">
@@ -392,9 +401,9 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('comments', "Commentaires", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('comments', "Commentaires", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::textarea('comments', '', array('placeholder' => "Toute information utile à partager aux animateurs (sauf les informations médicales que vous serez invité à indiquer dans une fiche santé).", 'rows' => 3, 'class' => 'form-control')) }}
+              {!! Form::textarea('comments', '', array('placeholder' => "Toute information utile à partager aux animateurs (sauf les informations médicales que vous serez invité à indiquer dans une fiche santé).", 'rows' => 3, 'class' => 'form-control')) !!}
             </div>
             <div class="col-md-4">
               <p class="form-side-note registration-form-side-information">
@@ -404,13 +413,13 @@
           </div>
           
           <div class='form-group'>
-            {{ Form::label('family_in_other_units', "Famille dans d'autres unités", array('class' => 'col-md-3 control-label')) }}
+            {!! Form::label('family_in_other_units', "Famille dans d'autres unités", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-5">
-              {{ Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), $default['family_in_other_units'], array('class' => 'form-control medium')) }}
-              {{ Form::textarea('family_in_other_units_details', $default['family_in_other_units_details'],
+              {!! Form::select('family_in_other_units', Member::getFamilyOtherUnitsForSelect(), $default['family_in_other_units'], array('class' => 'form-control medium')) !!}
+              {!! Form::textarea('family_in_other_units_details', $default['family_in_other_units_details'],
                         array('placeholder' => "Si le scout a des frères et sœurs dans une autre unité, " .
                                                "cela peut entrainer une réduction de la cotisation. Indiquer " .
-                                               "ici qui et dans quelle(s) unité(s).", 'rows' => 3, 'class' => 'form-control')) }}
+                                               "ici qui et dans quelle(s) unité(s).", 'rows' => 3, 'class' => 'form-control')) !!}
             </div>
             <div class="col-md-4">
               <p class="form-side-note registration-form-side-information">
@@ -421,10 +430,10 @@
           
           @if (Parameter::get(Parameter::$ADVANCED_REGISTRATIONS))
             <div class='form-group'>
-              {{ Form::label('registration_siblings', "Frères et sœurs dans l'unité", array('class' => 'col-md-3 control-label')) }}
+              {!! Form::label('registration_siblings', "Frères et sœurs dans l'unité", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-5">
-                {{ Form::text('registration_siblings', $default['registration_siblings'],
-                          array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control')) }}
+                {!! Form::text('registration_siblings', $default['registration_siblings'],
+                          array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control')) !!}
               </div>
               <div class="col-md-4">
                 <p class="form-side-note registration-form-side-information">
@@ -434,10 +443,10 @@
             </div>
             
             <div class='form-group'>
-              {{ Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array('class' => 'col-md-3 control-label')) }}
+              {!! Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-5">
-                {{ Form::text('registration_former_leader_child', $default['registration_former_leader_child'],
-                          array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control')) }}
+                {!! Form::text('registration_former_leader_child', $default['registration_former_leader_child'],
+                          array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control')) !!}
               </div>
               <div class="col-md-4">
                 <p class="form-side-note registration-form-side-information">
@@ -454,12 +463,12 @@
             
             @if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))
               <div class='form-group'>
-                {{ Form::label('policy_agreement', "Engagement", array('class' => 'col-md-3 control-label')) }}
+                {!! Form::label('policy_agreement', "Engagement", array('class' => 'col-md-3 control-label')) !!}
                 <div class="col-md-8">
                   <p class="form-side-note">
                     J'ai pris connaissance de la <a target="_blank" href="{{ URL::route('unit_policy') }}">charte d'unité</a>
                     et y adhère entièrement : 
-                    {{ Form::checkbox('policy_agreement') }}
+                    {!! Form::checkbox('policy_agreement') !!}
                   </p>
                 </div>
               </div>
@@ -467,12 +476,12 @@
             
             @if (Parameter::get(Parameter::$SHOW_GDPR))
               <div class='form-group'>
-                {{ Form::label('gdpr_agreement', "RGPD", array('class' => 'col-md-3 control-label')) }}
+                {!! Form::label('gdpr_agreement', "RGPD", array('class' => 'col-md-3 control-label')) !!}
                 <div class="col-md-8">
                   <p class="form-side-note">
                     J'ai pris connaissance du <a target="_blank" href="{{ URL::route('gdpr') }}">RGPD</a>
                     et l'accepte : 
-                    {{ Form::checkbox('gdpr_agreement') }}
+                    {!! Form::checkbox('gdpr_agreement') !!}
                   </p>
                 </div>
               </div>
@@ -480,10 +489,10 @@
       
             <div class="form-group">
               <div class="col-md-9 col-md-offset-3">
-                {{ Form::submit('Inscrire maintenant', array('class' => 'btn btn-primary')) }}
+                {!! Form::submit('Inscrire maintenant', array('class' => 'btn btn-primary')) !!}
               </div>
             </div>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       </div>
     </div>

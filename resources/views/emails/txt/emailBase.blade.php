@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+
 ?>
 @yield('header')
 
@@ -28,5 +36,5 @@ Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis le site, veuillez c
 @else
 Cet e-mail a été envoyé depuis le site de l'unité {{{ Parameter::get(Parameter::$UNIT_SHORT_NAME) }}}. Si vous souhaitez ne plus recevoir d'e-mails envoyés depuis notre site, veuillez cliquer sur le lien suivant.
 This e-mail was sent because you are a member of our scout group. To unsubscribe, please click on the following link.
-{{ URL::route('ban_email', array("code" => $ban_email_code)) }}
+{{ URL::route('ban_email', array("ban_code" => $ban_email_code)) }}
 @endif

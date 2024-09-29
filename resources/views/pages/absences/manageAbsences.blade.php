@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+use App\Models\MemberHistory;
+use App\Models\CalendarItem;
+
 ?>
 
 @section('title')
@@ -27,7 +36,7 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-absences.js') }}"></script>
+  @vite(['resources/js/edit-absences.js'])
 @stop
 
 @section('back_links')
@@ -97,15 +106,15 @@
             @if (count($absences) == 0)
               <div class="absence-event-name-empty">
                 <span class="absence-nofold"></span>
-                {{ CalendarItem::find($eventId)->stringRepresentation() }}
+                {!! CalendarItem::find($eventId)->stringRepresentation() !!}
                 (aucun absent)
               </div>
             @else
               <div class="absence-event-name">
                 <span class="absence-unfold"></span>
                 <span class="absence-fold" style="display: none;"></span>
-                {{ CalendarItem::find($eventId)->stringRepresentation() }}
-                ({{ count($absences) == 1 ? "<strong>1 absent</strong>" : ("<strong>" . count($absences) . " absents</strong>") }})
+                {!! CalendarItem::find($eventId)->stringRepresentation() !!}
+                ({!! count($absences) == 1 ? "<strong>1 absent</strong>" : ("<strong>" . count($absences) . " absents</strong>") !!})
               </div>
               <table class="table table-striped table-hover absence-list" style="display: none;">
                 <tbody>

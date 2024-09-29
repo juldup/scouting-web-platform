@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
+use App\Helpers\Resizer;
+
 /**
  * This Eloquent class represents a photo in the photo page. Each photo
  * belongs to a photo album (PhotoAlbum).
@@ -26,12 +31,12 @@
  *   - caption:  A short text that accompanies the photo
  *   - position: The order of the photo within the album
  */
-class Photo extends Eloquent {
+class Photo extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
   // Path of the folder (within the storage folder) that contains all the photos
-  protected static $PHOTO_FOLDER_PATH = "site_data/photos/";
+  protected static $PHOTO_FOLDER_PATH = "app/site_data/photos/";
   
   // Photo formats
   public static $FORMAT_THUMBNAIL = "thumbnail";

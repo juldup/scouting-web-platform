@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,9 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * This Eloquent class represents a global parameter of the website.
  * It provides functions to access the parameters.
@@ -24,14 +27,14 @@
  *   - name:  Name of the parameter
  *   - value: Value of the parameter
  */
-class Parameter extends Eloquent {
+class Parameter extends Model {
   
   protected $guarded = array('id', 'created_at', 'updated_at');
   
   
   // Folder (relative to storage folder) where the website logo is stored
-  public static $LOGO_IMAGE_FOLDER = "site_data/website_logo/";
-  public static $ICON_IMAGE_FOLDER = "site_data/website_icon/";
+  public static $LOGO_IMAGE_FOLDER = "app/site_data/website_logo/";
+  public static $ICON_IMAGE_FOLDER = "app/site_data/website_icon/";
   
   /**
    *  Parameter names

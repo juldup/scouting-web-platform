@@ -2,7 +2,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Models\Parameter;
+use App\Helpers\Helper;
+use Illuminate\Support\Facades\Session;
+use App\Helpers\Form;
+use App\Models\Privilege;
+
 ?>
 
 @section('title')
@@ -23,19 +30,25 @@
 @stop
 
 @section('additional_javascript')
-  <script src="{{ asset('js/edit-leaders.js') }}"></script>
-  <script>
+  @vite(['resources/js/edit-leaders.js'])
+  <script type='module'>
     var currentSection = {{ $user->currentSection->id }};
-    var leaders = new Array();
-    var ownedLeaders = new Array();
+    window.leaders = new Array();
+    window.ownedLeaders = new Array();
     @foreach ($leaders as $leader)
-      leaders[{{ $leader->id }}] = @include('subviews.memberToJavascript', array('member' => $leader));
+      window.leaders[{{ $leader->id }}] = @include('subviews.memberToJavascript', array('member' => $leader));
       @if ($user->isOwnerOfMember($leader->id))
-        ownedLeaders.push("{{ $leader->id }}");
+        window.ownedLeaders.push("{{ $leader->id }}");
       @endif
     @endforeach
-    @if ($scout_to_leader && !Session::has('_old_input'))
-      editLeader({{ $scout_to_leader }}, true);
+    @if ($scout_to_leader)
+      @if (!Session::has('_old_input'))
+        $().ready(function() {
+          editLeader({{ $scout_to_leader }}, true);
+        });
+      @else
+        $("#member_form legend:first").html("Transformer un scout en animateur");
+      @endif
     @endif
   </script>
 @stop
@@ -163,18 +176,18 @@
       <div class="col-md-12">
         <h2>Scout devenant animateur</h2>
         <div id='scout_to_leader' class="form-horizontal">
-          {{ Form::open(array('url' => URL::route('edit_leaders_member_to_leader_post',
-            array('section_slug' => $user->currentSection->slug)))) }}
+          {!! Form::open(array('url' => URL::route('edit_leaders_member_to_leader_post',
+            array('section_slug' => $user->currentSection->slug)))) !!}
             <p class="form-side-note float-left">
               Transformer&nbsp;
             </p>
             <p class="float-left">
-              {{ Form::select('member_id', $scouts, '', array('class' => 'form-control large')) }}
+              {!! Form::select('member_id', $scouts, '', array('class' => 'form-control large')) !!}
             </p>
             <p class="form-side-note">
               &nbsp;en animateur.
             <p>
-          {{ Form::close() }}
+          {!! Form::close() !!}
         </div>
       </div>
     </div>

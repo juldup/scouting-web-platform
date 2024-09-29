@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -15,6 +15,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+namespace App\Models;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This Eloquent class represents a lock made by a user on editing the accounting of a section/year.
@@ -34,7 +37,7 @@
  *   - timestamp:   The timestamp of the lock
  *   - invalidated: Whether this lock has been invalidated
  */
-class AccountingLock extends Eloquent {
+class AccountingLock extends Model {
   
   var $guarded = array('id', 'created_at', 'updated_at');
   

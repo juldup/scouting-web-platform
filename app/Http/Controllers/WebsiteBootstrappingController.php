@@ -1,7 +1,7 @@
 <?php
 /**
  * Belgian Scouting Web Platform
- * Copyright (C) 2014  Julien Dupuis
+ * Copyright (C) 2014-2023 Julien Dupuis
  * 
  * This code is licensed under the GNU General Public License.
  * 
@@ -16,6 +16,59 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
 
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
+use App\Helpers\CalendarPDF;
+use App\Helpers\DateHelper;
+use App\Helpers\ElasticsearchHelper;
+use App\Helpers\EnvelopsPDF;
+use App\Helpers\Form;
+use App\Helpers\HealthCardPDF;
+use App\Helpers\Helper;
+use App\Helpers\ListingComparison;
+use App\Helpers\ListingPDF;
+use App\Helpers\Resizer;
+use App\Helpers\ScoutMailer;
+use App\Models\Absence;
+use App\Models\AccountingItem;
+use App\Models\AccountingLock;
+use App\Models\ArchivedLeader;
+use App\Models\Attendance;
+use App\Models\BannedEmail;
+use App\Models\CalendarItem;
+use App\Models\Comment;
+use App\Models\DailyPhoto;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\EmailAttachment;
+use App\Models\GuestBookEntry;
+use App\Models\HealthCard;
+use App\Models\Link;
+use App\Models\LogEntry;
+use App\Models\Member;
+use App\Models\MemberHistory;
+use App\Models\News;
+use App\Models\Page;
+use App\Models\PageImage;
+use App\Models\Parameter;
+use App\Models\PasswordRecovery;
+use App\Models\Payment;
+use App\Models\PaymentEvent;
+use App\Models\PendingEmail;
+use App\Models\Photo;
+use App\Models\PhotoAlbum;
+use App\Models\Privilege;
+use App\Models\Section;
+use App\Models\Suggestion;
+use App\Models\TemporaryRegistrationLink;
+use App\Models\User;
+
 /**
  * This controller manages all the step the initialize the website when a new instance
  * is created.
@@ -26,16 +79,16 @@ class WebsiteBootstrappingController extends Controller {
    * [Route] Show the bootstrapping welcome page or a step page if the bootstrapping
    * has already been started
    */
-  public function showPage() {
+  public function showPage(Request $request) {
     // Check access
     if (!self::accessToBootstrappingPagesAllowed()) {
-      return Redirect::to(URL::route('home'));
+      return redirect(URL::route('home'));
     }
     // Get current step
     $step = self::getCurrentBootstrappingStep();
     if ($step) {
       // Bootstrapping has been started previously, go directly to current step
-      return Redirect::route('bootstrapping_step', array("step" => $step, "db_safe" => Input::get('db_safe')));
+      return redirect()->route('bootstrapping_step', array("step" => $step, "db_safe" => $request->input('db_safe')));
     } else {
       // Show welcome page
       return $this->step0();
@@ -48,7 +101,7 @@ class WebsiteBootstrappingController extends Controller {
   public function showStep($step) {
     // Check access
     if (!self::accessToBootstrappingPagesAllowed()) {
-      return Redirect::to(URL::route('home'));
+      return redirect(URL::route('home'));
     }
     // Save step
     self::setCurrentBootstrappingStep($step);
@@ -72,7 +125,7 @@ class WebsiteBootstrappingController extends Controller {
    * Returns the current bootstrapping step (if any, 0 otherwise)
    */
   private static function getCurrentBootstrappingStep() {
-    $bootstrappingStep = __DIR__ . "/../storage/site_data/bootstrapping-step.txt";
+    $bootstrappingStep = __DIR__ . "/../storage/app/site_data/bootstrapping-step.txt";
     if (file_exists($bootstrappingStep)) {
       try {
         return file_get_contents($bootstrappingStep);
@@ -85,7 +138,7 @@ class WebsiteBootstrappingController extends Controller {
    * Saves the bootstrapping step to the filesystem
    */
   private static function setCurrentBootstrappingStep($step) {
-    $bootstrappingStep = __DIR__ . "/../storage/site_data/bootstrapping-step.txt";
+    $bootstrappingStep = __DIR__ . "/../storage/app/site_data/bootstrapping-step.txt";
     try {
       file_put_contents($bootstrappingStep, $step);
     } catch (Exception $e) {}
@@ -103,7 +156,7 @@ class WebsiteBootstrappingController extends Controller {
    */
   public function step1() {
     // Folder of the site_data
-    $siteDataRoot = dirname(__DIR__) . "/storage";
+    $siteDataRoot = dirname(__DIR__) . "/storage/app";
     $success = false;
     try {
       // Make sure the root folder exists
@@ -147,43 +200,43 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 2: Configure and initialize database
    */
-  public function step2() {
+  public function step2(Request $request) {
     // Database configuration file path
-    $databaseConfigFilePath = __DIR__ . "/../storage/site_data/database/database-config.txt";
+    $databaseConfigFilePath = __DIR__ . "/../storage/app/site_data/database/database-config.txt";
     // Create folder to contain the database configuration files
     if (!file_exists(dirname($databaseConfigFilePath))) {
       mkdir(dirname($databaseConfigFilePath), 0777, true);
     }
     // Create sqlite file in case sqlite will be used
-    if (!file_exists(__DIR__ . '/../storage/site_data/database/database.sqlite')) {
-      touch(__DIR__ . '/../storage/site_data/database/database.sqlite');
+    if (!file_exists(__DIR__ . '/../storage/app/site_data/database/database.sqlite')) {
+      touch(__DIR__ . '/../storage/app/site_data/database/database.sqlite');
     }
     // Save post data (if any)
     if (Request::isMethod('post')) {
       // Get input data
       $databaseData = array(
-          'driver' => Input::get('driver'),
-          'host' => Input::get('host'),
-          'database' => Input::get('database'),
-          'username' => Input::get('username'),
-          'password' => Input::get('password')
+          'driver' => $request->input('driver'),
+          'host' => $request->input('host'),
+          'database' => $request->input('database'),
+          'username' => $request->input('username'),
+          'password' => $request->input('password')
       );
       // Save data to file in json format
       file_put_contents($databaseConfigFilePath, json_encode($databaseData));
       // Redirect to 'GET' route
-      return Redirect::route('bootstrapping_step', array('step' => 2));
+      return redirect()->route('bootstrapping_step', array('step' => 2));
     }
     // Check if a database file already exists
     $databaseExists = false;
     $databaseConfig = array();
-    $databaseConfigError = Input::get('db_safe') ? true : false;
+    $databaseConfigError = $request->input('db_safe') ? true : false;
     // Get existing database configuration
     if (file_exists($databaseConfigFilePath)) {
       // Get database configuration from config file
       $fileContent = file_get_contents($databaseConfigFilePath);
       $databaseConfig = json_decode($fileContent, true);
       // Test the database configuration to make sure it is correct
-      if (!Input::get('db_safe')) { // In db_safe mode, the database is wrongly configured and no access to it will be made
+      if (!$request->input('db_safe')) { // In db_safe mode, the database is wrongly configured and no access to it will be made
         try {
           // Count tables, if there are more than 25 tables, the database has been configured successfully
           $tableCount = count(DB::select("SHOW TABLES"));
@@ -212,7 +265,7 @@ class WebsiteBootstrappingController extends Controller {
     }
     // Make view
     return View::make('pages.bootstrapping.step2', array(
-        'database_exists' => $databaseExists && !Input::get('reset'),
+        'database_exists' => $databaseExists && !$request->input('reset'),
         'database_config_error' => $databaseConfigError,
         'driver' => array_key_exists('driver', $databaseConfig) ? $databaseConfig['driver'] : 'mysql',
         'host' => array_key_exists('host', $databaseConfig) ? $databaseConfig['host'] : '',
@@ -228,7 +281,7 @@ class WebsiteBootstrappingController extends Controller {
   public function step3() {
     // Save website URL to file
     $baseURL = URL::to('');
-    file_put_contents(__DIR__ . "/../storage/site_data/website-base-url.txt", $baseURL);
+    file_put_contents(__DIR__ . "/../storage/app/site_data/website-base-url.txt", $baseURL);
     // Make view
     return View::make('pages.bootstrapping.step3', array(
         'cron_tasks_created' => false,
@@ -238,16 +291,16 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 4: Create a user account for the webmaster
    */
-  public function step4() {
+  public function step4(Request $request) {
     $errorMessage = "";
     // Check if there is already a webmaster for the website
     $existingWebmaster = User::where('is_webmaster', '=', true)->first();
     if (!$existingWebmaster) {
       if (Request::isMethod('post')) {
         // Get input data
-        $username = Input::get('username');
-        $email = strtolower(Input::get('email'));
-        $password = Input::get('password');
+        $username = $request->input('username');
+        $email = strtolower($request->input('email'));
+        $password = $request->input('password');
         // Validate data
         $validator = Validator::make(
                 array(
@@ -270,7 +323,7 @@ class WebsiteBootstrappingController extends Controller {
                 )
         );
         if ($validator->fails()) {
-          return Redirect::to(URL::current())
+          return redirect(URL::current())
                   ->withInput()
                   ->withErrors($validator);
         }
@@ -284,7 +337,7 @@ class WebsiteBootstrappingController extends Controller {
         // Log in as webmaster
         Session::put('user_id', $user->id);
         // Move to next step
-        return Redirect::route('bootstrapping_step', array('step' => 5));
+        return redirect()->route('bootstrapping_step', array('step' => 5));
       }
       // Construct error message
       $errors = Session::get('errors');
@@ -306,24 +359,24 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 5: E-mail sending configuration
    */
-  public function step5() {
+  public function step5(Request $request) {
     if (Request::isMethod('post')) {
-      if (Input::get('action') == 'configuration') {
+      if ($request->input('action') == 'configuration') {
         // Posting configuration data
         // Save data
         $error = false;
         try {
-          Parameter::set(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, Input::get('default_email_from_address'));
-          Parameter::set(Parameter::$SMTP_HOST, Input::get('smtp_host'));
-          Parameter::set(Parameter::$SMTP_PORT, Input::get('smtp_port'));
-          Parameter::set(Parameter::$SMTP_USERNAME, Input::get('smtp_username'));
-          Parameter::set(Parameter::$SMTP_PASSWORD, Input::get('smtp_password'));
-          Parameter::set(Parameter::$SMTP_SECURITY, Input::get('smtp_security'));
+          Parameter::set(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS, $request->input('default_email_from_address'));
+          Parameter::set(Parameter::$SMTP_HOST, $request->input('smtp_host'));
+          Parameter::set(Parameter::$SMTP_PORT, $request->input('smtp_port'));
+          Parameter::set(Parameter::$SMTP_USERNAME, $request->input('smtp_username'));
+          Parameter::set(Parameter::$SMTP_PASSWORD, $request->input('smtp_password'));
+          Parameter::set(Parameter::$SMTP_SECURITY, $request->input('smtp_security'));
         } catch (Exception $e) {
           $error = true;
         }
         // Save verified e-mail sender list
-        $verifiedSendersArray = Input::get('email_safe_list');
+        $verifiedSendersArray = $request->input('email_safe_list');
         $verifiedSenders = "";
         foreach ($verifiedSendersArray as $verifiedSender) {
           if ($verifiedSender && strpos($verifiedSenders, ";") === false) {
@@ -338,17 +391,17 @@ class WebsiteBootstrappingController extends Controller {
         }
         // Redirect
         if (!$error) {
-          return Redirect::route('bootstrapping_step', array('step' => 5, 'action' => 'testing'));
+          return redirect()->route('bootstrapping_step', array('step' => 5, 'action' => 'testing'));
         } else {
-          return Redirect::to(URL::current())
+          return redirect(URL::current())
                   ->with('error_message', "Une erreur est survenue. Les données n'ont pas pu être sauvées.");
         }
-      } elseif (Input::get('action') == 'testing') {
+      } elseif ($request->input('action') == 'testing') {
         // Posting e-mail address for testing
         // Check e-mail address
-        $email = Input::get('email');
+        $email = $request->input('email');
         if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-          return Redirect::to(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
+          return redirect(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
                   ->with('error_message', "Cette adresse e-mail n'est pas valide");
         }
         // Create e-mail
@@ -372,7 +425,7 @@ class WebsiteBootstrappingController extends Controller {
           $pendingEmail->delete();
           if ($pendingEmail->sent) {
             // Success
-            return Redirect::to(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
+            return redirect(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
                     ->with('success_message', "L'e-mail a été envoyé avec succès. Vérifiez que vous l'avez bien reçu avant de passer à l'étape 6.");
           }
         } catch (Exception $e) {
@@ -380,14 +433,14 @@ class WebsiteBootstrappingController extends Controller {
           $pendingEmail->delete();
         }
         // Error
-        return Redirect::to(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
+        return redirect(URL::route('bootstrapping_step', array('step' => 5, 'action' => 'testing')))
                     ->with('error_message', "L'e-mail n'a pas été envoyé. La configuration n'est pas correcte.");
       }
     }
     // Make view
     return View::make('pages.bootstrapping.step5', array(
-        'configuration' => Input::get('action') != 'testing',
-        'testing' => Input::get('action') == 'testing',
+        'configuration' => $request->input('action') != 'testing',
+        'testing' => $request->input('action') == 'testing',
         'safe_emails' => explode(",", Parameter::get(Parameter::$VERIFIED_EMAIL_SENDERS)),
         'error_message' => Session::get('error_message'),
         'success_message' => Session::get('success_message'),
@@ -397,32 +450,32 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 6: Configuring unit information
    */
-  public function step6() {
+  public function step6(Request $request) {
     $error = false;
     $success = false;
     // Save parameters from input
     if (Request::isMethod('post')) {
       // Save new prices
       try {
-        Parameter::set(Parameter::$PRICE_1_CHILD, Helper::formatCashAmount(Input::get('price_1_child')));
-        Parameter::set(Parameter::$PRICE_1_LEADER, Helper::formatCashAmount(Input::get('price_1_leader')));
-        Parameter::set(Parameter::$PRICE_2_CHILDREN, Helper::formatCashAmount(Input::get('price_2_children')));
-        Parameter::set(Parameter::$PRICE_2_LEADERS, Helper::formatCashAmount(Input::get('price_2_leaders')));
-        Parameter::set(Parameter::$PRICE_3_CHILDREN, Helper::formatCashAmount(Input::get('price_3_children')));
-        Parameter::set(Parameter::$PRICE_3_LEADERS, Helper::formatCashAmount(Input::get('price_3_leaders')));
+        Parameter::set(Parameter::$PRICE_1_CHILD, Helper::formatCashAmount($request->input('price_1_child')));
+        Parameter::set(Parameter::$PRICE_1_LEADER, Helper::formatCashAmount($request->input('price_1_leader')));
+        Parameter::set(Parameter::$PRICE_2_CHILDREN, Helper::formatCashAmount($request->input('price_2_children')));
+        Parameter::set(Parameter::$PRICE_2_LEADERS, Helper::formatCashAmount($request->input('price_2_leaders')));
+        Parameter::set(Parameter::$PRICE_3_CHILDREN, Helper::formatCashAmount($request->input('price_3_children')));
+        Parameter::set(Parameter::$PRICE_3_LEADERS, Helper::formatCashAmount($request->input('price_3_leaders')));
       } catch (Exception $e) {
         $error = true;
       }
       // Save the unit parameters
       try {
-        Parameter::set(Parameter::$UNIT_LONG_NAME, Input::get('unit_long_name'));
-        Parameter::set(Parameter::$UNIT_SHORT_NAME, Input::get('unit_short_name'));
-        Parameter::set(Parameter::$UNIT_BANK_ACCOUNT, Input::get('unit_bank_account'));
+        Parameter::set(Parameter::$UNIT_LONG_NAME, $request->input('unit_long_name'));
+        Parameter::set(Parameter::$UNIT_SHORT_NAME, $request->input('unit_short_name'));
+        Parameter::set(Parameter::$UNIT_BANK_ACCOUNT, $request->input('unit_bank_account'));
       } catch (Exception $e) {
         $error = true;
       }
       // Save the logo
-      $logoFile = Input::file('logo');
+      $logoFile = $request->file('logo');
       try {
         if ($logoFile) {
           $filename = $logoFile->getClientOriginalName();
@@ -434,14 +487,14 @@ class WebsiteBootstrappingController extends Controller {
       }
       // Save the logo on two lines option
       try {
-        Parameter::set(Parameter::$LOGO_TWO_LINES, Input::get('logo_two_lines') ? true : false);
+        Parameter::set(Parameter::$LOGO_TWO_LINES, $request->input('logo_two_lines') ? true : false);
       } catch (Exception $ex) {
         $error = true;
       }
       // Save the search engine parameters
       try {
-        Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, Input::get('website_meta_description'));
-        Parameter::set(Parameter::$WEBSITE_META_KEYWORDS, Input::get('website_meta_keywords'));
+        Parameter::set(Parameter::$WEBSITE_META_DESCRIPTION, $request->input('website_meta_description'));
+        Parameter::set(Parameter::$WEBSITE_META_KEYWORDS, $request->input('website_meta_keywords'));
       } catch (Exception $ex) {
         $error = true;
       }
@@ -457,12 +510,12 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 7: create sections
    */
-  public function step7() {
+  public function step7(Request $request) {
     // Input data
     if (Request::isMethod('post')) {
       try {
         Section::where('id', '!=', 1)->delete();
-        $sectionData = json_decode(Input::get('data'), true);
+        $sectionData = json_decode($request->input('data'), true);
         // Create each section
         foreach ($sectionData as $data) {
           $section = new Section();
@@ -481,11 +534,11 @@ class WebsiteBootstrappingController extends Controller {
           $section->save();
         }
         // Success, go to next step
-        return Redirect::to(URL::route('bootstrapping_step', array('step' => 8)));
+        return redirect(URL::route('bootstrapping_step', array('step' => 8)));
       } catch (Exception $e) {
         Log::error($e);
         // Error, show error message
-        return Redirect::to(URL::route('bootstrapping_step', array('step' => 7)))
+        return redirect(URL::route('bootstrapping_step', array('step' => 7)))
               ->with('error_message', "Une erreur s'est produite");
       }
     }
