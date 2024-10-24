@@ -24,7 +24,88 @@ use App\Models\Privilege;
 
 ?>
 
-<div ng-controller="LogsController">
+
+<div class="container" *ngIf="logs.length > 0">
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Date</th>
+        <th>Utilisateur</th>
+        <th>Catégorie</th>
+        <th>Action</th>
+        <th>Section</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>
+          <select [(ngModel)]="userFilter" (change)="updateFilter()" class="form-control">
+            <option value="">Tous</option>
+            <option *ngFor="let user of users" [value]="user">{{ user }}</option>
+          </select>
+        </td>
+        <td>
+          <select [(ngModel)]="categoryFilter" (change)="updateFilter()" class="form-control">
+            <option value="">Toutes</option>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+        </td>
+        <td>
+          <select [(ngModel)]="actionFilter" (change)="updateFilter()" class="form-control">
+            <option value="">Toutes</option>
+            <option value="errors">Uniquement les erreurs</option>
+            <option value="non-errors">Uniquement les actions réussies</option>
+          </select>
+        </td>
+        <td>
+          <select [(ngModel)]="sectionFilter" (change)="updateFilter()" class="form-control">
+            <option value="">Toutes</option>
+            <option *ngFor="let section of sections" [value]="section">{{ section }}</option>
+          </select>
+        </td>
+      </tr>
+    </tbody>
+    <tbody *ngFor="let log of logs" [ngClass]="{'log-error': log.isError}" *ngIf="showLog(log)">
+      <tr (click)="toggleDetails(log.id)">
+        <td>{{ log.id }}</td>
+        <td>{{ log.date }}</td>
+        <td title="{{ log.userEmail }}">{{ log.user }}</td>
+        <td>{{ log.category }}</td>
+        <td>{{ log.action }}</td>
+        <td>{{ log.section }}</td>
+      </tr>
+      <tr *ngIf="displayDetails === log.id" (click)="toggleDetails(log.id)">
+        <td colspan="6">
+          <div *ngIf="log.data.multiple">
+            <div *ngFor="let item of log.data.multiple">
+              <div *ngFor="let info of item">
+                <strong>{{ info.key }}:</strong> <span [innerHTML]="html(info.value)"></span>
+              </div>
+              <hr>
+            </div>
+          </div>
+          <div *ngIf="!log.data.multiple">
+            <div *ngFor="let info of log.data">
+              <strong>{{ info.key }}:</strong> <span [innerHTML]="html(info.value)"></span>
+            </div>
+            <p *ngIf="!log.data">Pas de détails</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <button class="btn btn-primary" (click)="loadMoreLogs()" *ngIf="!bottomReached && !loading">
+    Charger plus de logs
+  </button>
+  <p *ngIf="loading">Chargement en cours...</p>
+</div>
+
+
+<!--div ng-controller="LogsController">
   <div class="row">
     <div class="col-sm-12">
       <table class="table table-striped table-hover">
@@ -117,4 +198,4 @@ use App\Models\Privilege;
       </p>
     </div>
   </div>
-</div>
+</div-->

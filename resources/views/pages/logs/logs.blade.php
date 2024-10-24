@@ -30,13 +30,27 @@ use App\Models\Privilege;
 @stop
 
 @section('additional_javascript')
-  @vite(['resources/js/libs/angular-1.2.15.min.js'])
-  @vite(['resources/js/libs/angular-ui-0.4.0.js'])
-  <script>
-    var logsPerRequest = {{ $logs_per_request }};
-    var loadMoreLogsURL = "{{ URL::route('ajax_load_more_logs', ['lastKnownLogId' => 'LOG_ID', 'count' => $logs_per_request])}}";
+  <script src="https://unpkg.com/@angular/core@14.2.0/bundles/core.umd.min.js"></script>
+  <script src="https://unpkg.com/@angular/common@14.2.0/bundles/common.umd.min.js"></script>
+  <script src="https://unpkg.com/@angular/compiler@14.2.0/bundles/compiler.umd.min.js"></script>
+  <script src="https://unpkg.com/@angular/platform-browser@14.2.0/bundles/platform-browser.umd.min.js"></script>
+  <script src="https://unpkg.com/@angular/platform-browser-dynamic@14.2.0/bundles/platform-browser-dynamic.umd.min.js"></script>
+  <script src="https://unpkg.com/@angular/forms@14.2.0/bundles/forms.umd.min.js"></script>
+  <script src="https://unpkg.com/@angular/common/http@14.2.0/bundles/common-http.umd.min.js"></script>  @vite(['resources/js/libs/angular-ui-0.4.0.js'])
+  <script type="module">
+    import { platformBrowserDynamic } from 'https://unpkg.com/@angular/platform-browser-dynamic@14.2.0/esm2015/platform-browser-dynamic.mjs';
+    import { LogsModule } from './path-to-your-compiled-js/logs-angular.js'; // Adjust path if needed
+
+    document.addEventListener('DOMContentLoaded', () => {
+      platformBrowserDynamic().bootstrapModule(LogsModule)
+        .catch(err => console.error(err));
+    });
   </script>
-  @vite(['resources/js/logs-angular.js'])
+  <script>
+    window.logsPerRequest = {{ $logs_per_request }};
+    window.loadMoreLogsURL = "{{ URL::route('ajax_load_more_logs', ['lastKnownLogId' => 'LOG_ID', 'count' => $logs_per_request])}}";
+  </script>
+  @vite(['resources/js/logs-angular.ts'])
 @stop
 
 @section('content')

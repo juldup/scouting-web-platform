@@ -69,6 +69,9 @@ use App\Models\Suggestion;
 use App\Models\TemporaryRegistrationLink;
 use App\Models\User;
 
+
+
+
 /**
  * Provides a page that list changes that were recently made to the website content
  */
@@ -144,12 +147,10 @@ class RecentChangesController extends BaseController {
           'type' => 'Photos',
       );
     }
-    // Function to sort changes by date
-    function compareChanges($a, $b) {
-      return strcmp($b['datetime'], $a['datetime']);
-    }
     // Sort changes by date
-    usort($recentChanges, "compareChanges");
+    usort($recentChanges, function($a, $b) {
+      return strcmp($b['datetime'], $a['datetime']);
+    });
     // Make view
     return View::make('pages.recentChanges.recentChanges', array(
         'recent_changes' => $recentChanges,

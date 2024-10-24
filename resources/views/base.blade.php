@@ -38,6 +38,10 @@ use App\Models\Privilege;
   @yield('head')
   {{ Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) }}
   <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
+  @vite(['resources/css/ckeditor/imageresize.css'])
+  @vite(['resources/css/ckeditor/imagestyle.css'])
+  @vite(['resources/css/ckeditor/ckeditor-fix.css'])
 </head>
 <body>
   @yield('body_top')
@@ -50,13 +54,25 @@ use App\Models\Privilege;
   </div>
   @include('menu.footer')
   
+  
+  <script type="importmap">
+      {
+          "imports": {
+              "ckeditor5": "https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.js",
+              "ckeditor5/": "https://cdn.ckeditor.com/ckeditor5/43.2.0/"
+          }
+      }
+  </script>
   <script>
     var keepaliveURL = "{{ URL::route('session_keepalive'); }}";
   </script>
-  @vite(['resources/js/libs/jquery-1.11.0.js',
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    window.jQuery = window.$ = jQuery; // Fallback to the CDN version
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  @vite(['resources/js/application.js',
          'resources/js/libs/jquery-ui-1.10.4.js',
-         'resources/js/libs/bootstrap.min.js',
-         'resources/js/application.js',
          'resources/js/libs/bootstrap-switch.min.js',
          'resources/js/libs/jquery.tablesorter.js'
         ])

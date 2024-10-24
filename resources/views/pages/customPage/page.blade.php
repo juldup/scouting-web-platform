@@ -35,9 +35,6 @@ use App\Models\MemberHistory;
     <meta name="description" content="{{{ Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION) }}}" />
     <meta name="keywords" content="{{{ Parameter::get(Parameter::$WEBSITE_META_KEYWORDS) }}}" />
   @endif
-  @vite(['resources/css/ckeditor/imageresize.css'])
-  @vite(['resources/css/ckeditor/imagestyle.css'])
-  @vite(['resources/css/ckeditor/ckeditor-fix.css'])
 @stop
 
 @section('forward_links')

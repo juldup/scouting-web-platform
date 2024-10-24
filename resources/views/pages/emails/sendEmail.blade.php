@@ -66,17 +66,44 @@ use App\Models\MemberHistory;
 
 @section('additional_javascript')
   @vite(['resources/js/send-section-email.js'])
-  @vite(['resources/js/ckeditor/ckeditor.js'])
   <script type='module'>
+    import {
+        ClassicEditor, Essentials, Bold, Italic, Font, Paragraph, ImageBlock, ImageCaption,
+        ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle, ImageTextAlternative,
+        ImageToolbar, ImageUpload, SimpleUploadAdapter, DecoupledEditor, AccessibilityHelp, 
+        AutoImage, CloudServices, SelectAll, SpecialCharacters, Undo, Underline, Strikethrough, 
+        Subscript, Superscript, Table, RemoveFormat, HorizontalLine, Link, Alignment, List, Indent,
+    } from 'ckeditor5';
     ClassicEditor.create(document.querySelector('#body'), {
+      plugins: [
+        Bold, Italic, Font, AccessibilityHelp, AutoImage, CloudServices, Essentials, ImageBlock,
+        ImageCaption, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle,
+        ImageTextAlternative, ImageToolbar, ImageUpload, Paragraph, SelectAll, SimpleUploadAdapter,
+        SpecialCharacters, Undo, Underline, Strikethrough, Subscript, Superscript, Table, RemoveFormat,
+        HorizontalLine, Link, Alignment, List, Indent,
+      ],
+      toolbar: [
+        'undo', 'redo', '|', 
+        'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
+        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+        'horizontalLine', 'link', 'insertImage', 'insertTable', '|',
+        'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+      ],
+      shouldNotGroupWhenFull: true,
       simpleUpload: {
-        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content')
-      }
+        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content'),
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+      },
+      image: {
+            toolbar: [
+                'imageTextAlternative' // Allows adding alt text to the image
+            ]
+        },
     })
     .then(editor => {
-      console.log( editor );
+      window.editorInstance = editor;
       // Move signature below e-mail body
-      $('.cke_contents').after($('.email-signature-wrapper'));
+      //$('.cke_contents').after($('.email-signature-wrapper'));
     })
     .catch(error => {
       console.error( error );

@@ -41,11 +41,11 @@ use App\Models\MemberHistory;
 @section('additional_javascript')
   @vite(['resources/js/libs/angular-1.2.15.min.js'])
   <script>
-    var commitAttendanceChangesURL = "{{ URL::route('upload_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
-    var canEdit = {{ $canEdit ? "true" : "false" }};
-    var members = {!! json_encode($members); !!};
-    var monitoredEvents = {!! json_encode($monitoredEvents); !!};
-    var unmonitoredEvents = {!! json_encode($unmonitoredEvents); !!};
+    window.commitAttendanceChangesURL = "{{ URL::route('upload_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
+    window.canEdit = {{ $canEdit ? "true" : "false" }};
+    window.members = {!! json_encode($members); !!};
+    window.monitoredEvents = {!! json_encode($monitoredEvents); !!};
+    window.unmonitoredEvents = {!! json_encode($unmonitoredEvents); !!};
   </script>
   @vite(['resources/js/attendance-angular.js'])
 @stop

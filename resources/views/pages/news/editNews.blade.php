@@ -37,28 +37,53 @@ use App\Models\Privilege;
     @foreach ($news as $item)
       news[{{ $item->id }}] = {
         'title': "{{ Helper::sanitizeForJavascript($item->title) }}",
-        'body': "{{ Helper::sanitizeForJavascript($item->body) }}",
+        'body': "{!! Helper::sanitizeForJavascript($item->body) !!}",
         'section': {{ $item->section_id }},
         'delete_url': "{{ URL::route('manage_news_delete', array('news_id' => $item->id)) }}"
       };
     @endforeach
   </script>
-  @vite(['resources/js/ckeditor/ckeditor.js'])
-  <script type="module">
-    ClassicEditor.create(document.querySelector('#news_body'))
+  <script type='module'>
+    import {
+        ClassicEditor, Essentials, Bold, Italic, Font, Paragraph, ImageBlock, ImageCaption,
+        ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle, ImageTextAlternative,
+        ImageToolbar, ImageUpload, SimpleUploadAdapter, DecoupledEditor, AccessibilityHelp, 
+        AutoImage, CloudServices, SelectAll, SpecialCharacters, Undo, Underline, Strikethrough, 
+        Subscript, Superscript, Table, RemoveFormat, HorizontalLine, Link, Alignment, List, Indent,
+    } from 'ckeditor5';
+    ClassicEditor.create(document.querySelector('#news_body'), {
+      plugins: [
+        Bold, Italic, Font, AccessibilityHelp, AutoImage, CloudServices, Essentials, ImageBlock,
+        ImageCaption, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle,
+        ImageTextAlternative, ImageToolbar, ImageUpload, Paragraph, SelectAll, SimpleUploadAdapter,
+        SpecialCharacters, Undo, Underline, Strikethrough, Subscript, Superscript, Table, RemoveFormat,
+        HorizontalLine, Link, Alignment, List, Indent,
+      ],
+      toolbar: [
+        'undo', 'redo', '|', 
+        'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
+        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+        'horizontalLine', 'link', 'insertImage', 'insertTable', '|',
+        'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+      ],
+      shouldNotGroupWhenFull: true,
+      simpleUpload: {
+        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content'),
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+      },
+      image: {
+            toolbar: [
+                'imageTextAlternative' // Allows adding alt text to the image
+            ]
+        },
+    })
     .then(editor => {
-      console.log( editor );
+      window.editorInstance = editor
     })
     .catch(error => {
       console.error( error );
     });
-/*    CKEDITOR.replace('news_body', {
-      language: 'fr',
-      extraPlugins: 'divarea,mediaembed',
-      height: '200px',
-      filebrowserImageUploadUrl: "{{ URL::route('ajax_upload_image') }}",
-    });
-*/  </script>
+  </script>
 @stop
 
 @section('back_links')
@@ -142,8 +167,8 @@ use App\Models\Privilege;
           </legend>
           <p>
           </p>
-          <div>
-            {{ $newsItem->body }}
+          <div class="ck-content">
+            {!! $newsItem->body !!}
           </div>
         </div>
       </div>

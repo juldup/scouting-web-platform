@@ -22,6 +22,7 @@ use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use App\Helpers\Resizer;
+use App\Helpers\DateHelper;
 
 /**
  * This Eloquent class represents a member (scout or leader) registered in the unit
@@ -369,7 +370,7 @@ class Member extends Model {
     ArchivedLeader::archiveLeadersIfNeeded();
     MemberHistory::createHistoryIfNeeded();
     // Get data from input and check it
-    $data = self::checkInputData();
+    $data = self::checkInputData($request);
     if (is_string($data)) {
       // An error has occured
       return $data;

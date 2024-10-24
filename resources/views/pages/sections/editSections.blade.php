@@ -36,7 +36,7 @@ use App\Models\Section;
 @stop
 
 @section('additional_javascript')
-  @vite(['resources/js/libs/bootstrap-colorpicker.min.js'])
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.min.js"></script>
   @vite(['resources/js/edit-sections.js'])
   @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
     @vite(['resources/js/reorder-list.js'])

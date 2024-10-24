@@ -31,16 +31,16 @@ angularAttendance.controller('AttendanceController', function($scope) {
 	/* DATA */
   
   // Whether the user can edit the values (must be set in the page)
-  $scope.canEdit = canEdit;
+  $scope.canEdit = window.canEdit;
   
   // List of events that are being monitored
-  $scope.monitoredEvents = monitoredEvents;
+  $scope.monitoredEvents = window.monitoredEvents;
   
   // List of unmonitored events that can be added
-  $scope.unmonitoredEvents = unmonitoredEvents;
+  $scope.unmonitoredEvents = window.unmonitoredEvents;
   
   // List of members
-  $scope.members = members;
+  $scope.members = window.members;
   
   // Date of the first and last displayed events
   $scope.minDate = "0000-00-00";
@@ -95,7 +95,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Changes the attendance status to an event for a member
    */
   $scope.toggle = function(member, event) {
-    if (!canEdit) return;
+    if (!window.canEdit) return;
     member.status["event_" + event.id] = (member.status["event_" + event.id] + 1) % 3;
     $scope.uploadChanges();
   };
@@ -104,7 +104,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Set the attendance status of all members to the given value
    */
   $scope.setAll = function(event, status) {
-    if (!canEdit) return;
+    if (!window.canEdit) return;
     // Check if there are members with different statuses
     var noneAttended = true;
     var allAttended = true;
@@ -166,7 +166,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Removes an event from the monitored list
    */
   $scope.remove = function(event) {
-    if (!canEdit) return;
+    if (!window.canEdit) return;
     if (confirm("Supprimer l'activité \"" + event.title + "\" du " + $scope.formatDate(event.date) + " de la liste des présences ?")) {
       $scope.monitoredEvents.splice($scope.monitoredEvents.indexOf(event), 1);
       $scope.unmonitoredEvents.push(event);
@@ -182,7 +182,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
    * Adds an event to the monitored list
    */
   $scope.addUnmonitoredEvent = function(eventId) {
-    if (!canEdit) return;
+    if (!window.canEdit) return;
     for (var i = 0; i < $scope.unmonitoredEvents.length; i++) {
       var event = $scope.unmonitoredEvents[i];
       if (event.id == eventId) {
@@ -252,7 +252,7 @@ angularAttendance.controller('AttendanceController', function($scope) {
         $scope.uploading = true;
         $.ajax({
           type: "POST",
-          url: commitAttendanceChangesURL,
+          url: window.commitAttendanceChangesURL,
           data: {
             'data': JSON.stringify($scope.members),
             'events': JSON.stringify(events)
