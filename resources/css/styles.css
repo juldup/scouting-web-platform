@@ -7466,6 +7466,10 @@ textarea.form-control.edit-css-textarea {
 .accounting td.cellin {
   background: #d4c854;
 }
+.accounting #pending-commit {
+  bottom: auto;
+  top: 20px;
+}
 .log-entry {
   cursor: pointer;
 }
