@@ -361,6 +361,7 @@ Route::get('gestion/utilisateurs/supprimer/{user_id}', array("as" => "delete_use
 // Accounting
 Route::get('gestion/tresorerie/{section_slug?}', array("as" => "accounting", "uses" => "App\Http\Controllers\AccountingController@showPageCurrentYear"));
 Route::get('gestion/tresorerie/annee/{year}/{section_slug?}', array("as" => "accounting_by_year", "uses" => "App\Http\Controllers\AccountingController@showPage"));
+Route::get('gestion/tresorerie-angular', array("as" => "angular_accounting", "uses" => "App\Http\Controllers\AccountingController@angularAccounting"));
 Route::post('ajax/gestion/tresorerie/commit-changes/{lock_id}/{section_slug?}', array("as" => "ajax-accounting-commit-changes", "uses" => "App\Http\Controllers\AccountingController@commitChanges"));
 Route::get('ajax/gestion/tresorerie/update-lock/{lock_id}', array("as" => "ajax-accounting-extend-lock", "uses" => "App\Http\Controllers\AccountingController@ajaxUpdateLock"));
 

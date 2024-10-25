@@ -136,7 +136,10 @@ class PaymentController extends BaseController {
   /**
    * [Route] Shows the page to edit payment
    */
-  public function angularPayment($section_slug = null, $year = false) {
+  public function angularPayment() {
+    // Get parameters
+    $section_slug = request()->query('section_slug', null);
+    $year = request()->query('year', false);
     // Init year with default value
     if (!$year) $year = Helper::thisYear();
     // Make sure the user is a leader

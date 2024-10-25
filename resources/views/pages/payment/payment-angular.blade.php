@@ -42,7 +42,7 @@ use App\Models\Privilege;
 </head>
 <body>
     <app-root></app-root> <!-- Your Angular root component -->
-    
+        
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
       window.jQuery = window.$ = jQuery; // Fallback to the CDN version
@@ -50,7 +50,7 @@ use App\Models\Privilege;
     @vite(['resources/angular/payment/polyfills.js'])
     @vite(['resources/angular/payment/scripts.js'])
     @vite(['resources/angular/payment/main.js'])
-  
+    
     <script>
       window.commitPaymentChangesURL = "{{ URL::route('upload_payment', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
       window.postNewEventURL = "{{ URL::route('add_payment_event', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";

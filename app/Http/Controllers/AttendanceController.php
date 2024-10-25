@@ -145,7 +145,10 @@ class AttendanceController extends BaseController {
     ));
   }
   
-  public function angularAttendance($section_slug = null, $year = false) {
+  public function angularAttendance() {
+    // Get parameters
+    $section_slug = request()->query('section_slug', null);
+    $year = request()->query('year', false);
     // Init year with default value
     if (!$year) $year = Helper::thisYear();
     // Make sure the user is a leader

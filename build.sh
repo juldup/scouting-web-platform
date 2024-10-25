@@ -1,3 +1,12 @@
+# Build angular app for accounting and copy static files
+cd angular/accounting
+ng build --configuration production
+cd ../..
+cp angular/accounting/dist/accounting/browser/main*.js resources/angular/accounting/main.js
+cp angular/accounting/dist/accounting/browser/polyfills*.js resources/angular/accounting/polyfills.js
+cp angular/accounting/dist/accounting/browser/scripts*.js resources/angular/accounting/scripts.js
+cp angular/accounting/dist/accounting/browser/styles*.css resources/angular/accounting/styles.css
+
 # Build angular app for payment and copy static files
 cd angular/payment
 ng build --configuration production

@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Log;
 use App\Helpers\CalendarPDF;
 use App\Helpers\DateHelper;
 use App\Helpers\ElasticsearchHelper;
@@ -131,6 +132,67 @@ class AccountingController extends BaseController {
         $inheritTransaction = $accountingItem;
       }
     }
+    // Make view
+    return View::make('pages.accounting.accounting', array(
+        'categories' => $categories,
+        'year' => $year,
+        'previous_year' => $this->getPreviousYear($year),
+        'next_year' => $this->getNextYear($year),
+        'this_year' => $thisYear,
+        'inherit_cash' => ($inheritTransaction->cashin_cents - $inheritTransaction->cashout_cents) / 100.0,
+        'inherit_bank' => ($inheritTransaction->bankin_cents - $inheritTransaction->bankout_cents) / 100.0,
+        'can_edit' => $canEdit,
+        //'locked_by_user' => $lockedByUser,
+        //'lock_id' => $accountingLock ? $accountingLock->id : "none",
+    ));
+  }
+  
+  /**
+   * [Route] Generates the page
+   * 
+   * @param string $year  Used to view the accounting data of another year (default is the current scout year)
+   */
+  public function angularAccounting() {
+    // Get parameters
+    $section_slug = request()->query('section_slug', null);
+    $year = request()->query('year', false);
+    // Access is restricted to leaders
+    if (!$this->user->isLeader()) return Helper::forbiddenResponse();
+    // Check if the current leader can edit this accounting data
+    $canEdit = $this->user->can(Privilege::$MANAGE_ACCOUNTING, $this->section);
+    // Select year
+    $thisYear = $this->getCurrentYear();
+    if (!$year) {
+      $year = $thisYear;
+    }
+    // Compute inheritance from the previous year
+    $this->updateInheritance($year);
+    // Get categories
+    $categories = array();
+    $accountingItems = AccountingItem::where('section_id', '=', $this->section->id)
+            ->where('year', '=', $year)
+            ->groupBy('category_name')
+            ->orderBy('id')
+            ->get();
+    foreach ($accountingItems as $accountingItem) {
+      if ($accountingItem->category_name != AccountingItem::$INHERIT) {
+        $categories[$accountingItem->category_name] = array();
+      }
+    }
+    // Get transactions
+    $accountingItems = AccountingItem::where('section_id', '=', $this->section->id)
+            ->where('year', '=', $year)
+            ->orderBy('position')
+            ->get();
+    foreach ($accountingItems as $accountingItem) {
+      if ($accountingItem->category_name != AccountingItem::$INHERIT || $accountingItem->object != AccountingItem::$INHERIT) {
+        // Add to the list
+        $categories[$accountingItem->category_name][] = $accountingItem;
+      } else {
+        // Inheritance transaction, don't add it to the list
+        $inheritTransaction = $accountingItem;
+      }
+    }
     // Delete expired locks
     AccountingLock::where('timestamp', '<', time() - 30)->delete();
     // Check if this accounting page is locked by another user
@@ -171,7 +233,7 @@ class AccountingController extends BaseController {
       }
     }
     // Make view
-    return View::make('pages.accounting.accounting', array(
+    return View::make('pages.accounting.accounting-angular', array(
         'categories' => $categories,
         'year' => $year,
         'previous_year' => $this->getPreviousYear($year),

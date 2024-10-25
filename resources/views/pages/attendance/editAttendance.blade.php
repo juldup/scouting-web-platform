@@ -44,7 +44,7 @@ use App\Models\MemberHistory;
   
   <h1>Présences {{{ $user->currentSection->de_la_section }}}&nbsp;: année {{{ $year }}}</h1>
   
-  <iframe src="{{ route('angular_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $previousYear)) }}"width="100%" height="600"></iframe>
+  <iframe src="{{ route('angular_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}"width="100%" height="600"></iframe>
   
   <div class="vertical-divider"></div>
   <p>
