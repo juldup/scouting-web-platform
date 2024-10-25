@@ -134,6 +134,60 @@ class PaymentController extends BaseController {
   }
   
   /**
+   * [Route] Shows the page to edit payment
+   */
+  public function angularPayment($section_slug = null, $year = false) {
+    // Init year with default value
+    if (!$year) $year = Helper::thisYear();
+    // Make sure the user is a leader
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    // Create list of events
+    $eventList = PaymentEvent::where('section_id', '=', $this->user->currentSection->id)
+            ->where('year', '=', $year)
+            ->orderBy('id')
+            ->get();
+    $events = array();
+    foreach ($eventList as $event) {
+      $events[] = array("id" => $event->id, "name" => $event->name);
+    }
+    // Create list of members
+    $memberList = Member::where('validated', '=', 1)
+            ->where('section_id', '=', $this->section->id)
+            ->orderBy('is_leader', 'ASC')
+            ->orderBy('last_name')
+            ->orderBy('first_name')
+            ->get();
+    $members = array();
+    foreach ($memberList as $memberObject) {
+      $member = array("id" => $memberObject->id, "name" => $memberObject->last_name . " " . $memberObject->first_name, "isFemale" => $memberObject->gender == 'F');
+      // Add payment list
+      $status = array();
+      foreach ($events as $event) {
+        $payment = Payment::where('member_id', '=', $memberObject->id)
+                ->where('event_id', '=', $event['id'])
+                ->first();
+        if ($payment) {
+          $status["event_" . $event['id']] = $payment->paid ? true : false;
+        } else {
+          $status["event_" . $event['id']] = false;
+        }
+      }
+      $member['status'] = $status;
+      $members[] = $member;
+    }
+    // Render view
+    return View::make('pages.payment.payment-angular', array(
+        'year' => $year,
+        'canEdit' => $this->user->can(Privilege::$MANAGE_EVENT_PAYMENTS),
+        'members' => $members,
+        'events' => $events,
+        'previousYear' => (substr($year, 0, 4)-1) . "-" . substr($year, 0, 4),
+    ));
+  }
+  
+  /**
    * [Ajax] Updates the payment status
    */
   public function upload(Request $request, $section_slug, $year) {

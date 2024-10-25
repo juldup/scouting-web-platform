@@ -241,10 +241,12 @@ Route::get('icone-calendrier/{type}', array("as" => "calendar_icon", "uses" => "
 
 // Attendance
 Route::get('gestion/presences/{section_slug?}/{year?}', array("as" => "edit_attendance", "uses" => "App\Http\Controllers\AttendanceController@editAttendance"));
+Route::get('gestion/presences-angular', array("as" => "angular_attendance", "uses" => "App\Http\Controllers\AttendanceController@angularAttendance"));
 Route::post('gestion/presences/upload/{section_slug}/{year}', array("as" => "upload_attendance", "uses" => "App\Http\Controllers\AttendanceController@upload"));
 
 // Payment
 Route::get('gestion/paiement/{section_slug?}/{year?}', array("as" => "edit_payment", "uses" => "App\Http\Controllers\PaymentController@editPayment"));
+Route::get('gestion/paiement-angular', array("as" => "angular_payment", "uses" => "App\Http\Controllers\PaymentController@angularPayment"));
 Route::post('ajax/gestion/paiement/{section_slug}/{year}', array("as" => "upload_payment", "uses" => "App\Http\Controllers\PaymentController@upload"));
 Route::post('ajax/gestion/paiement/nouvelle-activite/{section_slug}/{year}', array("as" => "add_payment_event", "uses" => "App\Http\Controllers\PaymentController@addNewEvent"));
 Route::post('ajax/gestion/paiement/supprimer-activite/{section_slug}/{year}', array("as" => "delete_payment_event", "uses" => "App\Http\Controllers\PaymentController@deleteEvent"));
