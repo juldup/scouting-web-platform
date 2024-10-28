@@ -88,7 +88,7 @@ class SearchController extends BaseController {
     // Make view
     return View::make('pages.search.search-results', array(
         'search_string' => $searchString,
-        'results' => $results['_shards'],
+        'results' => $results['hits'],
         'userIsMember' => $this->user->isMember(),
     ));
   }
