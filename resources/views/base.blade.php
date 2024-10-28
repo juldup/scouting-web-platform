@@ -36,7 +36,7 @@ use App\Models\Privilege;
   @vite(['resources/css/styles.css'])
   <link media="all" type="text/css" rel="stylesheet" href="{{ URL::route('additional_css') }}">
   @yield('head')
-  {{ Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) }}
+  {!! Parameter::get(Parameter::$ADDITIONAL_HEAD_HTML) !!}
   <meta name="csrf-token" content="{{ csrf_token() }}" />
   <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
   @vite(['resources/css/ckeditor/imageresize.css'])
