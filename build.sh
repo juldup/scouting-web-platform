@@ -1,5 +1,6 @@
 # Build angular app for accounting and copy static files
 cd angular/accounting
+npm install
 ng build --configuration production
 cd ../..
 cp angular/accounting/dist/accounting/browser/main*.js resources/angular/accounting/main.js
@@ -9,6 +10,7 @@ cp angular/accounting/dist/accounting/browser/styles*.css resources/angular/acco
 
 # Build angular app for payment and copy static files
 cd angular/payment
+npm install
 ng build --configuration production
 cd ../..
 cp angular/payment/dist/payment/browser/main*.js resources/angular/payment/main.js
@@ -18,6 +20,7 @@ cp angular/payment/dist/payment/browser/styles*.css resources/angular/payment/st
 
 # Build angular app for attendance and copy static files
 cd angular/attendance
+npm install
 ng build --configuration production
 cd ../..
 cp angular/attendance/dist/attendance/browser/main*.js resources/angular/attendance/main.js
