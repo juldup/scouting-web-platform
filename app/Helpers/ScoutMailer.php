@@ -57,7 +57,7 @@ class ScoutMailer {
    */
   public static function sendPendingEmails($limit = 200) {
     // Current time
-    $time = time();    
+    $time = time();
     // Delete all e-mails sent more than one hour ago
     $oneHourAgo = $time - 3600;
     DB::table('pending_emails')
