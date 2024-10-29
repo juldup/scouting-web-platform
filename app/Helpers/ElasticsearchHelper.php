@@ -58,7 +58,7 @@ class ElasticsearchHelper {
       if ($client->indices()->exists($params)) {
         $response = $client->indices()->delete($params);
       }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
       
     }
     
@@ -86,8 +86,7 @@ class ElasticsearchHelper {
                  'url' => url()->route('single_news', ['news_id' => $news->id]),
                ]
           ]);
-        } catch (Exception $e) {
-          dd($e);
+        } catch (\Throwable $e) {
         }
       }
     }
@@ -99,8 +98,10 @@ class ElasticsearchHelper {
           try {
             if (strtolower(substr($document->filename, strlen($document->filename) - 4)) == ".pdf") {
               // Read pdf contentAfter Each Bulk Operation: After every call to bulk, reset $params['body'] to an empty array. Otherwi
+              /* // Skip this operation, causing errors due to lack of memory
               $parser = new \Smalot\PdfParser\Parser();
               $pdfText = $parser->parseFile($document->getPath())->getText();
+              */
             } else {
               $pdfText = "";
             }
@@ -122,7 +123,7 @@ class ElasticsearchHelper {
                 'visibility' => $document->public ? "public" : "private",
                 'url' => route('download_document', array('document_id' => $document->id)),
             ];
-          } catch (Exception $e) {}
+          } catch (\Throwable $e) {}
         }
       }
     }
