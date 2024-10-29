@@ -96,15 +96,16 @@ class ElasticsearchHelper {
         $documentPath = $document->getPath();
         if (file_exists($documentPath)) {
           try {
+            /* // Skip this operation, causing errors due to lack of memory
             if (strtolower(substr($document->filename, strlen($document->filename) - 4)) == ".pdf") {
-              // Read pdf contentAfter Each Bulk Operation: After every call to bulk, reset $params['body'] to an empty array. Otherwi
-              /* // Skip this operation, causing errors due to lack of memory
+              // Read pdf content
+               
               $parser = new \Smalot\PdfParser\Parser();
               $pdfText = $parser->parseFile($document->getPath())->getText();
-              */
-            } else {
               $pdfText = "";
-            }
+            } else {
+            */  $pdfText = "";
+            /*}*/
             $params['body'][] = [
                 'index' => [
                     '_index' => self::getIndexName(),
