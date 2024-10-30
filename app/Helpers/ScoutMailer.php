@@ -81,8 +81,7 @@ class ScoutMailer {
       $count = DB::table('pending_emails')
               ->where('id', '=', $email->id)
               ->where('last_retry', '<', $twoMinutesAgo)
-              ->get(); // TODO remove
-//TODO              ->update(array('last_retry' => $time));
+              ->update(array('last_retry' => $time));
       if ($count) {
         $email->send();
       }
