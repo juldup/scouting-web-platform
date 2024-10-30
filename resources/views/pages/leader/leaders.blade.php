@@ -141,9 +141,9 @@ use App\Models\MemberHistory;
             <div class="col-xs-6 col-sm-8 col-md-6">
               <p class="leader-name">{{{ $leader->leader_name }}}</p>
               <p class="leader-real-name">{{{ $leader->first_name }}} {{{ $leader->last_name }}}</p>
-              <p><em>{{ Helper::rawToHTML($leader->leader_description) }}</em></p>
+              <p><em>{!! Helper::rawToHTML($leader->leader_description) !!}</em></p>
               @if ($leader->leader_role)
-                <p><strong>Rôle :</strong> {{ Helper::rawToHTML($leader->leader_role) }}</p>
+                <p><strong>Rôle :</strong> {!! Helper::rawToHTML($leader->leader_role) !!}</p>
               @endif
               @if (!$leader->phone_member_private && $leader->phone_member)
                 <p><strong>GSM :</strong> {{{ $leader->phone_member }}}</p>

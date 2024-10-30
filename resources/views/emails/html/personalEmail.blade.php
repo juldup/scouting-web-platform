@@ -32,6 +32,6 @@ use App\Models\MemberHistory;
 
 @section('body')
   <p>
-    {{ Helper::rawToHtml($message_body) }}
+    {!! Helper::rawToHtml($message_body) !!}
   </p>
 @stop

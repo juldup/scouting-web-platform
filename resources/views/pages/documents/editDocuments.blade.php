@@ -148,7 +148,7 @@ use App\Models\MemberHistory;
           <div class="well">
             <legend>{{{ $doc->title }}}</legend>
             <p>
-              {{ Helper::rawToHTML($doc->description) }}
+              {!! Helper::rawToHTML($doc->description) !!}
             </p>
           </div>
         </div>

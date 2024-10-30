@@ -27,5 +27,5 @@ use App\Models\MemberHistory;
 ?>
 
 @section('body')
-  {{ Helper::rawToHTML($custom_content) }}
+  {!! Helper::rawToHTML($custom_content) !!}
 @stop

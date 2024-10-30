@@ -129,7 +129,7 @@ use App\Models\MemberHistory;
                 @endif
               </div>
             </legend>
-            {{ Helper::rawToHTML($entry->body) }}
+            {!! Helper::rawToHTML($entry->body) !!}
           </div>
         </div>
       @endforeach

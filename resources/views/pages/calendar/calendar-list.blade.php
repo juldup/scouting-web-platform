@@ -80,7 +80,7 @@ use App\Models\MemberHistory;
             @endif
             </div>
           <div class="calendar-list-event-description">
-            {{ Helper::rawToHTML($item->description) }}
+            {!! Helper::rawToHTML($item->description) !!}
           </div>
         </div>
       @endforeach

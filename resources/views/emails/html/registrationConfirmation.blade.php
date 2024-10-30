@@ -129,6 +129,6 @@ use App\Models\MemberHistory;
       Cordialement,<br />Le gestionnaire du site
     </p>
   @else
-    {{ Helper::rawToHTML($custom_content) }}
+    {!! Helper::rawToHTML($custom_content) !!}
   @endif
 @stop

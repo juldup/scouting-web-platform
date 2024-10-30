@@ -122,7 +122,7 @@ use App\Models\Privilege;
           </div>
         </legend>
         <div>
-          {{ trim($link->description) ? Helper::rawToHTML($link->description) : "(Pas de description)" }}
+          {!! trim($link->description) ? Helper::rawToHTML($link->description) : "(Pas de description)" !!}
         </div>
       </div>
     </div>
