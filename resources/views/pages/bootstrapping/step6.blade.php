@@ -47,7 +47,7 @@
                 <p>Nom tel qu'il apparaitra au sommet des pages du site</p>
               </div>
               <div class="col-sm-5">
-                {!! Form::text('unit_long_name', Parameter::get(Parameter::$UNIT_LONG_NAME), array("class" => "form-control")) !!}
+                {!! Form::text('unit_long_name', e(Parameter::get(Parameter::$UNIT_LONG_NAME)), array("class" => "form-control")) !!}
               </div>
             </div>
             <div class="form-group">
@@ -56,7 +56,7 @@
                 <p>Nom court (p.ex: SV001, SV19, BW37, BC044). Il servira notamment dans les e-mails lorsque le nom complet est trop long</p>
               </div>
               <div class="col-sm-5">
-                {!! Form::text('unit_short_name', Parameter::get(Parameter::$UNIT_SHORT_NAME), array("class" => "form-control")) !!}
+                {!! Form::text('unit_short_name', e(Parameter::get(Parameter::$UNIT_SHORT_NAME)), array("class" => "form-control")) !!}
               </div>
             </div>
 
@@ -91,25 +91,25 @@
             </div>
             <div class="form-group">
               <div class="col-sm-6 col-md-4"><label class="control-label">1 membre dans la famille</label></div>
-              <div class="col-sm-3 col-lg-2">{!! Form::text('price_1_child', Parameter::get(Parameter::$PRICE_1_CHILD), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
-              <div class="col-sm-3">{!! Form::text('price_1_leader', Parameter::get(Parameter::$PRICE_1_LEADER), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+              <div class="col-sm-3 col-lg-2">{!! Form::text('price_1_child', e(Parameter::get(Parameter::$PRICE_1_CHILD)), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+              <div class="col-sm-3">{!! Form::text('price_1_leader', e(Parameter::get(Parameter::$PRICE_1_LEADER)), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
             </div>
             <div class="form-group">
               <div class="col-sm-6 col-md-4"><label class="control-label">2 membres dans la famille</label></div>
-              <div class="col-sm-3 col-lg-2">{!! Form::text('price_2_children', Parameter::get(Parameter::$PRICE_2_CHILDREN), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
-              <div class="col-sm-3">{!! Form::text('price_2_leaders', Parameter::get(Parameter::$PRICE_2_LEADERS), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+              <div class="col-sm-3 col-lg-2">{!! Form::text('price_2_children', e(Parameter::get(Parameter::$PRICE_2_CHILDREN)), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+              <div class="col-sm-3">{!! Form::text('price_2_leaders', e(Parameter::get(Parameter::$PRICE_2_LEADERS)), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
             </div>
             <div class="form-group">
               <div class="col-sm-6 col-md-4"><label class="control-label">3 membres ou plus dans la famille</label></div>
-              <div class="col-sm-3 col-lg-2">{!! Form::text('price_3_children', Parameter::get(Parameter::$PRICE_3_CHILDREN), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
-              <div class="col-sm-3">{!! Form::text('price_3_leaders', Parameter::get(Parameter::$PRICE_3_LEADERS), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+              <div class="col-sm-3 col-lg-2">{!! Form::text('price_3_children', e(Parameter::get(Parameter::$PRICE_3_CHILDREN)), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+              <div class="col-sm-3">{!! Form::text('price_3_leaders', e(Parameter::get(Parameter::$PRICE_3_LEADERS)), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
             </div>
             <div class="form-group">
               <div class="col-sm-4 control-label">
                 {!! Form::label('unit_bank_account', "N° de compte en banque de l'unité") !!}
               </div>
               <div class="col-sm-5">
-                {!! Form::text('unit_bank_account', Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), array("class" => "form-control")) !!}
+                {!! Form::text('unit_bank_account', e(Parameter::get(Parameter::$UNIT_BANK_ACCOUNT)), array("class" => "form-control")) !!}
               </div>
             </div>
 
@@ -120,7 +120,7 @@
                 <p>Cette description apparaitra dans les résultats des moteurs de recherche</p>
               </div>
               <div class="col-sm-7">
-                {!! Form::textarea('website_meta_description', Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION),
+                {!! Form::textarea('website_meta_description', e(Parameter::get(Parameter::$WEBSITE_META_DESCRIPTION)),
                           array("class" => "form-control", "rows" => 3, "placeholder" => "Cette description apparaitra dans les résultats des moteurs de recherche")) !!}
               </div>
             </div>
@@ -130,7 +130,7 @@
                 <p>Séparés par des virgules, ils permettent aux moteurs de recherche de favoriser ce site dans les résultats quand ces mots-clés sont recherchés</p>
               </div>
               <div class="col-sm-7">
-                {!! Form::textarea('website_meta_keywords', Parameter::get(Parameter::$WEBSITE_META_KEYWORDS),
+                {!! Form::textarea('website_meta_keywords', e(Parameter::get(Parameter::$WEBSITE_META_KEYWORDS)),
                   array("class" => "form-control", "rows" => 3, "placeholder" => "Séparés par des virgules, ils permettent aux moteurs de recherche de favoriser ce site dans les résultats quand ces mots-clés sont recherchés")) !!}
               </div>
             </div>

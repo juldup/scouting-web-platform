@@ -68,18 +68,18 @@ use App\Models\MemberHistory;
       var categories = [
       @foreach ($categories as $category_name => $category)
         {
-          name: "{{ Helper::sanitizeForJavascript($category_name) }}",
+          name: "{!! Helper::sanitizeForJavascript($category_name) !!}",
           transactions: [
             @foreach ($category as $transaction)
               {
-                date: "{{ Helper::dateToHuman($transaction->date) }}",
-                object: "{{ Helper::sanitizeForJavascript($transaction->object) }}",
+                date: "{!! Helper::dateToHuman($transaction->date) !!}",
+                object: "{!! Helper::sanitizeForJavascript($transaction->object) !!}",
                 cashin: "{{ $transaction->cashin_cents ? $transaction->cashinFormatted() : "" }}",
                 cashout: "{{ $transaction->cashout_cents ? $transaction->cashoutFormatted() : "" }}",
                 bankin: "{{ $transaction->bankin_cents ? $transaction->bankinFormatted() : "" }}",
                 bankout: "{{ $transaction->bankout_cents ? $transaction->bankoutFormatted() : "" }}",
-                comment: "{{ Helper::sanitizeForJavascript($transaction->comment) }}",
-                receipt: "{{ Helper::sanitizeForJavascript($transaction->receipt) }}",
+                comment: "{!! Helper::sanitizeForJavascript($transaction->comment) !!}",
+                receipt: "{!! Helper::sanitizeForJavascript($transaction->receipt) !!}",
                 id: {{ $transaction->id }}
               },
             @endforeach

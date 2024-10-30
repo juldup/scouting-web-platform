@@ -37,11 +37,11 @@ use App\Models\MemberHistory;
     var documents = new Array();
     @foreach ($documents as $doc)
       documents[{{ $doc->id }}] = {
-        'title': "{{ Helper::sanitizeForJavascript($doc->title) }}",
-        'description': "{{ Helper::sanitizeForJavascript($doc->description) }}",
-        'category': "{{ Helper::sanitizeForJavascript($doc->category) }}",
+        'title': "{!! Helper::sanitizeForJavascript($doc->title) !!}",
+        'description': "{!! Helper::sanitizeForJavascript($doc->description) !!}",
+        'category': "{!! Helper::sanitizeForJavascript($doc->category) !!}",
         'public': {{ $doc->public ? "true" : "false" }},
-        'filename': "{{ Helper::sanitizeForJavascript($doc->filename) }}",
+        'filename': "{!! Helper::sanitizeForJavascript($doc->filename) !!}",
         'delete_url': "{{ $doc->canBeDeleted() ? URL::route('manage_documents_delete', array('document_id' => $doc->id)) : "" }}"
       };
     @endforeach

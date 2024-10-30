@@ -48,19 +48,19 @@ use App\Models\Section;
     var sections = new Array();
     @foreach ($sections as $section)
       sections[{{ $section->id }}] = {
-        'name': "{{ Helper::sanitizeForJavascript($section->name) }}",
-        'email': "{{ Helper::sanitizeForJavascript($section->email) }}",
-        'category': "{{ Helper::sanitizeForJavascript($section->section_category) }}",
-        'type': "{{ Helper::sanitizeForJavascript($section->section_type) }}",
-        'type_number': "{{ Helper::sanitizeForJavascript($section->section_type_number) }}",
-        'color': "{{ Helper::sanitizeForJavascript($section->color) }}",
-        'la_section': "{{ Helper::sanitizeForJavascript($section->la_section) }}",
-        'de_la_section': "{{ Helper::sanitizeForJavascript($section->de_la_section) }}",
-        'subgroup_name': "{{ Helper::sanitizeForJavascript($section->subgroup_name) }}",
+        'name': "{!! Helper::sanitizeForJavascript($section->name) !!}",
+        'email': "{!! Helper::sanitizeForJavascript($section->email) !!}",
+        'category': "{!! Helper::sanitizeForJavascript($section->section_category) !!}",
+        'type': "{!! Helper::sanitizeForJavascript($section->section_type) !!}",
+        'type_number': "{!! Helper::sanitizeForJavascript($section->section_type_number) !!}",
+        'color': "{!! Helper::sanitizeForJavascript($section->color) !!}",
+        'la_section': "{!! Helper::sanitizeForJavascript($section->la_section) !!}",
+        'de_la_section': "{!! Helper::sanitizeForJavascript($section->de_la_section) !!}",
+        'subgroup_name': "{!! Helper::sanitizeForJavascript($section->subgroup_name) !!}",
         'delete_url': "{{ URL::route('edit_section_delete', array('section_id' => $section->id)) }}",
-        'calendar_shortname': "{{ Helper::sanitizeForJavascript($section->calendar_shortname) }}",
+        'calendar_shortname': "{!! Helper::sanitizeForJavascript($section->calendar_shortname) !!}",
         'start_age': "{{ $section->start_age }}",
-        'google_calendar_link': "{{ Helper::sanitizeForJavascript($section->google_calendar_link) }}",
+        'google_calendar_link': "{!! Helper::sanitizeForJavascript($section->google_calendar_link) !!}",
         'export_calendar_url': "{{ URL::route('export_calendar', ['section_id' => $section->id]) }}"
       };
     @endforeach

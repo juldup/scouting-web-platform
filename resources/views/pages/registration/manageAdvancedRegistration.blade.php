@@ -36,45 +36,45 @@ use App\Models\Section;
     @foreach ($registrations as $registrationList)
       @foreach ($registrationList as $member)
         registrations[{{ $member->id }}] = {
-          'first_name': "{{ Helper::sanitizeForJavascript($member->first_name) }}",
-          'last_name': "{{ Helper::sanitizeForJavascript($member->last_name) }}",
-          'birth_date_day': "{{ Helper::getDateDay($member->birth_date) }}",
-          'birth_date_month': "{{ Helper::getDateMonth($member->birth_date) }}",
-          'birth_date_year': "{{ Helper::getDateYear($member->birth_date) }}",
+          'first_name': "{!! Helper::sanitizeForJavascript($member->first_name) !!}",
+          'last_name': "{!! Helper::sanitizeForJavascript($member->last_name) !!}",
+          'birth_date_day': "{!! Helper::getDateDay($member->birth_date) !!}",
+          'birth_date_month': "{!! Helper::getDateMonth($member->birth_date) !!}",
+          'birth_date_year': "{!! Helper::getDateYear($member->birth_date) !!}",
           'gender': "{{{ $member->gender }}}",
           'nationality': "{{{ $member->nationality }}}",
-          'address': "{{ Helper::sanitizeForJavascript($member->address) }}",
-          'postcode': "{{ Helper::sanitizeForJavascript($member->postcode) }}",
-          'city': "{{ Helper::sanitizeForJavascript($member->city) }}",
-          'has_handicap': {{ $member->has_handicap ? "true" : "false" }},
-          'handicap_details': "{{ Helper::sanitizeForJavascript($member->handicap_details) }}",
-          'comments': "{{ Helper::sanitizeForJavascript($member->comments) }}",
-          'is_leader': {{ $member->is_leader ? "true" : "false" }},
-          'leader_name': "{{ Helper::sanitizeForJavascript($member->leader_name) }}",
-          'leader_in_charge': {{ $member->leader_in_charge ? "true" : "false" }},
-          'leader_description': "{{ Helper::sanitizeForJavascript($member->leader_description) }}",
-          'leader_role': "{{ Helper::sanitizeForJavascript($member->leader_role) }}",
-          'leader_role_in_contact_page': {{ $member->leader_role_in_contact_page ? "true" : "false" }},
-          'section_id': {{ $member->section_id }},
-          'phone1': "{{ Helper::sanitizeForJavascript($member->phone1) }}",
-          'phone1_owner': "{{ Helper::sanitizeForJavascript($member->phone1_owner) }}",
-          'phone1_private': {{ $member->phone1_private ? "true" : "false" }},
-          'phone2': "{{ Helper::sanitizeForJavascript($member->phone2) }}",
-          'phone2_owner': "{{ Helper::sanitizeForJavascript($member->phone2_owner) }}",
-          'phone2_private': {{ $member->phone2_private ? "true" : "false" }},
-          'phone3': "{{ Helper::sanitizeForJavascript($member->phone3) }}",
-          'phone3_owner': "{{ Helper::sanitizeForJavascript($member->phone3_owner) }}",
-          'phone3_private': {{ $member->phone3_private ? "true" : "false" }},
-          'phone_member': "{{ Helper::sanitizeForJavascript($member->phone_member) }}",
-          'phone_member_private': {{ $member->phone_member_private ? "true" : "false" }},
-          'email1': "{{ Helper::sanitizeForJavascript($member->email1) }}",
-          'email2': "{{ Helper::sanitizeForJavascript($member->email2) }}",
-          'email3': "{{ Helper::sanitizeForJavascript($member->email3) }}",
-          'email_member': "{{ Helper::sanitizeForJavascript($member->email_member) }}",
-          'totem': "{{ Helper::sanitizeForJavascript($member->totem) }}",
-          'quali': "{{ Helper::sanitizeForJavascript($member->quali) }}",
+          'address': "{!! Helper::sanitizeForJavascript($member->address) !!}",
+          'postcode': "{!! Helper::sanitizeForJavascript($member->postcode) !!}",
+          'city': "{!! Helper::sanitizeForJavascript($member->city) !!}",
+          'has_handicap': {!! $member->has_handicap ? "true" : "false" !!},
+          'handicap_details': "{!! Helper::sanitizeForJavascript($member->handicap_details) !!}",
+          'comments': "{!! Helper::sanitizeForJavascript($member->comments) !!}",
+          'is_leader': {!! $member->is_leader ? "true" : "false" !!},
+          'leader_name': "{!! Helper::sanitizeForJavascript($member->leader_name) !!}",
+          'leader_in_charge': {!! $member->leader_in_charge ? "true" : "false" !!},
+          'leader_description': "{!! Helper::sanitizeForJavascript($member->leader_description) !!}",
+          'leader_role': "{!! Helper::sanitizeForJavascript($member->leader_role) !!}",
+          'leader_role_in_contact_page': {!! $member->leader_role_in_contact_page ? "true" : "false" !!},
+          'section_id': {!! $member->section_id !!},
+          'phone1': "{!! Helper::sanitizeForJavascript($member->phone1) !!}",
+          'phone1_owner': "{!! Helper::sanitizeForJavascript($member->phone1_owner) !!}",
+          'phone1_private': {!! $member->phone1_private ? "true" : "false" !!},
+          'phone2': "{!! Helper::sanitizeForJavascript($member->phone2) !!}",
+          'phone2_owner': "{!! Helper::sanitizeForJavascript($member->phone2_owner) !!}",
+          'phone2_private': {!! $member->phone2_private ? "true" : "false" !!},
+          'phone3': "{!! Helper::sanitizeForJavascript($member->phone3) !!}",
+          'phone3_owner': "{!! Helper::sanitizeForJavascript($member->phone3_owner) !!}",
+          'phone3_private': {!! $member->phone3_private ? "true" : "false" !!},
+          'phone_member': "{!! Helper::sanitizeForJavascript($member->phone_member) !!}",
+          'phone_member_private': {!! $member->phone_member_private ? "true" : "false" !!},
+          'email1': "{!! Helper::sanitizeForJavascript($member->email1) !!}",
+          'email2': "{!! Helper::sanitizeForJavascript($member->email2) !!}",
+          'email3': "{!! Helper::sanitizeForJavascript($member->email3) !!}",
+          'email_member': "{!! Helper::sanitizeForJavascript($member->email_member) !!}",
+          'totem': "{!! Helper::sanitizeForJavascript($member->totem) !!}",
+          'quali': "{!! Helper::sanitizeForJavascript($member->quali) !!}",
           'family_in_other_units': {{{ $member->family_in_other_units }}},
-          'family_in_other_units_details' : "{{ Helper::sanitizeForJavascript($member->family_in_other_units_details) }}",
+          'family_in_other_units_details' : "{!! Helper::sanitizeForJavascript($member->family_in_other_units_details) !!}",
         };
       @endforeach
     @endforeach
@@ -247,7 +247,7 @@ use App\Models\Section;
                     <div class="form-group">
                       {!! Form::label('year_in_section', "Année dans la section", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-2">
-                        {!! Form::text('year_in_section', $member->year_in_section, array('class' => 'form-control')) !!}
+                        {!! Form::text('year_in_section', e($member->year_in_section), array('class' => 'form-control')) !!}
                       </div>
                       <div class="col-md-3 form-side-note">
                         (Date de naissance : {{ Helper::dateToHuman($member->birth_date) }})
@@ -256,25 +256,25 @@ use App\Models\Section;
                     <div class="form-group">
                       {!! Form::label('registration_siblings', "Frères et sœurs dans l'unité", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {!! Form::text('registration_siblings', $member->registration_siblings, array('class' => 'form-control')) !!}
+                        {!! Form::text('registration_siblings', e($member->registration_siblings), array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
                       {!! Form::label('registration_city', "Localité", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {!! Form::text('registration_city', $member->city, array('class' => 'form-control')) !!}
+                        {!! Form::text('registration_city', e($member->city), array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
                       {!! Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {!! Form::text('registration_former_leader_child', $member->registration_former_leader_child, array('class' => 'form-control')) !!}
+                        {!! Form::text('registration_former_leader_child', e($member->registration_former_leader_child), array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">
                       {!! Form::label('registration_date', "Date de la demande d'inscription", array("class" => "col-md-4 control-label")) !!}
                       <div class="col-md-8">
-                        {!! Form::text('registration_date', $member->registration_date, array('class' => 'form-control')) !!}
+                        {!! Form::text('registration_date', e($member->registration_date), array('class' => 'form-control')) !!}
                       </div>
                     </div>
                     <div class="form-group">

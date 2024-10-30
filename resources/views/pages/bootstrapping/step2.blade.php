@@ -79,25 +79,25 @@
             <div class="form-group">
               {!! Form::label('host', "Hôte", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {!! Form::text('host', $host, array('class' => 'form-control')) !!}
+                {!! Form::text('host', e($host), array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
               {!! Form::label('database', "Base de données", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {!! Form::text('database', $database, array('class' => 'form-control')) !!}
+                {!! Form::text('database', e($database), array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
               {!! Form::label('username', "Utilisateur", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {!! Form::text('username', $username, array('class' => 'form-control')) !!}
+                {!! Form::text('username', e($username), array('class' => 'form-control')) !!}
               </div>
             </div>
             <div class="form-group">
               {!! Form::label('password', "Mot de passe", array('class' => 'control-label text-right col-sm-4')) !!}
               <div class='col-sm-4'>
-                {!! Form::text('password', $password, array('class' => 'form-control')) !!}
+                {!! Form::text('password', e($password), array('class' => 'form-control')) !!}
               </div>
             </div>
           <div class="form-group">

@@ -110,7 +110,7 @@ use App\Models\Member;
           <div class="form-group">
             {!! Form::label('last_name', "Nom", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('last_name', $default['last_name'], array('class' => 'form-control')) !!}
+              {!! Form::text('last_name', e($default['last_name']), array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -148,7 +148,7 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('nationality', "Nationalité", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('nationality', $default['nationality'], array('class' => 'small form-control')) !!}
+              {!! Form::text('nationality', e($default['nationality']), array('class' => 'small form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -165,7 +165,7 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('address', "Rue et numéro", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('address', $default['address'], array('class' => 'form-control')) !!}
+              {!! Form::text('address', e($default['address']), array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -177,7 +177,7 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('postcode', "Code postal", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('postcode', $default['postcode'], array('class' => 'small form-control')) !!}
+              {!! Form::text('postcode', e($default['postcode']), array('class' => 'small form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -189,7 +189,7 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('city', "Localité", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('city', $default['city'], array('class' => 'form-control')) !!}
+              {!! Form::text('city', e($default['city']), array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -211,29 +211,29 @@ use App\Models\Member;
               </p>
             </div>
             <div class="col-md-9">
-              {!! Form::text('phone1', $default['phone1'], array('placeholder' => "Numéro principal", 'class' => "form-control medium")) !!}
+              {!! Form::text('phone1', e($default['phone1']), array('placeholder' => "Numéro principal", 'class' => "form-control medium")) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone1_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('phone1_private', 1, $default['phone1_private']) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone1_owner', 'Téléphone de', array('class' => 'control-label')) !!}
-              {!! Form::text('phone1_owner', $default['phone1_owner'], array('placeholder' => "Ex: maison", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone1_owner', e($default['phone1_owner']), array('placeholder' => "Ex: maison", 'class' => "medium form-control")) !!}
               <br />
-              {!! Form::text('phone2', $default['phone2'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone2', e($default['phone2']), array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone2_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('phone2_private', 1, $default['phone2_private']) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone2_owner', 'Téléphone de', array('class' => 'control-label')) !!}
-              {!! Form::text('phone2_owner', $default['phone2_owner'], array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone2_owner', e($default['phone2_owner']), array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) !!}
               <br />
-              {!! Form::text('phone3', $default['phone3'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone3', e($default['phone3']), array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone3_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('phone3_private', 1, $default['phone3_private']) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone3_owner', 'Téléphone de', array('class' => 'control-label')) !!}
-              {!! Form::text('phone3_owner', $default['phone3_owner'], array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone3_owner', e($default['phone3_owner']), array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) !!}
               <br />&nbsp;
             </div>
           </div>
@@ -255,9 +255,9 @@ use App\Models\Member;
           <div class='row'>
             {!! Form::label('email1', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('email1', $default['email1'], array('class' => 'form-control')) !!}
-              {!! Form::text('email2', $default['email2'], array('class' => 'form-control')) !!}
-              {!! Form::text('email3', $default['email3'], array('class' => 'form-control')) !!} <br />
+              {!! Form::text('email1', e($default['email1']), array('class' => 'form-control')) !!}
+              {!! Form::text('email2', e($default['email2']), array('class' => 'form-control')) !!}
+              {!! Form::text('email3', e($default['email3']), array('class' => 'form-control')) !!} <br />
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
@@ -432,7 +432,7 @@ use App\Models\Member;
             <div class='form-group'>
               {!! Form::label('registration_siblings', "Frères et sœurs dans l'unité", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-5">
-                {!! Form::text('registration_siblings', $default['registration_siblings'],
+                {!! Form::text('registration_siblings', e($default['registration_siblings']),
                           array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control')) !!}
               </div>
               <div class="col-md-4">
@@ -445,7 +445,7 @@ use App\Models\Member;
             <div class='form-group'>
               {!! Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-5">
-                {!! Form::text('registration_former_leader_child', $default['registration_former_leader_child'],
+                {!! Form::text('registration_former_leader_child', e($default['registration_former_leader_child']),
                           array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control')) !!}
               </div>
               <div class="col-md-4">

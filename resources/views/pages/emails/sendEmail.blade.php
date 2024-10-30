@@ -108,7 +108,7 @@ use App\Models\MemberHistory;
     .catch(error => {
       console.error( error );
     });
-    window.defaultSubject = "{{ Helper::sanitizeForJavascript($default_subject) }}";
+    window.defaultSubject = "{!! Helper::sanitizeForJavascript($default_subject) !!}";
   </script>
 @stop
 
@@ -137,7 +137,7 @@ use App\Models\MemberHistory;
           <div class="form-group">
             {!! Form::label('subject', "Sujet", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-5">
-              {!! Form::text('subject', $default_subject, array('class' => "form-control")) !!}
+              {!! Form::text('subject', e($default_subject), array('class' => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -159,11 +159,11 @@ use App\Models\MemberHistory;
             {!! Form::label('sender_address', "Expéditeur", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-10">
               {!! Form::label('sender_name', 'Nom') !!} :
-              {!! Form::text('sender_name', $user->currentSection->name, array('class' => 'form-control large')) !!}
+              {!! Form::text('sender_name', e($user->currentSection->name), array('class' => 'form-control large')) !!}
               <span class="horiz-divider"></span>
               <span class="no-wrap">
                 {!! Form::label('sender_address', 'Adresse') !!} :
-                {!! Form::text('sender_address', $user->currentSection->email, array('class' => 'form-control large')) !!}
+                {!! Form::text('sender_address', e($user->currentSection->email), array('class' => 'form-control large')) !!}
               </span>
             </div>
           </div>
@@ -255,7 +255,7 @@ use App\Models\MemberHistory;
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {!! Form::textarea('extra_recipients', isset($recipientList) ? implode(", ", $recipientList) : "", array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) !!}
+              {!! Form::textarea('extra_recipients', e(isset($recipientList) ? implode(", ", $recipientList) : ""), array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) !!}
             </div>
           </div>
           

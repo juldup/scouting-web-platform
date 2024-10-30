@@ -64,18 +64,18 @@ use App\Models\Section;
           </div>
           <div class="form-group">
             <div class="col-sm-6 col-md-4"><label class="control-label">1 membre dans la famille</label></div>
-            <div class="col-sm-3 col-lg-2">{!! Form::text('price_1_child', $prices['1 child'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
-            <div class="col-sm-3">{!! Form::text('price_1_leader', $prices['1 leader'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3 col-lg-2">{!! Form::text('price_1_child', e($prices['1 child']), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3">{!! Form::text('price_1_leader', e($prices['1 leader']), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
           </div>
           <div class="form-group">
             <div class="col-sm-6 col-md-4"><label class="control-label">2 membres dans la famille</label></div>
-            <div class="col-sm-3 col-lg-2">{!! Form::text('price_2_children', $prices['2 children'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
-            <div class="col-sm-3">{!! Form::text('price_2_leaders', $prices['2 leaders'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3 col-lg-2">{!! Form::text('price_2_children', e($prices['2 children']), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3">{!! Form::text('price_2_leaders', e($prices['2 leaders']), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
           </div>
           <div class="form-group">
             <div class="col-sm-6 col-md-4"><label class="control-label">3 membres ou plus dans la famille</label></div>
-            <div class="col-sm-3 col-lg-2">{!! Form::text('price_3_children', $prices['3 children'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
-            <div class="col-sm-3">{!! Form::text('price_3_leaders', $prices['3 leaders'], array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3 col-lg-2">{!! Form::text('price_3_children', e($prices['3 children']), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
+            <div class="col-sm-3">{!! Form::text('price_3_leaders', e($prices['3 leaders']), array('class' => 'form-control small')) !!}&nbsp;&euro;</div>
           </div>
           
           <legend>
@@ -110,11 +110,11 @@ use App\Models\Section;
                 <span class='horiz-divider'></span>
                 {!! Form::label("registration_start_date", "du", ['class' => 'control-label']) !!}
                 <span class="horiz-divider"></span>
-                {!! Form::text('registration_start_date', Parameter::get(Parameter::$REGISTRATION_START_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) !!}
+                {!! Form::text('registration_start_date', e(Parameter::get(Parameter::$REGISTRATION_START_DATE)), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) !!}
                 <span class="horiz-divider"></span>
                 {!! Form::label("registration_end_date", "au", ['class' => 'control-label']) !!}
                 <span class="horiz-divider"></span>
-                {!! Form::text('registration_end_date', Parameter::get(Parameter::$REGISTRATION_END_DATE), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) !!}
+                {!! Form::text('registration_end_date', e(Parameter::get(Parameter::$REGISTRATION_END_DATE)), array("class" => "form-control medium", "placeholder" => "MM-JJ hh:mm")) !!}
               </div>
             </div>
             <div class="col-lg-5 col-md-6 col-sm-9 control-label">
@@ -127,7 +127,7 @@ use App\Models\Section;
               <span class='horiz-divider'></span>
               {!! Form::label("registration_priority_city", "Localité prioritaire", ['class' => 'control-label']) !!}
               <span class="horiz-divider"></span>
-              {!! Form::text("registration_priority_city", Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY), ['class' => 'form-control medium']) !!}
+              {!! Form::text("registration_priority_city", e(Parameter::get(Parameter::$REGISTRATION_PRIORITY_CITY)), ['class' => 'form-control medium']) !!}
               <br />
               <span class='glyphicon glyphicon-arrow-right'></span>
               <span class='horiz-divider'></span>
@@ -212,7 +212,7 @@ use App\Models\Section;
               {!! Form::label("unit_google_calendar_link", "Lien Google Agenda") !!}
             </div>
             <div class="col-sm-8">
-              {!! Form::text("unit_google_calendar_link", Section::find(1)->google_calendar_link, ['class' => 'form-control']) !!}
+              {!! Form::text("unit_google_calendar_link", e(Section::find(1)->google_calendar_link), ['class' => 'form-control']) !!}
               URL du calendrier au format icalendar : <span id='icalendar_link'>{{ URL::route('export_calendar', ['section_id' => 1]) }}</span>
             </div>
           </div>
@@ -240,7 +240,7 @@ use App\Models\Section;
                 @if ($category)
                   <div class="row document-category-row">
                     <div class="col-xs-10">
-                      {!! Form::text('document_categories[]', $category, array("class" => "form-control document-category")) !!}
+                      {!! Form::text('document_categories[]', e($category), array("class" => "form-control document-category")) !!}
                     </div>
                     <div class="col-xs-2">
                       <p class="form-side-note">
@@ -288,7 +288,7 @@ use App\Models\Section;
               {!! Form::label('unit_long_name', "Nom de l'unité") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('unit_long_name', Parameter::get(Parameter::$UNIT_LONG_NAME), array("class" => "form-control")) !!}
+              {!! Form::text('unit_long_name', e(Parameter::get(Parameter::$UNIT_LONG_NAME)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -296,7 +296,7 @@ use App\Models\Section;
               {!! Form::label('unit_short_name', "Sigle de l'unité") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('unit_short_name', Parameter::get(Parameter::$UNIT_SHORT_NAME), array("class" => "form-control")) !!}
+              {!! Form::text('unit_short_name', e(Parameter::get(Parameter::$UNIT_SHORT_NAME)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -304,7 +304,7 @@ use App\Models\Section;
               {!! Form::label('unit_bank_account', "N° de compte en banque de l'unité") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('unit_bank_account', Parameter::get(Parameter::$UNIT_BANK_ACCOUNT), array("class" => "form-control")) !!}
+              {!! Form::text('unit_bank_account', e(Parameter::get(Parameter::$UNIT_BANK_ACCOUNT)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -442,7 +442,7 @@ use App\Models\Section;
               <p>Pour activer les fonctionnalités Facebook, <a href="https://developers.facebook.com/apps" target="_blank">créez une application Facebook</a> et entrez ici son ID.</p>
             </div>
             <div class="col-sm-5">
-              {!! Form::text('facebook_app_id', Parameter::get(Parameter::$FACEBOOK_APP_ID ), array("class" => "form-control")) !!}
+              {!! Form::text('facebook_app_id', e(Parameter::get(Parameter::$FACEBOOK_APP_ID)), array("class" => "form-control")) !!}
             </div>
           </div>
           
@@ -503,7 +503,7 @@ use App\Models\Section;
               {!! Form::label('webmaster_email', "Adresse e-mail du webmaster") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('webmaster_email', Parameter::get(Parameter::$WEBMASTER_EMAIL), array("class" => "form-control")) !!}
+              {!! Form::text('webmaster_email', e(Parameter::get(Parameter::$WEBMASTER_EMAIL)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -511,7 +511,7 @@ use App\Models\Section;
               {!! Form::label('default_email_from_address', "Adresse e-mail du site") !!} <br />(pour l'envoi des e-mails personnels)
             </div>
             <div class="col-sm-5">
-              {!! Form::text('default_email_from_address', Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS), array("class" => "form-control")) !!}
+              {!! Form::text('default_email_from_address', e(Parameter::get(Parameter::$DEFAULT_EMAIL_FROM_ADDRESS)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -519,7 +519,7 @@ use App\Models\Section;
               {!! Form::label('unit_email_address', "Adresse e-mail de l'unité") !!} <br />(pour l'envoi des e-mails d'unité)
             </div>
             <div class="col-sm-5">
-              {!! Form::text('unit_email_address', Section::find(1)->email, array("class" => "form-control")) !!}
+              {!! Form::text('unit_email_address', e(Section::find(1)->email), array("class" => "form-control")) !!}
               <br />
               Envoyer les demandes d'inscription à cette adresse :
               <span class="horiz-divider"></span>
@@ -531,7 +531,7 @@ use App\Models\Section;
               {!! Form::label('smtp_host', "Hôte SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('smtp_host', Parameter::get(Parameter::$SMTP_HOST), array("class" => "form-control")) !!}
+              {!! Form::text('smtp_host', e(Parameter::get(Parameter::$SMTP_HOST)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -539,7 +539,7 @@ use App\Models\Section;
               {!! Form::label('smtp_port', "Port SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('smtp_port', Parameter::get(Parameter::$SMTP_PORT), array("class" => "form-control")) !!}
+              {!! Form::text('smtp_port', e(Parameter::get(Parameter::$SMTP_PORT)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -547,7 +547,7 @@ use App\Models\Section;
               {!! Form::label('smtp_username', "Login SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('smtp_username', Parameter::get(Parameter::$SMTP_USERNAME), array("class" => "form-control")) !!}
+              {!! Form::text('smtp_username', e(Parameter::get(Parameter::$SMTP_USERNAME)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -563,7 +563,7 @@ use App\Models\Section;
               {!! Form::label('smtp_security', "Sécurité SMTP pour l'envoi des e-mails") !!}
             </div>
             <div class="col-sm-5">
-              {!! Form::text('smtp_security', Parameter::get(Parameter::$SMTP_SECURITY), array("class" => "form-control")) !!}
+              {!! Form::text('smtp_security', e(Parameter::get(Parameter::$SMTP_SECURITY)), array("class" => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -574,7 +574,7 @@ use App\Models\Section;
               @foreach ($safe_emails as $safe_email)
                 <div class="row safe-email-row">
                   <div class="col-xs-10">
-                    {!! Form::text('email_safe_list[]', $safe_email, array("class" => "form-control safe-email")) !!}
+                    {!! Form::text('email_safe_list[]', e($safe_email), array("class" => "form-control safe-email")) !!}
                   </div>
                   <div class="col-xs-2">
                     <p class="form-side-note">
