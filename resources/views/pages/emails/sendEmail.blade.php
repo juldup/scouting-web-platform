@@ -72,7 +72,7 @@ use App\Models\MemberHistory;
         ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle, ImageTextAlternative,
         ImageToolbar, ImageUpload, SimpleUploadAdapter, DecoupledEditor, AccessibilityHelp, 
         AutoImage, CloudServices, SelectAll, SpecialCharacters, Undo, Underline, Strikethrough, 
-        Subscript, Superscript, Table, RemoveFormat, HorizontalLine, Link, Alignment, List, Indent,
+        Subscript, Superscript, Table, RemoveFormat, HorizontalLine, Link, Alignment, List, Indent, SourceEditing
     } from 'ckeditor5';
     ClassicEditor.create(document.querySelector('#body'), {
       plugins: [
@@ -80,9 +80,10 @@ use App\Models\MemberHistory;
         ImageCaption, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle,
         ImageTextAlternative, ImageToolbar, ImageUpload, Paragraph, SelectAll, SimpleUploadAdapter,
         SpecialCharacters, Undo, Underline, Strikethrough, Subscript, Superscript, Table, RemoveFormat,
-        HorizontalLine, Link, Alignment, List, Indent,
+        HorizontalLine, Link, Alignment, List, Indent, SourceEditing
       ],
       toolbar: [
+        'sourceEditing', '|',
         'undo', 'redo', '|', 
         'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
         'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
@@ -153,7 +154,7 @@ use App\Models\MemberHistory;
               <span class="horiz-divider"></span>
               {!! Form::checkbox('sign_email', 1, true) !!}
             </div>
-            <div class="email-signature">{{ $signature }}</div>
+            <div class="email-signature">{!! $signature !!}</div>
           </div>
           <div class="form-group">
             {!! Form::label('sender_address', "Expéditeur", array('class' => 'col-md-2 control-label')) !!}

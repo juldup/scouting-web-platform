@@ -46,6 +46,7 @@ use App\Models\MemberHistory;
         ImageToolbar, ImageUpload, SimpleUploadAdapter, DecoupledEditor, AccessibilityHelp, 
         AutoImage, CloudServices, SelectAll, SpecialCharacters, Undo, Underline, Strikethrough, 
         Subscript, Superscript, Table, RemoveFormat, HorizontalLine, Link, Alignment, List, Indent,
+        SourceEditing,
     } from 'ckeditor5';
     ClassicEditor.create(document.querySelector('#page_body'), {
       plugins: [
@@ -53,9 +54,10 @@ use App\Models\MemberHistory;
         ImageCaption, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle,
         ImageTextAlternative, ImageToolbar, ImageUpload, Paragraph, SelectAll, SimpleUploadAdapter,
         SpecialCharacters, Undo, Underline, Strikethrough, Subscript, Superscript, Table, RemoveFormat,
-        HorizontalLine, Link, Alignment, List, Indent,
+        HorizontalLine, Link, Alignment, List, Indent, SourceEditing,
       ],
       toolbar: [
+        'sourceEditing', '|',
         'undo', 'redo', '|', 
         'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
         'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
