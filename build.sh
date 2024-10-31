@@ -1,3 +1,13 @@
+# Build angular app for logs and copy static files
+cd angular/logs
+npm install
+ng build --configuration production
+cd ../..
+cp angular/logs/dist/logs/browser/main*.js resources/angular/logs/main.js
+cp angular/logs/dist/logs/browser/polyfills*.js resources/angular/logs/polyfills.js
+cp angular/logs/dist/logs/browser/scripts*.js resources/angular/logs/scripts.js
+cp angular/logs/dist/logs/browser/styles*.css resources/angular/logs/styles.css
+
 # Build angular app for accounting and copy static files
 cd angular/accounting
 npm install

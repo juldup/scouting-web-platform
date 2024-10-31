@@ -391,6 +391,7 @@ Route::post('email-personnel/soumettre/{contact_type}/{member_id}', array("as" =
 
 // Logs
 Route::get('gestion/logs', array("as" => "logs", "uses" => "App\Http\Controllers\LogController@showPage"));
+Route::get('gestion/logs-angular', array("as" => "angular_logs", "uses" => "App\Http\Controllers\LogController@angularLogs"));
 Route::get('ajax/gestion/logs/logs-suivants/{lastKnownLogId}/{count}', array("as" => "ajax_load_more_logs", "uses" => "App\Http\Controllers\LogController@loadMoreLogs"));
 
 // Comments
