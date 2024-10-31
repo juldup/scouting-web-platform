@@ -18,6 +18,7 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\DateHelper;
 
 /**
  * This Eloquent class represents a global parameter of the website.
