@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use App\Helpers\Form;
 use App\Models\Privilege;
 use App\Models\MemberHistory;
+use App\Models\Section;
 
 ?>
 
