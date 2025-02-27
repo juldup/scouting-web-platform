@@ -199,7 +199,7 @@ use App\Models\MemberHistory;
                         Téléphone :
                       </div>
                       <div class="col-md-9">
-                        {{ $member->getAllPublicPhones("<span class='horiz-divider'></span>", $user->isLeader()) }}
+                        {{ $member->getAllPublicPhones(", ", $user->isLeader()) }}
                       </div>
                     </div>
                     <div class="row">
@@ -234,7 +234,7 @@ use App\Models\MemberHistory;
                           Adresse e-mail :
                         </div>
                         <div class="col-md-9">
-                          {{ $member->getAllEmailAddresses("<span class='horiz-divider'></span>") }}
+                          {{ $member->getAllEmailAddresses(", ") }}
                         </div>
                       </div>
                     @endif
