@@ -183,7 +183,7 @@ use App\Models\MemberHistory;
                 </tr>
                 <tr id="details_{{ $member->id }}" class="details_member tablesorter-childRow" style="display: none;">
                   <td colspan="2" class="listing-details-picture">
-                    {{ $member->has_picture ? "<img src='" . $member->getPictureURL() . "' alt='not found'>" : "" }}
+                    {!! $member->has_picture ? "<img src='" . $member->getPictureURL() . "' alt='not found'>" : "" !!}
                   </td>
                   <td colspan="{{ 3 + ($sct['show_totem'] ? 1 : 0) + ($sct['show_subgroup'] ? 1 : 0) + ($sct['show_role'] ? 1 : 0) }}">
                     <div class="row">
