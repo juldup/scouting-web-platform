@@ -25,7 +25,7 @@
 window.addNews = function() {
   $("#news_form [name='news_id']").val("");
   $("#news_form [name='news_title']").val("");
-  CKEDITOR.instances['news_body'].setData("");
+  window.editorInstance.setData("");
   $("#news_form [name='section']").val(currentSection);
   $("#news_form #delete_link").hide();
   $("#news_form").slideDown();
@@ -44,7 +44,7 @@ window.dismissNewsForm = function() {
 window.editNews = function(newsId) {
   $("#news_form [name='news_id']").val(newsId);
   $("#news_form [name='news_title']").val(news[newsId].title);
-  CKEDITOR.instances['news_body'].setData(news[newsId].body);
+  window.editorInstance.setData(news[newsId].body);
   $("#news_form [name='section']").val(news[newsId].section);
   $("#news_form #delete_link").attr('href', news[newsId].delete_url);
   $("#news_form #delete_link").show();

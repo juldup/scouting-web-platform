@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use App\Helpers\Form;
 use App\Models\Privilege;
 use App\Models\MemberHistory;
+use App\Models\Section;
 
 ?>
 
@@ -80,7 +81,7 @@ use App\Models\MemberHistory;
             @endif
             </div>
           <div class="calendar-list-event-description">
-            {{ Helper::rawToHTML($item->description) }}
+            {!! Helper::rawToHTML($item->description) !!}
           </div>
         </div>
       @endforeach

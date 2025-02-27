@@ -1,0 +1,169 @@
+<div class="accounting">
+  <div class="row">
+    <div class="col-sm-6 col-xs-8 text-right">
+      <label>Total à l'actif :</label>
+    </div>
+    <div class="col-xs-4">
+      <span [ngClass]="bigTotal('cash') + bigTotal('bank') >= 0 ? 'positive' : 'negative'">
+        <strong>{{ formatCurrency(bigTotal('cash') + bigTotal('bank')) }}</strong>
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-xs-8 text-right">
+      <label>Total liquide :</label>
+    </div>
+    <div class="col-xs-4">
+      <span [ngClass]="bigTotal('cash') >= 0 ? 'positive' : 'negative'">
+        <strong>{{ formatCurrency(bigTotal('cash')) }}</strong>
+      </span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-6 col-xs-8 text-right">
+      <label>Total compte bancaire :</label>
+    </div>
+    <div class="col-xs-4">
+      <span [ngClass]="bigTotal('bank') >= 0 ? 'positive' : 'negative'">
+        <strong>{{ formatCurrency(bigTotal('bank')) }}</strong>
+      </span>
+    </div>
+  </div>
+  <div class="vertical-divider"></div>
+  <div class="row">
+    <div class="col-sm-12">
+      <table>
+        <thead>
+          <tr class="table-header">
+            <td class="move-handle"></td>
+            <th class="cell-date">Date</th>
+            <th class="cell-description">Motif</th>
+            <th colspan='2'>Liquide</th>
+            <th colspan='2'>Compte en banque</th>
+            <th class="cell-description">Commentaire</th>
+            <th class="cell-receipt">Reçus</th>
+            <td></td>
+          </tr>
+          <tr class='table-header'>
+            <td></td>
+            <th></th>
+            <th></th>
+            <th class='cellin cell-amount'>Rentrées</th>
+            <th class='cellout cell-amount'>Dépenses</th>
+            <th class='cellin cell-amount'>Rentrées</th>
+            <th class='cellout cell-amount'>Dépenses</th>
+            <th></th>
+            <th></th>
+            <td></td>
+          </tr>
+          <tr class="transaction-row" [hidden]="!(inheritance.cashin || inheritance.cashout || inheritance.bankin || inheritance.bankout)">
+            <th></th>
+            <td colspan="2" class="cell-inheritance">Héritage de l'année {{ previousYear }}</td>
+            <td class='cellin cell-amount cell-inheritance'>{{ inheritance.cashin }}</td>
+            <td class='cellout cell-amount cell-inheritance'>{{ inheritance.cashout }}</td>
+            <td class='cellin cell-amount cell-inheritance'>{{ inheritance.bankin }}</td>
+            <td class='cellout cell-amount cell-inheritance'>{{ inheritance.bankout }}</td>
+            <td colspan="2" class="cell-inheritance">L'héritage est mis à jour automatiquement</td>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let category of categories; let $index = index" data-category-index="{{ $index }}" ui-sortable="sortableOptions">
+            <tr>
+              <td class="move-handle">
+              </td>
+              <td colspan="8" class="category-name">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="category.name" [disabled]="!canEdit">
+              </td>
+            </tr>
+            <tr *ngFor="let trans of category.transactions" class="transaction-row" data-transaction-id="{{ trans.id }}">
+              <td class="move-handle">
+                <span class="glyphicon glyphicon-move" *ngIf="canEdit"></span>
+              </td>
+              <td class="cell-date">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type='text' [(ngModel)]="trans.date" class="input-date" [disabled]="!canEdit">
+              </td>
+              <td class="input-wrapper-cell cell-description">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.object" class="input-description" [disabled]="!canEdit">
+              </td>
+              <td class="cellin cell-amount">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.cashin" class="input-amount" [disabled]="!canEdit">
+                <span class="input-amount-symbol">
+                  {{ trans.cashin != 0 ? "€" : "" }}
+                </span>
+              </td>
+              <td class="cellout cell-amount">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.cashout" class="input-amount" [disabled]="!canEdit">
+                <span class="input-amount-symbol">
+                  {{ trans.cashout != 0 ? "€" : "" }}
+                </span>
+              </td>
+              <td class="cellin cell-amount">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.bankin" class="input-amount" [disabled]="!canEdit">
+                <span class="input-amount-symbol">
+                  {{ trans.bankin != 0 ? "€" : "" }}
+                </span>
+              </td>
+              <td class="cellout cell-amount">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.bankout" class="input-amount" [disabled]="!canEdit">
+                <span class="input-amount-symbol">
+                  {{ trans.bankout != 0 ? "€" : "" }}
+                </span>
+              </td>
+              <td class="cell-description">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.comment" class="input-description" [disabled]="!canEdit">
+              </td>
+              <td class="cell-receipt">
+                <input (change)="uploadChanges()"  (input)="uploadChanges()" type="text" [(ngModel)]="trans.receipt" class="input-receipt" [disabled]="!canEdit">
+              </td>
+              <td class="delete-cell">
+                <button (click)='remove(trans)' *ngIf="canEdit"><span class="glyphicon glyphicon-remove"></span></button>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="2">
+                <button (click)='addTransaction($index)' title='Ajouter une transaction' *ngIf="canEdit">
+                  <span class="glyphicon glyphicon-plus"></span> Ajouter une transaction
+                </button>
+              </td>
+              <td colspan="2" class="category-subtotal">
+                <span [ngClass]="total('cash', $index) >= 0 ? 'positive' : 'negative'">
+                  {{formatCurrency(total('cash', $index))}}
+                </span>
+              </td>
+              <td colspan="2" class="category-subtotal">
+                <span [ngClass]="total('bank', $index) >= 0 ? 'positive' : 'negative'">
+                  {{formatCurrency(total('bank', $index))}}
+                </span>
+              </td>
+              <td colspan="2"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="2">
+                <button (click)='sortList($index)' title='Trier par date' *ngIf="canEdit">
+                  <span class="glyphicon glyphicon-sort-by-attributes"></span> Trier par date
+                </button>
+              </td>
+              <td colspan="4" class="category-subtotal">
+                <span [ngClass]="total('both', $index) >= 0 ? 'positive' : 'negative'">
+                  {{formatCurrency(total('both', $index))}}
+                </span>
+              </td>
+            </tr>
+          </ng-container>
+          <tr class="add-category-row">
+            <td></td>
+            <td colspan="2">
+              <button (click)='addCategory()' title='Ajouter une catégorie' *ngIf="canEdit">
+                <span class="glyphicon glyphicon-plus"></span> Ajouter une catégorie
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="pending-commit" *ngIf="showUploading"><span class="glyphicon glyphicon-refresh"></span></div>
+</div>

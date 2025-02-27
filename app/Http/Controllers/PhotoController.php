@@ -69,6 +69,7 @@ use App\Models\Suggestion;
 use App\Models\TemporaryRegistrationLink;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
+use ZipArchive;
 
 /**
  * Photos can be posted on the website by the leaders. Photos are arrange by section in

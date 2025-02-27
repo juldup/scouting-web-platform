@@ -307,6 +307,7 @@ class DocumentController extends BaseController {
     $docId = $request->input('doc_id');
     $title = $request->input('doc_title');
     $description = $request->input('description');
+    if (!$description) $description = "";
     $category = $request->input('category');
     $public = $request->input('public') ? true : false;
     $file = $request->file('document');

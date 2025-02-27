@@ -38,26 +38,13 @@ use App\Models\MemberHistory;
   @endif
 @stop
 
-@section('additional_javascript')
-  @vite(['resources/js/libs/angular-1.2.15.min.js'])
-  <script>
-    var commitAttendanceChangesURL = "{{ URL::route('upload_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}";
-    var canEdit = {{ $canEdit ? "true" : "false" }};
-    var members = {!! json_encode($members); !!};
-    var monitoredEvents = {!! json_encode($monitoredEvents); !!};
-    var unmonitoredEvents = {!! json_encode($unmonitoredEvents); !!};
-  </script>
-  @vite(['resources/js/attendance-angular.js'])
-@stop
-
 @section('content')
   
   @include('subviews.contextualHelp', array('help' => 'attendance'))
   
   <h1>Présences {{{ $user->currentSection->de_la_section }}}&nbsp;: année {{{ $year }}}</h1>
   
-  @include('pages.attendance.attendance-angular')
-  <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
+  <iframe src="{{ route('angular_attendance', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}"width="100%" height="600"></iframe>
   
   <div class="vertical-divider"></div>
   <p>

@@ -91,6 +91,19 @@ class LogController extends BaseController {
   }
   
   /**
+   * [Route] Angular iframe
+   */
+  public function angularLogs() {
+    // Make sure the user can see the logs
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    return View::make('pages.logs.logs-angular', array(
+        'logs_per_request' => 500,
+    ));
+  }
+  
+  /**
    * [Route] Ajax call to load more logs to the bottom of the list
    */
   public function loadMoreLogs($lastKnownLogId, $limit) {

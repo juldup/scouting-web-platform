@@ -68,7 +68,7 @@ use App\Models\Section;
 use App\Models\Suggestion;
 use App\Models\TemporaryRegistrationLink;
 use App\Models\User;
-
+use Illuminate\Support\Facades\DB;
 /**
  * Future members can register as scouts or leaders through a registration form.
  * The leaders can then validate the registration.

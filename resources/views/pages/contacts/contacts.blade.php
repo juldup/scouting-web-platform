@@ -192,7 +192,7 @@ use App\Http\Controllers\PersonalEmailController;
               <a href="{{{ $link->url }}}" target="_blank">{{{ $link->title }}}</a>
             </legend>
             <div>
-              {{ Helper::rawToHTML($link->description) }}
+              {!! Helper::rawToHTML($link->description) !!}
             </div>
           </div>
         </div>

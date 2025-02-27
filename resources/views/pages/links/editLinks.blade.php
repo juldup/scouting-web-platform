@@ -35,9 +35,9 @@ use App\Models\Privilege;
     var links = new Array();
     @foreach ($links as $link)
       links[{{ $link->id }}] = {
-        'title': "{{ Helper::sanitizeForJavascript($link->title) }}",
-        'url': "{{ Helper::sanitizeForJavascript($link->url) }}",
-        'description': "{{ Helper::sanitizeForJavascript($link->description) }}",
+        'title': "{!! Helper::sanitizeForJavascript($link->title) !!}",
+        'url': "{!! Helper::sanitizeForJavascript($link->url) !!}",
+        'description': "{!! Helper::sanitizeForJavascript($link->description) !!}",
         'delete_url': "{{ URL::route('edit_links_delete', array('link_id' => $link->id)) }}"
       };
     @endforeach
@@ -122,7 +122,7 @@ use App\Models\Privilege;
           </div>
         </legend>
         <div>
-          {{ trim($link->description) ? Helper::rawToHTML($link->description) : "(Pas de description)" }}
+          {!! trim($link->description) ? Helper::rawToHTML($link->description) : "(Pas de description)" !!}
         </div>
       </div>
     </div>

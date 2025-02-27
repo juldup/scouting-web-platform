@@ -22,6 +22,7 @@ use App\Helpers\Helper;
 use Illuminate\Support\Facades\Session;
 use App\Helpers\Form;
 use App\Models\Privilege;
+use App\Models\Section;
 
 ?>
 
@@ -113,8 +114,8 @@ use App\Models\Privilege;
             @endif
             {{{ $newsItem->title }}} – {{{ $newsItem->getHumanDate() }}}
           </legend>
-          <div>
-            {{ $newsItem->body }}
+          <div class="ck-content">
+            {!! $newsItem->body !!}
           </div>
         </div>
         @if (count($newsItem->getComments()) || $user->isMember())

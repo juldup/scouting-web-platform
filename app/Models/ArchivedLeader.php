@@ -18,6 +18,7 @@
 
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\URL;
 use App\Helpers\DateHelper;
 use Illuminate\Http\Request;
 use App\Helpers\Helper;

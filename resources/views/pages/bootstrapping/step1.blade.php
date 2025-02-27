@@ -43,7 +43,7 @@
         <div class="well well-sm">
           {{ $directory_path }}
         </div>
-        <p>Veuillez donner l'accès à ce répertoire&nbsp;: <strong>chmod 777 -R app/storage</strong></p>
+        <p>Veuillez donner l'accès à ce répertoire&nbsp;: <strong>chmod 777 -R storage/app</strong></p>
         <p>
           <a class="btn btn-primary" href="{{ URL::route('bootstrapping_step', array('step' => 1)) }}">
             Réessayer

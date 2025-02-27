@@ -66,22 +66,50 @@ use App\Models\MemberHistory;
 
 @section('additional_javascript')
   @vite(['resources/js/send-section-email.js'])
-  @vite(['resources/js/ckeditor/ckeditor.js'])
   <script type='module'>
+    import {
+        ClassicEditor, Essentials, Bold, Italic, Font, Paragraph, ImageBlock, ImageCaption,
+        ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle, ImageTextAlternative,
+        ImageToolbar, ImageUpload, SimpleUploadAdapter, DecoupledEditor, AccessibilityHelp, 
+        AutoImage, CloudServices, SelectAll, SpecialCharacters, Undo, Underline, Strikethrough, 
+        Subscript, Superscript, Table, RemoveFormat, HorizontalLine, Link, Alignment, List, Indent, SourceEditing
+    } from 'ckeditor5';
     ClassicEditor.create(document.querySelector('#body'), {
+      plugins: [
+        Bold, Italic, Font, AccessibilityHelp, AutoImage, CloudServices, Essentials, ImageBlock,
+        ImageCaption, ImageInline, ImageInsert, ImageInsertViaUrl, ImageResize, ImageStyle,
+        ImageTextAlternative, ImageToolbar, ImageUpload, Paragraph, SelectAll, SimpleUploadAdapter,
+        SpecialCharacters, Undo, Underline, Strikethrough, Subscript, Superscript, Table, RemoveFormat,
+        HorizontalLine, Link, Alignment, List, Indent, SourceEditing
+      ],
+      toolbar: [
+        'sourceEditing', '|',
+        'undo', 'redo', '|', 
+        'bold', 'italic', 'underline', 'strikethrough', 'subscript', 'superscript', 'removeFormat', '|',
+        'fontSize', 'fontFamily', 'fontColor', 'fontBackgroundColor', '|',
+        'horizontalLine', 'link', 'insertImage', 'insertTable', '|',
+        'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent'
+      ],
+      shouldNotGroupWhenFull: true,
       simpleUpload: {
-        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content')
-      }
+        uploadUrl: '{{ URL::route('ajax_upload_image') }}?_token=' + $('meta[name="csrf-token"]').attr('content'),
+        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+      },
+      image: {
+            toolbar: [
+                'imageTextAlternative' // Allows adding alt text to the image
+            ]
+        },
     })
     .then(editor => {
-      console.log( editor );
+      window.editorInstance = editor;
       // Move signature below e-mail body
-      $('.cke_contents').after($('.email-signature-wrapper'));
+      //$('.cke_contents').after($('.email-signature-wrapper'));
     })
     .catch(error => {
       console.error( error );
     });
-    window.defaultSubject = "{{ Helper::sanitizeForJavascript($default_subject) }}";
+    window.defaultSubject = "{!! Helper::sanitizeForJavascript($default_subject) !!}";
   </script>
 @stop
 
@@ -110,7 +138,7 @@ use App\Models\MemberHistory;
           <div class="form-group">
             {!! Form::label('subject', "Sujet", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-5">
-              {!! Form::text('subject', $default_subject, array('class' => "form-control")) !!}
+              {!! Form::text('subject', e($default_subject), array('class' => "form-control")) !!}
             </div>
           </div>
           <div class="form-group">
@@ -126,17 +154,17 @@ use App\Models\MemberHistory;
               <span class="horiz-divider"></span>
               {!! Form::checkbox('sign_email', 1, true) !!}
             </div>
-            <div class="email-signature">{{ $signature }}</div>
+            <div class="email-signature">{!! $signature !!}</div>
           </div>
           <div class="form-group">
             {!! Form::label('sender_address', "Expéditeur", array('class' => 'col-md-2 control-label')) !!}
             <div class="col-md-10">
               {!! Form::label('sender_name', 'Nom') !!} :
-              {!! Form::text('sender_name', $user->currentSection->name, array('class' => 'form-control large')) !!}
+              {!! Form::text('sender_name', e($user->currentSection->name), array('class' => 'form-control large')) !!}
               <span class="horiz-divider"></span>
               <span class="no-wrap">
                 {!! Form::label('sender_address', 'Adresse') !!} :
-                {!! Form::text('sender_address', $user->currentSection->email, array('class' => 'form-control large')) !!}
+                {!! Form::text('sender_address', e($user->currentSection->email), array('class' => 'form-control large')) !!}
               </span>
             </div>
           </div>
@@ -228,7 +256,7 @@ use App\Models\MemberHistory;
           </div>
           <div class="form-group">
             <div class="col-md-12">
-              {!! Form::textarea('extra_recipients', isset($recipientList) ? implode(", ", $recipientList) : "", array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) !!}
+              {!! Form::textarea('extra_recipients', e(isset($recipientList) ? implode(", ", $recipientList) : ""), array('rows' => 3, 'class' => 'form-control', 'placeholder' => "Tu peux ajouter des destinataires supplémentaires. Tape ici leurs adresses e-mail séparées par des virgules.")) !!}
             </div>
           </div>
           

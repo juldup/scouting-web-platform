@@ -18,6 +18,7 @@
 
 namespace App\Helpers;
 use App\Models\HealthCard;
+use App\Models\Section;
 use TCPDF;
 use Illuminate\Support\Facades\URL;
 

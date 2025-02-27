@@ -70,40 +70,6 @@ use App\Models\MemberHistory;
 
 @section('additional_javascript')
   @vite(['resources/js/libs/jquery-ui-1.10.4.js'])
-  @vite(['resources/js/libs/angular-1.2.15.min.js'])
-  @vite(['resources/js/libs/angular-ui-0.4.0.js'])
-  <script>
-    var commitAccountingChangesURL = "{{ URL::route('ajax-accounting-commit-changes', array('section_slug' => $user->currentSection->slug, 'lock_id' => $lock_id))}}";
-    var inheritanceCash = {{ $inherit_cash }};
-    var inheritanceBank = {{ $inherit_bank }};
-    var previousYear = "{{{ $previous_year }}}";
-    var canEdit = {{ $can_edit ? "true" : "false" }};
-    var lockId = "{{ $lock_id }}";
-    var extendLockURL = "{{ URL::route('ajax-accounting-extend-lock', array('lock_id' => $lock_id)) }}";
-    var categories = [
-    @foreach ($categories as $category_name => $category)
-      {
-        name: "{{ Helper::sanitizeForJavascript($category_name) }}",
-        transactions: [
-          @foreach ($category as $transaction)
-            {
-              date: "{{ Helper::dateToHuman($transaction->date) }}",
-              object: "{{ Helper::sanitizeForJavascript($transaction->object) }}",
-              cashin: "{{ $transaction->cashin_cents ? $transaction->cashinFormatted() : "" }}",
-              cashout: "{{ $transaction->cashout_cents ? $transaction->cashoutFormatted() : "" }}",
-              bankin: "{{ $transaction->bankin_cents ? $transaction->bankinFormatted() : "" }}",
-              bankout: "{{ $transaction->bankout_cents ? $transaction->bankoutFormatted() : "" }}",
-              comment: "{{ Helper::sanitizeForJavascript($transaction->comment) }}",
-              receipt: "{{ Helper::sanitizeForJavascript($transaction->receipt) }}",
-              id: {{ $transaction->id }}
-            },
-          @endforeach
-        ]
-      },
-    @endforeach
-    ];
-  </script>
-  @vite(['resources/js/accounting-angular.js'])
 @stop
 
 @section('content')
@@ -111,13 +77,7 @@ use App\Models\MemberHistory;
   @include('subviews.contextualHelp', array('help' => 'accounting'))
   
   <h1>Trésorie {{{ $user->currentSection->de_la_section }}}&nbsp;: année {{{ $year }}}</h1>
-  @if ($locked_by_user)
-    <p class='alert alert-warning'>
-      Ces comptes sont pour le moment modifiés par <strong>{{ $locked_by_user }}</strong>.
-      Pour que tu puisses modifier ces comptes, cet utilisateur doit fermer cette page dans son navigateur.
-    </p>
-  @endif
   
-  @include('pages.accounting.accounting-angular')
-  <div id="pending-commit" style="display: none;"><span class="glyphicon glyphicon-refresh"></span></div>
+  <iframe src="{{ route('angular_accounting', array('section_slug' => $user->currentSection->slug, 'year' => $year)) }}"width="100%" height="600"></iframe>
+  
 @stop

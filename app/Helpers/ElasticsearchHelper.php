@@ -11,6 +11,10 @@ use Elasticsearch;
 use Elasticsearch\ClientBuilder;
 use App\Models\Parameter;
 use App\Models\News;
+use App\Models\Document;
+use App\Models\Email;
+use App\Models\Page;
+use App\Models\Section;
 
 /**
  * This class provides a tool to index and search the website
@@ -49,14 +53,14 @@ class ElasticsearchHelper {
     $client = self::getClient();
     
     // Clear index
-    /*try {
+    try {
       $params = ['index' => self::getIndexName()];
       if ($client->indices()->exists($params)) {
         $response = $client->indices()->delete($params);
       }
-    } catch (Exception $e) {
+    } catch (\Throwable $e) {
       
-    }*/
+    }
     
 
 
@@ -69,42 +73,43 @@ class ElasticsearchHelper {
           $client->index([
               'id' => $indexCounter++,
               'index' => self::getIndexName(),
-              'type' => '_doc',
+              //'type' => '_doc',
               'body' => [
-                  'testField' => 'abc',
-//                  'search_content' => Helper::removeSpecialCharacters($news->title . " " . html_entity_decode(strip_tags($news->body))),
-//                  'content' => $news->body,
-//                  'title' => $news->title,
-//                  'text_type' => 'news',
-//                  'text_type_name' => 'Nouvelle',
-//                  'original_id' => $news->id,
-//                  'section_id' => $news->section_id,
-//                  'visibility' => 'public',
-//                  'url' => url()->route('single_news', ['news_id' => $news->id]),
+                 'search_content' => Helper::removeSpecialCharacters($news->title . " " . html_entity_decode(strip_tags($news->body))),
+                 'content' => $news->body,
+                 'title' => $news->title,
+                 'text_type' => 'news',
+                 'text_type_name' => 'Nouvelle',
+                 'original_id' => $news->id,
+                 'section_id' => $news->section_id,
+                 'visibility' => 'public',
+                 'url' => url()->route('single_news', ['news_id' => $news->id]),
                ]
           ]);
-        } catch (Exception $e) {
-          dd($e);
+        } catch (\Throwable $e) {
         }
       }
     }
-/*    // Add documents
+    // Add documents
     if (Parameter::get(Parameter::$SHOW_DOCUMENTS)) {
       foreach (Document::where('archived', '=', 0)->get() as $document) {
         $documentPath = $document->getPath();
         if (file_exists($documentPath)) {
           try {
+            /* // Skip this operation, causing errors due to lack of memory
             if (strtolower(substr($document->filename, strlen($document->filename) - 4)) == ".pdf") {
               // Read pdf content
+               
               $parser = new \Smalot\PdfParser\Parser();
               $pdfText = $parser->parseFile($document->getPath())->getText();
-            } else {
               $pdfText = "";
-            }
+            } else {
+            */  $pdfText = "";
+            /*}*/
             $params['body'][] = [
                 'index' => [
                     '_index' => self::getIndexName(),
-                    '_type' => 'text',
+                    //'_type' => 'text',
                     '_id' => $indexCounter++,
                 ]
             ];
@@ -117,9 +122,9 @@ class ElasticsearchHelper {
                 'original_id' => $document->id,
                 'section_id' => $document->section_id,
                 'visibility' => $document->public ? "public" : "private",
-                'url' => URL::route('download_document', array('document_id' => $document->id)),
+                'url' => route('download_document', array('document_id' => $document->id)),
             ];
-          } catch (Exception $e) {}
+          } catch (\Throwable $e) {}
         }
       }
     }
@@ -129,7 +134,7 @@ class ElasticsearchHelper {
         $params['body'][] = [
             'index' => [
                 '_index' => self::getIndexName(),
-                '_type' => 'text',
+                //'_type' => 'text',
                 '_id' => $indexCounter++,
             ]
         ];
@@ -142,7 +147,7 @@ class ElasticsearchHelper {
             'original_id' => $email->id,
             'section_id' => $email->section_id,
             'visibility' => 'private',
-            'url' => URL::route('emails', ['section_slug' => $email->getSection()->slug]) . "#email_" . $email->id,
+            'url' => route('emails', ['section_slug' => $email->getSection()->slug]) . "#email_" . $email->id,
         ];
       }
     }
@@ -155,66 +160,66 @@ class ElasticsearchHelper {
         case "registration":
           if (Parameter::get(Parameter::$SHOW_REGISTRATION)) {
             $showPage = true;
-            $linkURL = URL::route('registration');
+            $linkURL = route('registration');
             $title = "Inscription dans l'unité";
           }
           break;
         case "help":
           if (Parameter::get(Parameter::$SHOW_HELP)) {
             $showPage = true;
-            $linkURL = URL::route('help');
+            $linkURL = route('help');
             $title = "Aide";
           }
           break;
         case "home":
           $showPage = true;
-          $linkURL = URL::route('home');
+          $linkURL = route('home');
           $title = "Page d'accueil";
           break;
         case "addresses":
           if (Parameter::get(Parameter::$SHOW_ADDRESSES)) {
             $showPage = true;
-            $linkURL = URL::route('contacts');
+            $linkURL = route('contacts');
             $title = "Contacts et liens";
           }
           break;
         case "section_home":
           if (Parameter::get(Parameter::$SHOW_SECTIONS)) {
             $showPage = true;
-            $linkURL = URL::route('section', ['section_slug' => Section::find($page->section_id)->slug]);
+            $linkURL = route('section', ['section_slug' => Section::find($page->section_id)->slug]);
             $title = $page->section_id == 1 ? "Présentation de l'unité" : Section::find($page->section_id)->name;
           }
           break;
         case "unit_policy":
           if (Parameter::get(Parameter::$SHOW_UNIT_POLICY)) {
             $showPage = true;
-            $linkURL = URL::route('unit_policy');
+            $linkURL = route('unit_policy');
             $title = "Charte d'unité";
           }
           break;
         case "gdpr":
           if (Parameter::get(Parameter::$SHOW_GDPR)) {
             $showPage = true;
-            $linkURL = URL::route('gdpr');
+            $linkURL = route('gdpr');
             $title = "RGPD";
           }
           break;
         case "section_uniform":
           if (Parameter::get(Parameter::$SHOW_UNIFORMS)) {
             $showPage = true;
-            $linkURL = URL::route('uniform', ['section_slug' => Section::find($page->section_id)->slug]);
+            $linkURL = route('uniform', ['section_slug' => Section::find($page->section_id)->slug]);
             $title = "Uniforme " . Section::find($page->section_id)->de_la_section;
           }
           break;
         case "custom":
           $showPage = true;
-          $linkURL = URL::route('custom_page', ['page_slug' => $page->slug, 'section_slug' => Section::find($page->section_id)->slug]);
+          $linkURL = route('custom_page', ['page_slug' => $page->slug, 'section_slug' => Section::find($page->section_id)->slug]);
           $title = $page->title;
           break;
         case "annual_feast":
           if (Parameter::get(Parameter::$SHOW_ANNUAL_FEAST)) {
             $showPage = true;
-            $linkURL = URL::route('annual_feast');
+            $linkURL = route('annual_feast');
             $title = "Fête d'unité";
           }
           break;
@@ -223,7 +228,7 @@ class ElasticsearchHelper {
         $params['body'][] = [
             'index' => [
                 '_index' => self::getIndexName(),
-                '_type' => 'text',
+                //'_type' => 'text',
                 '_id' => $indexCounter++,
             ]
         ];
@@ -241,8 +246,7 @@ class ElasticsearchHelper {
       }
     }
     $client->bulk($params);
-*/
-    echo('indexes done');
+    echo('Mise à jour des données de recherche terminée.');
   }
   
   /**
@@ -276,7 +280,6 @@ class ElasticsearchHelper {
     // Create and apply search
     $params = [
         'index' => self::getIndexName(),
-        'type' => '_doc',
 //        'size' => 20,
         'body' => [
             'query' => [
@@ -288,7 +291,7 @@ class ElasticsearchHelper {
     ];
     
     $results = $client->search($params);
-    dd($results);
+//    dd($results);
     return $results;
   }
   

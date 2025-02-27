@@ -241,10 +241,12 @@ Route::get('icone-calendrier/{type}', array("as" => "calendar_icon", "uses" => "
 
 // Attendance
 Route::get('gestion/presences/{section_slug?}/{year?}', array("as" => "edit_attendance", "uses" => "App\Http\Controllers\AttendanceController@editAttendance"));
+Route::get('gestion/presences-angular', array("as" => "angular_attendance", "uses" => "App\Http\Controllers\AttendanceController@angularAttendance"));
 Route::post('gestion/presences/upload/{section_slug}/{year}', array("as" => "upload_attendance", "uses" => "App\Http\Controllers\AttendanceController@upload"));
 
 // Payment
 Route::get('gestion/paiement/{section_slug?}/{year?}', array("as" => "edit_payment", "uses" => "App\Http\Controllers\PaymentController@editPayment"));
+Route::get('gestion/paiement-angular', array("as" => "angular_payment", "uses" => "App\Http\Controllers\PaymentController@angularPayment"));
 Route::post('ajax/gestion/paiement/{section_slug}/{year}', array("as" => "upload_payment", "uses" => "App\Http\Controllers\PaymentController@upload"));
 Route::post('ajax/gestion/paiement/nouvelle-activite/{section_slug}/{year}', array("as" => "add_payment_event", "uses" => "App\Http\Controllers\PaymentController@addNewEvent"));
 Route::post('ajax/gestion/paiement/supprimer-activite/{section_slug}/{year}', array("as" => "delete_payment_event", "uses" => "App\Http\Controllers\PaymentController@deleteEvent"));
@@ -359,6 +361,7 @@ Route::get('gestion/utilisateurs/supprimer/{user_id}', array("as" => "delete_use
 // Accounting
 Route::get('gestion/tresorerie/{section_slug?}', array("as" => "accounting", "uses" => "App\Http\Controllers\AccountingController@showPageCurrentYear"));
 Route::get('gestion/tresorerie/annee/{year}/{section_slug?}', array("as" => "accounting_by_year", "uses" => "App\Http\Controllers\AccountingController@showPage"));
+Route::get('gestion/tresorerie-angular', array("as" => "angular_accounting", "uses" => "App\Http\Controllers\AccountingController@angularAccounting"));
 Route::post('ajax/gestion/tresorerie/commit-changes/{lock_id}/{section_slug?}', array("as" => "ajax-accounting-commit-changes", "uses" => "App\Http\Controllers\AccountingController@commitChanges"));
 Route::get('ajax/gestion/tresorerie/update-lock/{lock_id}', array("as" => "ajax-accounting-extend-lock", "uses" => "App\Http\Controllers\AccountingController@ajaxUpdateLock"));
 
@@ -388,6 +391,7 @@ Route::post('email-personnel/soumettre/{contact_type}/{member_id}', array("as" =
 
 // Logs
 Route::get('gestion/logs', array("as" => "logs", "uses" => "App\Http\Controllers\LogController@showPage"));
+Route::get('gestion/logs-angular', array("as" => "angular_logs", "uses" => "App\Http\Controllers\LogController@angularLogs"));
 Route::get('ajax/gestion/logs/logs-suivants/{lastKnownLogId}/{count}', array("as" => "ajax_load_more_logs", "uses" => "App\Http\Controllers\LogController@loadMoreLogs"));
 
 // Comments

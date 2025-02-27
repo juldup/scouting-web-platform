@@ -70,14 +70,14 @@ use App\Models\Member;
         <p class='alert alert-success'>{{ Session::get('success_message'); }}</p>
       @endif
       <p class='registration-form-introduction-text'>
-        {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_INTRODUCTION)) }}
+        {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_INTRODUCTION)) !!}
       </p>
       <h2>Remplissez le formulaire</h2>
       @if (Session::has('error_message'))
         <p class='alert alert-danger'>{{ Session::get('error_message'); }}</p>
       @endif
       <p class='registration-form-introduction-text'>
-        {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FILL_IN_FORM)) }}
+        {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FILL_IN_FORM)) !!}
       </p>
     </div>
   </div>
@@ -92,7 +92,7 @@ use App\Models\Member;
           
           <legend>Identité du scout</legend>
           <p class='registration-form-subsection-information'>
-            {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_IDENTITY)) }}
+            {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_IDENTITY)) !!}
           </p>
           
           <div class='form-group'>
@@ -102,7 +102,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FIRST_NAME)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FIRST_NAME)) !!}
               </p>
             </div>
           </div>
@@ -110,11 +110,11 @@ use App\Models\Member;
           <div class="form-group">
             {!! Form::label('last_name', "Nom", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('last_name', $default['last_name'], array('class' => 'form-control')) !!}
+              {!! Form::text('last_name', e($default['last_name']), array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_LAST_NAME)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_LAST_NAME)) !!}
               </p>
             </div>
           </div>
@@ -128,7 +128,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_BIRTH_DATE)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_BIRTH_DATE)) !!}
               </p>
             </div>
           </div>
@@ -140,7 +140,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_GENDER)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_GENDER)) !!}
               </p>
             </div>
           </div>
@@ -148,28 +148,28 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('nationality', "Nationalité", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('nationality', $default['nationality'], array('class' => 'small form-control')) !!}
+              {!! Form::text('nationality', e($default['nationality']), array('class' => 'small form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_NATIONALITY)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_NATIONALITY)) !!}
               </p>
             </div>
           </div>
           
           <legend>Adresse</legend>
           <p class='registration-form-subsection-information'>
-            {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_ADDRESS)) }}
+            {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_ADDRESS)) !!}
           </p>
           
           <div class='form-group'>
             {!! Form::label('address', "Rue et numéro", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('address', $default['address'], array('class' => 'form-control')) !!}
+              {!! Form::text('address', e($default['address']), array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_ADDRESS_STREET)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_ADDRESS_STREET)) !!}
               </p>
             </div>
           </div>
@@ -177,11 +177,11 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('postcode', "Code postal", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('postcode', $default['postcode'], array('class' => 'small form-control')) !!}
+              {!! Form::text('postcode', e($default['postcode']), array('class' => 'small form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_POSTCODE)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_POSTCODE)) !!}
               </p>
             </div>
           </div>
@@ -189,51 +189,51 @@ use App\Models\Member;
           <div class='form-group'>
             {!! Form::label('city', "Localité", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('city', $default['city'], array('class' => 'form-control')) !!}
+              {!! Form::text('city', e($default['city']), array('class' => 'form-control')) !!}
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_CITY)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_CITY)) !!}
               </p>
             </div>
           </div>
 
           <legend>Contact</legend>
           <p class='registration-form-subsection-information'>
-            {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_CONTACT)) }}
+            {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_CONTACT)) !!}
           </p>
           
           <div class="row">
             <div class="col-md-3">
               <p>{!! Form::label('phone1', "Téléphone/GSM des parents", array('class' => 'control-label', 'style' => 'display: block;')) !!}</p>
               <p class="registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE)) !!}
               </p>
             </div>
             <div class="col-md-9">
-              {!! Form::text('phone1', $default['phone1'], array('placeholder' => "Numéro principal", 'class' => "form-control medium")) !!}
+              {!! Form::text('phone1', e($default['phone1']), array('placeholder' => "Numéro principal", 'class' => "form-control medium")) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone1_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('phone1_private', 1, $default['phone1_private']) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone1_owner', 'Téléphone de', array('class' => 'control-label')) !!}
-              {!! Form::text('phone1_owner', $default['phone1_owner'], array('placeholder' => "Ex: maison", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone1_owner', e($default['phone1_owner']), array('placeholder' => "Ex: maison", 'class' => "medium form-control")) !!}
               <br />
-              {!! Form::text('phone2', $default['phone2'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone2', e($default['phone2']), array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone2_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('phone2_private', 1, $default['phone2_private']) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone2_owner', 'Téléphone de', array('class' => 'control-label')) !!}
-              {!! Form::text('phone2_owner', $default['phone2_owner'], array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone2_owner', e($default['phone2_owner']), array('placeholder' => "Ex: gsm maman", 'class' => "medium form-control")) !!}
               <br />
-              {!! Form::text('phone3', $default['phone3'], array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone3', e($default['phone3']), array('placeholder' => "Autre numéro", 'class' => "medium form-control")) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone3_private', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('phone3_private', 1, $default['phone3_private']) !!}
               <span class='horiz-divider'></span>
               {!! Form::label('phone3_owner', 'Téléphone de', array('class' => 'control-label')) !!}
-              {!! Form::text('phone3_owner', $default['phone3_owner'], array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) !!}
+              {!! Form::text('phone3_owner', e($default['phone3_owner']), array('placeholder' => "Ex: gsm papa", 'class' => "medium form-control")) !!}
               <br />&nbsp;
             </div>
           </div>
@@ -247,7 +247,7 @@ use App\Models\Member;
               {!! Form::checkbox('phone_member_private') !!}
               <span class='horiz-divider'></span>
               <span class="registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE_MEMBER)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_PHONE_MEMBER)) !!}
               </span>
             </div>
           </div>
@@ -255,13 +255,13 @@ use App\Models\Member;
           <div class='row'>
             {!! Form::label('email1', "Adresses e-mail des parents", array('class' => 'col-md-3 control-label')) !!}
             <div class="col-md-4">
-              {!! Form::text('email1', $default['email1'], array('class' => 'form-control')) !!}
-              {!! Form::text('email2', $default['email2'], array('class' => 'form-control')) !!}
-              {!! Form::text('email3', $default['email3'], array('class' => 'form-control')) !!} <br />
+              {!! Form::text('email1', e($default['email1']), array('class' => 'form-control')) !!}
+              {!! Form::text('email2', e($default['email2']), array('class' => 'form-control')) !!}
+              {!! Form::text('email3', e($default['email3']), array('class' => 'form-control')) !!} <br />
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_EMAIL)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_EMAIL)) !!}
               </p>
             </div>
           </div>
@@ -273,7 +273,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_EMAIL_MEMBER)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_EMAIL_MEMBER)) !!}
               </p>
             </div>
           </div>
@@ -288,7 +288,7 @@ use App\Models\Member;
           
           <legend>Choix de la section</legend>
           <p class='registration-form-subsection-information'>
-            {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SECTION_HEADER)) }}
+            {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SECTION_HEADER)) !!}
           </p>
           
           <div class='form-group'>
@@ -302,7 +302,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SECTION)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SECTION)) !!}
               </p>
             </div>
           </div>
@@ -314,7 +314,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_TOTEM)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_TOTEM)) !!}
               </p>
             </div>
           </div>
@@ -326,7 +326,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_QUALI)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_QUALI)) !!}
               </p>
             </div>
           </div>
@@ -340,7 +340,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-5">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_LEADER)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_LEADER)) !!}
               </p>
             </div>
           </div>
@@ -381,7 +381,7 @@ use App\Models\Member;
           
           <legend>Remarques particulières</legend>
           <p class='registration-form-subsection-information'>
-            {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_REMARKS)) }}
+            {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_REMARKS)) !!}
           </p>
           
           <div class='row'>
@@ -395,7 +395,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-4">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_HANDICAP)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_HANDICAP)) !!}
               </p>
             </div>
           </div>
@@ -407,7 +407,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-4">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_COMMENTS)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_COMMENTS)) !!}
               </p>
             </div>
           </div>
@@ -423,7 +423,7 @@ use App\Models\Member;
             </div>
             <div class="col-md-4">
               <p class="form-side-note registration-form-side-information">
-                {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FAMILY)) }}
+                {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FAMILY)) !!}
               </p>
             </div>
           </div>
@@ -432,12 +432,12 @@ use App\Models\Member;
             <div class='form-group'>
               {!! Form::label('registration_siblings', "Frères et sœurs dans l'unité", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-5">
-                {!! Form::text('registration_siblings', $default['registration_siblings'],
+                {!! Form::text('registration_siblings', e($default['registration_siblings']),
                           array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control')) !!}
               </div>
               <div class="col-md-4">
                 <p class="form-side-note registration-form-side-information">
-                  {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SIBLINGS)) }}
+                  {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_SIBLINGS)) !!}
                 </p>
               </div>
             </div>
@@ -445,12 +445,12 @@ use App\Models\Member;
             <div class='form-group'>
               {!! Form::label('registration_former_leader_child', "Enfant d'ancien animateur", array('class' => 'col-md-3 control-label')) !!}
               <div class="col-md-5">
-                {!! Form::text('registration_former_leader_child', $default['registration_former_leader_child'],
+                {!! Form::text('registration_former_leader_child', e($default['registration_former_leader_child']),
                           array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control')) !!}
               </div>
               <div class="col-md-4">
                 <p class="form-side-note registration-form-side-information">
-                  {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FORMER_LEADER_CHILD)) }}
+                  {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FORMER_LEADER_CHILD)) !!}
                 </p>
               </div>
             </div>
@@ -458,7 +458,7 @@ use App\Models\Member;
           
           <legend>Terminer l'inscription</legend>
             <p class='registration-form-subsection-information'>
-              {{ Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FINISH)) }}
+              {!! Helper::rawToHTML(Parameter::get(Parameter::$REGISTRATION_FORM_HELP_FINISH)) !!}
             </p>
             
             @if (Parameter::get(Parameter::$SHOW_UNIT_POLICY))

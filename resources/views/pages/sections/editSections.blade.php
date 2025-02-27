@@ -36,7 +36,7 @@ use App\Models\Section;
 @stop
 
 @section('additional_javascript')
-  @vite(['resources/js/libs/bootstrap-colorpicker.min.js'])
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.min.js"></script>
   @vite(['resources/js/edit-sections.js'])
   @if ($user->can(Privilege::$MANAGE_SECTIONS, 1))
     @vite(['resources/js/reorder-list.js'])
@@ -48,19 +48,19 @@ use App\Models\Section;
     var sections = new Array();
     @foreach ($sections as $section)
       sections[{{ $section->id }}] = {
-        'name': "{{ Helper::sanitizeForJavascript($section->name) }}",
-        'email': "{{ Helper::sanitizeForJavascript($section->email) }}",
-        'category': "{{ Helper::sanitizeForJavascript($section->section_category) }}",
-        'type': "{{ Helper::sanitizeForJavascript($section->section_type) }}",
-        'type_number': "{{ Helper::sanitizeForJavascript($section->section_type_number) }}",
-        'color': "{{ Helper::sanitizeForJavascript($section->color) }}",
-        'la_section': "{{ Helper::sanitizeForJavascript($section->la_section) }}",
-        'de_la_section': "{{ Helper::sanitizeForJavascript($section->de_la_section) }}",
-        'subgroup_name': "{{ Helper::sanitizeForJavascript($section->subgroup_name) }}",
+        'name': "{!! Helper::sanitizeForJavascript($section->name) !!}",
+        'email': "{!! Helper::sanitizeForJavascript($section->email) !!}",
+        'category': "{!! Helper::sanitizeForJavascript($section->section_category) !!}",
+        'type': "{!! Helper::sanitizeForJavascript($section->section_type) !!}",
+        'type_number': "{!! Helper::sanitizeForJavascript($section->section_type_number) !!}",
+        'color': "{!! Helper::sanitizeForJavascript($section->color) !!}",
+        'la_section': "{!! Helper::sanitizeForJavascript($section->la_section) !!}",
+        'de_la_section': "{!! Helper::sanitizeForJavascript($section->de_la_section) !!}",
+        'subgroup_name': "{!! Helper::sanitizeForJavascript($section->subgroup_name) !!}",
         'delete_url': "{{ URL::route('edit_section_delete', array('section_id' => $section->id)) }}",
-        'calendar_shortname': "{{ Helper::sanitizeForJavascript($section->calendar_shortname) }}",
+        'calendar_shortname': "{!! Helper::sanitizeForJavascript($section->calendar_shortname) !!}",
         'start_age': "{{ $section->start_age }}",
-        'google_calendar_link': "{{ Helper::sanitizeForJavascript($section->google_calendar_link) }}",
+        'google_calendar_link': "{!! Helper::sanitizeForJavascript($section->google_calendar_link) !!}",
         'export_calendar_url': "{{ URL::route('export_calendar', ['section_id' => $section->id]) }}"
       };
     @endforeach

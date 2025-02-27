@@ -125,12 +125,12 @@ use App\Models\User;
                 @endif
               </div>
             </legend>
-            {{ Helper::rawToHTML($suggestion->body) }}
+            {!! Helper::rawToHTML($suggestion->body) !!}
             <div class="suggestion-response">
               @if ($suggestion->response)
                 <div>
                   <strong>Réponse : </strong>
-                  {{ Helper::rawToHTML($suggestion->response) }}
+                  {!! Helper::rawToHTML($suggestion->response) !!}
                 </div>
               @endif
               @if ($managing)

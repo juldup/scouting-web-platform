@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Session;
 use App\Helpers\Form;
 use App\Models\Privilege;
 use App\Models\MemberHistory;
+use App\Models\Section;
 
 ?>
 
@@ -47,8 +48,8 @@ use App\Models\MemberHistory;
         'start_month': {{ $item->getStartMonth() }},
         'start_year': {{ $item->getStartYear() }},
         'duration': {{ $item->getDuration() }},
-        'event_name': "{{ Helper::sanitizeForJavascript($item->event) }}",
-        'description': "{{ Helper::sanitizeForJavascript($item->description) }}",
+        'event_name': "{!! Helper::sanitizeForJavascript($item->event) !!}",
+        'description': "{!! Helper::sanitizeForJavascript($item->description) !!}",
         'type': "{{ $item->type }}",
         'section': {{ $item->section_id }},
         'delete_url': "{{ URL::route('manage_calendar_delete', array('event_id' => $item->id, 'year' => $year, 'month' => $month, 'section_slug' => $user->currentSection->slug)) }}"

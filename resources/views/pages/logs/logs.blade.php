@@ -29,21 +29,12 @@ use App\Models\Privilege;
   Logs
 @stop
 
-@section('additional_javascript')
-  @vite(['resources/js/libs/angular-1.2.15.min.js'])
-  @vite(['resources/js/libs/angular-ui-0.4.0.js'])
-  <script>
-    var logsPerRequest = {{ $logs_per_request }};
-    var loadMoreLogsURL = "{{ URL::route('ajax_load_more_logs', ['lastKnownLogId' => 'LOG_ID', 'count' => $logs_per_request])}}";
-  </script>
-  @vite(['resources/js/logs-angular.js'])
-@stop
-
 @section('content')
   
   @include('subviews.contextualHelp', array('help' => 'logs'))
   
   <h1>Logs des actions du site</h1>
-  @include('pages.logs.logs-angular')
+  
+  <iframe src="{{ route('angular_logs') }}"width="100%" height="600"></iframe>
   
 @stop

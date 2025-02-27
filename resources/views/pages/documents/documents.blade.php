@@ -90,7 +90,7 @@ use App\Models\MemberHistory;
                 </div>
               </legend>
               <p>
-                {{ Helper::rawToHTML($doc->description) }}
+                {!! Helper::rawToHTML($doc->description) !!}
               </p>
             </div>
           @else

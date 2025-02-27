@@ -76,7 +76,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('first_name', $data['first_name'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('first_name', e($data['first_name']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -86,7 +86,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('last_name', $data['last_name'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('last_name', e($data['last_name']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -98,7 +98,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'small form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('birth_date', $data['birth_date'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('birth_date', e($data['birth_date']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -108,7 +108,7 @@ use App\Models\Privilege;
               {!! Form::select('', array('M' => '', 'F' => ''), 'M', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('gender', $data['gender'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('gender', e($data['gender']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -118,7 +118,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'small form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('nationality', $data['nationality'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('nationality', e($data['nationality']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -135,7 +135,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('address_street', $data['address_street'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('address_street', e($data['address_street']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -145,7 +145,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'small form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('postcode', $data['postcode'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('postcode', e($data['postcode']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -155,7 +155,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('city', $data['city'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('city', e($data['city']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -211,7 +211,7 @@ use App\Models\Privilege;
               {!! Form::label('', "Confidentiel (*) :", array('class' => 'control-label')) !!}
               {!! Form::checkbox('', 1, '', array('disabled' => 'disabled')) !!}
               <span class='horiz-divider'></span>
-              {!! Form::text('phone_member', $data['phone_member'], array('class' => 'form-control very-large edit-form-field')) !!}
+              {!! Form::text('phone_member', e($data['phone_member']), array('class' => 'form-control very-large edit-form-field')) !!}
             </div>
           </div>
           
@@ -234,7 +234,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('placeholder' => "", 'class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('email_member', $data['email_member'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('email_member', e($data['email_member']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -259,7 +259,7 @@ use App\Models\Privilege;
               {!! Form::select('', array(), $user->currentSection->id, array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('section', $data['section'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('section', e($data['section']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -269,7 +269,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('totem', $data['totem'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('totem', e($data['totem']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -279,7 +279,7 @@ use App\Models\Privilege;
               {!! Form::text('', '', array('class' => 'form-control', 'disabled' => 'disabled')) !!}
             </div>
             <div class="col-md-5">
-              {!! Form::text('quali', $data['quali'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('quali', e($data['quali']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -291,7 +291,7 @@ use App\Models\Privilege;
               </div>
             </div>
             <div class="col-md-5">
-              {!! Form::text('leader', $data['leader'], array('class' => 'form-control edit-form-field')) !!}
+              {!! Form::text('leader', e($data['leader']), array('class' => 'form-control edit-form-field')) !!}
             </div>
           </div>
           
@@ -350,7 +350,7 @@ use App\Models\Privilege;
                           array('placeholder' => "Noms des frères et sœurs déjà dans l'unité", 'class' => 'form-control', 'disabled' => 'disabled')) !!}
               </div>
               <div class="col-md-4">
-                {!! Form::text('registration_siblings', $data['registration_siblings'], array('class' => 'form-control edit-form-field')) !!}
+                {!! Form::text('registration_siblings', e($data['registration_siblings']), array('class' => 'form-control edit-form-field')) !!}
               </div>
             </div>
             
@@ -361,7 +361,7 @@ use App\Models\Privilege;
                           array('placeholder' => "Nom du parent qui est un ancien animateur de l'unité", 'class' => 'form-control', 'disabled' => 'disabled')) !!}
               </div>
               <div class="col-md-4">
-                {!! Form::text('registration_former_leader_child', $data['registration_former_leader_child'], array('class' => 'form-control edit-form-field')) !!}
+                {!! Form::text('registration_former_leader_child', e($data['registration_former_leader_child']), array('class' => 'form-control edit-form-field')) !!}
               </div>
             </div>
           @endif

@@ -16,6 +16,7 @@
         "phpmailer/phpmailer": "^6.8",
         "phpoffice/phpspreadsheet": "^1.24",
         "setasign/fpdi": "^2.5",
+        "smalot/pdfparser": "^2.11",
         "symfony/mailer": "^6.3",
         "tecnickcom/tcpdf": "^6.6"
     },
