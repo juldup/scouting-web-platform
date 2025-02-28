@@ -264,7 +264,7 @@ class AttendanceController extends BaseController {
                 $attendance = Attendance::create(array(
                     'member_id' => $memberData->id,
                     'event_id' => $event->id,
-                    'section_id' => $this->user->currentSection->id,
+                    //'section_id' => $this->user->currentSection->id,
                     'attended' => $attended,
                 ));
                 if ($attended != 0) {
