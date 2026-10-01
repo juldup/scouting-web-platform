@@ -17,6 +17,7 @@
  **/
 
 namespace App\Models;
+use App\Helpers\Helper;
 use Illuminate\Database\Eloquent\Model;
 use App\Helpers\ScoutMailer;
 
@@ -69,6 +70,18 @@ class HealthCard extends Model {
    */
   public function getMember() {
     return Member::find($this->member_id);
+  }
+  
+  public function getHumanSignatureDate() {
+    return Helper::dateToHuman($this->signature_date);
+  }
+  
+  public function getHumanExpirationDate() {
+    return Helper::dateToHuman($this->getExpirationDate());
+  }
+  
+  public function getExpirationDate() {
+    return date('Y-m-d', strtotime($this->signature_date) + (365*24*3600));
   }
   
   /**

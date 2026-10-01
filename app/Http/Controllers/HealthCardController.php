@@ -17,6 +17,7 @@
  **/
 
 namespace App\Http\Controllers;
+use Dompdf\Dompdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
@@ -265,8 +266,8 @@ class HealthCardController extends BaseController {
     $healthCard = HealthCard::where('member_id', '=', $member_id)->first();
     // Log
     LogEntry::log("Fiche santé", "Téléchargement d'une fiche santé", array("Membre" => $member->getFullName()));
-    // Output the health card in PDF format
-    HealthCardPDF::healthCardToPDF($healthCard);
+
+    $this->outputCards([$healthCard]);
   }
   
   /**
@@ -275,6 +276,7 @@ class HealthCardController extends BaseController {
   public function downloadAll() {
     // Get the members owned by the current user
     $members = $this->user->getAssociatedMembers();
+    
     // Get the health cards of these members
     $healthCards = array();
     foreach ($members as $member) {
@@ -283,8 +285,8 @@ class HealthCardController extends BaseController {
         $healthCards[] = $healthCard;
       }
     }
-    // Output these health cards in PDF format
-    HealthCardPDF::healthCardsToPDF($healthCards);
+    
+    $this->outputCards($healthCards);
   }
   
   /**
@@ -333,6 +335,7 @@ class HealthCardController extends BaseController {
     if (!$this->user->can(Privilege::$VIEW_HEALTH_CARDS, $this->section)) {
       return Helper::forbiddenResponse();
     }
+    
     // Get members
     $members = Member::where('validated', '=', 1)
             ->where('section_id', '=', $this->section->id)
@@ -340,6 +343,7 @@ class HealthCardController extends BaseController {
             ->orderBy('last_name')
             ->orderBy('first_name')
             ->get();
+    
     // Gather health cards
     $healthCards = array();
     foreach ($members as $member) {
@@ -348,8 +352,8 @@ class HealthCardController extends BaseController {
         $healthCards[] = $healthCard;
       }
     }
-    // Output health card in PDF format
-    HealthCardPDF::healthCardsToPDF($healthCards);
+    
+    $this->outputCards($healthCards, $this->section->name);
   }
   
   /**
@@ -375,8 +379,40 @@ class HealthCardController extends BaseController {
         $healthCards[] = $healthCard;
       }
     }
-    // Output health card summary in PDF format
-    HealthCardPDF::healthCardsToSummaryPDF($healthCards, $this->section);
+
+    $html = View::make('members.health_cards_summary', [
+      'section' => $this->section,
+      'healthCards' => $healthCards
+    ]);
+
+    $filename = "Résumé des fiches santes $this->section->de_la_section";
+
+    $dompdf = new Dompdf();
+    $dompdf->getOptions()->setIsRemoteEnabled(true);
+    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->loadHtml($html);
+    $dompdf->render();
+    $dompdf->stream("$filename.pdf", ['Attachment' => 0]);
   }
   
+  private function outputCards($healthCards, $scope = ''): void {
+    $html = View::make('members.health_card', [
+      'healthCards' => $healthCards
+    ]);
+
+    $filename = "Fiches santes";
+    if (sizeof($healthCards) == 1) {
+      $member = $healthCards[0]->getMember();
+      $filename = "Fiche sante - $member->last_name $member->first_name";
+    } else if (!empty($scope)) {
+      $filename = "Fiches santes - $scope";
+    }
+
+    $dompdf = new Dompdf();
+    $dompdf->getOptions()->setIsRemoteEnabled(true);
+    $dompdf->setPaper('A4', 'landscape');
+    $dompdf->loadHtml($html);
+    $dompdf->render();
+    $dompdf->stream("$filename.pdf", ['Attachment' => 1]);
+  }
 }

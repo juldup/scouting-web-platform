@@ -457,6 +457,7 @@ semble utile.</strong></p>
             </div>
           </div>
           
+          {{--
           <legend>Covid-19</legend>
           
           <div class="form-group">
@@ -481,6 +482,7 @@ semble utile.</strong></p>
               {!! Form::checkbox('covid_19_physician_contact_information_given') !!}
             </div>
           </div>
+          --}}
           
           
           <legend>Autres informations et commentaires</legend>
@@ -522,12 +524,18 @@ semble utile.</strong></p>
             <div class="col-md-12">
               <label>
                 <em>
-                  &laquo;&nbsp;Je marque mon accord pour que la prise en charge ou les traitements
+                  &laquo;&nbsp;
+                  Je marque mon accord pour que la prise en charge ou les traitements
                   estimés nécessaires soient entrepris durant le séjour de mon enfant par le responsable
-                  de centre de vacances ou par le service médical qui y est associé.  J'autorise le
+                  de centre de vacances ou par le service médical qui y est associé. J'autorise le
                   médecin local à prendre les décisions qu'il juge urgentes et indispensables pour assurer
                   l'état de santé de l'enfant, même s'il s'agit d'une intervention chirurgicale à défaut
-                  de pouvoir être contacté personnellement.&nbsp;&raquo;</i> <br />
+                  de pouvoir être contacté personnellement.
+                  <br><br>
+                  À cette fin, j'autorise les animateurs à prendre la carte d'identité et/ou la carte ISI+ de mon enfant afin de
+                  permettre son identification en cas de nécessités médicales, telle qu'une consultation chez un médecin ou une
+                  prescription à la pharmacie.
+                  &nbsp;&raquo; <br />
                 </em>
               </label>
             </div>
