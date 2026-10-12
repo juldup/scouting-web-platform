@@ -25,6 +25,7 @@ use App\Models\Privilege;
 ?>
 
 {
+  'organization_number': "{!! Helper::sanitizeForJavascript($member->organization_number) !!}",
   'first_name': "{!! Helper::sanitizeForJavascript($member->first_name) !!}",
   'last_name': "{!! Helper::sanitizeForJavascript($member->last_name) !!}",
   'birth_date_day': "{!! Helper::getDateDay($member->birth_date) !!}",
