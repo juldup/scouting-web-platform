@@ -54,6 +54,20 @@ use App\Models\Member;
       </div>
     </div>
     {!! Form::hidden('member_id') !!}
+
+    @if ($edit_section)
+    <div class="row">
+      <div class="col-md-6 form-horizontal">
+        <div class="form-group">
+          {!! Form::label('organization_number', "Numéro DESK", array('class' => 'control-label col-md-4')) !!}
+          <div class='col-md-8'>
+            {!! Form::text('organization_number', '', array('class' => 'form-control', ($edit_section ? "enabled" : "disabled"))) !!}
+          </div>
+        </div>
+      </div>
+    </div>
+    @endif
+
     <div class="row">
       <div class="col-md-6 form-horizontal">
         <div class="form-group">
