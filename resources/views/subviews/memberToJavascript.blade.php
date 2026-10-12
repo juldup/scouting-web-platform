@@ -69,5 +69,5 @@ use App\Models\Privilege;
   'family_in_other_units': {{{ $member->family_in_other_units ? $member->family_in_other_units : 0 }}},
   'family_in_other_units_details' : "{!! Helper::sanitizeForJavascript($member->family_in_other_units_details) !!}",
   'has_picture': {!! $member->has_picture ? "true" : "false" !!},
-  'picture_url': "{!! $member->has_picture ? $member->getPictureURL() : "" !!}"
+  'picture_url': "{!! $member->getPictureURL() !!}"
 }

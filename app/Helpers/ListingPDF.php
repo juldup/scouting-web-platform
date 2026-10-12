@@ -26,8 +26,7 @@ class ListingPDF {
 
   // The output format
   protected $output;
-
-
+  
   /**
    * Outputs the member pictures in PDF for download
    */
@@ -39,7 +38,7 @@ class ListingPDF {
     $pdf->setJPEGQuality(75);
     // Get members
     $query = Member::where('validated', '=', true)
-            ->where(function($query) use ($sections) {
+            ->where(function($query) use ($sections) {fl
               foreach ($sections as $section) {
                 $query->orWhere('section_id', '=', $section->id);
               }
