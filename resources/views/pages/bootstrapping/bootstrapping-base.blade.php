@@ -6,7 +6,7 @@
 	<title>
     
   </title>
-  {{ Less::to('styles') }}
+  @vite(['resources/css/styles.css'])
   @yield('head')
   
 </head>
@@ -32,11 +32,30 @@
   <script>
     var keepaliveURL = "{{ URL::route('session_keepalive'); }}";
   </script>
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-  <script>window.jQuery || document.write('@vite(['resources/js/libs/jquery-1.11.0.min.js') }}"><\/script>')</script>
-  @vite(['resources/js/libs/bootstrap.min'])
-  @vite(['resources/js/application.js'])
-  @vite(['resources/js/libs/bootstrap-switch.min.js'])
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+      window.jQuery = window.$ = jQuery; // Fallback to the CDN version
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  @vite(['resources/js/application.js',
+         'resources/js/libs/jquery-ui-1.10.4.js',
+         'resources/js/libs/bootstrap-switch.min.js',
+         'resources/js/libs/jquery.tablesorter.js'
+        ])
+
+  <script type="module">
+      $().ready(function() {
+          // CSRF for ajax post requests
+          $.ajaxSetup({
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              }
+          });
+          // initialize sortable tables
+          $('.sort-by-column').tablesorter();
+      });
+  </script>
   @yield('additional_javascript')
 </body>
 </html>

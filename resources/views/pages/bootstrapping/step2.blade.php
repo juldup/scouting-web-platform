@@ -16,6 +16,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+
+use App\Helpers\Form;
+
 ?>
 
 @section('title')
@@ -68,7 +71,7 @@
           sera créée automatiquement pour vous dans le système de fichiers.
         </p>
         <div class="well form-horizontal">
-          {!! Form::open() !!}
+          {!! Form::open(array('url' => URL::route('bootstrapping_step', array('step' => 2)))) !!}
           <legend>Entrez les paramètres de connexion à votre base de données</legend>
             <div class="form-group">
               {!! Form::label('driver', "Type de base de données", array('class' => 'control-label text-right col-sm-4')) !!}

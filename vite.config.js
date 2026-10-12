@@ -8,6 +8,7 @@ export default defineConfig({
                     'resources/js/application.js',
                     'resources/js/libs/bootstrap.min.js',
                     'resources/js/libs/jquery-1.11.0.js',
+                    'resources/js/libs/jquery-1.11.0.min.js',
                     'resources/js/libs/bootstrap-switch.min.js',
                     'resources/js/libs/jquery.tablesorter.js',
                     'resources/fonts/glyphicons-halflings-regular.woff',

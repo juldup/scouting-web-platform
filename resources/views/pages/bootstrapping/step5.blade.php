@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+use App\Helpers\Form;
+use App\Models\Parameter;
 ?>
 
 @section('title')
@@ -60,7 +62,7 @@
           et l'envoi d'e-mails aux membres d'une section.
         </p>
         <div class="form-horizontal well">
-          {!! Form::open(array('route' => array('bootstrapping_step', 'step' => 5, 'action' => 'configuration'))) !!}
+          {!! Form::open(array('url' => URL::route('bootstrapping_step', array('step' => 5)), 'action' => 'configuration')) !!}
             <div class="form-group">
               <div class="col-sm-4 control-label">
                 {!! Form::label('default_email_from_address', "Adresse e-mail du site") !!}

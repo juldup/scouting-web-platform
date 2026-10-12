@@ -18,6 +18,8 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
@@ -91,14 +93,14 @@ class WebsiteBootstrappingController extends Controller {
       return redirect()->route('bootstrapping_step', array("step" => $step, "db_safe" => $request->input('db_safe')));
     } else {
       // Show welcome page
-      return $this->step0();
+      return $this->step0($request);
     }
   }
   
   /**
    * [Route] Shows the page of the given step
    */
-  public function showStep($step) {
+  public function showStep(Request $request, $step) {
     // Check access
     if (!self::accessToBootstrappingPagesAllowed()) {
       return redirect(URL::route('home'));
@@ -106,7 +108,7 @@ class WebsiteBootstrappingController extends Controller {
     // Save step
     self::setCurrentBootstrappingStep($step);
     // Call corresponding function
-    return call_user_func(array($this, "step$step"));
+    return call_user_func(array($this, "step$step"), $request);
   }
   
   /**
@@ -125,7 +127,7 @@ class WebsiteBootstrappingController extends Controller {
    * Returns the current bootstrapping step (if any, 0 otherwise)
    */
   private static function getCurrentBootstrappingStep() {
-    $bootstrappingStep = __DIR__ . "/../storage/app/site_data/bootstrapping-step.txt";
+    $bootstrappingStep = storage_path("app/site_data/bootstrapping-step.txt");
     if (file_exists($bootstrappingStep)) {
       try {
         return file_get_contents($bootstrappingStep);
@@ -138,7 +140,7 @@ class WebsiteBootstrappingController extends Controller {
    * Saves the bootstrapping step to the filesystem
    */
   private static function setCurrentBootstrappingStep($step) {
-    $bootstrappingStep = __DIR__ . "/../storage/app/site_data/bootstrapping-step.txt";
+    $bootstrappingStep = storage_path("app/site_data/bootstrapping-step.txt");
     try {
       file_put_contents($bootstrappingStep, $step);
     } catch (Exception $e) {}
@@ -147,21 +149,24 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 0: welcome page
    */
-  private function step0() {
+  private function step0(Request $request) {
     return View::make('pages.bootstrapping.step0');
   }
   
   /**
    * Step 1: Make sure we have write access to the filesystem
    */
-  public function step1() {
+  public function step1(Request $request) {
     // Folder of the site_data
-    $siteDataRoot = dirname(__DIR__) . "/storage/app";
+    $siteDataRoot = storage_path("app");
     $success = false;
     try {
       // Make sure the root folder exists
       if (!file_exists($siteDataRoot)) {
         mkdir($siteDataRoot, 777, true);
+      }
+      if (!file_exists("$siteDataRoot/site_data")) {
+          mkdir("$siteDataRoot/site_data", 777, true);
       }
       // Check that the bootstrapping step file is writable and readable
       touch("$siteDataRoot/site_data/bootstrapping-step.txt");
@@ -202,17 +207,17 @@ class WebsiteBootstrappingController extends Controller {
    */
   public function step2(Request $request) {
     // Database configuration file path
-    $databaseConfigFilePath = __DIR__ . "/../storage/app/site_data/database/database-config.txt";
+    $databaseConfigFilePath = storage_path("app/site_data/database/database-config.txt");
     // Create folder to contain the database configuration files
     if (!file_exists(dirname($databaseConfigFilePath))) {
       mkdir(dirname($databaseConfigFilePath), 0777, true);
     }
     // Create sqlite file in case sqlite will be used
-    if (!file_exists(__DIR__ . '/../storage/app/site_data/database/database.sqlite')) {
-      touch(__DIR__ . '/../storage/app/site_data/database/database.sqlite');
+    if (!file_exists(storage_path('app/site_data/database/database.sqlite'))) {
+      touch(storage_path('app/site_data/database/database.sqlite'));
     }
     // Save post data (if any)
-    if (Request::isMethod('post')) {
+    if ($request->isMethod('post')) {
       // Get input data
       $databaseData = array(
           'driver' => $request->input('driver'),
@@ -278,10 +283,10 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 3: Creating cron jobs
    */
-  public function step3() {
+  public function step3(Request $request) {
     // Save website URL to file
     $baseURL = URL::to('');
-    file_put_contents(__DIR__ . "/../storage/app/site_data/website-base-url.txt", $baseURL);
+    file_put_contents(storage_path("app/site_data/website-base-url.txt"), $baseURL);
     // Make view
     return View::make('pages.bootstrapping.step3', array(
         'cron_tasks_created' => false,
@@ -296,7 +301,7 @@ class WebsiteBootstrappingController extends Controller {
     // Check if there is already a webmaster for the website
     $existingWebmaster = User::where('is_webmaster', '=', true)->first();
     if (!$existingWebmaster) {
-      if (Request::isMethod('post')) {
+      if ($request->isMethod('post')) {
         // Get input data
         $username = $request->input('username');
         $email = strtolower($request->input('email'));
@@ -360,7 +365,7 @@ class WebsiteBootstrappingController extends Controller {
    * Step 5: E-mail sending configuration
    */
   public function step5(Request $request) {
-    if (Request::isMethod('post')) {
+    if ($request->isMethod('post')) {
       if ($request->input('action') == 'configuration') {
         // Posting configuration data
         // Save data
@@ -454,7 +459,7 @@ class WebsiteBootstrappingController extends Controller {
     $error = false;
     $success = false;
     // Save parameters from input
-    if (Request::isMethod('post')) {
+    if ($request->isMethod('post')) {
       // Save new prices
       try {
         Parameter::set(Parameter::$PRICE_1_CHILD, Helper::formatCashAmount($request->input('price_1_child')));
@@ -512,7 +517,7 @@ class WebsiteBootstrappingController extends Controller {
    */
   public function step7(Request $request) {
     // Input data
-    if (Request::isMethod('post')) {
+    if ($request->isMethod('post')) {
       try {
         Section::where('id', '!=', 1)->delete();
         $sectionData = json_decode($request->input('data'), true);
@@ -551,7 +556,7 @@ class WebsiteBootstrappingController extends Controller {
   /**
    * Step 8: Final step with instructions to go on
    */
-  public function step8() {
+  public function step8(Request $request) {
     // Mark the website as operational
     Parameter::set(Parameter::$BOOTSTRAPPING_DONE, true);
     // Send information by e-mail to the webmaster
