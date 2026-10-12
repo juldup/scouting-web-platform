@@ -100,7 +100,11 @@ class ArchivedLeader extends Model {
    * Returns the URL of the picture of this leader
    */
   public function getPictureURL() {
-    return URL::route('get_archived_leader_picture', array('archived_leader_id' => $this->id));
+    if ($this->has_picture) {
+      return URL::route('get_archived_leader_picture', array('archived_leader_id' => $this->id));
+    } else {
+      return URL::route('static_image', ['filename' => 'no-picture.png']);
+    }
   }
   
   /**

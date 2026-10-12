@@ -140,7 +140,11 @@ class Member extends Model {
    * Returns the URL at which the leader picture can be downloaded
    */
   public function getPictureURL() {
-    return URL::route('get_member_picture', array('leader_id' => $this->id));
+    if ($this->has_picture) {
+      return URL::route('get_member_picture', array('leader_id' => $this->id));
+    } else {
+      return URL::route('static_image', ['filename' => 'no-picture.png']);
+    }
   }
   
   /**
