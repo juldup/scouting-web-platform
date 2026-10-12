@@ -324,6 +324,9 @@ class ListingPDF {
     $subgroupName = ($csvMode || !$section ? "Sous-groupe" : $section->subgroup_name);
     $titles = array();
     $titles[] = "N°";
+    if ($this->output != 'pdf') {
+      $titles[] = "N° DESK";
+    }
     if ($csvMode || (!$this->groupBySection && $this->output != 'pdf')) {
       $titles[] = "Section";
     }
@@ -373,6 +376,7 @@ class ListingPDF {
       $colSizes = array();
       foreach ($titles as $title) {
         if ($title == "N°") $colSizes[] = 4;
+        elseif ($title == "N° DESK") $colSizes[] = 10;
         elseif ($title == "Section") $colSizes[] = 10;
         elseif ($title == "Nom") $colSizes[] = 25;
         elseif ($title == "Prénom") $colSizes[] = 20;
@@ -449,6 +453,8 @@ class ListingPDF {
       foreach ($titles as $title) {
         if ($title == "N°")
           $excelDocument->getActiveSheet()->setCellValue("A$row", $this->memberCounter++);
+        elseif($title == "N° DESK")
+          $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->organization_number);
         elseif ($title == "Section")
           $excelDocument->getActiveSheet()->setCellValue("$letter$row", $member->getSection()->name);
         elseif($title == "Nom")

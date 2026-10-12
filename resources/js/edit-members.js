@@ -58,6 +58,7 @@ window.dismissMemberForm = function() {
  */
 window.editMember = function(memberId) {
   $("#member_form [name='member_id']").val(memberId);
+  $("#member_form [name='organization_number']").val(members[memberId].organization_number);
   $("#member_form [name='first_name']").val(members[memberId].first_name);
   $("#member_form [name='last_name']").val(members[memberId].last_name);
   $("#member_form [name='birth_date_day']").val(members[memberId].birth_date_day);
