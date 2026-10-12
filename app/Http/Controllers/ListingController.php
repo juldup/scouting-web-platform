@@ -17,6 +17,7 @@
  **/
 
 namespace App\Http\Controllers;
+use App\Helpers\ListingExporter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
@@ -147,29 +148,6 @@ class ListingController extends BaseController {
         'role_choices' => $this->createRoleList(),
         'subgroup_name' => $this->section->subgroup_name,
     ));
-  }
-  
-  /**
-   * [Route] Outputs a simplified version of listing in PDF or Excel format for download
-   * @param string $format  The output format: "pdf", "excel" or "csv"
-   */
-  public function downloadListing($section_slug, $format = "pdf") {
-    // Make sure the user is a member and has access to the listing
-    if (!$this->user->isMember()) {
-      return Helper::forbiddenResponse();
-    }
-    // Set list of sections to include
-    if ($this->section->id == 1) {
-      $sections = Section::where('id', '!=', 1)
-              ->orderBy('position')
-              ->get();
-    } else {
-      $sections = array($this->section);
-    }
-    // Log
-    LogEntry::log("Listing", "Téléchargement du listing", array("Section" => $this->section->name, "Format" => $format));
-    // Output listing
-    ListingPDF::downloadListing($sections, $format, false, true, $this->user->isLeader() ? true : false);
   }
   
   /**
@@ -354,6 +332,37 @@ class ListingController extends BaseController {
             ->with('error_message', "Une erreur est survenue. Le membre n'a pas été supprimé.");
   }
   
+
+  /**
+   * [Route] Outputs a simplified version of listing in PDF or Excel format for download
+   * @param string $format  The output format: "pdf", "excel" or "csv"
+   */
+  public function downloadListing($section_slug, $format = "pdf") {
+    // Make sure the user is a member and has access to the listing
+    if (!$this->user->isMember()) {
+      return Helper::forbiddenResponse();
+    }
+    
+    // Set list of sections to include
+    if ($this->section->id == 1) {
+      $sections = Section::orderBy('position')->get();
+    } else {
+      $sections = array($this->section);
+    }
+    
+    // Log
+    LogEntry::log("Listing", "Téléchargement du listing", array("Section" => $this->section->name, "Format" => $format));
+    
+    // Output listing
+    ListingExporter::exportListing(
+      sections: $sections, 
+      format: $format,
+      includeScouts: true,
+      includeLeaders: $this->user->isLeader(),
+      groupBySection: true
+    );
+  }
+  
   /**
    * [Route] Outputs the full listing to download (for leaders only)
    * 
@@ -363,15 +372,21 @@ class ListingController extends BaseController {
     if (!$this->user->isLeader()) {
       return Helper::forbiddenResponse();
     }
+    
     if ($this->section->id == 1) {
-      $sections = Section::where('id', '!=', 1)
-              ->orderBy('position')
-              ->get();
+      $sections = Section::orderBy('position')->get();
     } else {
       $sections = array($this->section);
     }
     LogEntry::log("Listing", "Téléchargement du listing complet", array("Section" => $this->section->name, "Format" => $format));
-    ListingPDF::downloadListing($sections, $format, true, true, true);
+
+    ListingExporter::exportListing(
+      sections: $sections,
+      format: $format,
+      includePrivateData: true,
+      includeScouts: true,
+      includeLeaders: true
+    );
   }
   
   /**
@@ -384,13 +399,52 @@ class ListingController extends BaseController {
       return Helper::forbiddenResponse();
     }
     if ($this->section->id == 1) {
-      $sections = Section::orderBy('position')
-              ->get();
+      $sections = Section::orderBy('position')->get();
     } else {
       $sections = array($this->section);
     }
     LogEntry::log("Listing", "Téléchargement du listing des animateurs", array("Section" => $this->section->name, "Format" => $format));
-    ListingPDF::downloadListing($sections, $format, $format != 'pdf', false, true);
+
+    ListingExporter::exportListing(
+      sections: $sections,
+      format: $format,
+      includePrivateData: $format != 'pdf',
+      includeLeaders: true
+    );
+  }
+
+  /**
+   * [Route] Post request to download the listing with options
+   */
+  public function downloadListingWithOptions(Request $request) {
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    // Get sections to include
+    $sections = Section::all();
+    $selectedSections = array();
+    foreach ($sections as $section) {
+      if ($request->input('section_' . $section->id)) {
+        $selectedSections[] = $section;
+      }
+    }
+    // Get members to include
+    $includeScouts = (bool) $request->input('include_scouts');
+    $includeLeaders = (bool) $request->input('include_leaders');
+    $full = (bool) $request->input('full');
+    $groupBySection = (bool) $request->input('group_by_section');
+    // Get format
+    $format = $request->input('format');
+    // Download the listing
+
+    ListingExporter::exportListing(
+      sections: $selectedSections,
+      format: $format,
+      includePrivateData: $full,
+      includeScouts: $includeScouts,
+      includeLeaders: $includeLeaders,
+      groupBySection: $groupBySection
+    );
   }
   
   /**
@@ -424,32 +478,6 @@ class ListingController extends BaseController {
       return Helper::forbiddenResponse();
     }
     return View::make('pages.listing.downloadListing');
-  }
-  
-  /**
-   * [Route] Post request to download the listing with options
-   */
-  public function downloadListingWithOptions(Request $request) {
-    if (!$this->user->isLeader()) {
-      return Helper::forbiddenResponse();
-    }
-    // Get sections to include
-    $sections = Section::all();
-    $selectedSections = array();
-    foreach ($sections as $section) {
-      if ($request->input('section_' . $section->id)) {
-        $selectedSections[] = $section;
-      }
-    }
-    // Get members to include
-    $includeScouts = $request->input('include_scouts');
-    $includeLeaders = $request->input('include_leaders');
-    // Get format
-    $format = $request->input('format');
-    $full = $request->input('full');
-    $groupBySection = $request->input('group_by_section');
-    // Download the listing
-    ListingPDF::downloadListing($selectedSections, $format, $full, $includeScouts, $includeLeaders, $groupBySection);
   }
   
   /**

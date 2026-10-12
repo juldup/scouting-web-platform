@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "aws/aws-sdk-php": "^3.283",
+        "dompdf/dompdf": "^3.1",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
         "laravel/helpers": "^1.6",
@@ -14,7 +15,7 @@
         "laravel/tinker": "^2.8",
         "mailerlite/laravel-elasticsearch": "^11.0",
         "phpmailer/phpmailer": "^6.8",
-        "phpoffice/phpspreadsheet": "^1.24",
+        "phpoffice/phpspreadsheet": "^5.0",
         "setasign/fpdi": "^2.5",
         "smalot/pdfparser": "^2.11",
         "symfony/mailer": "^6.3",
@@ -62,6 +63,11 @@
         }
     },
     "config": {
+        "policy": {
+          "advisories": {
+            "block": false
+          }
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
