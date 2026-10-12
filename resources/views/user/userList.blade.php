@@ -42,6 +42,15 @@ use App\Models\Privilege;
       <h1>Liste des utilisateurs du site</h1>
       @include('subviews.flashMessages')
     </div>
+    <div class="row">
+      <div class="col-md-12 text-right">
+        <p>
+          <a class="btn-sm btn-default" href="{{ URL::route('download_user_list') }}">
+            Télécharger le listing des utilisateurs
+          </a>
+        </p>
+      </div>
+    </div>
   </div>
   <div class="row">
     <div class="col-md-12">
