@@ -109,7 +109,7 @@ use App\Models\Privilege;
                     <tr>
                       <th>Photo :</th>
                       <td>
-                        <img class="member-picture" src="{{ $member->getPictureURL() }}" alt=" Pas de photo " />
+                        <img class="member-picture" src="{{ $member->getPictureURL() }}" />
                       </td>
                     </tr>
                     <tr>

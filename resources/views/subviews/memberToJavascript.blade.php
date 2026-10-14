@@ -25,6 +25,7 @@ use App\Models\Privilege;
 ?>
 
 {
+  'organization_number': "{!! Helper::sanitizeForJavascript($member->organization_number) !!}",
   'first_name': "{!! Helper::sanitizeForJavascript($member->first_name) !!}",
   'last_name': "{!! Helper::sanitizeForJavascript($member->last_name) !!}",
   'birth_date_day': "{!! Helper::getDateDay($member->birth_date) !!}",
@@ -68,5 +69,5 @@ use App\Models\Privilege;
   'family_in_other_units': {{{ $member->family_in_other_units ? $member->family_in_other_units : 0 }}},
   'family_in_other_units_details' : "{!! Helper::sanitizeForJavascript($member->family_in_other_units_details) !!}",
   'has_picture': {!! $member->has_picture ? "true" : "false" !!},
-  'picture_url': "{!! $member->has_picture ? $member->getPictureURL() : "" !!}"
+  'picture_url': "{!! $member->getPictureURL() !!}"
 }

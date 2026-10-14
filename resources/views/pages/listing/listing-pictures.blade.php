@@ -113,9 +113,9 @@ use App\Models\Privilege;
               <span class="member-name">{{{ $member->getFullName() }}}</span>
               <br />
               @if ($member->has_picture)
-                <img src='{{ $member->getPictureURL() }}' alt='Pas de photo'>
+                <img src='{{ $member->getPictureURL() }}'>
               @else
-                <img src='{{ asset('images/no-picture.png') }}' alt='Pas de photo'>
+                <img src='' alt='Pas de photo'>
               @endif
             </span>
           @endforeach

@@ -29,13 +29,14 @@ use App\Helpers\DateHelper;
  * 
  * Columns:
  *   Identity
- *   - first_name:       The first name of the member
- *   - last_name:        The last name of the member
- *   - birth_date:       The date of birth
- *   - gender:           The gender ('M'/'F') of the member
- *   - nationality:      The nationality of the member ('BE', 'FR', etc.)
- *   - has_handicap:     Whether the member has a handicap
- *   - handicap_details: A short explanation about the handicap (if any)
+ *   - organization_number: The member identifier in the organization (DESK)
+ *   - first_name:          The first name of the member
+ *   - last_name:           The last name of the member
+ *   - birth_date:          The date of birth
+ *   - gender:              The gender ('M'/'F') of the member
+ *   - nationality:         The nationality of the member ('BE', 'FR', etc.)
+ *   - has_handicap:        Whether the member has a handicap
+ *   - handicap_details:    A short explanation about the handicap (if any)
  *   Scout-related details
  *   - totem:                         The totem of the member (if any)
  *   - quali:                         The quali of the member (if any)
@@ -139,7 +140,11 @@ class Member extends Model {
    * Returns the URL at which the leader picture can be downloaded
    */
   public function getPictureURL() {
-    return URL::route('get_member_picture', array('leader_id' => $this->id));
+    if ($this->has_picture) {
+      return URL::route('get_member_picture', array('leader_id' => $this->id));
+    } else {
+      return URL::route('static_image', ['filename' => 'no-picture.png']);
+    }
   }
   
   /**
@@ -321,7 +326,8 @@ class Member extends Model {
     }
     // Update section
     if ($canEditSection) {
-        $this->section_id = $data['section_id'];
+      $this->section_id = $data['section_id'];
+      $this->organization_number = $data['organization_number'];
     }
     // Update totem, quali and subgroup
     if ($canEditTotem) {
@@ -411,6 +417,7 @@ class Member extends Model {
    */
   private static function checkInputData(Request $request, $newMember = true, $canEditIdentity = true, $canEditContact = true, $canEditSection = true, $canEditTotem = true, $canEditLeader = true) {
     // Get data from input
+    $organizationNumber = $request->input('organization_number');
     $firstName = $request->input('first_name');
     $lastName = $request->input('last_name');
     $birthDateDay = $request->input('birth_date_day');
@@ -551,6 +558,7 @@ class Member extends Model {
       return $errorMessage;
     } else {
       return array(
+          'organization_number' => $organizationNumber,
           'first_name' => $firstName,
           'last_name' => $lastName,
           'birth_date' => $birthDate,
