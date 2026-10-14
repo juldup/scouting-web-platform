@@ -18,6 +18,7 @@
 
 namespace App\Helpers;
 use App\Models\Member;
+use TCPDF;
 
 /**
  * This class provides a function that outputs the members' listing in PDF, CSV or Excel format
@@ -38,7 +39,7 @@ class ListingPDF {
     $pdf->setJPEGQuality(75);
     // Get members
     $query = Member::where('validated', '=', true)
-            ->where(function($query) use ($sections) {fl
+            ->where(function($query) use ($sections) {
               foreach ($sections as $section) {
                 $query->orWhere('section_id', '=', $section->id);
               }
@@ -73,7 +74,7 @@ class ListingPDF {
         $count = 0;
       }
       // Add picture
-      $imageURL = ($member->has_picture ? $member->getPicturePath() : public_path("images/no-picture.jpg"));
+      $imageURL = ($member->has_picture ? $member->getPicturePath() : resource_path("images/no-picture.jpg"));
       $pdf->Image($imageURL, 12 + ($count % 4) * 48, 30 + floor($count / 4) * 50, 40, 40, 'JPG', 'test a', '', true, 150, '', false, false, 1, false, false, false);
       // Add name
       $pdf->SetXY(0 + ($count % 4) * 48, 25 + floor($count / 4) * 50);
