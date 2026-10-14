@@ -17,6 +17,7 @@
  **/
 
 namespace App\Http\Controllers;
+use App\Helpers\UserExporter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Route;
@@ -544,6 +545,26 @@ class UserController extends BaseController {
         'users' => $users,
         'can_delete' => ($this->user->can(Privilege::$DELETE_USERS)),
     ));
+  }
+  
+  /**
+   * [Route] Download the website user list
+   */
+  public function downloadUserList() {
+    // Make sure the current user can access this page
+    if (!$this->user->isLeader()) {
+      return Helper::forbiddenResponse();
+    }
+    
+    // Get users by order of last visit
+    $users = User::orderBy('last_visit', 'desc')->get();
+
+    // Log
+    LogEntry::log("Utilisateur", "Téléchargement de la liste des utilisateurs");
+
+    UserExporter::exportUserList(
+      users: $users
+    );
   }
   
   /**

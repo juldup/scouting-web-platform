@@ -355,7 +355,8 @@ Route::get('gestion/coin-des-animateurs/aide/{section_slug?}', array("as" => "le
 Route::get('gestion/coin-des-animateurs/{section_slug?}', array("as" => "leader_corner", "uses" => "App\Http\Controllers\LeaderCornerController@showPage"));
 
 // Users
-Route::get('gestion/utilisateurs/{section_slug?}', array("as" => "user_list", "uses" => "App\Http\Controllers\UserController@showUserList"));
+Route::get('gestion/utilisateurs', array("as" => "user_list", "uses" => "App\Http\Controllers\UserController@showUserList"));
+Route::get('gestion/utilisateurs/telecharger', array("as" => "download_user_list", "uses" => "App\Http\Controllers\UserController@downloadUserList"));
 Route::get('gestion/utilisateurs/supprimer/{user_id}', array("as" => "delete_user", "uses" => "App\Http\Controllers\UserController@deleteUser"));
 
 // Accounting
