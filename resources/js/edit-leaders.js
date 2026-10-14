@@ -52,6 +52,7 @@ $().ready(function() {
 window.addLeader = function(sectionId) {
   $("#member_form legend:first").html("Ajouter un animateur");
   $("#member_form [name='member_id']").val("");
+  $("#member_form [name='organization_number']").val("");
   $("#member_form [name='first_name']").val("");
   $("#member_form [name='last_name']").val("");
   $("#member_form [name='birth_date']").val("");
@@ -136,6 +137,7 @@ window.editLeader = function(leaderId, scoutToLeader) {
  */
 window.showEditLeaderForm = function(form, leaderId) {
   form.find("[name='member_id']").val(leaderId);
+  form.find("[name='organization_number']").val(leaders[leaderId].organization_number);
   form.find("[name='first_name']").val(leaders[leaderId].first_name);
   form.find("[name='last_name']").val(leaders[leaderId].last_name);
   form.find("[name='birth_date_day']").val(leaders[leaderId].birth_date_day);
