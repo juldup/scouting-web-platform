@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+use App\Helpers\Form;
+use App\Models\Section;
 ?>
 
 @section('title')
@@ -23,11 +25,11 @@
 @stop
 
 @section('head')
-  <link media="all" type="text/css" rel='stylesheet' href="{{ asset('css/bootstrap-colorpicker.min.css') }}"></link>
+  @vite(['resources/css/bootstrap-colorpicker.min.css'])
 @stop
 
 @section('additional_javascript')
-  @vite(['resources/js/libs/bootstrap-colorpicker.min.js'])
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/2.5.3/js/bootstrap-colorpicker.min.js"></script>
   <script>
     $().ready(function() {
       // Add new section
@@ -128,11 +130,19 @@
       });
       var form = document.createElement("form");
       form.setAttribute("method", "post");
+      
       var hiddenField = document.createElement("input");
+      hiddenField.setAttribute("type", "hidden");
+      hiddenField.setAttribute("name", "_token");
+      hiddenField.setAttribute("value", "{{ csrf_token() }}");
+      form.appendChild(hiddenField);
+
+      hiddenField = document.createElement("input");
       hiddenField.setAttribute("type", "hidden");
       hiddenField.setAttribute("name", "data");
       hiddenField.setAttribute("value", JSON.stringify(sectionData));
       form.appendChild(hiddenField);
+      
       document.body.appendChild(form);
       form.submit();
     }

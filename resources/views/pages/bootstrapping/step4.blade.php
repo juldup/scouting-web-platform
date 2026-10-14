@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  **/
+use App\Helpers\Form;
 ?>
 
 @section('title')
@@ -43,7 +44,7 @@
           <p class="alert alert-danger">{{ $error_message }}</p>
         @endif
         <div class="well form-horizontal">
-          {!! Form::open() !!}
+          {!! Form::open(array('url' => URL::route('bootstrapping_step', array('step' => 4)))) !!}
             <div class='form-group'>
               {!! Form::label('username', "Pseudo", array('class' => "col-md-2 control-label")) !!}
               <div class="col-md-3">
