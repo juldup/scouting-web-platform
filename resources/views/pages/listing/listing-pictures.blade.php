@@ -112,11 +112,7 @@ use App\Models\Privilege;
             <span class="picture-listing-frame">
               <span class="member-name">{{{ $member->getFullName() }}}</span>
               <br />
-              @if ($member->has_picture)
-                <img src='{{ $member->getPictureURL() }}'>
-              @else
-                <img src='' alt='Pas de photo'>
-              @endif
+              <img src='{{ $member->getPictureURL() }}'>
             </span>
           @endforeach
         </div>
