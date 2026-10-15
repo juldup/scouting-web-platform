@@ -189,17 +189,32 @@ class ListingExporter {
     
     $tables = array();
     foreach ($this->sections as $slug => $section) {
-      $rows = $this->createTable($section);
+      $table = $this->createTable($section);
+      
+      if (empty($table)) {
+        continue;
+      }
 
-      if (!empty($rows)) {
-        if ($this->groupBySection) {
-          $tables[$slug] = $rows;
-        } else {
-          if (!array_key_exists(self::UNIT_SLUG, $tables)) {
-            $tables[self::UNIT_SLUG] = array();
+      if ($this->groupBySection) {
+        $tables[$slug] = $table;
+      } else {
+        if (!array_key_exists(self::UNIT_SLUG, $tables)) {
+          $tables[self::UNIT_SLUG] = array(
+            'scouts' => [],
+            'leaders' => []
+          );
+        }
+        
+        foreach ($table as $key => $rows) {
+          if (empty($rows)) {
+            continue;
           }
-
-          $tables[self::UNIT_SLUG] = array_merge($tables[self::UNIT_SLUG], $rows);
+          
+          if (array_key_exists($key, $tables[self::UNIT_SLUG])) {
+            $tables[self::UNIT_SLUG][$key] = array_merge($tables[self::UNIT_SLUG][$key], $rows);
+          } else {
+            $tables[self::UNIT_SLUG][$key] = $rows;
+          }
         }
       }
     }
@@ -288,7 +303,7 @@ class ListingExporter {
       }
     }
     
-    return [ "scouts" => $scouts, "leaders" => $leaders ];
+    return [ 'scouts' => $scouts, 'leaders' => $leaders ];
   }
 
   private function exportXlsx(): void {
@@ -350,12 +365,16 @@ class ListingExporter {
       }
       
       $j = 1;
-      foreach($rows['scouts'] as $row) {
-        $this->writeRow($row, $sheet, $j++);
+      if (array_key_exists('scouts', $rows)) {
+        foreach($rows['scouts'] as $row) {
+          $this->writeRow($row, $sheet, $j++);
+        }
       }
 
-      foreach($rows['leaders'] as $row) {
-        $this->writeRow($row, $sheet, $j++);
+      if (array_key_exists('leaders', $rows)) {
+        foreach ($rows['leaders'] as $row) {
+          $this->writeRow($row, $sheet, $j++);
+        }
       }
 
       $sheet->setSelectedCell('A1');
@@ -391,7 +410,7 @@ class ListingExporter {
   private function getDocumentSlug(): string {
     $slug = 'unite';
     if (count($this->tables) == 1) {
-      $slug = array_first($this->sections)->slug;
+      $slug = array_key_first($this->tables);
     }
 
     return $slug;
