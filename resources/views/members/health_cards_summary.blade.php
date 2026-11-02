@@ -11,61 +11,64 @@ use App\Helpers\Helper;
     body {
       font-family: "Source Sans Pro", "Arial", sans-serif;
       font-size: 80%;
+      color: #333333;
     }
-    
-    h1 {
-      
-    }
-    
+
     h2 {
-      font-size: 1rem;
+      font-size: 0.9rem;
       margin-bottom: 0.1rem;
+      color: #1d5ea8;
     }
-    
+
+    h3 {
+      font-size: 0.7rem;
+      margin-bottom: 0.3rem;
+      text-decoration: underline;
+    }
+
+    footer {
+      margin-top: 4rem;
+      font-size: 0.5rem;
+    }
+
     section {
       page-break-inside: avoid;
     }
-    
+
     .disclaimer {
       font-size: 0.6rem;
       font-style: italic;
       text-align: justify;
     }
-    
+
     .card {
       width: 100%;
       border: 1px solid #222;
       padding: 0.5rem;
       padding-bottom: 0;
     }
-    
+
     .row {
       width: 100%;
       margin-bottom: 0.5rem;
       page-break-inside: avoid;
     }
-    
+
     label, label + span {
       display: inline-block;
       vertical-align: top;
     }
-    
+
     label {
       text-align: justify;
     }
-    
+
     span {
-      /*background-color: #eefbff;*/
-      color: #1c3d67;
-      font-style: italic;
+      color: #111111;
       font-weight: bold;
       min-height: 1rem;
     }
-    
-    .justify {
-      text-align: justify;
-    }
-    
+
     .page-break-after {
       page-break-after: always;
     }
