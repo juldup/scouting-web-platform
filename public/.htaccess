@@ -5,6 +5,13 @@
 
     RewriteEngine On
 
+    # --- START BOT BLOCK ---
+    # Block GPTBot, Meta, and other scrapers
+    RewriteCond %{HTTP_USER_AGENT} (GPTBot|ChatGPT-User|OAI-SearchBot|meta-externalagent|Bytespider|CCBot) [NC]
+    RewriteRule .* - [F,L]
+    # --- END BOT BLOCK ---
+
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
