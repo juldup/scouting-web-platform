@@ -385,7 +385,7 @@ class HealthCardController extends BaseController {
       'healthCards' => $healthCards
     ]);
 
-    $filename = "Résumé des fiches santes $this->section->de_la_section";
+    $filename = "Résumé des fiches santé " . $this->section->de_la_section;
 
     $dompdf = new Dompdf();
     $dompdf->getOptions()->setIsRemoteEnabled(true);
