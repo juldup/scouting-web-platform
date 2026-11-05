@@ -392,7 +392,7 @@ class HealthCardController extends BaseController {
     $dompdf->setPaper('A4', 'landscape');
     $dompdf->loadHtml($html);
     $dompdf->render();
-    $dompdf->stream("$filename.pdf", ['Attachment' => 0]);
+    $dompdf->stream("$filename.pdf", ['Attachment' => 1]);
   }
   
   private function outputCards($healthCards, $scope = ''): void {
